@@ -3652,7 +3652,7 @@ const Som = (() => {
     let a = cache[f];
     if (!a) { a = new Audio(BASE + f); cache[f] = a; }
     if (!a.paused && !a.ended) a = a.cloneNode(); else a.currentTime = 0;
-    a.volume = estado.volume;
+    a.volume = Math.min(1, estado.volume * (opts.ganho || 1));
     const p = a.play();
     if (p && p.catch) p.catch(() => { /* autoplay bloqueado ou arquivo ausente: silêncio */ });
     if (opts.lojista) {
@@ -3679,7 +3679,9 @@ const Som = (() => {
         const neutro = !n || (ctx.item && TIERS_NEUTROS.includes(ctx.item.tier));
         return tocar(neutro ? "ui_shop_click_consumivel_distribuido_talisma" : "ui_shop_click_" + n, { cooldown: 80, grupo: "click" });
       }
-      case "catalog:tag_select": return tocar("ui_catalog_tag_select", { cooldown: 80, grupo: "chip" });
+      // tag_select: ao abrir o pergaminho do item e nos chips, à metade do volume (Leo: "muito alto").
+      case "catalog:tag_select": return tocar("ui_catalog_tag_select", { cooldown: 80, grupo: "chip", ganho: 0.5 });
+      case "catalog:pergaminho": return tocar("ui_catalog_tag_select", { cooldown: 120, grupo: "pergaminho", ganho: 0.5 });
       case "lojista:tag_open": return n ? tocar("shopkeeper_tag_open_" + n, { lojista: true }) : false;
       case "lojista:efeito_select": return tocar("shopkeeper_build_efeitosespeciais_" + chave(ctx.efeito) + "_select", { lojista: true });
       case "build:item_add": {
@@ -6539,6 +6541,7 @@ function openModal(id) {
     el.addEventListener("click", () => openModal(el.dataset.goto));
   });
 
+  Som.play("catalog:pergaminho");
   // Animação de abertura do pergaminho com o toque do tier (Fase 2, T9b).
   modal.className = "modal";
   if (TIER_ANIM[item.tier]) { void modal.offsetWidth; modal.classList.add(TIER_ANIM[item.tier]); }
