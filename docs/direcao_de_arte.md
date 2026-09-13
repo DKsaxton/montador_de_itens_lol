@@ -50,9 +50,7 @@ Forja (Build):
 
 ## Texturas e materiais
 As três texturas são papel amassado quase branco; nunca usadas cruas. Aplicação: elemento com `background: var(--paper)` e um pseudo-elemento por cima com `background-image` da textura, `background-size: 420px`, `mix-blend-mode: multiply`, `opacity .9`.
-- `shopitem_papertexture01_psd.png` → cards de item.
-- `shopitem_papertexture02_psd.png` → campo de busca e barra de filtros (papel de balcão).
-- `shopitem_papertexture03_psd.png` → placa de entrada, modal do item e pergaminho da Calculadora.
+- As três texturas são **sorteadas** entre as superfícies de papel (decisão do Leo, 13/09/2026), não fixas por função: card = sorteio estável pelo slug do item (o mesmo item tem sempre o mesmo papel); modal = novo sorteio a cada abertura; busca, painel de filtros e abas de Classe = sorteio ao carregar. No CSS, toda superfície de papel lê `--tex-pick`, gravada pelo JS (`paperFor`/`randomPaper`).
 - Madeira e latão são gradientes CSS (sem imagem). Sombras fortes e quentes: `rgba(0,0,0,.55–.7)`.
 
 ## Componentes

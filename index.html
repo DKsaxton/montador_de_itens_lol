@@ -1901,13 +1901,16 @@ select.sort-select {
   --tex-01: url("assets/textures/shopitem_papertexture01_psd.png");
   --tex-02: url("assets/textures/shopitem_papertexture02_psd.png");
   --tex-03: url("assets/textures/shopitem_papertexture03_psd.png");
+  /* As três texturas são sorteadas por elemento (Leo, 13/09/2026): o JS grava
+     --tex-pick em cada superfície de papel; sem sorteio, vale a 02. */
+  --tex-pick: var(--tex-02);
 }
 
 /* Papel: cor de base + textura real por cima em multiply (nunca crua). */
 .papel { position: relative; isolation: isolate; background: var(--loja-papel); color: var(--loja-tinta); }
 .papel::before {
   content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
-  background-image: var(--tex, var(--tex-02)); background-size: 420px;
+  background-image: var(--tex-pick); background-size: 420px;
   mix-blend-mode: multiply; opacity: .9;
 }
 
@@ -1976,7 +1979,7 @@ h1 .sub {
 /* ---- Busca e ordenação: papel de balcão ---- */
 .search-box input {
   background: var(--loja-papel);
-  background-image: var(--tex-02);
+  background-image: var(--tex-pick);
   background-size: 420px;
   background-blend-mode: multiply;
   border: 1px solid var(--loja-tinta-suave);
@@ -2013,7 +2016,7 @@ select.sort-select, .sort-attr-wrap select {
 .filters {
   position: sticky;
   background: var(--loja-papel);
-  background-image: var(--tex-02);
+  background-image: var(--tex-pick);
   background-size: 420px;
   background-blend-mode: multiply;
   border: 1px solid var(--loja-papel-borda);
@@ -2098,7 +2101,7 @@ select.sort-select, .sort-attr-wrap select {
 .card { height: 196px; }
 .card-surface {
   background: var(--loja-papel);
-  background-image: var(--tex-01);
+  background-image: var(--tex-pick);
   background-size: 420px;
   background-blend-mode: multiply;
   border: 1px solid var(--loja-papel-borda);
@@ -2109,7 +2112,7 @@ select.sort-select, .sort-attr-wrap select {
 }
 .card:hover .card-surface {
   background: #ecdcb8;
-  background-image: var(--tex-01);
+  background-image: var(--tex-pick);
   background-size: 420px;
   background-blend-mode: multiply;
   border-color: #d8b96a;
@@ -2223,7 +2226,7 @@ select.sort-select, .sort-attr-wrap select {
   border-bottom: none;
   border-radius: 3px 3px 0 0;
   background: var(--loja-papel);
-  background-image: var(--tex-02);
+  background-image: var(--tex-pick);
   background-size: 420px;
   background-blend-mode: multiply;
   color: var(--loja-tinta);
@@ -2281,6 +2284,90 @@ select.sort-select, .sort-attr-wrap select {
 }
 .attr-order-btn:hover { border-color: var(--loja-cera); color: var(--loja-cera); }
 .attr-order-btn.active { background: var(--loja-cera); border-color: var(--loja-cera-borda); color: var(--loja-cera-texto); }
+
+/* ---- T5: modal do item = pergaminho (textura 03) ---- */
+.overlay { background: rgba(12,8,4,.78); backdrop-filter: blur(2px); }
+.modal {
+  background: var(--loja-papel);
+  background-image: var(--tex-pick);
+  background-size: 480px;
+  background-blend-mode: multiply;
+  color: var(--loja-tinta);
+  border: 1px solid var(--loja-papel-borda);
+  border-top: 6px solid var(--tier-color, var(--loja-tinta-suave));
+  border-radius: 2px;
+  max-width: 600px;
+  padding: 24px 30px 30px;
+  box-shadow: 0 18px 40px rgba(0,0,0,.75), inset 0 0 0 1px rgba(255,255,255,.3);
+  font-family: var(--loja-texto);
+}
+.modal-close { color: var(--loja-tinta-suave); }
+.modal-close:hover { color: var(--loja-cera); }
+.modal h2 {
+  font-family: var(--loja-titulos);
+  font-weight: 400;
+  font-size: 28px;
+  line-height: 1.1;
+  color: var(--loja-tinta);
+  margin: 0 0 4px;
+}
+.modal .en-name { color: var(--loja-tinta-suave); font-style: italic; font-size: 14px; margin-bottom: 14px; }
+.modal-price-row { border-bottom: 1px solid rgba(90,70,48,.35); }
+.modal-price-row .stat { font-family: var(--loja-gravado); font-size: 9.5px; letter-spacing: .16em; text-transform: uppercase; color: var(--loja-tinta-suave); }
+.modal-price-row .stat b { font-family: var(--loja-texto); font-size: 16px; color: var(--loja-cera); letter-spacing: 0; text-transform: none; }
+.modal-price-row .stat b[style] { color: var(--loja-tinta) !important; font-size: 13px !important; }
+.modal-section { margin-bottom: 18px; }
+.modal-section-title {
+  font-family: var(--loja-gravado);
+  font-size: 10px;
+  letter-spacing: .2em;
+  color: var(--loja-tinta-suave);
+  border-bottom: 1px solid rgba(90,70,48,.3);
+  padding-bottom: 4px;
+  margin-bottom: 8px;
+}
+.modal .attr-line { font-size: 14.5px; margin-bottom: 3px; }
+.modal .attr-note { font-size: 13px; font-style: italic; color: var(--loja-tinta-suave); }
+.ability-name { font-family: var(--loja-titulos); font-weight: 400; font-size: 16px; color: var(--loja-tinta); margin-bottom: 2px; }
+.ability-desc { font-size: 14px; color: var(--loja-tinta); line-height: 1.5; }
+.ability-mech { margin-top: 5px; font-size: 13px; line-height: 1.5; color: var(--loja-tinta-suave); padding-left: 10px; border-left: 2px solid rgba(90,70,48,.35); }
+.ability-mech .mech-label { font-family: var(--loja-gravado); font-size: 9px; letter-spacing: .16em; text-transform: uppercase; margin-right: 6px; color: var(--loja-tinta-suave); }
+.ability-block { margin-bottom: 12px; }
+.recipe-chip {
+  font-family: var(--loja-texto);
+  font-size: 13px;
+  padding: 4px 11px;
+  border-radius: 999px;
+  border: 1.5px solid var(--loja-tinta);
+  background: transparent;
+  color: var(--loja-tinta);
+}
+.recipe-chip:hover { border-color: var(--loja-cera); color: var(--loja-cera); }
+.recipe-chip .cost { color: var(--loja-tinta-suave); margin-left: 4px; }
+/* Referência a item que não está no catálogo do Capítulo 1: nome sem link. */
+.recipe-chip.unlinked { border-style: dashed; border-color: var(--loja-tinta-suave); color: var(--loja-tinta-suave); cursor: default; }
+.recipe-chip.unlinked:hover { border-color: var(--loja-tinta-suave); color: var(--loja-tinta-suave); }
+.modal .tag { font-family: var(--loja-texto); font-size: 12.5px; padding: 3px 9px; border-radius: 999px; border: 1px solid var(--loja-tinta-suave); background: transparent; color: var(--loja-tinta); }
+.modal-note { font-size: 13px; color: var(--loja-cera); border: 1px solid rgba(141,44,34,.45); border-left: 4px solid var(--loja-cera); background: rgba(141,44,34,.06); border-radius: 2px; padding: 8px 11px; margin-bottom: 14px; line-height: 1.5; }
+.condition-note { font-size: 13.5px; color: var(--loja-tinta); font-style: italic; line-height: 1.5; }
+.cost-line { display: flex; justify-content: space-between; gap: 14px; font-size: 14px; padding: 3px 0; border-bottom: 1px dashed rgba(90,70,48,.3); }
+.cost-line:last-child { border-bottom: none; }
+.cost-line .k { color: var(--loja-tinta-suave); font-style: italic; flex: none; }
+.cost-line .v { text-align: right; }
+.cost-line.eff .v { color: var(--loja-cera); font-weight: 700; }
+.modal .rune-mark.mf { display: inline-flex; margin-bottom: 6px; font-size: 12px; }
+/* Ícone do item no cabeçalho do modal (pedido do Leo, 13/09/2026) */
+.modal-head { display: flex; gap: 16px; align-items: center; margin-bottom: 4px; padding-right: 30px; }
+.modal-icon {
+  flex: none; width: 72px; height: 72px;
+  border: 2px solid var(--loja-tinta-suave); background: #1b120a;
+  box-shadow: 0 3px 6px rgba(0,0,0,.45); overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+}
+.modal-icon .item-art { width: 100%; height: 100%; display: block; }
+.modal-icon .abbr { font-family: var(--loja-titulos); font-size: 20px; color: var(--loja-titulo); }
+.modal-head .en-name { margin-bottom: 0; }
+.modal-head h2 { padding-right: 0; }
 </style>
 </head>
 <body>
@@ -3765,6 +3852,21 @@ const TIER_CSS = {
 const byId = {};
 CATALOG.items.forEach(it => byId[it.slug] = it);
 
+// ---- Texturas de papel sorteadas (Leo, 13/09/2026) ----
+// Card: sorteio estável pelo slug (o mesmo item recebe sempre o mesmo papel,
+// sem piscar a cada renderização). Modal: novo sorteio a cada abertura.
+// Busca, painel de filtros e abas: sorteio ao carregar.
+const PAPER_TEXTURES = ["var(--tex-01)", "var(--tex-02)", "var(--tex-03)"];
+function paperFor(seed) {
+  let h = 0;
+  for (let i = 0; i < seed.length; i++) h = (h * 31 + seed.charCodeAt(i)) >>> 0;
+  return PAPER_TEXTURES[h % PAPER_TEXTURES.length];
+}
+function randomPaper() {
+  return PAPER_TEXTURES[Math.floor(Math.random() * PAPER_TEXTURES.length)];
+}
+function setPaper(el, tex) { if (el) el.style.setProperty("--tex-pick", tex); }
+
 // Builds salvas pelo HTML anterior guardam a chave antiga (nome em inglês sem
 // apóstrofo). Índice para recuperá-las sem perder item nenhum.
 const byLegacyId = {};
@@ -4179,6 +4281,7 @@ function buildClassTabs() {
     btn.type = "button";
     btn.className = "class-tab" + (state.classe === t.classe ? " active" : "");
     btn.dataset.classe = t.classe;
+    setPaper(btn, randomPaper());
     const n = CATALOG.items.filter(it => itemInClass(it, t.classe)).length;
     btn.innerHTML = `<span>${t.label}</span><span class="n">${n}</span>`;
     btn.addEventListener("click", () => {
@@ -4322,6 +4425,7 @@ function renderCard(item, attrSorting) {
   card.className = "card";
   card.style.setProperty("--tier-color", TIER_CSS[item.tier] || "");
   card.style.setProperty("--class-color", classColor(item));
+  card.style.setProperty("--tex-pick", paperFor(item.slug));
   card.addEventListener("click", () => openModal(item.slug));
 
   let sortStatHtml = "";
@@ -4528,6 +4632,7 @@ function openModal(id) {
   const overlay = document.getElementById("overlay");
   const modal = document.getElementById("modal");
   modal.style.setProperty("--tier-color", TIER_CSS[item.tier] || "");
+  setPaper(modal, randomPaper());
 
   // Campo vazio não vira texto: a seção inteira some.
   const attrHtml = (item.attributes || []).length
@@ -4537,27 +4642,69 @@ function openModal(id) {
   const abilitiesHtml = (item.abilities || []).length
     ? item.abilities.map(a => `
         <div class="ability-block">
-          ${a.name ? `<div class="ability-name">${a.name}</div>` : ""}
+          ${a.name && a.name !== "—" ? `<div class="ability-name">${a.name}${a.type ? ` <span class="attr-note">· ${a.type}</span>` : ""}</div>` : ""}
           <div class="ability-desc">${a.description}</div>
+          ${a.mechanics ? `<div class="ability-mech"><span class="mech-label">Mecânica</span>${a.mechanics}</div>` : ""}
         </div>`).join("")
     : "";
+
+  // Atributos: quando o catálogo diz que não há (ex.: Stat Bonus), mostra a nota dele.
+  const attrNoteHtml = !attrHtml && item.attributesNote ? `<div class="attr-note">${item.attributesNote}</div>` : "";
+
+  // Referências de receita fora do catálogo (ex.: Shattered Armguard, removido de
+  // propósito no Capítulo 1): o nome aparece, sem link.
+  const unlinked = list => {
+    const seen = new Set();
+    return (list || []).filter(r => !r.raw && !slugByNameEn[r.nameEn] && !seen.has(r.nameEn) && seen.add(r.nameEn))
+      // namePt que começa com "—" é anotação do catálogo (ex.: "— por transformação"): mostra com o nome.
+      .map(r => `<span class="recipe-chip unlinked" title="Fora do catálogo do Capítulo 1">${esc(!r.namePt || r.namePt.startsWith("—") ? `${r.nameEn} ${r.namePt || ""}`.trim() : r.namePt)}</span>`).join("");
+  };
+  const componentsUnlinked = unlinked(item.components);
+  const buildsIntoUnlinked = unlinked(item.buildsInto);
+
+  // Análise de custo: os textos do catálogo; com Reembolso ligado, a eficiência recalculada.
+  const ca = item.costAnalysis;
+  const costHtml = ca && (ca.goldValue || ca.efficiency) ? `
+    <div class="modal-section">
+      <div class="modal-section-title">Análise de custo</div>
+      ${ca.goldValue ? `<div class="cost-line"><span class="k">Valor em ouro</span><span class="v">${ca.goldValue}</span></div>` : ""}
+      ${ca.efficiency ? `<div class="cost-line eff"><span class="k">Eficiência</span><span class="v">${ca.efficiency}</span></div>` : ""}
+      ${state.applyCashback && hasCashback(item) && itemEfficiency(item) !== null
+        ? `<div class="cost-line eff"><span class="k">Com Reembolso</span><span class="v">${fmtEff(itemEfficiency(item))} (${ca.goldValueTotal.toLocaleString("pt-BR")}g ÷ ${item.cashback.netGold.toLocaleString("pt-BR")}g)</span></div>` : ""}
+      ${(ca.extra || []).map(x => `<div class="cost-line"><span class="k">Extra</span><span class="v">${x}</span></div>`).join("")}
+    </div>` : "";
+
+  const apexHtml = item.apex ? `
+    <div class="modal-section">
+      <div class="modal-section-title">Ápice</div>
+      <div class="condition-note">${item.apex}</div>
+    </div>` : "";
+
+  const modeNotesHtml = (item.aramNotes || item.mayhemNotes) ? `
+    <div class="modal-section">
+      <div class="modal-section-title">Notas de modo</div>
+      ${item.aramNotes ? `<div class="cost-line"><span class="k">ARAM</span><span class="v">${item.aramNotes}</span></div>` : ""}
+      ${item.mayhemNotes ? `<div class="cost-line"><span class="k">ARAM: Mayhem</span><span class="v">${item.mayhemNotes}</span></div>` : ""}
+    </div>` : "";
 
   const componentsResolved = (item.componentRefs || []).map(refLine).filter(Boolean);
   const buildsIntoResolved = (item.buildsIntoIds || []).map(id2 => byId[id2]).filter(Boolean);
 
-  const recipeHtml = componentsResolved.length ? `
+  const recipeHtml = (componentsResolved.length || componentsUnlinked) ? `
     <div class="modal-section">
       <div class="modal-section-title">Componentes</div>
       <div class="recipe-links">
         ${componentsResolved.map(r => `<span class="recipe-chip" data-goto="${r.id}">${r.label}<span class="cost">${r.extra}</span></span>`).join("")}
+        ${componentsUnlinked}
       </div>
     </div>` : "";
 
-  const buildsIntoHtml = buildsIntoResolved.length ? `
+  const buildsIntoHtml = (buildsIntoResolved.length || buildsIntoUnlinked) ? `
     <div class="modal-section">
       <div class="modal-section-title">Vira componente de</div>
       <div class="recipe-links">
         ${buildsIntoResolved.map(r => `<span class="recipe-chip" data-goto="${r.id}">${r.namePt}</span>`).join("")}
+        ${buildsIntoUnlinked}
       </div>
     </div>` : "";
 
@@ -4595,8 +4742,13 @@ function openModal(id) {
     <button class="modal-close" aria-label="Fechar">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg>
     </button>
-    <h2>${item.namePt}</h2>
-    <div class="en-name">${item.nameEn} · ${TIER_LABEL[item.tier] || item.tier} · ${item.region}</div>
+    <div class="modal-head">
+      <div class="modal-icon">${iconInner(item)}</div>
+      <div>
+        <h2>${item.namePt}</h2>
+        <div class="en-name">${item.nameEn}${item.itemClass && item.itemClass.core ? " · " + item.itemClass.core : ""} · ${TIER_LABEL[item.tier] || item.tier} · ${item.region}</div>
+      </div>
+    </div>
     <div class="modal-price-row">
       <div class="stat">${state.applyCashback && hasCashback(item) ? "Preço c/ Reembolso" : "Preço"}<b>${priceLabel(item)}</b></div>
       ${item.priceNote ? `<div class="stat">Nota<b style="font-size:12px;color:var(--text-dim)">${item.priceNote}</b></div>` : ""}
@@ -4604,13 +4756,16 @@ function openModal(id) {
     </div>
     ${noteHtml}
     ${conditionHtml}
-    ${attrHtml ? `<div class="modal-section">
+    ${(attrHtml || attrNoteHtml) ? `<div class="modal-section">
       <div class="modal-section-title">Atributos</div>
-      ${attrHtml}
+      ${attrHtml}${attrNoteHtml}
     </div>` : ""}
     ${abilitiesHtml ? `<div class="modal-section"><div class="modal-section-title">Habilidade</div>${abilitiesHtml}</div>` : ""}
     ${recipeHtml}
     ${buildsIntoHtml}
+    ${costHtml}
+    ${apexHtml}
+    ${modeNotesHtml}
     ${tagsHtml}
     ${masterworkHtml}
     ${cashbackHtml}
@@ -4633,6 +4788,8 @@ function init() {
   document.getElementById("total-count").textContent = CATALOG.items.length;
   buildFilterPanel();
   buildClassTabs();
+  setPaper(document.querySelector(".filters"), randomPaper());
+  setPaper(document.getElementById("search-input"), randomPaper());
 
   const searchInput = document.getElementById("search-input");
   searchInput.addEventListener("input", (e) => {
@@ -4675,6 +4832,10 @@ function init() {
   initCardTilt();
   if (typeof initBuildBuilder === "function") initBuildBuilder();
   if (typeof initCalc === "function") initCalc();
+
+  // Atalho: #item=<slug> abre o item direto (para compartilhar e para capturas).
+  const m = location.hash.match(/^#item=([a-z0-9-]+)$/);
+  if (m && byId[m[1]]) openModal(m[1]);
 }
 
 init();
