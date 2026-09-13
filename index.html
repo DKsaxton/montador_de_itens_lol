@@ -3981,6 +3981,8 @@ function moveItem(fromCatId, fromIndex, toCatId) {
 // Formato (legível e editável à mão):
 //
 //   BUILD: Jinx padrão
+//   MODO: ARAM                    (opcional)
+//   MESTRE FORJADOR: sim          (opcional)
 //
 //   [PRIORIDADE] Núcleo | ½
 //   # comprar sempre nessa ordem
@@ -3999,6 +4001,7 @@ const TEXT_SPAN = { "1/1": 1, "1": 1, "1/2": 2, "½": 2, "1/3": 3, "⅓": 3, "1/
 function buildToText() {
   const lines = [`BUILD: ${build.name}`];
   if (build.mode) lines.push(`MODO: ${build.mode}`);
+  if (build.masterwork) lines.push("MESTRE FORJADOR: sim");
   build.cats.forEach(cat => {
     lines.push("");
     lines.push(`[${KIND_LABEL[cat.kind].toUpperCase()}] ${cat.name} | ${SPAN_TEXT[cat.span]}`);
@@ -4026,7 +4029,7 @@ function getItemNameIndex() {
 
 function textToBuild(text) {
   const index = getItemNameIndex();
-  const result = { name: null, mode: "", cats: [], unknown: [], ignored: 0 };
+  const result = { name: null, mode: "", masterwork: false, cats: [], unknown: [], ignored: 0 };
   let current = null;
 
   text.split("\n").forEach(rawLine => {
@@ -4035,6 +4038,9 @@ function textToBuild(text) {
 
     const mName = line.match(/^BUILD\s*:\s*(.+)$/i);
     if (mName) { result.name = mName[1].trim(); return; }
+
+    const mMf = line.match(/^MESTRE\s+FORJADOR\s*:\s*(.+)$/i);
+    if (mMf) { result.masterwork = /^(sim|s|yes|1|ligado|on)$/i.test(mMf[1].trim()); return; }
 
     const mMode = line.match(/^MODO\s*:\s*(.+)$/i);
     if (mMode) {
@@ -4920,6 +4926,7 @@ function initLibrary() {
     if (!r.cats.length) { showIoMsg("Não encontrei nenhuma categoria ou item válido nesse texto.", true); return; }
 
     createNewBuild(r.name || "Build importada", r.cats, r.mode);
+    if (r.masterwork) { build.masterwork = true; saveBuild(); renderBuildAll(); }
 
     const total = r.cats.reduce((s, c) => s + c.items.length, 0);
     let msg = `Importado: ${r.cats.length} categoria(s), ${total} item(ns)${r.mode ? `, modo ${r.mode}` : ""}.`;
@@ -6572,11 +6579,18 @@ function init() {
     setTimeout(() => entrada.classList.add("fechada"), 900);
   }
   document.getElementById("entrar").addEventListener("click", () => entrarNaLoja(false));
-  if (/^#(item=|ficha=|apice$|animacoes$|build$|build-animacoes$|build-observacao$|build-apice$|calc$)/.test(location.hash)) entrarNaLoja(true);
+  if (/^#(item=|ficha=|apice$|animacoes$|build$|build-animacoes$|build-observacao$|build-apice$|build-exportar$|calc$)/.test(location.hash)) entrarNaLoja(true);
   // #build abre direto na forja (link direto e captura); #build-animacoes congela
   // a queda e a remoção de um molde (só captura).
   if (/^#build(-animacoes|-observacao|-apice)?$/.test(location.hash)) switchTab("build");
   if (location.hash === "#calc") switchTab("calc");
+  // #build-exportar: forja com o painel exportar/importar aberto e o texto da build (só captura).
+  if (location.hash === "#build-exportar") {
+    switchTab("build");
+    document.getElementById("io-panel").classList.add("show");
+    document.getElementById("toggle-io").classList.add("active");
+    document.getElementById("import-text").value = buildToText();
+  }
   // #build-apice: forja com Reembolso e Ápice ligados (só captura).
   if (location.hash === "#build-apice") {
     ["cashback", "apex"].forEach(k => { const cb = document.querySelector(`input[data-rune="${k}"]`); if (cb && !cb.checked) cb.click(); });
