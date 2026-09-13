@@ -2964,6 +2964,34 @@ body:not(.editando) .item-tile.has-note .item-icon { box-shadow: 0 0 10px rgba(2
 body:not(.editando) .build-empty p { display: none; }
 body:not(.editando) .build-empty::after { content: "Ligue \"Editar\" para criar categorias e montar a build."; display: block; font-family: var(--loja-texto); font-style: italic; font-size: 13px; color: var(--forja-texto-suave); }
 
+/* ---- Fase 3, T6: observação por item editada na própria tela (substitui o prompt) ---- */
+.note-editor {
+  position: fixed; z-index: 70; display: none; width: 300px;
+  background: linear-gradient(180deg, var(--forja-placa-1), var(--forja-placa-2));
+  border: 1px solid var(--forja-placa-borda); border-left: 3px solid var(--forja-brasa); border-radius: 3px;
+  padding: 10px 12px 9px; color: var(--forja-texto);
+  box-shadow: 0 10px 30px rgba(0,0,0,.75), 0 0 16px var(--forja-brasa-glow);
+  animation: modal-unroll .25s ease-out;
+}
+.note-editor.show { display: block; }
+.ne-title { display: flex; align-items: baseline; gap: 8px; margin-bottom: 7px; }
+.ne-label { font-family: var(--loja-gravado); font-size: 9px; letter-spacing: .2em; text-transform: uppercase; color: var(--forja-texto-suave); }
+.ne-item { font-family: var(--loja-titulos); font-size: 15px; color: var(--forja-titulo); }
+.note-editor textarea {
+  width: 100%; resize: vertical; min-height: 58px;
+  background: rgba(0,0,0,.35); border: 1px solid #3a3029; border-radius: 2px;
+  color: var(--forja-texto); font-family: var(--loja-texto); font-size: 13.5px; line-height: 1.4; padding: 6px 8px; outline: none;
+}
+.note-editor textarea:focus { border-color: var(--forja-brasa); box-shadow: 0 0 8px var(--forja-brasa-glow); }
+.ne-actions { display: flex; gap: 6px; justify-content: flex-end; margin-top: 8px; }
+.ne-actions .btn { padding: 5px 10px; font-size: 12px; }
+.ne-hint { margin-top: 6px; font-family: var(--loja-texto); font-style: italic; font-size: 10.5px; color: #5f5248; }
+/* os botões do editor usam a mesma anatomia de ferro dos da forja */
+.note-editor .btn { background: linear-gradient(180deg, #2f2823, #1c1714); border: 1px solid #4a3d33; color: var(--forja-texto); font-family: var(--loja-texto); box-shadow: inset 0 1px 0 rgba(255,255,255,.06); }
+.note-editor .btn.ghost { background: transparent; border-color: #3a3029; color: var(--forja-texto-suave); }
+.note-editor .btn.ghost:hover, .note-editor .btn:hover { border-color: var(--forja-brasa); color: var(--forja-brasa-clara); }
+.note-editor .btn.primary { background: linear-gradient(160deg, #ffd27a, #ff7a1e 55%, #b34d0e); border-color: #b34d0e; color: #1a0d05; font-weight: 700; }
+
 /* ---- Fase 3, T5: caixas customizáveis — o tipo é uma placa de metal ----
    Comum = ferro, Prioridade = latão, Opcional = aço. Arrastar e redimensionar
    só na edição (T3); a alça de redimensionar vira canto de brasa. */
@@ -3197,6 +3225,16 @@ body.editando .cat-kind:hover { filter: brightness(1.15); }
 </div>
 
 <div id="item-tooltip" class="item-tooltip"></div>
+<div id="note-editor" class="note-editor" role="dialog" aria-label="Observação do item">
+  <div class="ne-title"><span class="ne-label">Observação</span><span class="ne-item"></span></div>
+  <textarea id="note-text" rows="3" placeholder="Quando comprar, contra quem, o que segurar…" spellcheck="false"></textarea>
+  <div class="ne-actions">
+    <button type="button" class="btn ghost" id="note-cancel">Cancelar</button>
+    <button type="button" class="btn ghost" id="note-clear">Apagar</button>
+    <button type="button" class="btn primary" id="note-save">Salvar</button>
+  </div>
+  <div class="ne-hint">Enter salva · Shift+Enter quebra linha · Esc cancela</div>
+</div>
 
 <script src="data/catalog.js"></script>
 <script>
@@ -3988,11 +4026,8 @@ function initCategoryUI() {
     const cat = getCat(tile.dataset.catId);
     const entry = cat && cat.items[Number(tile.dataset.index)];
     if (!entry) return;
-    const val = window.prompt(`Observação para ${byId[entry.itemId].namePt}:`, entry.note || "");
-    if (val === null) return;
-    entry.note = val.trim();
-    renderBuild();
-    saveBuild();
+    hideTooltip();
+    openNoteEditor(tile, entry);
   });
 
   canvas.addEventListener("contextmenu", (e) => {
@@ -4001,6 +4036,57 @@ function initCategoryUI() {
     e.preventDefault();
     hideTooltip();
     removeItemFromCategory(tile.dataset.catId, Number(tile.dataset.index));
+  });
+}
+
+// ---------------- observação por item (Fase 3, T6) ----------------
+// Plaquinha de ferro ancorada ao molde; Enter salva, Shift+Enter quebra
+// linha, Esc cancela, "Apagar" limpa. Substitui o window.prompt.
+let noteTarget = null;
+
+function openNoteEditor(tile, entry) {
+  const ed = document.getElementById("note-editor");
+  const ta = document.getElementById("note-text");
+  noteTarget = entry;
+  ed.querySelector(".ne-item").textContent = byId[entry.itemId] ? byId[entry.itemId].namePt : "";
+  ta.value = entry.note || "";
+  ed.classList.add("show");
+  const r = tile.getBoundingClientRect();
+  const w = ed.offsetWidth, h = ed.offsetHeight;
+  let left = Math.max(8, Math.min(window.innerWidth - w - 8, r.left + r.width / 2 - w / 2));
+  let top = r.bottom + 8;
+  if (top + h > window.innerHeight - 8) top = Math.max(8, r.top - h - 8);
+  ed.style.left = left + "px";
+  ed.style.top = top + "px";
+  ta.focus();
+  ta.setSelectionRange(ta.value.length, ta.value.length);
+}
+
+function closeNoteEditor(save) {
+  const ed = document.getElementById("note-editor");
+  if (!ed.classList.contains("show")) return;
+  if (save && noteTarget) {
+    noteTarget.note = document.getElementById("note-text").value.trim();
+    renderBuild();
+    saveBuild();
+  }
+  noteTarget = null;
+  ed.classList.remove("show");
+}
+
+function initNoteEditor() {
+  const ed = document.getElementById("note-editor");
+  const ta = document.getElementById("note-text");
+  document.getElementById("note-save").addEventListener("click", () => closeNoteEditor(true));
+  document.getElementById("note-cancel").addEventListener("click", () => closeNoteEditor(false));
+  document.getElementById("note-clear").addEventListener("click", () => { ta.value = ""; closeNoteEditor(true); });
+  ta.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); closeNoteEditor(true); }
+    if (e.key === "Escape") { e.preventDefault(); e.stopPropagation(); closeNoteEditor(false); }
+  });
+  // Clique fora fecha sem salvar.
+  document.addEventListener("mousedown", (e) => {
+    if (ed.classList.contains("show") && !ed.contains(e.target)) closeNoteEditor(false);
   });
 }
 
@@ -4303,6 +4389,7 @@ function initBuildBuilder() {
   initCategoryUI();
   initPicker();
   initTooltip();
+  initNoteEditor();
   initTileModeWatcher();
 
   document.addEventListener("keydown", (e) => {
@@ -5831,10 +5918,18 @@ function init() {
     setTimeout(() => entrada.classList.add("fechada"), 900);
   }
   document.getElementById("entrar").addEventListener("click", () => entrarNaLoja(false));
-  if (/^#(item=|ficha=|apice$|animacoes$|build$|build-animacoes$)/.test(location.hash)) entrarNaLoja(true);
+  if (/^#(item=|ficha=|apice$|animacoes$|build$|build-animacoes$|build-observacao$)/.test(location.hash)) entrarNaLoja(true);
   // #build abre direto na forja (link direto e captura); #build-animacoes congela
   // a queda e a remoção de um molde (só captura).
-  if (location.hash === "#build" || location.hash === "#build-animacoes") switchTab("build");
+  if (/^#build(-animacoes|-observacao)?$/.test(location.hash)) switchTab("build");
+  // #build-observacao abre o editor de observação no primeiro molde (só captura).
+  if (location.hash === "#build-observacao") {
+    const t = document.getElementById("edit-toggle");
+    if (t && !t.checked) { t.checked = true; t.dispatchEvent(new Event("change")); }
+    const tile = document.querySelector("#build-canvas .item-tile");
+    const cat = tile && getCat(tile.dataset.catId);
+    if (cat) openNoteEditor(tile, cat.items[Number(tile.dataset.index)]);
+  }
   if (location.hash === "#build-animacoes") {
     const tiles = document.querySelectorAll("#build-canvas .item-tile");
     if (tiles[0]) { tiles[0].classList.add("tile-drop", "anim-frozen"); tiles[0].closest(".build-cat").classList.add("cat-impact", "anim-frozen"); }
