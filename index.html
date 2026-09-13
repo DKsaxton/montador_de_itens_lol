@@ -2964,6 +2964,23 @@ body:not(.editando) .item-tile.has-note .item-icon { box-shadow: 0 0 10px rgba(2
 body:not(.editando) .build-empty p { display: none; }
 body:not(.editando) .build-empty::after { content: "Ligue \"Editar\" para criar categorias e montar a build."; display: block; font-family: var(--loja-texto); font-style: italic; font-size: 13px; color: var(--forja-texto-suave); }
 
+/* ---- Fase 3, T7: Mestre Forjador na forja — Lendário elegível ganha anel de latão e placa MF ---- */
+.item-tile.mf { box-shadow: inset 0 3px 8px rgba(0,0,0,.9), 0 0 0 2px #c9973f, 0 0 16px rgba(201,151,63,.7); }
+.item-tile.mf .item-icon { border-color: #e7c46f; box-shadow: 0 0 12px rgba(231,196,111,.7); }
+.item-tile .mf-badge {
+  display: none; position: absolute; top: 4px; left: 50%; transform: translateX(-50%); z-index: 3;
+  font-family: var(--loja-gravado); font-size: 7.5px; font-weight: 700; letter-spacing: .12em;
+  padding: 1px 5px; border-radius: 999px;
+  background: linear-gradient(160deg, #e7c46f, #b8863b); color: #2a1a0a;
+  box-shadow: 0 1px 2px rgba(0,0,0,.6);
+}
+.item-tile.mf .mf-badge { display: block; }
+.item-tooltip .tt-mf { margin-top: 7px; padding-top: 7px; border-top: 1px dashed var(--forja-tracejado); }
+.item-tooltip .tt-mf .k { font-family: var(--loja-gravado); font-size: 8.5px; letter-spacing: .16em; text-transform: uppercase; color: #c9973f; display: block; margin-bottom: 2px; }
+.item-tooltip .tt-mf div { font-size: 12px; }
+.item-tooltip .tt-mf b { color: #e7c46f; font-weight: 700; }
+.item-tooltip .tt-mf.off { opacity: .7; }
+
 /* ---- Fase 3, T6: observação por item editada na própria tela (substitui o prompt) ---- */
 .note-editor {
   position: fixed; z-index: 70; display: none; width: 300px;
@@ -3143,6 +3160,10 @@ body.editando .cat-kind:hover { filter: brightness(1.15); }
     <input id="build-name-input" class="build-name" placeholder="Nome da build" spellcheck="false">
     <div id="build-summary" class="build-summary"></div>
     <div class="build-actions">
+      <label class="sw" id="mf-switch" title="Aplica o Mestre Forjador aos Lendários elegíveis da build (masterwork.stats do catálogo)">
+        <input type="checkbox" id="mf-toggle">
+        <i></i><span>Mestre Forjador</span>
+      </label>
       <label class="sw" id="edit-switch" title="Visualização é o padrão; ligue para editar a build">
         <input type="checkbox" id="edit-toggle">
         <i></i><span>Editar</span>
@@ -3254,6 +3275,7 @@ const build = {
   pickerQuery: "",
   defaultSpan: 2,      // largura geral aplicada às novas categorias
   mode: "",            // modo de jogo desta build ("" = sem restrição)
+  masterwork: false,   // Fase 3, T7: Mestre Forjador aplicado aos Lendários elegíveis (salvo na build)
   editing: false,      // Fase 3, T3: visualização (padrão) | edição — não persiste
 };
 
@@ -3279,7 +3301,7 @@ function newBuildId() {
 }
 
 function snapshotActive() {
-  return { id: build.id, name: build.name, cats: build.cats, seq: build.seq, mode: build.mode };
+  return { id: build.id, name: build.name, cats: build.cats, seq: build.seq, mode: build.mode, masterwork: !!build.masterwork };
 }
 
 function saveBuild() {
@@ -3321,6 +3343,7 @@ function loadBuild() {
           name: b.name || "Build sem nome",
           seq: b.seq || 1,
           mode: ALL_MODES.includes(b.mode) ? b.mode : "",
+          masterwork: !!b.masterwork,
           cats: normalizeCats(b.cats),
         }));
         library.activeId = d.activeId && library.builds.some(b => b.id === d.activeId)
@@ -3359,6 +3382,7 @@ function activateBuild(id, skipSave) {
   build.cats = b.cats;
   build.seq = b.seq;
   build.mode = ALL_MODES.includes(b.mode) ? b.mode : "";
+  build.masterwork = !!b.masterwork;
   build.selectedCatId = null;
   library.activeId = b.id;
   if (!skipSave) { saveBuild(); renderBuildAll(); }
@@ -3636,6 +3660,23 @@ function esc(s) {
   return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
 }
 
+// ---------------- Mestre Forjador (Fase 3, T7) ----------------
+// Elegível = masterwork.eligible === true no catálogo. Os atributos "como
+// fica" vêm de masterwork.stats (stat, base, bonus, total) — nada é calculado
+// aqui além de substituir o valor do atributo pelo total do catálogo.
+function mfApplies(item) {
+  return !!(build.masterwork && item && item.masterwork && item.masterwork.eligible === true && (item.masterwork.stats || []).length);
+}
+function mfAttributes(item) {
+  const base = item.attributes || [];
+  if (!mfApplies(item)) return base;
+  return base.map(a => {
+    const m = item.masterwork.stats.find(x => x.stat === a.stat);
+    return m ? { ...a, value: m.total, mfBase: m.base, mfBonus: m.bonus } : a;
+  });
+}
+function fmtNum(n) { return Number(n).toLocaleString("pt-BR", { maximumFractionDigits: 2 }); }
+
 // ---------------- render ----------------
 
 // Adicionar item NÃO re-renderiza o seletor: se re-renderizasse, a lista
@@ -3664,6 +3705,8 @@ function renderSpanOptions() {
 }
 
 function renderBuildSummary() {
+  const mfToggle = document.getElementById("mf-toggle");
+  if (mfToggle) mfToggle.checked = !!build.masterwork;
   const nameInput = document.getElementById("build-name-input");
   if (document.activeElement !== nameInput) nameInput.value = build.name;
   const total = buildTotal(null);
@@ -3720,7 +3763,7 @@ function renderCategories() {
         const tile = document.createElement("div");
         const offMode = build.mode && !itemAvailableIn(item, build.mode);
         // O modo (compacto x nomeado) é decidido depois, medindo a largura real.
-        tile.className = "item-tile compact" + (entry.note ? " has-note" : "") + (offMode ? " off-mode" : "");
+        tile.className = "item-tile compact" + (entry.note ? " has-note" : "") + (offMode ? " off-mode" : "") + (mfApplies(item) ? " mf" : "");
         if (offMode) tile.title = `${item.namePt} não existe em ${build.mode}`;
         tile.draggable = build.editing;
         tile.style.setProperty("--tier-color", TIER_CSS[item.tier] || "");
@@ -3736,6 +3779,7 @@ function renderCategories() {
             ${iconInner(item)}
             <span class="note-dot"></span>
           </div>
+          <span class="mf-badge">MF</span>
           <span class="tile-name">${esc(item.namePt)}</span>
           <span class="tier-strip"></span>`;
         body.appendChild(tile);
@@ -4107,6 +4151,10 @@ function showTooltip(tile) {
     <div class="tt-sub">${item.nameEn} · ${effectivePrice(item)}g</div>
     ${build.mode && !itemAvailableIn(item, build.mode)
       ? `<div class="tt-offmode">Não disponível em ${build.mode}</div>` : ""}
+    ${item.masterwork && item.masterwork.eligible === true && (item.masterwork.stats || []).length ? `
+      <div class="tt-mf${mfApplies(item) ? "" : " off"}"><span class="k">Mestre Forjador${mfApplies(item) ? "" : " (desligado)"}</span>
+        ${item.masterwork.stats.map(m => `<div>${esc(m.stat)}: ${fmtNum(m.base)} (+${fmtNum(m.bonus)}) = <b>${fmtNum(m.total)}</b></div>`).join("")}
+      </div>` : ""}
     ${entry.note ? `<div class="tt-note">${esc(entry.note)}</div>` : ""}
     <div class="tt-hint">${build.editing ? "Duplo clique: observação · Botão direito: remover · Arraste para outra categoria" : "Ligue \"Editar\" para mudar a build"}</div>`;
 
@@ -4363,6 +4411,14 @@ function initBuildBuilder() {
   };
   editToggle.addEventListener("change", () => applyEditing(editToggle.checked));
   applyEditing(false);
+
+  // Mestre Forjador: salvo na build; o seletor reflete a build ativa.
+  const mfToggle = document.getElementById("mf-toggle");
+  mfToggle.addEventListener("change", () => {
+    build.masterwork = mfToggle.checked;
+    saveBuild();
+    renderBuildAll();
+  });
 
   document.querySelectorAll(".span-opt").forEach(btn => {
     btn.addEventListener("click", () => setGeneralSpan(Number(btn.dataset.span)));
