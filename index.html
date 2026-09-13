@@ -2804,7 +2804,7 @@ header.top { transition: background .5s ease, border-color .5s ease; }
 /* ---- Fase 3, T2: bancadas (categorias), moldes (tiles), tooltip e picker de balcão ---- */
 /* Cores das caixas na forja: Comum = ferro claro, Prioridade = brasa, Opcional = aço frio */
 .build-cat.comum { --cat-color: #9a8875; }
-.build-cat.prioridade { --cat-color: var(--forja-brasa); }
+.build-cat.prioridade { --cat-color: #c9973f; } /* latão, não brasa: a brasa pura cansa os olhos (Leo, 13/09/2026) */
 .build-cat.opcional { --cat-color: #7f8a96; }
 .build-cat {
   background: linear-gradient(180deg, var(--forja-placa-1), var(--forja-placa-2));
@@ -2813,7 +2813,7 @@ header.top { transition: background .5s ease, border-color .5s ease; }
   border-radius: 3px;
   box-shadow: inset 0 1px 0 rgba(255,255,255,.05), inset 0 0 40px rgba(0,0,0,.45), 0 6px 14px rgba(0,0,0,.55);
 }
-.build-cat.selected { box-shadow: 0 0 0 2px var(--cat-color), 0 0 16px var(--forja-brasa-glow), inset 0 0 40px rgba(0,0,0,.45); }
+.build-cat.selected { box-shadow: 0 0 0 2px var(--cat-color), 0 0 14px rgba(201,151,63,.45), inset 0 0 40px rgba(0,0,0,.45); }
 .build-cat.resizing { box-shadow: 0 0 0 2px var(--forja-brasa); }
 .build-cat.drop-into { background: linear-gradient(180deg, #33281f, #1f1813); box-shadow: inset 0 0 0 1px var(--forja-brasa), 0 0 18px var(--forja-brasa-glow); }
 .cat-head {
@@ -2963,6 +2963,35 @@ body:not(.editando) .item-tile { cursor: default; }
 body:not(.editando) .item-tile.has-note .item-icon { box-shadow: 0 0 10px rgba(255,140,40,.45), inset 0 0 0 2px var(--forja-brasa-clara); }
 body:not(.editando) .build-empty p { display: none; }
 body:not(.editando) .build-empty::after { content: "Ligue \"Editar\" para criar categorias e montar a build."; display: block; font-family: var(--loja-texto); font-style: italic; font-size: 13px; color: var(--forja-texto-suave); }
+
+/* ---- Fase 3, T5: caixas customizáveis — o tipo é uma placa de metal ----
+   Comum = ferro, Prioridade = latão, Opcional = aço. Arrastar e redimensionar
+   só na edição (T3); a alça de redimensionar vira canto de brasa. */
+.cat-kind {
+  font-family: var(--loja-gravado);
+  font-size: 9px;
+  letter-spacing: .16em;
+  padding: 4px 10px;
+  border-radius: 2px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.25), 0 1px 3px rgba(0,0,0,.6);
+}
+.build-cat.comum .cat-kind { background: linear-gradient(180deg, #5a4d42, #3a312a); border-color: #6a5d52; color: #e2d6c2; }
+.build-cat.prioridade .cat-kind { background: linear-gradient(160deg, #e7c46f, #b8863b 55%, #8a5f22); border-color: #f0d68a; color: #2a1a0a; }
+.build-cat.opcional .cat-kind { background: linear-gradient(180deg, #8f9aa6, #5c6570); border-color: #aab4be; color: #0f1418; }
+body.editando .cat-kind { cursor: pointer; }
+body.editando .cat-kind:hover { filter: brightness(1.15); }
+.cat-resize {
+  background:
+    linear-gradient(135deg, transparent 52%, #6a3a18 52%, #6a3a18 61%, transparent 61%,
+    transparent 71%, #6a3a18 71%, #6a3a18 80%, transparent 80%);
+}
+.cat-resize:hover { background:
+  linear-gradient(135deg, transparent 52%, var(--forja-brasa) 52%, var(--forja-brasa) 61%, transparent 61%,
+  transparent 71%, var(--forja-brasa) 71%, var(--forja-brasa) 80%, transparent 80%); }
+.build-cat.resizing .cat-resize { background:
+  linear-gradient(135deg, transparent 52%, var(--forja-brasa-clara) 52%, var(--forja-brasa-clara) 61%, transparent 61%,
+  transparent 71%, var(--forja-brasa-clara) 71%, var(--forja-brasa-clara) 80%, transparent 80%); }
+.build-summary .sum-prio b { color: var(--loja-latao-claro); }
 
 /* ---- Fase 3, T4: drag-and-drop animado — "placa de pedra caindo" (Leo) ----
    Pegar: o molde levanta e o lugar fica vazio. Soltar: a placa cai pesada
@@ -3502,7 +3531,8 @@ function textToBuild(text) {
     const mCat = line.match(/^\[([^\]]+)\]\s*(.+)$/);
     if (mCat) {
       const kindRaw = norm(mCat[1]);
-      const kind = KINDS.find(k => norm(KIND_LABEL[k]) === kindRaw) || "comum";
+      const kind = KINDS.find(k => norm(KIND_LABEL[k]) === kindRaw)
+        || (/^obrigat/.test(kindRaw) ? "prioridade" : "comum");
       let rest = mCat[2].trim();
       let span = 2;
       const mSpan = rest.match(/\|\s*([^|]+)$/);

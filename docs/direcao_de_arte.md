@@ -41,6 +41,7 @@ Forja (Build):
 | Placa de atributos | `#2a2420` → `#1a1512`, borda `#443a32`, números `#ffb257` |
 | Interruptor ligado | trilho `#5a2a10`, botão radial `#ffd08a` → `#ff7a1e` |
 | Título da forja | `#e9b36a`, Cinzel maiúsculo espaçado |
+| Caixas da build (Fase 3, T5) | Comum ferro claro `#9a8875`; Prioridade latão `#c9973f` (não brasa: cansa os olhos em área grande, decisão do Leo); Opcional aço `#7f8a96`. Brasa `#ff7a1e` só em ações e realces pequenos. |
 
 ## Tipografia
 - **Títulos** (nome do app, "Catálogo", nome do item no card, botão de entrada): `'IM Fell English SC', 'IM Fell English', Georgia, serif`, peso 400. Tamanhos: app 40px, seção 30px, card 18px.
