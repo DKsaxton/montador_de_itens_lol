@@ -71,6 +71,6 @@ As três texturas são papel amassado quase branco; nunca usadas cruas. Aplicaç
 **Interruptores (Mestre Forjador, Reembolso)**: trilho 34×18px; desligado ferro, ligado brasa com glow.
 
 ## Animações (a definir nas Fases 2–3, dentro desta paleta)
-- Catálogo: uma animação de clique por tier (Fase 2, tarefa 9). Sugestão de família: cera derretendo (Lendário), carimbo batendo (Básico/Starter), tinta espirrando (Épico), página virando (Consumível), sino de balcão (Trinket), moeda (Distribuído), bota batendo (Bota), brasa acendendo (Evolução).
+- Catálogo (implementado na Fase 2, T9): uma animação de clique por tier, 350–750 ms, só CSS sobre o DOM — cera derretendo no selo (Lendário e Lendário (Evolução)), carimbo batendo (Starter, Básico), tinta espirrando do ponto do clique (Épico e Épico (Evolução)), página virando (Consumível), sino de balcão (Trinket), moeda girando no ícone (Distribuído), bota batendo (Bota), brasa acendendo no ícone e na faixa (Evolução). Respeita prefers-reduced-motion.
 - Forja: pegar = molde acende; arrastar = faíscas seguem; soltar = martelada (som na Fase 4); remover = brasa apaga.
 - Transição loja → forja: o papel escurece e o ferro sobe de baixo (sair da loja, entrar na forja).
