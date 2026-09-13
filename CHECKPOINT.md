@@ -1,5 +1,5 @@
 # Checkpoint — Montador de Itens de LoL (Capítulo 2 · Forjador)
-Última atualização: 13/09/2026 — FASE 5 CONCLUÍDA; próxima: Fase 6, tarefa 1
+Última atualização: 13/09/2026 — Fase 6: T3 (QA no Pages) feita e T4 (docs/atalhos.md) escrita; T1 e T2 dependem do Leo
 
 ## 1. Objetivo geral
 Evoluir o Montador de Itens (index.html) para a versão com identidade visual de loja medieval (Catálogo) e forja (Build), dados do Capítulo 1 (225 itens, patch 16.18.1) via data/catalog.js, sistema de áudio com lojista, e publicação no GitHub Pages — em fases aprovadas por captura de tela.
@@ -11,6 +11,9 @@ Evoluir o Montador de Itens (index.html) para a versão com identidade visual de
 - T1 — Briefing lido (docs/direcao_de_arte.md, docs/PROMPT_Claude_Design_Fase1.md); Leo aprovou seguir sem handoff do Claude Design (13/09/2026). Texturas conferidas: as três são papel amassado quase branco, precisam de tingimento por blend.
 - Fase 1, T2 — amostra em docs/amostras/fase1-amostra.html (captura `docs/screenshots/fase1-tarefa2-amostra.png`), duas direções lado a lado, lendo Quebrapassos, Bastão das Eras, Sinal de Sterak e Cristal de Rubi do catalog.js e as três texturas reais (tingidas por multiply sobre a cor do papel: 01 = card, 02 = busca/barra de filtros, 03 = placa de entrada). A = Taverna e pergaminho (papel #e5d3ad, tinta #2c1d12, madeira #3b2617, latão #b6873a, cera #8d2c22; títulos IM Fell English SC, texto Alegreya; selo de cera para tier, faixa lateral na cor da classe, chips como etiquetas de tinta/cera). B = Guilda e latão (papel #d9c59c, madeira #1d1713, latão #c9973f, bronze #7a5a1e; títulos Cinzel, texto Crimson Pro; etiqueta de latão para tier, borda superior na cor da classe, chips como placas de latão). Classe nas duas: AD laranja, AP roxo, Vitalidade verde. Forja igual nas duas (ferro #15110f, brasa #ff7a1e, moldes com rebites, faíscas, interruptores de brasa). Leo escolheu a Opção A em 13/09/2026. Commit "F1-T2".
 - T3 — docs/direcao_de_arte.md escrito com a Opção A (paleta com códigos, classe, forja, tipografia, uso de cada textura, anatomia dos componentes, família de animações). FASE 1 CONCLUÍDA em 13/09/2026.
+### Fase 6 — Publicação e QA
+- T3 — QA no Pages (13/09/2026): 0 caminhos absolutos "/assets" ou "/data" no index.html; referências locais (3 texturas, data/catalog.js) existem no disco com caixa exata; no Pages, .nojekyll, catalog.js (application/javascript) e as 3 texturas (image/png) respondem 200; 82 áudios com 200 (Fase 4); DOM do site publicado com 225 cards, módulo Som e forja via #build. Commit "F6-T3".
+- T4 (parcial) — docs/atalhos.md escrito com os links diretos e os atalhos de captura, mais os ajustes de console do lojista.
 
 ### Fase 5 — Calculadora e biblioteca
 - Fase 5, T1 — Calculadora como pergaminho de contas (captura `docs/screenshots/fase5-tarefa1-calculadora.png`) — aprovado pelo Leo em 13/09/2026, commit "F5-T1". Bloco CSS "CALCULADORA": a vista inteira vira um pergaminho (papel com textura sorteada, borda e sombra da loja), título em IM Fell, rótulos em Cinzel, campos em papel com foco em cera, botão "Puxar da build ativa" em cera, cards de Dano físico (laranja do AD) e Dano mágico (roxo do AP) com barras, valores em IM Fell, "você toma" em cera e "absorvido" em verde, veredito em placa com faixa colorida; entra descendo como a loja. Fórmulas intocadas. "Puxar da build ativa" passa a somar os atributos efetivos (`effectiveAttributes`: Mestre Forjador/Ápice), só valores fixos; preços de referência seguem lidos do catálogo (Cristal de Rubi, Pano, Cota, Nulificador, Negatron) e agora em pt-BR (2,67g). Atalho `#calc`. Testado no navegador embutido: Armadura de Espinhos + Cristal de Rubi → 300 de Vida / 75 de Armadura; com Mestre Forjador → 485 / 100 (masterwork.stats do catálogo); console limpo.
@@ -67,7 +70,8 @@ Evoluir o Montador de Itens (index.html) para a versão com identidade visual de
 - T4 — Pages testado (`docs/screenshots/fase0-tarefa4-pages.png`): deploy no ar 30 s após o push; index.html, data/catalog.js, textura, áudio e .nojekyll respondem 200 em https://dksaxton.github.io/montador_de_itens_lol/; DOM do site publicado com 225 cards e contador 225 (Chrome headless — o navegador embutido não tem permissão para o domínio github.io). Do disco (file://) também 225. FASE 0 CONCLUÍDA em 13/09/2026.
 
 ## 3. Em andamento
-Nada. Próxima: Fase 6, tarefa 1.
+- Fase 6, T1 — aguardando a decisão do Leo sobre `ui_catalog_tag_select` no pergaminho.
+- Fase 6, T2 — aguardando o Leo abrir o index.html do disco no Chrome real e relatar (entrada, som, console).
 
 ## 4. Próximos passos
 Fase 6 — Publicação e QA final (https://dksaxton.github.io/montador_de_itens_lol/):
