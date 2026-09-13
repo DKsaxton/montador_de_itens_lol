@@ -2600,6 +2600,53 @@ body:not(.cat-selected) #grid .card { cursor: zoom-in; }
 .modal.anim-brasa .modal-icon { animation: anim-brasa .75s ease-out .25s; }
 .modal.anim-brasa { box-shadow: 0 18px 40px rgba(0,0,0,.75), inset 0 0 0 1px rgba(255,255,255,.3); animation-name: modal-unroll; }
 
+/* ---- T10: tela de entrada "Entrar na loja" (placa com correntes, Opção A) ---- */
+.entrada {
+  position: fixed; inset: 0; z-index: 200;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--loja-madeira-escura);
+  background-image: repeating-linear-gradient(180deg, transparent 0 5px, rgba(36,24,16,.9) 5px 6px),
+    radial-gradient(ellipse 900px 600px at 50% 40%, rgba(120,80,40,.25), transparent);
+  transition: opacity .55s ease .25s;
+}
+.entrada.saindo { opacity: 0; pointer-events: none; }
+.entrada.fechada { display: none; }
+.entrada-placa-wrap { width: min(640px, 92vw); transform-origin: top center; transition: transform .7s cubic-bezier(.4,0,.6,1), opacity .5s ease; }
+.entrada.saindo .entrada-placa-wrap { transform: translateY(-70px) rotate(-2.5deg); opacity: 0; }
+.correntes { display: flex; justify-content: space-between; padding: 0 70px; height: 34px; }
+.correntes i { display: block; width: 7px; height: 34px; background: repeating-linear-gradient(180deg, #7a6a4a 0 4px, #3a2e1c 4px 8px); box-shadow: 1px 0 0 rgba(0,0,0,.5); }
+.entrada-placa {
+  position: relative; isolation: isolate;
+  background: var(--loja-papel);
+  background-image: var(--tex-pick);
+  background-size: 420px;
+  background-blend-mode: multiply;
+  color: var(--loja-tinta);
+  text-align: center;
+  padding: 34px 28px 26px;
+  border: 3px double var(--loja-tinta-suave);
+  box-shadow: 0 14px 30px rgba(0,0,0,.75), inset 0 0 0 1px rgba(255,255,255,.35);
+  animation: placa-balanco 3.2s ease-in-out 1;
+  transform-origin: top center;
+}
+@keyframes placa-balanco { 0% { transform: rotate(-1.2deg); } 50% { transform: rotate(1deg); } 100% { transform: rotate(0); } }
+.entrada-titulo { font-family: var(--loja-titulos); font-weight: 400; font-size: 44px; line-height: 1; letter-spacing: .04em; margin: 0 0 8px; color: var(--loja-tinta); text-shadow: none; }
+.entrada-frase { font-family: var(--loja-texto); font-style: italic; font-size: 16px; color: var(--loja-tinta-suave); margin: 0 0 20px; }
+.btn-entrar {
+  display: inline-block; cursor: pointer;
+  padding: 12px 30px;
+  font-family: var(--loja-titulos); font-size: 19px; letter-spacing: .08em;
+  color: var(--loja-cera-texto); background: var(--loja-cera);
+  border: 1px solid var(--loja-cera-borda); border-radius: 2px;
+  box-shadow: 0 3px 0 var(--loja-cera-sombra), 0 6px 12px rgba(0,0,0,.5);
+  transition: transform .1s ease, box-shadow .1s ease;
+}
+.btn-entrar:hover { filter: brightness(1.08); }
+.btn-entrar:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--loja-cera-sombra), 0 3px 6px rgba(0,0,0,.5); }
+.entrada-nota { margin: 18px 0 0; font-family: var(--loja-texto); font-style: italic; font-size: 12px; color: var(--loja-tinta-suave); }
+body.na-loja .entrada { display: none; }
+@media (prefers-reduced-motion: reduce) { .entrada-placa { animation: none; } .entrada, .entrada-placa-wrap { transition: none; } }
+
 /* Congelar no meio (só para captura: #animacoes) */
 .anim-frozen, .anim-frozen * , .anim-frozen::after { animation-play-state: paused !important; animation-delay: -.22s !important; }
 
@@ -2609,6 +2656,19 @@ body:not(.cat-selected) #grid .card { cursor: zoom-in; }
 </style>
 </head>
 <body>
+
+<!-- ============ TELA DE ENTRADA ============ -->
+<div id="entrada" class="entrada" role="dialog" aria-label="Entrada da loja">
+  <div class="entrada-placa-wrap">
+    <div class="correntes"><i></i><i></i></div>
+    <div class="entrada-placa">
+      <h1 class="entrada-titulo">Montador de Itens</h1>
+      <p class="entrada-frase">A loja está aberta. O lojista o aguarda.</p>
+      <button id="entrar" class="btn-entrar" type="button">Entrar na loja</button>
+      <p class="entrada-nota">League of Legends · Catálogo do Capítulo 1 · patch <span data-patch></span></p>
+    </div>
+  </div>
+</div>
 
 <header class="top">
   <div class="top-inner">
@@ -5333,6 +5393,23 @@ function init() {
   applyView(["icons", "names"].includes(savedView) ? savedView : "cards");
   if (typeof initBuildBuilder === "function") initBuildBuilder();
   if (typeof initCalc === "function") initCalc();
+
+  // Tela de entrada: cobre a loja até o clique em "Entrar na loja" (o áudio
+  // nasce nesse clique, na Fase 4). Links diretos (#item, #ficha, #apice,
+  // #animacoes) já entram na loja.
+  document.querySelectorAll("[data-patch]").forEach(el => el.textContent = CATALOG.meta.patch || "");
+  setPaper(document.querySelector(".entrada-placa"), randomPaper());
+  const entrada = document.getElementById("entrada");
+  function entrarNaLoja(imediato) {
+    if (!entrada || entrada.classList.contains("saindo") || entrada.classList.contains("fechada")) return;
+    // Fase 4: Som.play("catalog:open") entra aqui.
+    if (imediato) { entrada.classList.add("fechada"); return; }
+    entrada.classList.add("saindo");
+    setTimeout(() => entrada.classList.add("fechada"), 900);
+  }
+  document.getElementById("entrar").addEventListener("click", () => entrarNaLoja(false));
+  if (/^#(item=|ficha=|apice$|animacoes$)/.test(location.hash)) entrarNaLoja(true);
+  else document.getElementById("entrar").focus();
 
   // Atalho: #item=<slug> abre o item direto (para compartilhar e para capturas).
   const m = location.hash.match(/^#item=([a-z0-9-]+)$/);
