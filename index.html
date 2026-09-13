@@ -3089,6 +3089,36 @@ body.editando .cat-kind:hover { filter: brightness(1.15); }
   .item-tile.tile-drop, .item-tile.tile-drop .item-icon, .build-cat.cat-impact, .item-tile.tile-remove { animation: none; }
   .item-tile.tile-remove { opacity: 0; }
 }
+
+/* ---- Fase 3, T9: totais de atributos e eficiência por bancada ---- */
+.cat-stats { display: none; margin: 0 10px 8px; padding: 8px 10px 6px; border-top: 1px dashed var(--forja-tracejado); }
+.cat-stats.show { display: block; }
+.cat-stats .cs-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; margin-bottom: 5px; }
+.cat-stats .cs-title { font-family: var(--loja-gravado); font-size: 8.5px; letter-spacing: .18em; text-transform: uppercase; color: var(--forja-texto-suave); }
+.cat-stats .cs-eff { font-family: var(--loja-texto); font-size: 12px; color: var(--forja-texto-suave); font-style: italic; }
+.cat-stats .cs-eff b { color: var(--forja-brasa-clara); font-style: normal; }
+.cat-stats .cs-eff .sem { color: #7a6a5a; }
+.cs-list { display: flex; flex-wrap: wrap; gap: 4px 10px; }
+.cs-list span { font-family: var(--loja-texto); font-size: 12px; color: var(--forja-texto); white-space: nowrap; }
+.cs-list span b { color: var(--forja-numero); font-weight: 700; }
+.cs-list span.mf b { color: #e7c46f; }
+.cs-list span.apex b { color: var(--forja-brasa-clara); }
+.build-cat .cat-body { padding-bottom: 12px; }
+.build-cat .cat-total { bottom: 9px; }
+.build-cat:has(.cat-stats.show) .cat-total { position: static; margin: 0 10px 10px auto; display: inline-block; align-self: flex-end; }
+
+.build-totals { display: none; margin-bottom: 16px; padding: 12px 18px 12px 30px; position: relative;
+  background: linear-gradient(180deg, var(--forja-placa-1), var(--forja-placa-2)); border: 1px solid var(--forja-placa-borda); border-radius: 3px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.05), inset 0 0 40px rgba(0,0,0,.45), 0 6px 14px rgba(0,0,0,.55); }
+.build-totals.show { display: block; }
+.build-totals::before, .build-totals::after { content: ""; position: absolute; width: 6px; height: 6px; border-radius: 50%; background: var(--forja-rebite); box-shadow: 0 1px 1px #000, inset 0 1px 0 rgba(255,255,255,.25); }
+.build-totals::before { left: 6px; top: 6px; } .build-totals::after { right: 6px; bottom: 6px; }
+.build-totals .bt-head { display: flex; justify-content: space-between; align-items: baseline; gap: 14px; flex-wrap: wrap; margin-bottom: 6px; }
+.build-totals .bt-title { font-family: var(--loja-gravado); font-size: 10px; letter-spacing: .2em; text-transform: uppercase; color: var(--forja-titulo); }
+.build-totals .bt-eff { font-family: var(--loja-texto); font-style: italic; font-size: 12.5px; color: var(--forja-texto-suave); }
+.build-totals .bt-eff b { color: var(--forja-brasa-clara); font-style: normal; }
+.build-totals .bt-note { font-family: var(--loja-texto); font-style: italic; font-size: 11px; color: #7a6a5a; margin-top: 5px; }
+.build-totals .cs-list span { font-size: 13px; }
 </style>
 </head>
 <body>
@@ -3210,6 +3240,7 @@ body.editando .cat-kind:hover { filter: brightness(1.15); }
   </div>
 
   <div id="mode-warning" class="mode-warning"></div>
+  <div id="build-totals" class="build-totals"></div>
 
   <div class="library-bar">
     <span class="library-label">Modo</span>
@@ -3703,12 +3734,90 @@ function mfAttributes(item) {
 }
 function fmtNum(n) { return Number(n).toLocaleString("pt-BR", { maximumFractionDigits: 2 }); }
 
+// ---------------- Totais de atributos e eficiência (Fase 3, T9) ----------------
+// Atributos "como ficam": base → Mestre Forjador (total do catálogo) → Ápice
+// (valor extraído do texto; tem prioridade quando os dois mexem no mesmo
+// atributo). Soma-se por atributo, separando fixos de percentuais.
+function effectiveAttributes(item) {
+  let list = mfAttributes(item).map(a => ({ ...a, src: a.mfBase !== undefined ? "mf" : "" }));
+  if (state.applyApex && hasApex(item)) {
+    const ap = apexAttributes(item);
+    if (ap) {
+      list = ap.map(a => {
+        const m = list.find(x => x.stat === a.stat && x.unit === a.unit);
+        if (a.changed) return { ...a, src: "apex" };
+        return m || a;
+      });
+    }
+  }
+  return list;
+}
+
+function sumAttributes(entries) {
+  const totals = new Map();   // chave stat|unit → {stat, unit, value, srcs}
+  entries.forEach(e => {
+    const it = byId[e.itemId];
+    if (!it) return;
+    effectiveAttributes(it).forEach(a => {
+      if (typeof a.value !== "number") return;
+      const k = a.stat + "|" + a.unit;
+      const t = totals.get(k) || { stat: a.stat, unit: a.unit, value: 0, srcs: new Set() };
+      t.value += a.value;
+      if (a.src) t.srcs.add(a.src);
+      totals.set(k, t);
+    });
+  });
+  return [...totals.values()].sort((a, b) => b.value * (a.unit === "percent" ? 1 : 1) - a.value || a.stat.localeCompare(b.stat, "pt-BR"));
+}
+
+// Eficiência de ouro de um conjunto: soma de costAnalysis.goldValueTotal ÷ soma
+// dos preços efetivos (Reembolso). Itens sem goldValueTotal ficam de fora e são
+// contados em `sem`. (MF/Ápice não mudam o valor em ouro — sem dado no catálogo.)
+function goldEfficiency(entries) {
+  let gold = 0, price = 0, n = 0, sem = 0;
+  entries.forEach(e => {
+    const it = byId[e.itemId];
+    if (!it) return;
+    const gv = it.costAnalysis && typeof it.costAnalysis.goldValueTotal === "number" ? it.costAnalysis.goldValueTotal : null;
+    const p = effectivePrice(it);
+    if (gv === null || !p) { sem++; return; }
+    gold += gv; price += p; n++;
+  });
+  return { pct: n && price ? gold / price * 100 : null, n, sem, gold, price };
+}
+
+function statsListHtml(totals) {
+  return `<div class="cs-list">${totals.map(t =>
+    `<span class="${t.srcs.has("apex") ? "apex" : t.srcs.has("mf") ? "mf" : ""}"><b>+${fmtNum(t.value)}${t.unit === "percent" ? "%" : ""}</b> ${esc(shortStat(t.stat))}</span>`).join("")}</div>`;
+}
+function effHtml(eff, cls) {
+  if (eff.pct === null) return `<span class="${cls}"><span class="sem">sem análise de custo</span></span>`;
+  return `<span class="${cls}">Eficiência <b>${fmtEff(eff.pct)}</b>${eff.sem ? ` <span class="sem">(${eff.sem} sem análise)</span>` : ""}</span>`;
+}
+
+function renderBuildTotals() {
+  const box = document.getElementById("build-totals");
+  if (!box) return;
+  const all = [];
+  build.cats.forEach(c => c.items.forEach(e => all.push(e)));
+  if (!all.length) { box.className = "build-totals"; box.innerHTML = ""; return; }
+  const totals = sumAttributes(all);
+  const eff = goldEfficiency(all);
+  const flags = [state.applyCashback ? "Reembolso" : "", build.masterwork ? "Mestre Forjador" : "", state.applyApex ? "Ápice" : ""].filter(Boolean);
+  box.className = "build-totals show";
+  box.innerHTML = `
+    <div class="bt-head"><span class="bt-title">Atributos da build · ${all.length} ${all.length === 1 ? "item" : "itens"}</span>${effHtml(eff, "bt-eff")}</div>
+    ${totals.length ? statsListHtml(totals) : `<div class="bt-note">Nenhum atributo numérico nos itens desta build.</div>`}
+    ${flags.length ? `<div class="bt-note">Com ${flags.join(" + ")}. Valores percentuais somados à parte; o valor em ouro da eficiência é o do catálogo (sem Mestre Forjador/Ápice).</div>` : ""}`;
+}
+
 // ---------------- render ----------------
 
 // Adicionar item NÃO re-renderiza o seletor: se re-renderizasse, a lista
 // voltaria ao topo a cada clique, obrigando a rolar de novo.
 function renderBuild() {
   renderCategories();
+  renderBuildTotals();
   renderBuildSummary();
   renderSpanOptions();
   renderLibrary();
@@ -3778,6 +3887,7 @@ function renderCategories() {
       </header>
       <input class="cat-desc" value="${esc(cat.desc || "")}" placeholder="Descrição — quando comprar, contra quem..." spellcheck="false">
       <div class="cat-body"></div>
+      <div class="cat-stats"></div>
       <div class="cat-total" title="${cat.items.length} ${cat.items.length === 1 ? "item" : "itens"} nesta categoria">${fmtG(catTotal(cat))}</div>
       <div class="cat-resize" title="Arraste para redimensionar (encaixa em ¼ · ⅓ · ½ · 1/1)"></div>`;
 
@@ -3813,6 +3923,14 @@ function renderCategories() {
           <span class="tier-strip"></span>`;
         body.appendChild(tile);
       });
+    }
+    // Placa de atributos e eficiência da bancada
+    const statsEl = el.querySelector(".cat-stats");
+    if (cat.items.length) {
+      const totals = sumAttributes(cat.items);
+      const eff = goldEfficiency(cat.items);
+      statsEl.className = "cat-stats show";
+      statsEl.innerHTML = `<div class="cs-head"><span class="cs-title">Atributos da caixa</span>${effHtml(eff, "cs-eff")}</div>${totals.length ? statsListHtml(totals) : ""}`;
     }
     canvas.appendChild(el);
   });
