@@ -2963,6 +2963,40 @@ body:not(.editando) .item-tile { cursor: default; }
 body:not(.editando) .item-tile.has-note .item-icon { box-shadow: 0 0 10px rgba(255,140,40,.45), inset 0 0 0 2px var(--forja-brasa-clara); }
 body:not(.editando) .build-empty p { display: none; }
 body:not(.editando) .build-empty::after { content: "Ligue \"Editar\" para criar categorias e montar a build."; display: block; font-family: var(--loja-texto); font-style: italic; font-size: 13px; color: var(--forja-texto-suave); }
+
+/* ---- Fase 3, T4: drag-and-drop animado — "placa de pedra caindo" (Leo) ----
+   Pegar: o molde levanta e o lugar fica vazio. Soltar: a placa cai pesada
+   de cima, bate na bancada (que treme) e solta uma baforada de brasa.
+   Remover: a brasa apaga e a placa afunda. Só CSS sobre o DOM. */
+.item-tile.dragging {
+  opacity: .35;
+  transform: scale(.9);
+  filter: grayscale(.6) brightness(.7);
+  box-shadow: inset 0 3px 8px rgba(0,0,0,.9), 0 0 0 2px #3a2f28;
+}
+.item-tile.tile-drop { animation: pedra-cai .6s cubic-bezier(.25,.8,.35,1.15); }
+@keyframes pedra-cai {
+  0%   { transform: translateY(-46px) scale(1.35); opacity: 0; box-shadow: 0 30px 30px rgba(0,0,0,.7); }
+  45%  { transform: translateY(0) scale(1.02); opacity: 1; box-shadow: inset 0 3px 8px rgba(0,0,0,.9), 0 0 0 2px #6a3a18, 0 0 0 0 rgba(255,170,80,.6); }
+  55%  { transform: translateY(2px) scale(.94, .9); }
+  70%  { transform: translateY(-4px) scale(1); box-shadow: inset 0 3px 8px rgba(0,0,0,.9), 0 0 0 2px var(--forja-brasa), 0 0 0 14px rgba(255,170,80,0), 0 0 30px rgba(255,120,30,.9); }
+  100% { transform: none; }
+}
+.item-tile.tile-drop .item-icon { animation: brasa-baforada .6s ease-out; }
+@keyframes brasa-baforada { 45% { box-shadow: 0 0 10px rgba(255,140,40,.45); } 60% { box-shadow: 0 0 26px 6px rgba(255,140,40,.95); filter: brightness(1.5); } 100% { box-shadow: 0 0 10px rgba(255,140,40,.45); } }
+.build-cat.cat-impact { animation: bancada-treme .45s ease-out .22s; }
+@keyframes bancada-treme { 0% { transform: none; } 20% { transform: translateY(3px); } 45% { transform: translateY(-2px) rotate(.2deg); } 70% { transform: translateY(1px); } 100% { transform: none; } }
+.item-tile.tile-remove { animation: pedra-some .38s ease-in forwards; pointer-events: none; }
+@keyframes pedra-some {
+  0%   { transform: none; opacity: 1; filter: none; }
+  40%  { filter: brightness(.5); box-shadow: inset 0 3px 8px rgba(0,0,0,.9), 0 0 0 2px #3a2f28; }
+  100% { transform: translateY(14px) scale(.6); opacity: 0; filter: brightness(.2); }
+}
+.build-cat.drop-into .cat-body { background: radial-gradient(ellipse at 50% 100%, rgba(255,120,30,.14), transparent 70%); }
+@media (prefers-reduced-motion: reduce) {
+  .item-tile.tile-drop, .item-tile.tile-drop .item-icon, .build-cat.cat-impact, .item-tile.tile-remove { animation: none; }
+  .item-tile.tile-remove { opacity: 0; }
+}
 </style>
 </head>
 <body>
@@ -3357,10 +3391,15 @@ function setGeneralSpan(span) {
 
 // ---------------- itens ----------------
 
+// Último item que caiu numa bancada: a renderização seguinte anima só ele.
+let lastDrop = null;
+
 function addItemToCategory(itemId, catId) {
   const cat = getCat(catId || build.selectedCatId);
   if (!cat) return false;
   cat.items.push({ itemId, note: "" });
+  lastDrop = { catId: cat.id, index: cat.items.length - 1 };
+  // Fase 4: Som.play("build:item_add" / "build:add_legendary:<núcleo>", item) entra aqui.
   renderBuild();
   saveBuild();
   return true;
@@ -3369,9 +3408,15 @@ function addItemToCategory(itemId, catId) {
 function removeItemFromCategory(catId, index) {
   const cat = getCat(catId);
   if (!cat) return;
-  cat.items.splice(index, 1);
-  renderBuild();
-  saveBuild();
+  const finish = () => { cat.items.splice(index, 1); renderBuild(); saveBuild(); };
+  // A placa afunda e a brasa apaga antes de sair do DOM.
+  const tile = document.querySelector(`.item-tile[data-cat-id="${catId}"][data-index="${index}"]`);
+  if (tile && !tile.classList.contains("tile-remove")) {
+    tile.classList.add("tile-remove");
+    setTimeout(finish, 380);
+  } else {
+    finish();
+  }
 }
 
 function moveItem(fromCatId, fromIndex, toCatId) {
@@ -3380,6 +3425,7 @@ function moveItem(fromCatId, fromIndex, toCatId) {
   const [entry] = from.items.splice(fromIndex, 1);
   if (!entry) return;
   to.items.push(entry);
+  lastDrop = { catId: to.id, index: to.items.length - 1 };
   renderBuild();
   saveBuild();
 }
@@ -3612,6 +3658,11 @@ function renderCategories() {
         tile.style.setProperty("--tier-color", TIER_CSS[item.tier] || "");
         tile.dataset.catId = cat.id;
         tile.dataset.index = String(index);
+        if (lastDrop && lastDrop.catId === cat.id && lastDrop.index === index) {
+          tile.classList.add("tile-drop");
+          el.classList.add("cat-impact");
+          setTimeout(() => { tile.classList.remove("tile-drop"); el.classList.remove("cat-impact"); }, 800);
+        }
         tile.innerHTML = `
           <div class="item-icon">
             ${iconInner(item)}
@@ -3624,6 +3675,7 @@ function renderCategories() {
     }
     canvas.appendChild(el);
   });
+  lastDrop = null;
 
   applyTileMode();
 }
@@ -5749,9 +5801,15 @@ function init() {
     setTimeout(() => entrada.classList.add("fechada"), 900);
   }
   document.getElementById("entrar").addEventListener("click", () => entrarNaLoja(false));
-  if (/^#(item=|ficha=|apice$|animacoes$|build$)/.test(location.hash)) entrarNaLoja(true);
-  // #build abre direto na forja (link direto e captura).
-  if (location.hash === "#build") switchTab("build");
+  if (/^#(item=|ficha=|apice$|animacoes$|build$|build-animacoes$)/.test(location.hash)) entrarNaLoja(true);
+  // #build abre direto na forja (link direto e captura); #build-animacoes congela
+  // a queda e a remoção de um molde (só captura).
+  if (location.hash === "#build" || location.hash === "#build-animacoes") switchTab("build");
+  if (location.hash === "#build-animacoes") {
+    const tiles = document.querySelectorAll("#build-canvas .item-tile");
+    if (tiles[0]) { tiles[0].classList.add("tile-drop", "anim-frozen"); tiles[0].closest(".build-cat").classList.add("cat-impact", "anim-frozen"); }
+    if (tiles[1]) tiles[1].classList.add("tile-remove", "anim-frozen");
+  }
   else document.getElementById("entrar").focus();
 
   // Atalho: #item=<slug> abre o item direto (para compartilhar e para capturas).
