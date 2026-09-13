@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fase 1 — amostra de direção de arte</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=Alegreya:ital,wght@0,400;0,500;0,700;1,400&family=Cinzel:wght@500;600;700&family=Crimson+Pro:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+/* =====================================================================
+   AMOSTRA — duas direções lado a lado. Nada aqui é o app: é a prova de
+   paleta, tipografia, texturas e anatomia dos componentes.
+   Dados dos itens: window.CATALOG (../../data/catalog.js). Nenhum número
+   digitado à mão.
+   ===================================================================== */
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; background: #0c0a08; color: #e6dcc3; font-size: 15px; line-height: 1.45; }
+body { font-family: 'Alegreya', Georgia, serif; }
+.page { display: grid; grid-template-columns: 1fr 1fr; gap: 0; min-height: 100vh; }
+.col { padding: 26px 28px 40px; position: relative; }
+.col-label { position: sticky; top: 0; z-index: 5; margin: -26px -28px 18px; padding: 10px 28px; font: 600 13px/1 'Cinzel', serif; letter-spacing: .22em; text-transform: uppercase; color: #0c0a08; }
+.opt-a .col-label { background: #c9a35b; }
+.opt-b .col-label { background: #8c6a2a; color: #f4e9cf; }
+.section-title { font-size: 11px; letter-spacing: .28em; text-transform: uppercase; opacity: .55; margin: 24px 0 10px; font-family: 'Cinzel', serif; }
+.opt-a .section-title { color: #d9c08a; opacity: .8; }
+.opt-a .state { color: #d9c08a; }
+
+/* ---------- materiais comuns ---------- */
+.paper { position: relative; isolation: isolate; }
+.paper::before { content: ""; position: absolute; inset: 0; z-index: -1; background-image: var(--tex); background-size: 420px; mix-blend-mode: multiply; opacity: var(--tex-op, .9); pointer-events: none; }
+.wood { background: repeating-linear-gradient(90deg, rgba(0,0,0,.08) 0 2px, transparent 2px 9px), linear-gradient(180deg, #3b2617, #2a1a0f 55%, #21130a); box-shadow: inset 0 0 40px rgba(0,0,0,.5); }
+.brass { background: linear-gradient(160deg, #e7c46f 0%, #b8863b 38%, #8a5f22 62%, #d9b25c 100%); color: #2a1a0a; }
+
+/* ===================== OPÇÃO A — Taverna e pergaminho ===================== */
+.opt-a {
+  --ink: #2c1d12; --ink-soft: #5a4630; --paper: #e5d3ad; --paper-dark: #cdb689; --wax: #8d2c22; --brass: #b6873a;
+  --ad: #c8641e; --ap: #7b4fb5; --vit: #4d8b3a;
+  --title: 'IM Fell English SC', 'IM Fell English', Georgia, serif; --body: 'Alegreya', Georgia, serif;
+  background: #1c120b url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='6' height='6'%3E%3Crect width='6' height='6' fill='%231c120b'/%3E%3Cpath d='M0 3h6' stroke='%23241810' stroke-width='1'/%3E%3C/svg%3E");
+  color: var(--ink); font-family: var(--body);
+}
+.opt-a .board { padding: 16px 18px; border-radius: 4px; }
+.opt-a .board { background: repeating-linear-gradient(90deg, rgba(0,0,0,.09) 0 2px, transparent 2px 11px), linear-gradient(180deg, #4a2f1b, #34200f 60%, #2a1809); box-shadow: inset 0 0 50px rgba(0,0,0,.55), 0 6px 14px rgba(0,0,0,.6); border: 2px solid #1a0e06; }
+
+/* placa de entrada */
+.opt-a .sign { --tex: url("../../assets/textures/shopitem_papertexture03_psd.png"); background: var(--paper); color: var(--ink); text-align: center; padding: 26px 20px 22px; border: 3px double var(--ink-soft); box-shadow: 0 10px 22px rgba(0,0,0,.7); }
+.opt-a .sign h1 { font: 400 40px/1 var(--title); margin: 0 0 6px; letter-spacing: .04em; }
+.opt-a .sign p { margin: 0 0 16px; font-style: italic; color: var(--ink-soft); }
+.opt-a .btn-enter { display: inline-block; padding: 10px 26px; font: 400 18px/1 var(--title); color: #f4e6c4; background: var(--wax); border: 1px solid #5c150d; border-radius: 2px; box-shadow: 0 3px 0 #4a1109, 0 6px 12px rgba(0,0,0,.5); letter-spacing: .08em; }
+.chains { display: flex; justify-content: space-between; padding: 0 60px; height: 26px; }
+.chains i { display: block; width: 6px; height: 26px; background: repeating-linear-gradient(180deg, #7a6a4a 0 4px, #3a2e1c 4px 8px); }
+
+/* cabeçalho + busca */
+.opt-a .head { display: flex; align-items: center; gap: 18px; }
+.opt-a .head h2 { font: 400 30px/1 var(--title); margin: 0; color: #e8d3a2; text-shadow: 0 2px 0 #1a0d05; }
+.opt-a .head small { display: block; font: italic 13px var(--body); color: #b89a66; margin-top: 3px; }
+.opt-a .search { --tex: url("../../assets/textures/shopitem_papertexture02_psd.png"); flex: 1; background: var(--paper); border: 1px solid var(--ink-soft); padding: 9px 14px; color: var(--ink-soft); font-style: italic; box-shadow: inset 0 2px 6px rgba(0,0,0,.25); }
+
+/* chips = etiquetas de tinta */
+.chips { display: flex; gap: 8px; flex-wrap: wrap; }
+.opt-a .chip { padding: 5px 12px; border: 1.5px solid var(--ink); color: var(--ink); background: transparent; font: 500 13px var(--body); border-radius: 999px; }
+.opt-a .chip.active { background: var(--wax); border-color: #5c150d; color: #f4e6c4; box-shadow: inset 0 0 0 1px rgba(255,255,255,.15); }
+.opt-a .chip-bar { --tex: url("../../assets/textures/shopitem_papertexture02_psd.png"); background: var(--paper); padding: 12px 14px; }
+
+/* cards de item */
+.cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+.opt-a .card { --tex: url("../../assets/textures/shopitem_papertexture01_psd.png"); background: var(--paper); color: var(--ink); padding: 12px 12px 12px 16px; border: 1px solid #a88f60; box-shadow: 0 4px 10px rgba(0,0,0,.55); display: grid; grid-template-columns: 56px 1fr; gap: 12px; align-items: start; position: relative; }
+.opt-a .card::after { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 6px; background: var(--class); }
+.opt-a .card .icon { width: 56px; height: 56px; border: 2px solid var(--ink-soft); background: #1b120a; box-shadow: 0 2px 4px rgba(0,0,0,.4); overflow: hidden; }
+.opt-a .card .icon img { width: 100%; height: 100%; display: block; }
+.opt-a .card .name { font: 400 18px/1.1 var(--title); }
+.opt-a .card .en { font: italic 12px var(--body); color: var(--ink-soft); }
+.opt-a .card .price { font: 500 14px var(--body); color: var(--wax); float: right; }
+.opt-a .card .attrs { margin: 8px 0 0; padding: 0; list-style: none; font-size: 13.5px; }
+.opt-a .card .attrs li::before { content: "— "; color: var(--ink-soft); }
+.opt-a .seal { position: absolute; right: 10px; bottom: 10px; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font: 700 9px 'Cinzel', serif; letter-spacing: .05em; }
+.opt-a .seal.lendario { background: radial-gradient(circle at 35% 35%, #d5b35a, #8a5f18 70%); color: #2a1a05; box-shadow: 0 1px 3px rgba(0,0,0,.6), inset 0 0 0 2px rgba(255,255,255,.2); }
+.opt-a .seal.basico { background: transparent; border: 1.5px solid var(--ink-soft); color: var(--ink-soft); }
+.opt-a .card.hover { transform: perspective(700px) rotateX(4deg) rotateY(-6deg) translateY(-3px); box-shadow: 0 14px 26px rgba(0,0,0,.7), 0 0 0 1px #d8b96a, 0 0 22px rgba(232,200,120,.45); }
+.opt-a .card.hover::before { opacity: .7; }
+.opt-a .card.in-build { opacity: .45; filter: grayscale(.4); }
+.opt-a .card.in-build .stamp { position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%) rotate(-12deg); border: 2px solid var(--wax); color: var(--wax); padding: 3px 10px; font: 700 12px 'Cinzel', serif; letter-spacing: .15em; opacity: 1; }
+.state { font: italic 12px var(--body); opacity: .7; margin: 4px 0 0; }
+
+/* forja */
+.opt-a .forge, .opt-b .forge { background: radial-gradient(ellipse at 50% 120%, rgba(255,110,30,.28), transparent 55%), linear-gradient(180deg, #1a1614, #100d0b); border: 2px solid #3a2f28; box-shadow: inset 0 0 60px rgba(0,0,0,.8), 0 8px 16px rgba(0,0,0,.6); padding: 16px; color: #d8cbb6; display: grid; grid-template-columns: 1fr 190px; gap: 16px; }
+.forge h3 { margin: 0 0 10px; font: 600 14px 'Cinzel', serif; letter-spacing: .2em; color: #e9b36a; text-transform: uppercase; }
+.slots { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.slot { aspect-ratio: 1; border-radius: 6px; background: radial-gradient(circle at 50% 40%, #2b2521, #15110f 70%); box-shadow: inset 0 3px 8px rgba(0,0,0,.9), inset 0 -1px 0 rgba(255,255,255,.06), 0 0 0 2px #2c2521; position: relative; display: grid; place-items: center; }
+.slot::before, .slot::after { content: ""; position: absolute; width: 5px; height: 5px; border-radius: 50%; background: #5a4d42; box-shadow: 0 1px 1px #000; }
+.slot::before { left: 5px; top: 5px; } .slot::after { right: 5px; bottom: 5px; }
+.slot.filled { box-shadow: inset 0 3px 8px rgba(0,0,0,.9), 0 0 0 2px #6a3a18, 0 0 18px rgba(255,120,30,.55); }
+.slot.filled img { width: 68%; height: 68%; border: 2px solid #7a4a20; box-shadow: 0 0 14px rgba(255,140,40,.7); }
+.slot.filled .spark { position: absolute; width: 3px; height: 3px; background: #ffd27a; border-radius: 50%; box-shadow: 0 0 6px #ff9b2f; }
+.slot.filled .spark:nth-child(2) { left: 18%; top: 22%; } .slot.filled .spark:nth-child(3) { right: 16%; top: 30%; width: 2px; height: 2px; } .slot.filled .spark:nth-child(4) { left: 30%; bottom: 18%; }
+.slot.empty span { font: italic 11px 'Alegreya', serif; color: #5f5248; }
+.plate { background: linear-gradient(180deg, #2a2420, #1a1512); border: 1px solid #443a32; box-shadow: inset 0 1px 0 rgba(255,255,255,.05); padding: 12px; font-size: 13px; }
+.plate h4 { margin: 0 0 8px; font: 600 11px 'Cinzel', serif; letter-spacing: .2em; color: #b89a72; text-transform: uppercase; }
+.plate ul { list-style: none; margin: 0; padding: 0; }
+.plate li { display: flex; justify-content: space-between; padding: 3px 0; border-bottom: 1px dashed #3a3029; color: #e2d6c2; }
+.plate li b { color: #ffb257; font-weight: 600; }
+.switches { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+.sw { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: #cdbfa8; }
+.sw i { width: 34px; height: 18px; border-radius: 9px; background: #2a2320; box-shadow: inset 0 1px 3px #000, 0 0 0 1px #4a3d33; position: relative; }
+.sw i::after { content: ""; position: absolute; top: 2px; left: 2px; width: 14px; height: 14px; border-radius: 50%; background: linear-gradient(180deg, #8a7a6a, #4a3f36); box-shadow: 0 1px 2px #000; }
+.sw.on i { background: #5a2a10; box-shadow: inset 0 1px 3px #000, 0 0 0 1px #8a4a1c, 0 0 10px rgba(255,120,30,.6); }
+.sw.on i::after { left: 18px; background: radial-gradient(circle at 40% 40%, #ffd08a, #ff7a1e); box-shadow: 0 0 8px #ff8a2a; }
+
+/* ===================== OPÇÃO B — Guilda e latão ===================== */
+.opt-b {
+  --ink: #1e1611; --ink-soft: #6a5a48; --paper: #d9c59c; --paper-dark: #b99e6c; --brass: #c9973f; --brass-dark: #7a5a1e; --iron: #23201d;
+  --ad: #d4711f; --ap: #8657c9; --vit: #5a9a3c;
+  --title: 'Cinzel', Georgia, serif; --body: 'Crimson Pro', Georgia, serif;
+  background: #100d0b; color: #efe3c8; font-family: var(--body);
+}
+.opt-b .board { padding: 16px 18px; background: linear-gradient(180deg, #1d1713, #120e0b); border: 1px solid #3d3128; box-shadow: inset 0 0 0 1px #0a0806, inset 0 0 0 3px #2a211b, 0 8px 18px rgba(0,0,0,.6); }
+.opt-b .rule { height: 2px; background: linear-gradient(90deg, transparent, var(--brass), transparent); margin: 10px 0 14px; }
+
+.opt-b .sign { background: linear-gradient(180deg, #2a1f16, #17110c); border: 2px solid var(--brass-dark); box-shadow: inset 0 0 0 4px #17110c, inset 0 0 0 5px var(--brass), 0 10px 22px rgba(0,0,0,.7); text-align: center; padding: 28px 20px 24px; }
+.opt-b .sign h1 { font: 700 34px/1 var(--title); margin: 0 0 6px; color: var(--brass); letter-spacing: .14em; text-shadow: 0 1px 0 #000, 0 0 18px rgba(201,151,63,.35); }
+.opt-b .sign p { margin: 0 0 16px; color: #b8a27c; font-style: italic; }
+.opt-b .btn-enter { display: inline-block; padding: 10px 28px; font: 600 15px/1 var(--title); letter-spacing: .18em; text-transform: uppercase; border: 1px solid #5a3f12; border-radius: 2px; box-shadow: 0 3px 0 #5a3f12, 0 6px 12px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,255,255,.4); }
+
+.opt-b .head { display: flex; align-items: center; gap: 18px; }
+.opt-b .head h2 { font: 700 26px/1 var(--title); margin: 0; color: var(--brass); letter-spacing: .1em; }
+.opt-b .head small { display: block; font: italic 13px var(--body); color: #9c8a6a; margin-top: 4px; letter-spacing: .02em; }
+.opt-b .search { --tex: url("../../assets/textures/shopitem_papertexture02_psd.png"); flex: 1; background: var(--paper); border: 1px solid var(--brass-dark); box-shadow: inset 0 0 0 1px #f0dfb6, inset 0 2px 6px rgba(0,0,0,.25); padding: 9px 14px; color: var(--ink-soft); font-style: italic; }
+
+.opt-b .chip { padding: 5px 12px; border: 1px solid var(--brass-dark); color: #d6bf8e; background: linear-gradient(180deg, #2a2119, #1a140f); font: 500 13px var(--body); letter-spacing: .04em; border-radius: 2px; box-shadow: inset 0 1px 0 rgba(255,255,255,.06); }
+.opt-b .chip.active { background: linear-gradient(160deg, #e7c46f, #b8863b 60%, #d9b25c); color: #2a1a0a; border-color: #f0d68a; box-shadow: 0 0 10px rgba(201,151,63,.45), inset 0 1px 0 rgba(255,255,255,.5); font-weight: 600; }
+.opt-b .chip-bar { padding: 12px 14px; background: #17120e; border: 1px solid #2f261f; }
+
+.opt-b .card { --tex: url("../../assets/textures/shopitem_papertexture01_psd.png"); --tex-op: .75; background: var(--paper); color: var(--ink); padding: 12px 12px 12px 14px; border: 1px solid var(--brass-dark); box-shadow: inset 0 0 0 1px #efdcb0, 0 4px 10px rgba(0,0,0,.6); display: grid; grid-template-columns: 56px 1fr; gap: 12px; align-items: start; position: relative; border-top: 4px solid var(--class); }
+.opt-b .card .icon { width: 56px; height: 56px; border: 2px solid var(--brass); background: #1b120a; box-shadow: 0 2px 4px rgba(0,0,0,.5), inset 0 0 0 1px #000; overflow: hidden; }
+.opt-b .card .icon img { width: 100%; height: 100%; display: block; }
+.opt-b .card .name { font: 600 15px/1.15 var(--title); letter-spacing: .02em; }
+.opt-b .card .en { font: italic 12.5px var(--body); color: var(--ink-soft); }
+.opt-b .card .price { font: 600 14px var(--body); color: var(--brass-dark); float: right; }
+.opt-b .card .attrs { margin: 8px 0 0; padding: 0; list-style: none; font-size: 14px; }
+.opt-b .card .attrs li::before { content: "◆ "; font-size: 8px; vertical-align: middle; color: var(--class); }
+.opt-b .tag { position: absolute; right: 10px; bottom: 10px; padding: 2px 8px; font: 700 9px 'Cinzel', serif; letter-spacing: .14em; border-radius: 2px; }
+.opt-b .tag.lendario { background: linear-gradient(160deg, #e7c46f, #b8863b); color: #2a1a0a; box-shadow: 0 1px 2px rgba(0,0,0,.5); }
+.opt-b .tag.basico { border: 1px solid var(--ink-soft); color: var(--ink-soft); }
+.opt-b .card.hover { transform: perspective(700px) rotateX(4deg) rotateY(-6deg) translateY(-3px); box-shadow: inset 0 0 0 1px #efdcb0, 0 14px 26px rgba(0,0,0,.75), 0 0 0 1px var(--brass), 0 0 24px rgba(201,151,63,.5); }
+.opt-b .card.in-build { opacity: .42; filter: sepia(.3); }
+.opt-b .card.in-build .stamp { position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%) rotate(-8deg); border: 2px solid var(--brass-dark); color: var(--brass-dark); padding: 3px 10px; font: 700 11px 'Cinzel', serif; letter-spacing: .18em; opacity: 1; }
+
+/* paletas */
+.swatches { display: flex; gap: 6px; flex-wrap: wrap; }
+.sw-box { width: 54px; height: 54px; border-radius: 3px; display: flex; align-items: flex-end; padding: 3px; font: 600 8px/1 'Cinzel', serif; letter-spacing: .04em; color: #fff; text-shadow: 0 1px 2px #000; border: 1px solid rgba(255,255,255,.12); }
+.sw-box.light { color: #1e1611; text-shadow: none; }
+.warn { padding: 12px; background: #3a1a12; color: #f4d0c0; border: 1px solid #7a3a28; }
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- ====================== A ====================== -->
+<section class="col opt-a">
+  <div class="col-label">Opção A — Taverna e pergaminho</div>
+
+  <div class="section-title">Tela de entrada</div>
+  <div class="chains"><i></i><i></i></div>
+  <div class="sign paper">
+    <h1>Montador de Itens</h1>
+    <p>A loja está aberta. O lojista o aguarda.</p>
+    <span class="btn-enter">Entrar na loja</span>
+  </div>
+
+  <div class="section-title">Catálogo — cabeçalho, busca e filtros</div>
+  <div class="board">
+    <div class="head">
+      <div><h2>Catálogo</h2><small>League of Legends · Capítulo 1 · patch <span data-patch></span></small></div>
+      <div class="search paper">Buscar por nome, efeito, atributo…</div>
+    </div>
+    <div style="height:12px"></div>
+    <div class="chip-bar paper">
+      <div class="chips"><span class="chip">Lendário</span><span class="chip active">Épico</span><span class="chip">Bota</span><span class="chip">Vitalidade</span><span class="chip active">AD</span></div>
+    </div>
+  </div>
+
+  <div class="section-title">Card de item — normal · mouse em cima · já no Build · básico</div>
+  <div class="cards" data-cards></div>
+
+  <div class="section-title">Build — a forja</div>
+  <div class="forge" data-forge></div>
+
+  <div class="section-title">Paleta</div>
+  <div class="swatches">
+    <div class="sw-box light" style="background:#e5d3ad">papel</div>
+    <div class="sw-box" style="background:#2c1d12">tinta</div>
+    <div class="sw-box" style="background:#3b2617">madeira</div>
+    <div class="sw-box" style="background:#b6873a">latão</div>
+    <div class="sw-box" style="background:#8d2c22">cera</div>
+    <div class="sw-box" style="background:#c8641e">AD</div>
+    <div class="sw-box" style="background:#7b4fb5">AP</div>
+    <div class="sw-box" style="background:#4d8b3a">VIT</div>
+    <div class="sw-box" style="background:#15110f">ferro</div>
+    <div class="sw-box" style="background:#ff7a1e">brasa</div>
+  </div>
+  <p class="state">Títulos: IM Fell English SC · Texto: Alegreya · Selos e chips: Cinzel</p>
+</section>
+
+<!-- ====================== B ====================== -->
+<section class="col opt-b">
+  <div class="col-label">Opção B — Guilda e latão</div>
+
+  <div class="section-title">Tela de entrada</div>
+  <div class="sign">
+    <h1>Montador de Itens</h1>
+    <p>Guilda dos Ferreiros · registro de itens do patch <span data-patch></span></p>
+    <span class="btn-enter brass">Entrar na loja</span>
+  </div>
+
+  <div class="section-title">Catálogo — cabeçalho, busca e filtros</div>
+  <div class="board">
+    <div class="head">
+      <div><h2>Catálogo</h2><small>League of Legends · Capítulo 1</small></div>
+      <div class="search paper">Buscar por nome, efeito, atributo…</div>
+    </div>
+    <div class="rule"></div>
+    <div class="chip-bar">
+      <div class="chips"><span class="chip">Lendário</span><span class="chip active">Épico</span><span class="chip">Bota</span><span class="chip">Vitalidade</span><span class="chip active">AD</span></div>
+    </div>
+  </div>
+
+  <div class="section-title">Card de item — normal · mouse em cima · já no Build · básico</div>
+  <div class="cards" data-cards></div>
+
+  <div class="section-title">Build — a forja</div>
+  <div class="forge" data-forge></div>
+
+  <div class="section-title">Paleta</div>
+  <div class="swatches">
+    <div class="sw-box light" style="background:#d9c59c">papel</div>
+    <div class="sw-box" style="background:#1e1611">tinta</div>
+    <div class="sw-box" style="background:#1d1713">madeira</div>
+    <div class="sw-box" style="background:#c9973f">latão</div>
+    <div class="sw-box" style="background:#7a5a1e">bronze</div>
+    <div class="sw-box" style="background:#d4711f">AD</div>
+    <div class="sw-box" style="background:#8657c9">AP</div>
+    <div class="sw-box" style="background:#5a9a3c">VIT</div>
+    <div class="sw-box" style="background:#23201d">ferro</div>
+    <div class="sw-box" style="background:#ff7a1e">brasa</div>
+  </div>
+  <p class="state">Títulos: Cinzel · Texto: Crimson Pro · Etiquetas: Cinzel</p>
+</section>
+
+</div>
+
+<script src="../../data/catalog.js"></script>
+<script>
+// Renderiza os quatro itens da amostra a partir do catalog.js real.
+(function () {
+  if (!window.CATALOG) {
+    document.querySelectorAll("[data-cards]").forEach(el => el.innerHTML = '<div class="warn">catalog.js não carregou (abra pelo servidor local ou pelo disco no Chrome).</div>');
+    return;
+  }
+  const byEn = {};
+  CATALOG.items.forEach(it => byEn[it.nameEn] = it);
+  document.querySelectorAll("[data-patch]").forEach(el => el.textContent = CATALOG.meta.patch);
+
+  const CLASS_VAR = { "AD": "var(--ad)", "AP": "var(--ap)", "Vitalidade": "var(--vit)" };
+  const tierClass = t => t.startsWith("Lendário") ? "lendario" : "basico";
+  const esc = s => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;");
+
+  const sample = [
+    { en: "Stridebreaker", state: "" },
+    { en: "Rod of Ages", state: "hover" },
+    { en: "Sterak's Gage", state: "in-build" },
+    { en: "Ruby Crystal", state: "" },
+  ];
+
+  function card(opt, s) {
+    const it = byEn[s.en]; if (!it) return "";
+    const cls = it.itemClass && it.itemClass.core;
+    const tierMark = opt === "a"
+      ? `<span class="seal ${tierClass(it.tier)}">${tierClass(it.tier) === "lendario" ? "L" : "B"}</span>`
+      : `<span class="tag ${tierClass(it.tier)}">${esc(it.tier)}</span>`;
+    return `<div class="card paper ${s.state}" style="--class:${CLASS_VAR[cls] || "var(--ink-soft)"}">
+      <div class="icon"><img src="${it.iconUrl}" alt=""></div>
+      <div>
+        <span class="price">${it.priceGold}g</span>
+        <div class="name">${esc(it.namePt)}</div>
+        <div class="en">${esc(it.nameEn)} · ${esc(cls)}</div>
+        <ul class="attrs">${it.attributes.map(a => `<li>${esc(a.raw)}</li>`).join("")}</ul>
+      </div>
+      ${tierMark}
+      ${s.state === "in-build" ? '<span class="stamp">NO BUILD</span>' : ""}
+    </div>`;
+  }
+
+  function forge() {
+    const filled = ["Stridebreaker", "Sterak's Gage"].map(n => byEn[n]);
+    const totals = {};
+    filled.forEach(it => it.attributes.forEach(a => {
+      if (a.unit !== "flat") return;
+      totals[a.stat] = (totals[a.stat] || 0) + a.value;
+    }));
+    const price = filled.reduce((s, it) => s + it.priceGold, 0);
+    const slots = filled.map(it => `<div class="slot filled"><img src="${it.iconUrl}" alt=""><i class="spark"></i><i class="spark"></i><i class="spark"></i></div>`).join("")
+      + Array.from({ length: 4 }, (_, i) => `<div class="slot empty"><span>molde ${i + 3}</span></div>`).join("");
+    return `<div>
+        <h3>Núcleo</h3>
+        <div class="slots">${slots}</div>
+      </div>
+      <div class="plate">
+        <h4>Atributos da caixa</h4>
+        <ul>${Object.entries(totals).map(([k, v]) => `<li><span>${esc(k)}</span><b>+${v}</b></li>`).join("")}
+          <li><span>Custo</span><b>${price}g</b></li></ul>
+        <div class="switches">
+          <label class="sw on"><i></i>Mestre Forjador</label>
+          <label class="sw"><i></i>Reembolso</label>
+        </div>
+      </div>`;
+  }
+
+  document.querySelectorAll(".opt-a [data-cards]").forEach(el => el.innerHTML = sample.map(s => card("a", s)).join(""));
+  document.querySelectorAll(".opt-b [data-cards]").forEach(el => el.innerHTML = sample.map(s => card("b", s)).join(""));
+  document.querySelectorAll("[data-forge]").forEach(el => el.innerHTML = forge());
+})();
+</script>
+</body>
+</html>
