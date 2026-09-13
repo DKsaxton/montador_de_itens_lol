@@ -2407,6 +2407,50 @@ select.sort-select, .sort-attr-wrap select {
 .card-full .cf-kv .v { text-align: right; }
 .card-full .cf-kv .v.cera { color: var(--loja-cera); font-weight: 700; }
 .card-full .cf-hint { margin-top: 8px; font-family: var(--loja-texto); font-style: italic; font-size: 11px; color: var(--loja-tinta-suave); }
+
+/* ---- T7: clique marca para o Build; item já no Build apagado com carimbo ---- */
+.card .card-icon { cursor: zoom-in; }
+/* O papel continua opaco (senão os raios do hover atrás do card vazam por ele);
+   o que apaga é o conteúdo. */
+.card.in-build .card-surface { background-color: var(--loja-papel-escuro); }
+.card.in-build .card-icon, .card.in-build .card-main { opacity: .4; filter: grayscale(.5) sepia(.2); }
+.card.in-build:hover .card-icon, .card.in-build:hover .card-main { opacity: .65; }
+.card .stamp {
+  display: none;
+  position: absolute;
+  left: 50%; top: 50%;
+  z-index: 3;
+  transform: translate(-50%, -50%) rotate(-12deg);
+  border: 2.5px solid var(--loja-cera);
+  color: var(--loja-cera);
+  padding: 4px 12px;
+  font-family: var(--loja-gravado);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .2em;
+  pointer-events: none;
+  background: rgba(229,211,173,.55);
+  box-shadow: 0 1px 4px rgba(0,0,0,.25);
+}
+.card.in-build .stamp { display: block; }
+.card.full .stamp { display: none; }
+/* Contagem de itens da build ativa na aba Build */
+.tab-btn .tab-count {
+  display: inline-block;
+  min-width: 18px;
+  margin-left: 7px;
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: var(--loja-cera);
+  color: var(--loja-cera-texto);
+  font-family: var(--loja-texto);
+  font-size: 11px;
+  letter-spacing: 0;
+  text-transform: none;
+  vertical-align: 1px;
+}
+.tab-btn.active .tab-count { background: #2a1a0a; color: #f4e6c4; }
+.tab-btn .tab-count:empty { display: none; }
 </style>
 </head>
 <body>
@@ -2416,7 +2460,7 @@ select.sort-select, .sort-attr-wrap select {
     <h1>Montador de Itens<span class="sub">LEAGUE OF LEGENDS · CATÁLOGO CAPÍTULO 1</span></h1>
     <nav class="tabs">
       <button class="tab-btn active" data-tab="catalog">Catálogo</button>
-      <button class="tab-btn" data-tab="build">Build</button>
+      <button class="tab-btn" data-tab="build">Build<span class="tab-count" id="build-tab-count"></span></button>
       <button class="tab-btn" data-tab="calc">Calculadora</button>
     </nav>
     <div class="counts"><b id="total-count">0</b> itens catalogados</div>
@@ -2949,6 +2993,7 @@ function renderBuild() {
   renderModeWarning();
   renderModeSelect();
   document.body.classList.toggle("cat-selected", !!getCat(build.selectedCatId));
+  if (typeof refreshInBuildMarks === "function") refreshInBuildMarks();
 }
 
 // Usada quando os preços exibidos mudam (modo Reembolso), aí o seletor
@@ -4466,7 +4511,11 @@ function renderCard(item, attrSorting) {
   card.style.setProperty("--class-color", classColor(item));
   card.style.setProperty("--tex-pick", paperFor(item.slug));
   card.dataset.slug = item.slug;
-  card.addEventListener("click", () => openModal(item.slug));
+  card.title = "Clique: marcar para o Build · Ícone ou Shift+clique: abrir o pergaminho";
+  card.addEventListener("click", (e) => {
+    if (e.target.closest(".card-icon") || e.shiftKey) { openModal(item.slug); return; }
+    toggleItemInBuild(item.slug);
+  });
 
   let sortStatHtml = "";
   if (state.sort === "eff-desc" || state.sort === "eff-asc") {
@@ -4483,8 +4532,10 @@ function renderCard(item, attrSorting) {
     }
   }
 
+  if (findInBuild(item.slug)) card.classList.add("in-build");
   card.innerHTML = `
     <div class="card-burst"></div>
+    <span class="stamp">NO BUILD</span>
     <div class="card-surface">
       <div class="card-icon">
         ${iconInner(item)}
@@ -4618,6 +4669,46 @@ function render() {
     g.items.forEach(it => frag.appendChild(renderCard(it, attrSorting)));
   });
   grid.appendChild(frag);
+}
+
+// ---------------- Catálogo → Build: marcar item (Fase 2, T7) ----------------
+// Clique no card põe o item na build ativa (categoria selecionada, senão a
+// primeira; sem categoria, cria "Da loja"). Clique num item já na build tira
+// a primeira ocorrência. O card no Catálogo fica apagado com o carimbo.
+function findInBuild(slug) {
+  for (const cat of (build.cats || [])) {
+    const index = cat.items.findIndex(e => e.itemId === slug);
+    if (index >= 0) return { cat, index };
+  }
+  return null;
+}
+
+function toggleItemInBuild(slug) {
+  const found = findInBuild(slug);
+  if (found) {
+    found.cat.items.splice(found.index, 1);
+  } else {
+    let cat = getCat(build.selectedCatId) || build.cats[0];
+    if (!cat) {
+      build.cats.push({ id: "cat-" + Date.now() + "-" + build.seq, name: "Da loja", desc: "", kind: "comum", span: build.defaultSpan, items: [] });
+      build.seq++;
+      cat = build.cats[build.cats.length - 1];
+    }
+    cat.items.push({ itemId: slug, note: "" });
+  }
+  saveBuild();
+  renderBuild();          // já chama refreshInBuildMarks()
+}
+
+// Sincroniza o Catálogo com a build ativa: classe in-build nos cards e a
+// contagem na aba Build. Chamada pelo renderBuild() e pelo render().
+function refreshInBuildMarks() {
+  document.querySelectorAll("#grid .card").forEach(card => {
+    card.classList.toggle("in-build", !!findInBuild(card.dataset.slug));
+  });
+  const n = (build.cats || []).reduce((s, c) => s + c.items.length, 0);
+  const badge = document.getElementById("build-tab-count");
+  if (badge) badge.textContent = n ? String(n) : "";
 }
 
 // ---------------- Shift: ficha completa no card (Fase 2, T6) ----------------
