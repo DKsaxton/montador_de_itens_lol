@@ -2800,6 +2800,139 @@ header.top { transition: background .5s ease, border-color .5s ease; }
 .mode-warning.show b { color: var(--forja-brasa-clara); }
 .build-empty-title { font-family: var(--loja-titulos); font-weight: 400; font-size: 22px; color: var(--forja-titulo); }
 .build-empty p { font-family: var(--loja-texto); font-style: italic; color: var(--forja-texto-suave); }
+
+/* ---- Fase 3, T2: bancadas (categorias), moldes (tiles), tooltip e picker de balcão ---- */
+/* Cores das caixas na forja: Comum = ferro claro, Prioridade = brasa, Opcional = aço frio */
+.build-cat.comum { --cat-color: #9a8875; }
+.build-cat.prioridade { --cat-color: var(--forja-brasa); }
+.build-cat.opcional { --cat-color: #7f8a96; }
+.build-cat {
+  background: linear-gradient(180deg, var(--forja-placa-1), var(--forja-placa-2));
+  border: 1px solid var(--forja-placa-borda);
+  border-top: 4px solid var(--cat-color);
+  border-radius: 3px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.05), inset 0 0 40px rgba(0,0,0,.45), 0 6px 14px rgba(0,0,0,.55);
+}
+.build-cat.selected { box-shadow: 0 0 0 2px var(--cat-color), 0 0 16px var(--forja-brasa-glow), inset 0 0 40px rgba(0,0,0,.45); }
+.build-cat.resizing { box-shadow: 0 0 0 2px var(--forja-brasa); }
+.build-cat.drop-into { background: linear-gradient(180deg, #33281f, #1f1813); box-shadow: inset 0 0 0 1px var(--forja-brasa), 0 0 18px var(--forja-brasa-glow); }
+.cat-head {
+  background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(0,0,0,.25));
+  border-bottom: 1px solid #0d0a08;
+  box-shadow: 0 1px 0 rgba(255,255,255,.04);
+}
+.cat-grip { stroke: var(--forja-rebite); }
+.cat-name {
+  font-family: var(--loja-titulos);
+  font-weight: 400;
+  font-size: 16px;
+  letter-spacing: .02em;
+  color: var(--forja-titulo);
+}
+.cat-name:hover { border-color: #3a3029; }
+.cat-name:focus { border-color: var(--forja-brasa); background: rgba(0,0,0,.3); }
+.cat-btn {
+  font-family: var(--loja-gravado);
+  font-size: 9px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--forja-texto-suave);
+  border: 1px solid #4a3d33;
+  background: linear-gradient(180deg, #2f2823, #1c1714);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.06);
+}
+.cat-btn:hover { color: var(--forja-brasa-clara); border-color: var(--forja-brasa); }
+.cat-kind { color: var(--cat-color); border-color: var(--cat-color); }
+.cat-del:hover { color: #ff9b6a; border-color: #ff9b6a; }
+.cat-desc {
+  font-family: var(--loja-texto);
+  font-style: italic;
+  font-size: 12.5px;
+  color: var(--forja-texto-suave);
+  border-bottom: 1px dashed var(--forja-tracejado);
+}
+.cat-desc::placeholder { color: #5f5248; }
+.cat-desc:focus { background: rgba(0,0,0,.3); color: var(--forja-texto); }
+.cat-empty { font-family: var(--loja-texto); font-style: italic; font-size: 12px; color: #5f5248; }
+.cat-total {
+  background: linear-gradient(180deg, #2f2823, #1c1714);
+  border: 1px solid #4a3d33;
+  color: var(--forja-numero);
+  font-family: var(--loja-texto);
+  font-size: 12.5px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 2px 4px rgba(0,0,0,.5);
+}
+.cat-resize { opacity: .7; }
+
+/* Moldes: quadrado de ferro com rebites; o item dentro acende em brasa */
+.item-tile {
+  border-radius: 6px;
+  border: none;
+  background: radial-gradient(circle at 50% 40%, var(--forja-molde-1), var(--forja-molde-2) 70%);
+  box-shadow: inset 0 3px 8px rgba(0,0,0,.9), inset 0 -1px 0 rgba(255,255,255,.06), 0 0 0 2px #6a3a18, 0 0 14px var(--forja-brasa-glow);
+  padding: 4px;
+  transition: box-shadow .2s ease, transform .15s ease;
+}
+.item-tile::before, .item-tile::after {
+  content: ""; position: absolute; width: 4px; height: 4px; border-radius: 50%; z-index: 2;
+  background: var(--forja-rebite); box-shadow: 0 1px 1px #000;
+}
+.item-tile::before { left: 3px; top: 3px; }
+.item-tile::after { right: 3px; bottom: 3px; }
+.item-tile:hover { box-shadow: inset 0 3px 8px rgba(0,0,0,.9), 0 0 0 2px var(--forja-brasa), 0 0 22px rgba(255,120,30,.8); transform: translateY(-2px); }
+.item-tile.compact { width: 62px; }
+.item-tile.named { width: 84px; }
+.item-icon { width: 54px; height: 54px; border: 2px solid #7a4a20; border-radius: 2px; background: #1b120a; box-shadow: 0 0 10px rgba(255,140,40,.45); overflow: hidden; }
+.item-tile .abbr { font-family: var(--loja-titulos); color: var(--forja-brasa-clara); }
+.item-tile.named .tile-name {
+  font-family: var(--loja-texto);
+  font-size: 10px;
+  color: var(--forja-texto);
+  border-top: 1px dashed var(--forja-tracejado);
+  margin-top: 4px;
+}
+.item-tile .tier-strip { height: 3px; bottom: 0; border-radius: 0 0 6px 6px; opacity: .9; }
+.item-tile.named .tier-strip { top: auto; bottom: 0; }
+.item-tile .note-dot { background: var(--forja-brasa-clara); box-shadow: 0 0 6px var(--forja-brasa); top: 4px; right: 4px; }
+.item-tile.off-mode { filter: grayscale(.7); box-shadow: inset 0 3px 8px rgba(0,0,0,.9), 0 0 0 2px #5a2a20; }
+
+/* Tooltip do item: placa de ferro */
+.item-tooltip {
+  background: linear-gradient(180deg, var(--forja-placa-1), var(--forja-placa-2));
+  border: 1px solid var(--forja-placa-borda);
+  border-left: 3px solid var(--forja-brasa);
+  color: var(--forja-texto);
+  font-family: var(--loja-texto);
+  box-shadow: 0 8px 26px rgba(0,0,0,.7), 0 0 14px var(--forja-brasa-glow);
+}
+.item-tooltip .tt-name { font-family: var(--loja-titulos); font-weight: 400; font-size: 15px; color: var(--forja-titulo); }
+.item-tooltip .tt-sub { color: var(--forja-texto-suave); font-style: italic; }
+.item-tooltip .tt-note { border-top-color: var(--forja-tracejado); color: var(--forja-texto); }
+.item-tooltip .tt-hint { color: #5f5248; }
+.item-tooltip .tt-offmode { color: #ff9b6a; font-style: italic; margin-top: 4px; }
+
+/* Picker: papel de balcão, como a lista da loja */
+.picker {
+  background: var(--loja-papel);
+  background-image: var(--tex-pick);
+  background-size: 420px;
+  background-blend-mode: multiply;
+  border: 1px solid var(--loja-papel-borda);
+  border-radius: 2px;
+  color: var(--loja-tinta);
+  box-shadow: 0 6px 14px rgba(0,0,0,.6), inset 0 0 0 1px rgba(255,255,255,.25);
+}
+.picker-head { border-bottom: 1px solid rgba(90,70,48,.35); }
+.picker-meta { font-family: var(--loja-texto); font-style: italic; font-size: 12px; color: var(--loja-tinta-suave); }
+#picker-hint.flash { color: var(--loja-cera); }
+.picker-list::-webkit-scrollbar-thumb { background: var(--loja-papel-escuro); }
+.picker-row { border-radius: 2px; border-left: 3px solid var(--tier-color, var(--loja-tinta-suave)); }
+.picker-row:hover { background: rgba(44,29,18,.08); border-color: transparent; border-left-color: var(--tier-color, var(--loja-tinta-suave)); }
+.pk-abbr { background: #1b120a; border: 1.5px solid var(--loja-tinta-suave); border-radius: 1px; color: var(--loja-titulo); font-family: var(--loja-titulos); }
+.pk-abbr:has(.item-art) { background: #1b120a; }
+.pk-name { font-family: var(--loja-texto); font-size: 13.5px; color: var(--loja-tinta); }
+.pk-tier { font-style: italic; color: var(--loja-tinta-suave); font-size: 11px; }
+.pk-price { font-family: var(--loja-texto); color: var(--loja-cera); font-weight: 500; font-size: 12.5px; }
 </style>
 </head>
 <body>
@@ -5492,6 +5625,7 @@ function init() {
   buildFilterPanel();
   buildClassTabs();
   setPaper(document.querySelector(".filters"), randomPaper());
+  setPaper(document.querySelector(".picker"), randomPaper());
   setPaper(document.getElementById("search-input"), randomPaper());
 
   const searchInput = document.getElementById("search-input");
