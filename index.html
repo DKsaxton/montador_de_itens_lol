@@ -3846,13 +3846,14 @@ function renderBuildSummary() {
   const apT = document.getElementById("apex-toggle"); if (apT) apT.checked = !!state.applyApex;
   const nameInput = document.getElementById("build-name-input");
   if (document.activeElement !== nameInput) nameInput.value = build.name;
-  const total = buildTotal(null);
+  // Total geral sem as caixas Opcionais (Leo, 13/09/2026: opcional não conta).
+  const total = buildTotal("comum") + buildTotal("prioridade");
   const prio = buildTotal("prioridade");
   const count = build.cats.reduce((s, c) => s + c.items.length, 0);
   document.getElementById("build-summary").innerHTML =
     `<span>${build.cats.length} ${build.cats.length === 1 ? "categoria" : "categorias"} · ${count} ${count === 1 ? "item" : "itens"}</span>
      <span class="sum-prio">Prioridade: <b>${fmtG(prio)}</b></span>
-     <span>Total geral: <b>${fmtG(total)}</b></span>`;
+     <span title="Soma das caixas Comum e Prioridade; as Opcionais ficam de fora">Total (sem opcionais): <b>${fmtG(total)}</b></span>`;
 }
 
 function renderCategories() {
