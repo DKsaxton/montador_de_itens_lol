@@ -1,5 +1,5 @@
 # Checkpoint — Montador de Itens de LoL (Capítulo 2 · Forjador)
-Última atualização: 13/09/2026 — Fase 0, tarefas 3 e 3b aprovadas e commitadas; tarefa 4 em andamento
+Última atualização: 13/09/2026 — FASE 0 CONCLUÍDA (T1–T4); próxima: Fase 1, tarefa 1
 
 ## 1. Objetivo geral
 Evoluir o Montador de Itens (index.html) para a versão com identidade visual de loja medieval (Catálogo) e forja (Build), dados do Capítulo 1 (225 itens, patch 16.18.1) via data/catalog.js, sistema de áudio com lojista, e publicação no GitHub Pages — em fases aprovadas por captura de tela.
@@ -12,15 +12,17 @@ Evoluir o Montador de Itens (index.html) para a versão com identidade visual de
 - T2 — catalog.js regerado e integridade conferida (sem captura: tarefa de dados). Python 3.12.10 via winget; gerador rodado com `PYTHONUTF8=1` (o `print` final quebra no console cp1252; arquivo já escrito antes; script intocado). Saída idêntica ao commitado: 225 itens, 7 avisos, 0 linhas não reconhecidas. Checagem própria: 225 itens, sem duplicatas, sem campo obrigatório vazio, preços e somas de receita batendo, todo Lendário com masterwork. Os achados (Shattered Armguard ausente, Atlas → Missão de Suporte, id de Stat Bonus, Atma's Reckoning) são decisões já tomadas no Capítulo 1 — registradas em docs/decisoes_capitulo1.md, não como pendência.
 - T3 — index.html migrado para data/catalog.js (captura `docs/screenshots/fase0-tarefa3-catalogo-migrado.png`), aprovado pelo Leo em 13/09/2026, commit "F0-T3". O que mudou: CATALOG embutido (227 itens) e ITEM_ICONS base64 removidos → `<script src="data/catalog.js">`; index.html de 1,9 MB para 130 KB. Adaptador de esquema no topo do último script: chave do item = `slug` (builds salvas com a chave antiga sem apóstrofo são traduzidas ao carregar; item que não existe mais sai da build); `components`/`buildsInto` resolvidos por nameEn em `componentRefs`/`buildsIntoIds` (peça repetida vira ×N, `combineCost` na última peça, referência fora do catálogo não é exibida); tiers, ordem de tier e modos lidos do catálogo (rótulos agora são os do Capítulo 1: "Starter", "Trinket", "Evolução"...); ícone por `iconUrl` do Data Dragon com reserva de abreviação se a imagem falhar; `masterwork.raw`, `cashback.raw` e `cashback.netGold` nos lugares dos campos antigos. Testado no navegador embutido via servidor local (http.server 8765, config em .claude/launch.json, ignorado no git): 225 cards, console limpo, 0 ícones quebrados (225/225 URLs respondem 200), modal do Atma com "Cinto do Gigante ×2", filtro Lendário 114, Mestre Forjador 109, Reembolso 3000g→2775g (11 itens de transformação gratuita têm cashback.raw = "none" sem netGold: tratados como não reembolsáveis, badge 109), Build por clique 3450g, Calculadora com preços do catálogo, migração de build antiga OK. Do disco (file://, Chrome headless): 225 cards.
 - T3b — pedido do Leo (13/09/2026): removido o total de ouro "Opcional" do resumo da Build (itens opcionais não contam para isso). "Total geral" continua somando tudo — confirmar com o Leo se deve excluir os opcionais também. Aprovado em 13/09/2026, commit "F0-T3b".
+- T4 — Pages testado (`docs/screenshots/fase0-tarefa4-pages.png`): deploy no ar 30 s após o push; index.html, data/catalog.js, textura, áudio e .nojekyll respondem 200 em https://dksaxton.github.io/montador_de_itens_lol/; DOM do site publicado com 225 cards e contador 225 (Chrome headless — o navegador embutido não tem permissão para o domínio github.io). Do disco (file://) também 225. FASE 0 CONCLUÍDA em 13/09/2026.
 
 ## 3. Em andamento
-- T4 — testar no GitHub Pages (https://dksaxton.github.io/montador_de_itens_lol/) após o push; commit "Fase 0 concluída" com as tarefas da Fase 1 listadas.
+Nada. Próxima: Fase 1, tarefa 1.
 
 
 ## 4. Próximos passos
-Fase 0 — Fundação de dados
-4. Testar abertura pelo disco e no Pages (https://dksaxton.github.io/montador_de_itens_lol/). Commit "Fase 0 concluída".
-Fase 1 — Direção de arte (amostra em docs/amostras/ → aprovação → docs/direcao_de_arte.md)
+Fase 1 — Direção de arte (nada de tela real muda antes do aprovado)
+1. Ler docs/direcao_de_arte.md (briefing) e docs/PROMPT_Claude_Design_Fase1.md; perguntar ao Leo se ele traz um handoff do Claude Design (export HTML em docs/amostras/) ou se o Forjador propõe direto. Handoff = referência de estilo, nunca substitui o app.
+2. Amostra em docs/amostras/fase1-amostra.html com DUAS opções renderizadas lado a lado: paleta (loja: as três texturas de papel de assets/textures, madeira, latão, tinta ferrogálica; forja: ferro escuro, brasa, faísca), tipografia, um card de item redesenhado (dados reais do catalog.js) e um trecho do Build em tema de forja. Incluir as cores de Classe pedidas pelo Leo: AD laranja, AP roxo místico, Vitalidade verde. Captura + aprovado.
+3. Registrar o aprovado em docs/direcao_de_arte.md (paleta com códigos, fontes, uso de cada textura, anatomia do card e da caixa da forja). Commit "Fase 1 concluída". O hover dos ícones é intocável.
 Fase 2 — Catálogo (loja medieval). Além do CLAUDE.md, pedidos do Leo em 13/09/2026:
   a. Classe como 4 ABAS no topo do Catálogo, modelo Deadlock: TODOS · AD (laranja) · AP (roxo místico) · VITALIDADE (verde), lendo `itemClass.core`; Filhote de Garrabrasa ("AD e AP") aparece em AD e em AP. As três cores entram na direção de arte da Fase 1.
   b. Análise de custo: filtro/ordenação por eficiência de ouro (`costAnalysis.efficiencyBase`, 210 de 225 itens; os 15 sem valor — pets, consumíveis, trinkets, Stat Bonus, elixires — vão para o fim com "sem análise"). Mostrar `costAnalysis.goldValue` e `efficiency` no modal.
