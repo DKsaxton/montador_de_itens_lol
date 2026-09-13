@@ -2933,6 +2933,36 @@ header.top { transition: background .5s ease, border-color .5s ease; }
 .pk-name { font-family: var(--loja-texto); font-size: 13.5px; color: var(--loja-tinta); }
 .pk-tier { font-style: italic; color: var(--loja-tinta-suave); font-size: 11px; }
 .pk-price { font-family: var(--loja-texto); color: var(--loja-cera); font-weight: 500; font-size: 12.5px; }
+
+/* ---- Fase 3, T3: modos visualização (padrão) e edição ----
+   Visualização = ficha limpa: sem alças, botões, campos editáveis nem picker.
+   Edição (body.editando) libera tudo. Biblioteca, modo de jogo e
+   exportar/importar funcionam nos dois. */
+.sw { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; user-select: none; font-family: var(--loja-gravado); font-size: 10px; letter-spacing: .2em; text-transform: uppercase; color: var(--forja-texto-suave); }
+.sw input { display: none; }
+.sw i { width: 36px; height: 19px; border-radius: 10px; background: #2a2320; box-shadow: inset 0 1px 3px #000, 0 0 0 1px #4a3d33; position: relative; flex: none; transition: background .2s ease, box-shadow .2s ease; }
+.sw i::after { content: ""; position: absolute; top: 2px; left: 2px; width: 15px; height: 15px; border-radius: 50%; background: linear-gradient(180deg, #8a7a6a, #4a3f36); box-shadow: 0 1px 2px #000; transition: left .2s ease, background .2s ease; }
+.sw input:checked + i { background: #5a2a10; box-shadow: inset 0 1px 3px #000, 0 0 0 1px #8a4a1c, 0 0 10px var(--forja-brasa-glow); }
+.sw input:checked + i::after { left: 19px; background: radial-gradient(circle at 40% 40%, #ffd08a, #ff7a1e); box-shadow: 0 0 8px #ff8a2a; }
+.sw input:checked ~ span { color: var(--forja-brasa-clara); }
+body:not(.editando) .cat-grip,
+body:not(.editando) .cat-del,
+body:not(.editando) .cat-resize,
+body:not(.editando) .span-general,
+body:not(.editando) #add-cat,
+body:not(.editando) #clear-build,
+body:not(.editando) .picker,
+body:not(.editando) .item-tile .note-dot { display: none; }
+body:not(.editando) .build-workspace { grid-template-columns: 1fr; }
+body:not(.editando) .cat-head { cursor: default; padding-left: 14px; }
+body:not(.editando) .cat-name, body:not(.editando) .cat-desc { pointer-events: none; border-color: transparent; }
+body:not(.editando) .cat-desc { border-bottom-color: transparent; }
+body:not(.editando) .cat-desc:placeholder-shown { display: none; }
+body:not(.editando) .cat-kind { pointer-events: none; }
+body:not(.editando) .item-tile { cursor: default; }
+body:not(.editando) .item-tile.has-note .item-icon { box-shadow: 0 0 10px rgba(255,140,40,.45), inset 0 0 0 2px var(--forja-brasa-clara); }
+body:not(.editando) .build-empty p { display: none; }
+body:not(.editando) .build-empty::after { content: "Ligue \"Editar\" para criar categorias e montar a build."; display: block; font-family: var(--loja-texto); font-style: italic; font-size: 13px; color: var(--forja-texto-suave); }
 </style>
 </head>
 <body>
@@ -3022,6 +3052,10 @@ header.top { transition: background .5s ease, border-color .5s ease; }
     <input id="build-name-input" class="build-name" placeholder="Nome da build" spellcheck="false">
     <div id="build-summary" class="build-summary"></div>
     <div class="build-actions">
+      <label class="sw" id="edit-switch" title="Visualização é o padrão; ligue para editar a build">
+        <input type="checkbox" id="edit-toggle">
+        <i></i><span>Editar</span>
+      </label>
       <div class="span-general" title="Largura padrão das categorias — aplica em todas">
         <span class="span-general-label">Largura</span>
         <button class="span-opt" data-span="1">1/1</button>
@@ -3119,6 +3153,7 @@ const build = {
   pickerQuery: "",
   defaultSpan: 2,      // largura geral aplicada às novas categorias
   mode: "",            // modo de jogo desta build ("" = sem restrição)
+  editing: false,      // Fase 3, T3: visualização (padrão) | edição — não persiste
 };
 
 // Três estados, alternados clicando no rótulo do cabeçalho da categoria.
@@ -3573,7 +3608,7 @@ function renderCategories() {
         // O modo (compacto x nomeado) é decidido depois, medindo a largura real.
         tile.className = "item-tile compact" + (entry.note ? " has-note" : "") + (offMode ? " off-mode" : "");
         if (offMode) tile.title = `${item.namePt} não existe em ${build.mode}`;
-        tile.draggable = true;
+        tile.draggable = build.editing;
         tile.style.setProperty("--tier-color", TIER_CSS[item.tier] || "");
         tile.dataset.catId = cat.id;
         tile.dataset.index = String(index);
@@ -3692,7 +3727,7 @@ function initCategoryDrag() {
       return;
     }
     const head = e.target.closest(".cat-head");
-    if (head) {
+    if (head && build.editing) {
       const catEl = head.closest(".build-cat");
       dragCatId = catEl.dataset.catId;
       e.dataTransfer.effectAllowed = "move";
@@ -3763,7 +3798,7 @@ function initCategoryResize() {
 
   canvas.addEventListener("mousedown", (e) => {
     const handle = e.target.closest(".cat-resize");
-    if (!handle) return;
+    if (!handle || !build.editing) return;
     const catEl = handle.closest(".build-cat");
     const cat = getCat(catEl.dataset.catId);
     if (!cat) return;
@@ -3820,7 +3855,7 @@ function initPicker() {
 
   list.addEventListener("dragstart", (e) => {
     const row = e.target.closest(".picker-row");
-    if (!row) return;
+    if (!row || !build.editing) { e.preventDefault(); return; }
     dragItemPayload = { from: "picker", itemId: row.dataset.itemId };
     e.dataTransfer.effectAllowed = "copy";
     e.dataTransfer.setData("text/plain", "item");
@@ -3842,8 +3877,9 @@ function initCategoryUI() {
     const catEl = e.target.closest(".build-cat");
     if (!catEl) return;
     const id = catEl.dataset.catId;
-    if (e.target.closest(".cat-del")) { removeCategory(id); return; }
+    if (e.target.closest(".cat-del")) { if (build.editing) removeCategory(id); return; }
     if (e.target.closest(".cat-kind")) {
+      if (!build.editing) return;
       const cat = getCat(id);
       cat.kind = KINDS[(KINDS.indexOf(cat.kind) + 1) % KINDS.length];
       renderBuild(); saveBuild(); return;
@@ -3866,7 +3902,7 @@ function initCategoryUI() {
   // Observação por item — equivalente às notas de item do Deadlock.
   canvas.addEventListener("dblclick", (e) => {
     const tile = e.target.closest(".item-tile");
-    if (!tile) return;
+    if (!tile || !build.editing) return;
     const cat = getCat(tile.dataset.catId);
     const entry = cat && cat.items[Number(tile.dataset.index)];
     if (!entry) return;
@@ -3879,7 +3915,7 @@ function initCategoryUI() {
 
   canvas.addEventListener("contextmenu", (e) => {
     const tile = e.target.closest(".item-tile");
-    if (!tile) return;
+    if (!tile || !build.editing) return;
     e.preventDefault();
     hideTooltip();
     removeItemFromCategory(tile.dataset.catId, Number(tile.dataset.index));
@@ -3904,7 +3940,7 @@ function showTooltip(tile) {
     ${build.mode && !itemAvailableIn(item, build.mode)
       ? `<div class="tt-offmode">Não disponível em ${build.mode}</div>` : ""}
     ${entry.note ? `<div class="tt-note">${esc(entry.note)}</div>` : ""}
-    <div class="tt-hint">Duplo clique: observação · Botão direito: remover · Arraste para outra categoria</div>`;
+    <div class="tt-hint">${build.editing ? "Duplo clique: observação · Botão direito: remover · Arraste para outra categoria" : "Ligue \"Editar\" para mudar a build"}</div>`;
 
   const r = tile.getBoundingClientRect();
   tt.classList.add("show");
@@ -4147,6 +4183,18 @@ function initBuildBuilder() {
   });
 
   document.getElementById("add-cat").addEventListener("click", () => addCategory());
+
+  // Visualização é o padrão ao abrir; "Editar" libera a montagem.
+  const editToggle = document.getElementById("edit-toggle");
+  const applyEditing = (on) => {
+    build.editing = !!on;
+    editToggle.checked = build.editing;
+    document.body.classList.toggle("editando", build.editing);
+    if (!build.editing) build.selectedCatId = null;
+    renderBuildAll();
+  };
+  editToggle.addEventListener("change", () => applyEditing(editToggle.checked));
+  applyEditing(false);
 
   document.querySelectorAll(".span-opt").forEach(btn => {
     btn.addEventListener("click", () => setGeneralSpan(Number(btn.dataset.span)));
