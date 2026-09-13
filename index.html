@@ -2653,6 +2653,153 @@ body.na-loja .entrada { display: none; }
 @media (prefers-reduced-motion: reduce) {
   .card[class*="anim-"], .card[class*="anim-"] * , .card[class*="anim-"]::after { animation: none !important; }
 }
+
+/* =====================================================================
+   FASE 3 — FORJA (direção de arte, seção Forja). T1: esqueleto — fundo de
+   ferro, barra da build, biblioteca, seletor de modo, botões, painel de
+   exportar/importar e a transição loja → forja. Tiles, categorias e picker
+   ainda no estilo anterior (T2).
+   ===================================================================== */
+:root {
+  --forja-ferro-1: #1a1614;
+  --forja-ferro-2: #100d0b;
+  --forja-ferro-borda: #3a2f28;
+  --forja-molde-1: #2b2521;
+  --forja-molde-2: #15110f;
+  --forja-rebite: #5a4d42;
+  --forja-brasa: #ff7a1e;
+  --forja-brasa-clara: #ffd27a;
+  --forja-brasa-glow: rgba(255,120,30,.55);
+  --forja-placa-1: #2a2420;
+  --forja-placa-2: #1a1512;
+  --forja-placa-borda: #443a32;
+  --forja-numero: #ffb257;
+  --forja-titulo: #e9b36a;
+  --forja-texto: #d8cbb6;
+  --forja-texto-suave: #8f8074;
+  --forja-tracejado: #3a3029;
+}
+
+/* Sair da loja, entrar na forja: o papel escurece e o ferro sobe. */
+body.forja {
+  background-color: var(--forja-ferro-2);
+  background-image:
+    radial-gradient(ellipse 1200px 500px at 50% 110%, rgba(255,110,30,.16), transparent 60%),
+    repeating-linear-gradient(180deg, transparent 0 5px, rgba(0,0,0,.35) 5px 6px);
+  transition: background-color .5s ease;
+}
+body.forja header.top {
+  background:
+    repeating-linear-gradient(90deg, rgba(0,0,0,.12) 0 2px, transparent 2px 11px),
+    linear-gradient(180deg, #2a221d, #1a1614 60%, #120e0b);
+  border-bottom-color: #0a0806;
+}
+body.forja h1, body.forja .counts b { color: var(--forja-titulo); }
+body.forja h1 .sub, body.forja .counts { color: var(--forja-texto-suave); }
+body.forja .tabs { background: #0d0a08; }
+body.forja .tab-btn.active {
+  background: linear-gradient(160deg, #ffd27a, #ff7a1e 55%, #b34d0e);
+  color: #1a0d05;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.4), 0 0 12px var(--forja-brasa-glow);
+}
+body.forja .tab-btn .tab-count { background: #5a2a10; color: var(--forja-brasa-clara); }
+body.forja .tab-btn.active .tab-count { background: #1a0d05; color: var(--forja-brasa-clara); }
+.build-view.entrando { animation: forja-sobe .55s cubic-bezier(.2,.9,.3,1); }
+@keyframes forja-sobe { 0% { transform: translateY(40px); opacity: 0; } 100% { transform: none; opacity: 1; } }
+/* Caminho de volta: sair da forja, a loja desce e o papel clareia. */
+.layout.entrando, .calc-view.entrando { animation: loja-desce .55s cubic-bezier(.2,.9,.3,1); }
+@keyframes loja-desce { 0% { transform: translateY(-34px); opacity: 0; filter: brightness(.6); } 100% { transform: none; opacity: 1; filter: none; } }
+body { transition: background-color .5s ease; }
+header.top { transition: background .5s ease, border-color .5s ease; }
+@media (prefers-reduced-motion: reduce) { .build-view.entrando, .layout.entrando, .calc-view.entrando { animation: none; } }
+
+/* Barra da build: placa de ferro */
+.build-bar, .library-bar, .io-panel {
+  background: linear-gradient(180deg, var(--forja-placa-1), var(--forja-placa-2));
+  border: 1px solid var(--forja-placa-borda);
+  border-radius: 3px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.05), inset 0 0 40px rgba(0,0,0,.45), 0 6px 14px rgba(0,0,0,.55);
+  color: var(--forja-texto);
+}
+.build-bar::before, .build-bar::after, .library-bar::before, .library-bar::after {
+  content: ""; position: absolute; width: 6px; height: 6px; border-radius: 50%;
+  background: var(--forja-rebite); box-shadow: 0 1px 1px #000, inset 0 1px 0 rgba(255,255,255,.25);
+}
+.build-bar, .library-bar { position: relative; }
+.build-bar::before, .library-bar::before { left: 6px; top: 6px; }
+.build-bar::after, .library-bar::after { right: 6px; bottom: 6px; }
+.build-name {
+  background: transparent;
+  border: 1px solid transparent;
+  border-bottom: 1px dashed var(--forja-tracejado);
+  color: var(--forja-titulo);
+  font-family: var(--loja-titulos);
+  font-size: 24px;
+  font-weight: 400;
+  letter-spacing: .03em;
+}
+.build-name:hover { border-color: transparent; border-bottom-color: var(--forja-rebite); }
+.build-name:focus { background: rgba(0,0,0,.25); border-color: var(--forja-brasa); box-shadow: 0 0 10px var(--forja-brasa-glow); }
+.build-summary { font-family: var(--loja-texto); font-style: italic; color: var(--forja-texto-suave); }
+.build-summary b, .build-summary .sum-prio b { color: var(--forja-numero); font-style: normal; }
+.span-general-label, .library-label {
+  font-family: var(--loja-gravado);
+  font-size: 10px;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--forja-texto-suave);
+}
+.library-note { font-family: var(--loja-texto); font-style: italic; color: var(--forja-texto-suave); }
+.span-opt, #view-build .btn, .build-select, .cat-target select.forja {
+  background: linear-gradient(180deg, #2f2823, #1c1714);
+  border: 1px solid #4a3d33;
+  border-radius: 3px;
+  color: var(--forja-texto);
+  font-family: var(--loja-texto);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 2px 4px rgba(0,0,0,.5);
+}
+.span-opt { font-size: 12.5px; }
+.span-opt:hover, #view-build .btn:hover { border-color: var(--forja-brasa); color: var(--forja-brasa-clara); }
+.span-opt.active {
+  background: linear-gradient(180deg, #7a3a12, #5a2a10);
+  border-color: var(--forja-brasa);
+  color: var(--forja-brasa-clara);
+  box-shadow: 0 0 10px var(--forja-brasa-glow), inset 0 1px 0 rgba(255,255,255,.15);
+}
+#view-build .btn.primary {
+  background: linear-gradient(160deg, #ffd27a, #ff7a1e 55%, #b34d0e);
+  border-color: #b34d0e;
+  color: #1a0d05;
+  font-weight: 700;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.45), 0 0 12px var(--forja-brasa-glow);
+}
+#view-build .btn.primary:hover { filter: brightness(1.1); color: #1a0d05; }
+#view-build .btn.ghost { background: transparent; border-color: #3a3029; color: var(--forja-texto-suave); }
+#view-build .btn.ghost:hover { border-color: var(--forja-brasa); color: var(--forja-brasa-clara); }
+#view-build .btn:disabled, #view-build .btn:disabled:hover { border-color: #2a2420; color: #4a3f36; }
+#view-build .io-toggle.active { border-color: var(--forja-brasa); color: var(--forja-brasa-clara); }
+.build-select { font-size: 13px; }
+.build-select:focus { border-color: var(--forja-brasa); box-shadow: 0 0 10px var(--forja-brasa-glow); }
+.io-panel textarea {
+  background: rgba(0,0,0,.35);
+  border: 1px solid #3a3029;
+  color: var(--forja-texto);
+  font-family: var(--loja-texto);
+}
+.io-panel textarea:focus { border-color: var(--forja-brasa); }
+.io-hint { font-family: var(--loja-texto); font-style: italic; color: var(--forja-texto-suave); }
+.io-msg.ok { color: var(--forja-brasa-clara); }
+.io-msg.error { color: #ff9b6a; }
+.mode-warning.show {
+  background: linear-gradient(180deg, var(--forja-placa-1), var(--forja-placa-2));
+  border: 1px solid var(--forja-placa-borda);
+  border-left: 4px solid var(--forja-brasa);
+  color: var(--forja-texto);
+  font-family: var(--loja-texto);
+}
+.mode-warning.show b { color: var(--forja-brasa-clara); }
+.build-empty-title { font-family: var(--loja-titulos); font-weight: 400; font-size: 22px; color: var(--forja-titulo); }
+.build-empty p { font-family: var(--loja-texto); font-style: italic; color: var(--forja-texto-suave); }
 </style>
 </head>
 <body>
@@ -3662,6 +3809,18 @@ function switchTab(tab) {
   document.getElementById("view-build").classList.toggle("hidden", tab !== "build");
   document.getElementById("view-calc").classList.toggle("hidden", tab !== "calc");
   document.getElementById("catalog-controls").classList.toggle("hidden", tab !== "catalog");
+  // Sair da loja, entrar na forja (Fase 3, T1): o fundo escurece e a vista sobe.
+  // Na volta, a loja desce e o papel clareia.
+  const estavaNaForja = document.body.classList.contains("forja");
+  const entrandoNaForja = tab === "build" && !estavaNaForja;
+  const saindoDaForja = tab !== "build" && estavaNaForja;
+  document.body.classList.toggle("forja", tab === "build");
+  const alvo = entrandoNaForja ? document.getElementById("view-build")
+    : saindoDaForja ? document.getElementById(tab === "calc" ? "view-calc" : "view-catalog") : null;
+  if (alvo) {
+    alvo.classList.remove("entrando"); void alvo.offsetWidth; alvo.classList.add("entrando");
+    // Fase 4: Som.play("build:open") ao entrar; Som.play("build:close") ao sair.
+  }
   if (tab === "build") renderBuildAll();
   if (tab === "calc" && typeof renderCalc === "function") renderCalc();
 }
@@ -5408,7 +5567,9 @@ function init() {
     setTimeout(() => entrada.classList.add("fechada"), 900);
   }
   document.getElementById("entrar").addEventListener("click", () => entrarNaLoja(false));
-  if (/^#(item=|ficha=|apice$|animacoes$)/.test(location.hash)) entrarNaLoja(true);
+  if (/^#(item=|ficha=|apice$|animacoes$|build$)/.test(location.hash)) entrarNaLoja(true);
+  // #build abre direto na forja (link direto e captura).
+  if (location.hash === "#build") switchTab("build");
   else document.getElementById("entrar").focus();
 
   // Atalho: #item=<slug> abre o item direto (para compartilhar e para capturas).

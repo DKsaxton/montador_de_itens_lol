@@ -1,5 +1,5 @@
 # Checkpoint — Montador de Itens de LoL (Capítulo 2 · Forjador)
-Última atualização: 13/09/2026 — FASE 2 CONCLUÍDA; próxima: Fase 3, tarefa 1
+Última atualização: 13/09/2026 — Fase 3: T1 aprovada e commitada; T2 (moldes) em andamento
 
 ## 1. Objetivo geral
 Evoluir o Montador de Itens (index.html) para a versão com identidade visual de loja medieval (Catálogo) e forja (Build), dados do Capítulo 1 (225 itens, patch 16.18.1) via data/catalog.js, sistema de áudio com lojista, e publicação no GitHub Pages — em fases aprovadas por captura de tela.
@@ -11,6 +11,9 @@ Evoluir o Montador de Itens (index.html) para a versão com identidade visual de
 - T1 — Briefing lido (docs/direcao_de_arte.md, docs/PROMPT_Claude_Design_Fase1.md); Leo aprovou seguir sem handoff do Claude Design (13/09/2026). Texturas conferidas: as três são papel amassado quase branco, precisam de tingimento por blend.
 - Fase 1, T2 — amostra em docs/amostras/fase1-amostra.html (captura `docs/screenshots/fase1-tarefa2-amostra.png`), duas direções lado a lado, lendo Quebrapassos, Bastão das Eras, Sinal de Sterak e Cristal de Rubi do catalog.js e as três texturas reais (tingidas por multiply sobre a cor do papel: 01 = card, 02 = busca/barra de filtros, 03 = placa de entrada). A = Taverna e pergaminho (papel #e5d3ad, tinta #2c1d12, madeira #3b2617, latão #b6873a, cera #8d2c22; títulos IM Fell English SC, texto Alegreya; selo de cera para tier, faixa lateral na cor da classe, chips como etiquetas de tinta/cera). B = Guilda e latão (papel #d9c59c, madeira #1d1713, latão #c9973f, bronze #7a5a1e; títulos Cinzel, texto Crimson Pro; etiqueta de latão para tier, borda superior na cor da classe, chips como placas de latão). Classe nas duas: AD laranja, AP roxo, Vitalidade verde. Forja igual nas duas (ferro #15110f, brasa #ff7a1e, moldes com rebites, faíscas, interruptores de brasa). Leo escolheu a Opção A em 13/09/2026. Commit "F1-T2".
 - T3 — docs/direcao_de_arte.md escrito com a Opção A (paleta com códigos, classe, forja, tipografia, uso de cada textura, anatomia dos componentes, família de animações). FASE 1 CONCLUÍDA em 13/09/2026.
+
+### Fase 3 — Build (forja)
+- Fase 3, T1 — esqueleto da forja (captura `docs/screenshots/fase3-tarefa1-esqueleto-forja.png`) — aprovado pelo Leo em 13/09/2026, commit "F3-T1". Bloco CSS "FORJA" com variáveis --forja-*: ao entrar na aba Build o body ganha a classe `forja` (fundo de ferro com brasa subindo do rodapé, cabeçalho em ferro, aba ativa e contagem em brasa) e a vista sobe (animação `forja-sobe`); ao sair volta à madeira e a loja (ou a Calculadora) desce clareando (animação `loja-desce`, pedido do Leo: a volta também tem que acontecer); fundo e cabeçalho com transição de .5s. Barra da build, biblioteca e painel exportar/importar como placas de ferro com rebites; nome da build em IM Fell sobre linha tracejada com foco em brasa; botões de ferro (primário em brasa), seletor de largura com ativo em brasa, selects e textarea de ferro, aviso de modo em placa com brasa. Atalho `#build` abre direto na forja. Tiles, categorias e picker continuam no estilo anterior (T2). Ganchos comentados para Som.play("build:open"/"build:close"). Testado no navegador embutido: classe forja e animação ao entrar, fundo #100d0b, IM Fell no nome, volta à madeira ao sair, console limpo.
 
 ### Fase 2 — Catálogo (loja medieval)
 - Fase 2, T1 — esqueleto na paleta A (captura `docs/screenshots/fase2-tarefa1-esqueleto-loja.png`) — aprovado pelo Leo em 13/09/2026, commit "F2-T1". Um bloco CSS novo no fim do <style> (209 linhas) com variáveis --loja-*, fundo de madeira escura com frisos, cabeçalho em tábuas, abas como placas de latão, busca/ordenação/painel de filtros em papel com a textura 02 (multiply), chips de tinta com ativo em cera, caixas de marcação de tinta/cera, contagem e cabeçalhos de grupo escritos na madeira; fontes IM Fell English SC + Alegreya adicionadas ao link do Google Fonts. Cards e Build intactos. Testado: 225 cards, filtros funcionando (Distribuído = 5), fontes carregadas, console limpo.
@@ -36,11 +39,10 @@ Evoluir o Montador de Itens (index.html) para a versão com identidade visual de
 - T4 — Pages testado (`docs/screenshots/fase0-tarefa4-pages.png`): deploy no ar 30 s após o push; index.html, data/catalog.js, textura, áudio e .nojekyll respondem 200 em https://dksaxton.github.io/montador_de_itens_lol/; DOM do site publicado com 225 cards e contador 225 (Chrome headless — o navegador embutido não tem permissão para o domínio github.io). Do disco (file://) também 225. FASE 0 CONCLUÍDA em 13/09/2026.
 
 ## 3. Em andamento
-Nada. Próxima: Fase 3, tarefa 1.
+- Fase 3, T2 — moldes, bancadas e picker (iniciando).
 
 ## 4. Próximos passos
 Fase 3 — Build (forja), com docs/direcao_de_arte.md (seção Forja) como régua; biblioteca, exportar/importar e a estrutura de categorias existentes são preservadas e evoluídas. Tarefas pequenas, uma captura cada:
-1. Esqueleto da forja na paleta: fundo de ferro, barra da build, biblioteca, seletor de modo e botões em ferro/brasa; transição loja → forja ao trocar de aba (o papel escurece, o ferro sobe). Tiles e picker ainda os antigos.
 2. Moldes: tiles de item como moldes de metal com rebites e brasa; categorias como bancadas de ferro com placa de atributos; picker lateral em papel de balcão.
 3. Modos **visualização** (padrão) e **edição** (interruptor "Editar"): visualização sem alças, botões de remover/redimensionar ou campos editáveis; edição libera tudo. Biblioteca, exportar/importar e interruptores funcionam nos dois.
 4. Drag-and-drop com animação: pegar (molde acende), arrastar (faíscas seguem), soltar (martelada), remover (brasa apaga).
