@@ -2199,6 +2199,72 @@ select.sort-select, .sort-attr-wrap select {
 .rune-mark.mf .dot { background: var(--loja-latao); }
 .rune-marks { margin-top: 6px; }
 .card.dimmed { opacity: .45; }
+
+/* ---- T3: abas de Classe (TODOS · AD · AP · VITALIDADE), modelo Deadlock ----
+   Etiquetas de papel penduradas numa régua de madeira; a ativa é preenchida
+   com a cor da classe (TODOS = tinta). */
+.class-tabs {
+  display: flex;
+  gap: 6px;
+  align-items: flex-end;
+  margin: 0 0 14px;
+  padding: 0 4px;
+  border-bottom: 3px solid #120a04;
+  box-shadow: 0 1px 0 rgba(217,192,138,.18);
+}
+.class-tab {
+  --tab-color: var(--loja-tinta);
+  position: relative;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 8px 16px 7px;
+  border: 1px solid var(--loja-papel-borda);
+  border-bottom: none;
+  border-radius: 3px 3px 0 0;
+  background: var(--loja-papel);
+  background-image: var(--tex-02);
+  background-size: 420px;
+  background-blend-mode: multiply;
+  color: var(--loja-tinta);
+  font-family: var(--loja-gravado);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: 0 -2px 6px rgba(0,0,0,.35);
+  transition: transform .12s ease, background-color .12s ease, color .12s ease;
+}
+.class-tab::before {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; top: 0;
+  height: 4px;
+  background: var(--tab-color);
+}
+.class-tab .n {
+  font-family: var(--loja-texto);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 12px;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--loja-tinta-suave);
+}
+.class-tab:hover { transform: translateY(-2px); }
+.class-tab.active {
+  background: var(--tab-color);
+  background-image: none;
+  color: var(--loja-cera-texto);
+  border-color: transparent;
+  transform: translateY(-1px);
+  box-shadow: 0 -3px 10px rgba(0,0,0,.45), inset 0 0 0 1px rgba(255,255,255,.14);
+}
+.class-tab.active .n { color: rgba(244,230,196,.75); }
+.class-tab[data-classe="AD"] { --tab-color: var(--loja-ad); }
+.class-tab[data-classe="AP"] { --tab-color: var(--loja-ap); }
+.class-tab[data-classe="Vitalidade"] { --tab-color: var(--loja-vit); }
 </style>
 </head>
 <body>
@@ -2248,6 +2314,7 @@ select.sort-select, .sort-attr-wrap select {
   </aside>
 
   <main>
+    <nav id="class-tabs" class="class-tabs" aria-label="Classe do item"></nav>
     <div class="grid-meta">
       <span id="result-count"></span>
     </div>
@@ -3783,6 +3850,7 @@ const state = {
   categories: new Set(),
   effects: new Set(),
   modes: new Set(),      // filtro de modo de jogo
+  classe: "",            // aba de Classe: "" (todos) | "AD" | "AP" | "Vitalidade" (itemClass.core)
   runes: new Set(),      // filtro: "mf-yes"
   applyCashback: false,  // modo de exibição: troca os preços pelos com Reembolso
   sort: "name-asc",
@@ -3955,6 +4023,8 @@ function clearAllFilters() {
   state.query = "";
   document.getElementById("search-input").value = "";
   ["tiers", "regions", "archetypes", "categories", "effects", "runes", "modes"].forEach(k => state[k].clear());
+  state.classe = "";
+  document.querySelectorAll(".class-tab").forEach(b => b.classList.toggle("active", b.dataset.classe === ""));
   state.applyCashback = false;
   document.getElementById("cashback-banner").classList.remove("show");
   document.querySelectorAll(".chip.active").forEach(c => c.classList.remove("active"));
@@ -3977,7 +4047,41 @@ function itemMatchesQuery(item, q) {
   return norm(haystack).includes(norm(q));
 }
 
+// Aba de Classe: lê itemClass.core; o único "AD e AP" (Filhote de Garrabrasa)
+// aparece tanto em AD quanto em AP.
+function itemInClass(item, classe) {
+  if (!classe) return true;
+  const core = item.itemClass && item.itemClass.core;
+  return core === classe || (core === "AD e AP" && (classe === "AD" || classe === "AP"));
+}
+
+const CLASS_TABS = [
+  { classe: "", label: "Todos" },
+  ...Object.keys(CATALOG.meta.itemClass || {}).filter(k => k !== "AD e AP").map(k => ({ classe: k, label: k })),
+];
+
+function buildClassTabs() {
+  const nav = document.getElementById("class-tabs");
+  if (!nav) return;
+  nav.innerHTML = "";
+  CLASS_TABS.forEach(t => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "class-tab" + (state.classe === t.classe ? " active" : "");
+    btn.dataset.classe = t.classe;
+    const n = CATALOG.items.filter(it => itemInClass(it, t.classe)).length;
+    btn.innerHTML = `<span>${t.label}</span><span class="n">${n}</span>`;
+    btn.addEventListener("click", () => {
+      state.classe = t.classe;
+      nav.querySelectorAll(".class-tab").forEach(b => b.classList.toggle("active", b.dataset.classe === t.classe));
+      render();
+    });
+    nav.appendChild(btn);
+  });
+}
+
 function itemMatchesFilters(item) {
+  if (!itemInClass(item, state.classe)) return false;
   if (state.modes.size && !(item.gameModes || []).some(m => state.modes.has(m))) return false;
   if (state.tiers.size && !state.tiers.has(item.tier)) return false;
   if (state.regions.size && !state.regions.has(item.region)) return false;
@@ -4380,6 +4484,7 @@ function closeModal() {
 function init() {
   document.getElementById("total-count").textContent = CATALOG.items.length;
   buildFilterPanel();
+  buildClassTabs();
 
   const searchInput = document.getElementById("search-input");
   searchInput.addEventListener("input", (e) => {

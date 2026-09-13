@@ -1,5 +1,5 @@
 # Checkpoint — Montador de Itens de LoL (Capítulo 2 · Forjador)
-Última atualização: 13/09/2026 — Fase 2, tarefa 2 executada, aguardando aprovado
+Última atualização: 13/09/2026 — Fase 2: T3 aprovada e commitada; T4 (filtros novos) em andamento
 
 ## 1. Objetivo geral
 Evoluir o Montador de Itens (index.html) para a versão com identidade visual de loja medieval (Catálogo) e forja (Build), dados do Capítulo 1 (225 itens, patch 16.18.1) via data/catalog.js, sistema de áudio com lojista, e publicação no GitHub Pages — em fases aprovadas por captura de tela.
@@ -14,6 +14,8 @@ Evoluir o Montador de Itens (index.html) para a versão com identidade visual de
 
 ### Fase 2 — Catálogo (loja medieval)
 - Fase 2, T1 — esqueleto na paleta A (captura `docs/screenshots/fase2-tarefa1-esqueleto-loja.png`) — aprovado pelo Leo em 13/09/2026, commit "F2-T1". Um bloco CSS novo no fim do <style> (209 linhas) com variáveis --loja-*, fundo de madeira escura com frisos, cabeçalho em tábuas, abas como placas de latão, busca/ordenação/painel de filtros em papel com a textura 02 (multiply), chips de tinta com ativo em cera, caixas de marcação de tinta/cera, contagem e cabeçalhos de grupo escritos na madeira; fontes IM Fell English SC + Alegreya adicionadas ao link do Google Fonts. Cards e Build intactos. Testado: 225 cards, filtros funcionando (Distribuído = 5), fontes carregadas, console limpo.
+- Fase 2, T2 — card em papel (captura `docs/screenshots/fase2-tarefa2-card-papel.png`) — aprovado pelo Leo em 13/09/2026, commit "F2-T2". CSS no bloco da loja: papel com textura 01 (multiply), faixa vertical de 6px na cor da classe (AD laranja, AP roxo, Vitalidade verde; Garrabrasa dividida), selo de cera com o nome do tier no canto inferior direito (cores por tier nas variáveis --tier-*; Starter e Básico em tinta), nome em IM Fell English SC 16px limitado a duas linhas, inglês + classe em itálico com reticências, preço em cera fixo à direita, atributos com travessão, ícone com moldura de tinta; hover intocado (só cores: brilho de latão, papel mais claro). Card de 196px com faixa inferior de 22px reservada ao selo. JS: `--class-color` por card (CLASS_CSS) e " · classe" no nome em inglês; a marca "Mestre Forjador" saiu do card a pedido do Leo (o filtro lateral e o modal continuam). Medido no navegador embutido: 225 cards, 0 cortados, 0 selos sobre texto, console limpo.
+- Fase 2, T3 — abas de Classe (captura `docs/screenshots/fase2-tarefa3-abas-classe.png`) — aprovado pelo Leo em 13/09/2026, commit "F2-T3". Régua de madeira acima da contagem com quatro etiquetas de papel: Todos · AD · AP · Vitalidade (rótulos e contagens lidos de `meta.itemClass`/`itemClass.core`; a ativa é preenchida com a cor da classe, TODOS em tinta). `state.classe` entra em `itemMatchesFilters` antes dos demais filtros e combina com eles; "Limpar filtros" volta a Todos. Filhote de Garrabrasa ("AD e AP") conta e aparece em AD e em AP (82/62). Testado no navegador embutido: Todos 225, AD 82, AP 62, Vitalidade 82, Vitalidade + chip = 79, limpar = 225, console limpo.
 
 ### Fase 0 — Fundação de dados
 - T1 — Assets conferidos e commit inicial (`docs/screenshots/fase0-tarefa1-baseline.png`): 82 mp3 batendo um a um com docs/mapa_de_audio.md; 3 texturas; captura de baseline do index.html antigo (227 itens embutidos). Commit ed64738, aprovado pelo Leo.
@@ -23,12 +25,10 @@ Evoluir o Montador de Itens (index.html) para a versão com identidade visual de
 - T4 — Pages testado (`docs/screenshots/fase0-tarefa4-pages.png`): deploy no ar 30 s após o push; index.html, data/catalog.js, textura, áudio e .nojekyll respondem 200 em https://dksaxton.github.io/montador_de_itens_lol/; DOM do site publicado com 225 cards e contador 225 (Chrome headless — o navegador embutido não tem permissão para o domínio github.io). Do disco (file://) também 225. FASE 0 CONCLUÍDA em 13/09/2026.
 
 ## 3. Em andamento
-- Fase 2, T2 — card em papel (captura `docs/screenshots/fase2-tarefa2-card-papel.png`), aguardando aprovado para commit "F2-T2". CSS no bloco da loja: papel com textura 01 (multiply), faixa vertical de 6px na cor da classe (AD laranja, AP roxo, Vitalidade verde; Garrabrasa dividida), selo de cera com o nome do tier no canto inferior direito (cores por tier nas variáveis --tier-*; Starter e Básico em tinta), nome em IM Fell English SC 16px limitado a duas linhas, inglês + classe em itálico com reticências, preço em cera fixo à direita, atributos com travessão, ícone com moldura de tinta; hover intocado (só cores: brilho de latão, papel mais claro). Card de 196px com faixa inferior de 22px reservada ao selo. JS: `--class-color` por card (CLASS_CSS) e " · classe" no nome em inglês; a marca "Mestre Forjador" saiu do card a pedido do Leo (o filtro lateral e o modal continuam). Medido no navegador embutido: 225 cards, 0 cortados, 0 selos sobre texto, console limpo.
+- Fase 2, T4 — filtros novos (iniciando).
 
 ## 4. Próximos passos
 Fase 2 — Catálogo (loja medieval), sempre com docs/direcao_de_arte.md como régua e o hover intocado. Tarefas pequenas, uma captura cada:
-2. Card redesenhado (papel 01, faixa de classe, selo de tier para os 11 tiers, preço em cera, atributos com travessão) — hover preservado, brilho em latão.
-3. Abas de Classe TODOS · AD · AP · VITALIDADE no topo da listagem (Garrabrasa em AD e AP).
 4. Filtros novos: tipo de dano, custo (faixas), maior/menor atributo, eficiência de ouro (com "sem análise" no fim) — mais os existentes.
 5. Modal do item em pergaminho (textura 03) mostrando também `mechanics` das habilidades, `costAnalysis` (valor em ouro, eficiência), `apex`, e referências de receita fora do catálogo como nome sem link.
 6. Shift pressionado: card mostra os dados completos em vez do resumo.
