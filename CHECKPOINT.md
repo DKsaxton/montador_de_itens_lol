@@ -1,5 +1,5 @@
 # Checkpoint — Montador de Itens de LoL (Capítulo 2 · Forjador)
-Última atualização: 13/09/2026 — Fase 2: T9 aprovada e commitada; T10 (tela de entrada) em andamento
+Última atualização: 13/09/2026 — FASE 2 CONCLUÍDA; próxima: Fase 3, tarefa 1
 
 ## 1. Objetivo geral
 Evoluir o Montador de Itens (index.html) para a versão com identidade visual de loja medieval (Catálogo) e forja (Build), dados do Capítulo 1 (225 itens, patch 16.18.1) via data/catalog.js, sistema de áudio com lojista, e publicação no GitHub Pages — em fases aprovadas por captura de tela.
@@ -26,6 +26,7 @@ Evoluir o Montador de Itens (index.html) para a versão com identidade visual de
 - Fase 2, T8c — modos de exibição (pedido do Leo, 13/09/2026; capturas `docs/screenshots/fase2-tarefa8c-nomes.png` e `fase2-tarefa8c-so-icones.png`): botões "Cards · Nomes · Ícones" na linha da contagem. Nomes = ícone + nome (sem inglês, preço, atributos ou selo; colunas de 170px, 84px de altura); Ícones = mosaico de 78px só com o ícone e a faixa de classe. Mesmo DOM: hover, clique, carimbo, Shift (a ficha abre completa mesmo nesses modos) e Ápice continuam funcionando. Escolha lembrada em localStorage (`catalogo.view`). Commit "F2-T8". Commit "F2-T8". Conta no grupo Runas e no Limpar filtros. Atalho `#apice` liga ao carregar. Eficiência no Ápice não muda (sem dado estruturado — docs/propostas_capitulo1.md). Testado no navegador embutido: 102 cards, banner, limpar zera, console limpo.
 - Fase 2, T9 — animação de clique por tier (captura `docs/screenshots/fase2-tarefa9-animacoes-tier.png`, quadros congelados via `#animacoes`) — aprovado pelo Leo em 13/09/2026, commit "F2-T9". Mapa `TIER_ANIM` (nomes de tier do catálogo → classe): Lendário e Lendário (Evolução) = cera (selo incha, derrete e reassenta, com brilho de latão no papel); Starter e Básico = carimbo (card afunda, selo bate vindo de cima); Épico e Épico (Evolução) = tinta (mancha azul-tinta se espalha a partir do ponto do clique, via ::after e --mx/--my); Consumível = página vira (rotateY na borda esquerda); Trinket = sino (balanço + anel de latão no ícone); Distribuído = moeda (ícone gira 360° no eixo Y); Bota = bate no chão (salto e achatamento); Evolução = brasa (ícone e faixa acendem em laranja). Só CSS/JS sobre o DOM, 350–750 ms, classe removida após 800 ms, reinicia se clicar de novo, desligada com prefers-reduced-motion. Dispara em qualquer clique no card (marcar ou abrir o pergaminho). Testado no navegador embutido: 11 tiers com a animação certa, 0 classes residuais, console limpo.
 - Fase 2, T9b — pergaminho animado (pedido do Leo, 13/09/2026): ao abrir, o overlay esmaece e o pergaminho desenrola de cima (scaleY .55 → 1, 420 ms); por cima entra o toque do tier com a mesma classe `TIER_ANIM` no #modal: cera = brilho de latão pulsando no ícone; carimbo = pergaminho afunda e volta; tinta = mancha a partir do canto do ícone (::after); página = entra virando pela borda esquerda; sino = balanço; moeda = ícone gira; bota = batida; brasa = ícone acende. Navegar entre receitas (chips) refaz a abertura com o tier do novo item. Testado no navegador embutido: 11 tiers com as animações certas no modal/ícone, replay ao navegar (Gume → Espada G. p. C. = carimbo), console limpo. Commit "F2-T9".
+- Fase 2, T10 — tela de entrada (captura `docs/screenshots/fase2-tarefa10-entrada.png`) — aprovado pelo Leo em 13/09/2026, commit "F2-T10". FASE 2 CONCLUÍDA em 13/09/2026. Overlay de madeira escura cobrindo a loja ao carregar, com a placa de papel (textura sorteada) pendurada em duas correntes, balanço leve ao entrar, título em IM Fell, frase em itálico, botão de cera "Entrar na loja" (relevo, afunda ao clicar) e nota com o patch lido de `meta.patch`. Clique: a placa sobe girando e o overlay esmaece (900 ms), revelando o Catálogo; gancho comentado para `Som.play("catalog:open")` na Fase 4. Links diretos (#item, #ficha, #apice, #animacoes) entram na loja sem a placa. Botão recebe foco ao carregar (Enter funciona em navegador real). Respeita prefers-reduced-motion. Testado no navegador embutido: placa visível ao carregar, clique fecha (saindo → fechada, display none), 225 cards atrás, link direto abre o Gume com a entrada fechada, console limpo.
 
 ### Fase 0 — Fundação de dados
 - T1 — Assets conferidos e commit inicial (`docs/screenshots/fase0-tarefa1-baseline.png`): 82 mp3 batendo um a um com docs/mapa_de_audio.md; 3 texturas; captura de baseline do index.html antigo (227 itens embutidos). Commit ed64738, aprovado pelo Leo.
@@ -35,16 +36,20 @@ Evoluir o Montador de Itens (index.html) para a versão com identidade visual de
 - T4 — Pages testado (`docs/screenshots/fase0-tarefa4-pages.png`): deploy no ar 30 s após o push; index.html, data/catalog.js, textura, áudio e .nojekyll respondem 200 em https://dksaxton.github.io/montador_de_itens_lol/; DOM do site publicado com 225 cards e contador 225 (Chrome headless — o navegador embutido não tem permissão para o domínio github.io). Do disco (file://) também 225. FASE 0 CONCLUÍDA em 13/09/2026.
 
 ## 3. Em andamento
-- Fase 2, T10 — tela de entrada "Entrar na loja" (iniciando).
+Nada. Próxima: Fase 3, tarefa 1.
 
 ## 4. Próximos passos
-Fase 2 — Catálogo (loja medieval), sempre com docs/direcao_de_arte.md como régua e o hover intocado. Tarefas pequenas, uma captura cada:
-10. Tela de entrada "Entrar na loja" (placa com correntes; o áudio entra na Fase 4).
-Fase 2 — Catálogo (loja medieval). Além do CLAUDE.md, pedidos do Leo em 13/09/2026:
-  a. Classe como 4 ABAS no topo do Catálogo, modelo Deadlock: TODOS · AD (laranja) · AP (roxo místico) · VITALIDADE (verde), lendo `itemClass.core`; Filhote de Garrabrasa ("AD e AP") aparece em AD e em AP. As três cores entram na direção de arte da Fase 1.
-  b. Análise de custo: filtro/ordenação por eficiência de ouro (`costAnalysis.efficiencyBase`, 210 de 225 itens; os 15 sem valor — pets, consumíveis, trinkets, Stat Bonus, elixires — vão para o fim com "sem análise"). Mostrar `costAnalysis.goldValue` e `efficiency` no modal.
-  c. Ápice: caixa de marcação ao lado do Reembolso que mostra cada item nos status máximos, exibindo o campo `apex` (texto do catálogo; 102 itens têm ápice diferente do base, 123 são "igual ao base"). Quebrapassos com teto de 5 campeões já está registrado no `apex` do catálogo.
-  d. Atributo adicional (Stat Bonus): o modal deve mostrar o campo `mechanics` da habilidade (lista dos fragmentos Prata/Ouro/Prismático com valores e ouro), que hoje não é exibido (só `description`).
+Fase 3 — Build (forja), com docs/direcao_de_arte.md (seção Forja) como régua; biblioteca, exportar/importar e a estrutura de categorias existentes são preservadas e evoluídas. Tarefas pequenas, uma captura cada:
+1. Esqueleto da forja na paleta: fundo de ferro, barra da build, biblioteca, seletor de modo e botões em ferro/brasa; transição loja → forja ao trocar de aba (o papel escurece, o ferro sobe). Tiles e picker ainda os antigos.
+2. Moldes: tiles de item como moldes de metal com rebites e brasa; categorias como bancadas de ferro com placa de atributos; picker lateral em papel de balcão.
+3. Modos **visualização** (padrão) e **edição** (interruptor "Editar"): visualização sem alças, botões de remover/redimensionar ou campos editáveis; edição libera tudo. Biblioteca, exportar/importar e interruptores funcionam nos dois.
+4. Drag-and-drop com animação: pegar (molde acende), arrastar (faíscas seguem), soltar (martelada), remover (brasa apaga).
+5. Caixas customizáveis: tipos Comum/Prioridade/Opcional existentes com rótulos de placa; arrastáveis e redimensionáveis só na edição.
+6. Observações por item editadas na própria tela (substitui o window.prompt), exibidas ao passar o mouse.
+7. Interruptor Mestre Forjador: aplica `masterwork.stats` aos Lendários elegíveis e mostra o item como fica (tile e totais).
+8. Interruptores Reembolso (usa `cashback.netGold`) e Ápice (visão ápice pelos atributos extraídos, como no Catálogo) na forja.
+9. Totais de atributos por caixa e geral, recalculados a cada mudança; eficiência de ouro por categoria (soma de `goldValueTotal` ÷ soma de preços, recalculada com Reembolso; itens sem análise ficam de fora com aviso).
+10. Confirmar com o Leo se "Total geral" deve excluir as caixas Opcionais.
 Fase 3 — Build (forja). Além do CLAUDE.md:
   e. Eficiência de ouro por categoria da build: soma de `costAnalysis.goldValueTotal` ÷ soma de `priceGold` dos itens da categoria (só aritmética sobre os campos do catálogo; itens sem análise ficam de fora e a caixa avisa).
   f. Atributo adicional na build: escolher qual fragmento o item concede exige lista estruturada de fragmentos (stat, valor, nível). Hoje é texto em `mechanics` → propor ao Capítulo 1 um campo estruturado antes de implementar; o Forjador não digita a lista à mão.

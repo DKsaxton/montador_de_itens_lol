@@ -62,7 +62,7 @@ As três texturas são papel amassado quase branco; nunca usadas cruas. Aplicaç
 
 **Cabeçalho do Catálogo**: painel de madeira (tábuas), título em IM Fell English SC `#e8d3a2` com sombra 0 2px `#1a0d05`, busca em papel (textura 02) com sombra interna.
 
-**Placa de entrada**: papel (textura 03) com borda dupla 3px de tinta suave, correntes (barras listradas `#7a6a4a`/`#3a2e1c`) presas ao topo, título 40px, frase em itálico, botão "Entrar na loja" em cera com relevo (sombra 0 3px `#4a1109`).
+**Placa de entrada** (implementada na Fase 2, T10; textura sorteada como as demais): papel com borda dupla 3px de tinta suave, correntes (barras listradas `#7a6a4a`/`#3a2e1c`) presas ao topo, título 40px, frase em itálico, botão "Entrar na loja" em cera com relevo (sombra 0 3px `#4a1109`).
 
 **Slot da forja (Build)**: quadrado com raio 6px, fundo radial de ferro, sombra interna funda, rebites nos cantos; preenchido = contorno `#6a3a18` + glow de brasa, ícone a 68% com borda `#7a4a20`, 3 faíscas (`#ffd27a`, sombra `#ff9b2f`); vazio = texto itálico "molde N" em `#5f5248`.
 
