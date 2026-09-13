@@ -2265,6 +2265,22 @@ select.sort-select, .sort-attr-wrap select {
 .class-tab[data-classe="AD"] { --tab-color: var(--loja-ad); }
 .class-tab[data-classe="AP"] { --tab-color: var(--loja-ap); }
 .class-tab[data-classe="Vitalidade"] { --tab-color: var(--loja-vit); }
+
+/* ---- T4: filtros novos — botões "Maior/Menor primeiro" do grupo Atributo ---- */
+.attr-order { display: flex; gap: 6px; margin-top: 9px; }
+.filter-group.collapsed .attr-order { display: none; }
+.attr-order-btn {
+  font-family: var(--loja-texto);
+  font-size: 12.5px;
+  padding: 4px 10px;
+  border: 1.5px solid var(--loja-tinta-suave);
+  border-radius: 2px;
+  background: transparent;
+  color: var(--loja-tinta-suave);
+  cursor: pointer;
+}
+.attr-order-btn:hover { border-color: var(--loja-cera); color: var(--loja-cera); }
+.attr-order-btn.active { background: var(--loja-cera); border-color: var(--loja-cera-borda); color: var(--loja-cera-texto); }
 </style>
 </head>
 <body>
@@ -2293,7 +2309,9 @@ select.sort-select, .sort-attr-wrap select {
         <option value="price-desc">Preço: maior primeiro</option>
         <option value="attr-desc">Atributo: maior primeiro</option>
         <option value="attr-asc">Atributo: menor primeiro</option>
-        <option value="tier">Tier: Inicial → Lendário</option>
+        <option value="eff-desc">Eficiência de ouro: maior primeiro</option>
+        <option value="eff-asc">Eficiência de ouro: menor primeiro</option>
+        <option value="tier">Tier: Starter → Evolução</option>
       </select>
     </div>
     <div id="sort-attr-wrap" class="sort-attr-wrap">
@@ -3851,6 +3869,10 @@ const state = {
   effects: new Set(),
   modes: new Set(),      // filtro de modo de jogo
   classe: "",            // aba de Classe: "" (todos) | "AD" | "AP" | "Vitalidade" (itemClass.core)
+  damage: new Set(),     // tipo de dano (valores "Dano Físico/Mágico/Verdadeiro" de specialEffects)
+  prices: new Set(),     // faixas de custo (PRICE_BANDS), pelo preço efetivo
+  efficiency: new Set(), // faixas de eficiência de ouro (EFF_BANDS)
+  stats: new Set(),      // atributos concedidos (attributes[].stat)
   runes: new Set(),      // filtro: "mf-yes"
   applyCashback: false,  // modo de exibição: troca os preços pelos com Reembolso
   sort: "name-asc",
@@ -3865,6 +3887,43 @@ const ALL_STATS = (() => {
   }));
   return [...counts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], "pt-BR"));
 })();
+
+// ---- Filtros novos (Fase 2, T4) ----
+// Faixas de custo e de eficiência são réguas da interface, não dado de item:
+// cada item cai numa faixa pelo valor que o catálogo traz.
+const PRICE_BANDS = [
+  { value: "gratis", label: "Grátis", test: p => p === 0 },
+  { value: "ate-500", label: "até 500g", test: p => p > 0 && p <= 500 },
+  { value: "501-1000", label: "501 a 1000g", test: p => p > 500 && p <= 1000 },
+  { value: "1001-2000", label: "1001 a 2000g", test: p => p > 1000 && p <= 2000 },
+  { value: "2001-3000", label: "2001 a 3000g", test: p => p > 2000 && p <= 3000 },
+  { value: "3001+", label: "acima de 3000g", test: p => p > 3000 },
+];
+const EFF_BANDS = [
+  { value: "120+", label: "120% ou mais", test: e => e !== null && e >= 120 },
+  { value: "100-119", label: "100% a 119%", test: e => e !== null && e >= 100 && e < 120 },
+  { value: "80-99", label: "80% a 99%", test: e => e !== null && e >= 80 && e < 100 },
+  { value: "<80", label: "abaixo de 80%", test: e => e !== null && e < 80 },
+  { value: "none", label: "sem análise", test: e => e === null },
+];
+// Tipo de dano: os valores de Efeitos Especiais do catálogo que nomeiam um tipo de dano.
+const DAMAGE_OPTIONS = (CATALOG.meta.specialEffects || []).filter(v => /^Dano (Físico|Mágico|Verdadeiro)$/.test(v));
+
+// Eficiência de ouro (%) = valor em ouro dos atributos ÷ preço pago.
+// Sem Reembolso: o número do próprio catálogo (costAnalysis.efficiencyBase).
+// Com Reembolso ligado: goldValueTotal ÷ cashback.netGold (regra do Leo, 13/09/2026).
+// null = o catálogo não tem análise para o item (pets, consumíveis, trinkets...).
+function itemEfficiency(item) {
+  const ca = item.costAnalysis;
+  if (!ca) return null;
+  if (state.applyCashback && hasCashback(item) && typeof ca.goldValueTotal === "number" && item.cashback.netGold > 0) {
+    return ca.goldValueTotal / item.cashback.netGold * 100;
+  }
+  return typeof ca.efficiencyBase === "number" ? ca.efficiencyBase : null;
+}
+function fmtEff(e) {
+  return e === null ? "sem análise" : e.toLocaleString("pt-BR", { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + "%";
+}
 
 // Valor de um stat num item (null se o item não concede aquele atributo).
 function statValue(item, stat) {
@@ -3975,6 +4034,10 @@ function buildFilterPanel() {
   const groups = [
     { key: "modes", title: "Modo de jogo", collapsed: false, options: ALL_MODES.map(m => ({ value: m, label: m })) },
     { key: "tiers", title: "Tier", collapsed: false, options: TIER_ORDER.map(t => ({ value: t, label: TIER_LABEL[t] })) },
+    { key: "damage", title: "Tipo de dano", collapsed: false, options: DAMAGE_OPTIONS.map(v => ({ value: v, label: v })) },
+    { key: "prices", title: "Custo", collapsed: false, options: PRICE_BANDS.map(b => ({ value: b.value, label: b.label })) },
+    { key: "efficiency", title: "Eficiência de ouro", collapsed: false, options: EFF_BANDS.map(b => ({ value: b.value, label: b.label })) },
+    { key: "stats", title: "Atributo", collapsed: true, options: ALL_STATS.map(([stat, count]) => ({ value: stat, label: stat })), attrOrder: true },
     { key: "archetypes", title: "Arquétipo Recomendado", collapsed: false, options: CATALOG.meta.recommendedArchetype.map(v => ({ value: v, label: v })) },
     { key: "categories", title: "Categoria de Atributo", collapsed: true, options: CATALOG.meta.attributeCategory.map(v => ({ value: v, label: v })) },
     { key: "effects", title: "Efeitos Especiais", collapsed: true, options: CATALOG.meta.specialEffects.map(v => ({ value: v, label: v })) },
@@ -3997,16 +4060,62 @@ function buildFilterPanel() {
       list.appendChild(chip);
     });
     wrap.appendChild(list);
+    // Grupo Atributo: "Maior primeiro / Menor primeiro" ordena pelo atributo marcado.
+    if (group.attrOrder) {
+      const row = document.createElement("div");
+      row.className = "attr-order";
+      [["desc", "Maior primeiro"], ["asc", "Menor primeiro"]].forEach(([dir, label]) => {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = "attr-order-btn";
+        b.dataset.dir = dir;
+        b.textContent = label;
+        b.addEventListener("click", () => setAttrOrder(dir));
+        row.appendChild(b);
+      });
+      wrap.appendChild(row);
+    }
     container.appendChild(wrap);
   });
 
   refreshGroupCounts();
 }
 
+// Ordenação pelo atributo marcado no grupo Atributo (primeiro chip ativo).
+// Clicar no botão já ativo volta para Nome A–Z. Mantém o seletor de
+// ordenação do topo sincronizado.
+function setAttrOrder(dir) {
+  const want = dir === "desc" ? "attr-desc" : "attr-asc";
+  if (state.sort === want) {
+    state.sort = "name-asc";
+  } else {
+    state.sort = want;
+    const first = [...state.stats][0];
+    if (first) state.sortAttr = first;
+  }
+  syncSortControls();
+  render();
+}
+
+function syncSortControls() {
+  const sel = document.getElementById("sort-select");
+  if (sel) sel.value = state.sort;
+  const attrSel = document.getElementById("sort-attr-select");
+  if (attrSel && state.sortAttr) attrSel.value = state.sortAttr;
+  const isAttr = state.sort === "attr-desc" || state.sort === "attr-asc";
+  document.getElementById("sort-attr-wrap").classList.toggle("show", isAttr);
+  document.querySelectorAll(".attr-order-btn").forEach(b =>
+    b.classList.toggle("active", isAttr && state.sort === (b.dataset.dir === "desc" ? "attr-desc" : "attr-asc")));
+}
+
 function toggleFilter(group, value, chipEl) {
   const set = state[group];
   if (set.has(value)) { set.delete(value); chipEl.classList.remove("active"); }
   else { set.add(value); chipEl.classList.add("active"); }
+  if (group === "stats") {
+    const first = [...state.stats][0];
+    if (first && (state.sort === "attr-desc" || state.sort === "attr-asc")) { state.sortAttr = first; syncSortControls(); }
+  }
   updateClearButton();
   render();
 }
@@ -4014,7 +4123,8 @@ function toggleFilter(group, value, chipEl) {
 function updateClearButton() {
   const any = state.tiers.size || state.regions.size || state.archetypes.size ||
     state.categories.size || state.effects.size || state.runes.size ||
-    state.modes.size || state.applyCashback || state.query;
+    state.modes.size || state.damage.size || state.prices.size || state.efficiency.size ||
+    state.stats.size || state.applyCashback || state.query;
   document.getElementById("clear-filters").classList.toggle("show", !!any);
   refreshGroupCounts();
 }
@@ -4022,7 +4132,7 @@ function updateClearButton() {
 function clearAllFilters() {
   state.query = "";
   document.getElementById("search-input").value = "";
-  ["tiers", "regions", "archetypes", "categories", "effects", "runes", "modes"].forEach(k => state[k].clear());
+  ["tiers", "regions", "archetypes", "categories", "effects", "runes", "modes", "damage", "prices", "efficiency", "stats"].forEach(k => state[k].clear());
   state.classe = "";
   document.querySelectorAll(".class-tab").forEach(b => b.classList.toggle("active", b.dataset.classe === ""));
   state.applyCashback = false;
@@ -4089,6 +4199,16 @@ function itemMatchesFilters(item) {
   if (state.categories.size && !(item.attributeCategory || []).some(v => state.categories.has(v))) return false;
   if (state.effects.size && !(item.specialEffects || []).some(v => state.effects.has(v))) return false;
   if (state.runes.has("mf-yes") && masterworkState(item) !== "yes") return false;
+  if (state.damage.size && !(item.specialEffects || []).some(v => state.damage.has(v))) return false;
+  if (state.prices.size) {
+    const p = effectivePrice(item) ?? 0;
+    if (!PRICE_BANDS.some(b => state.prices.has(b.value) && b.test(p))) return false;
+  }
+  if (state.efficiency.size) {
+    const e = itemEfficiency(item);
+    if (!EFF_BANDS.some(b => state.efficiency.has(b.value) && b.test(e))) return false;
+  }
+  if (state.stats.size && !(item.attributes || []).some(a => state.stats.has(a.stat))) return false;
   return true;
 }
 
@@ -4102,6 +4222,19 @@ function getFilteredSorted() {
     case "price-asc": list.sort((a, b) => (effectivePrice(a) ?? 0) - (effectivePrice(b) ?? 0)); break;
     case "price-desc": list.sort((a, b) => (effectivePrice(b) ?? 0) - (effectivePrice(a) ?? 0)); break;
     case "tier": list.sort((a, b) => TIER_ORDER.indexOf(a.tier) - TIER_ORDER.indexOf(b.tier) || a.namePt.localeCompare(b.namePt, "pt-BR")); break;
+    case "eff-desc":
+    case "eff-asc": {
+      // Itens sem análise vão sempre para o fim, nas duas direções.
+      const dir = state.sort === "eff-desc" ? -1 : 1;
+      list.sort((a, b) => {
+        const ea = itemEfficiency(a), eb = itemEfficiency(b);
+        if (ea === null && eb === null) return a.namePt.localeCompare(b.namePt, "pt-BR");
+        if (ea === null) return 1;
+        if (eb === null) return -1;
+        return (ea - eb) * dir || a.namePt.localeCompare(b.namePt, "pt-BR");
+      });
+      break;
+    }
     case "attr-desc":
     case "attr-asc": {
       if (!state.sortAttr) { list.sort((a, b) => a.namePt.localeCompare(b.namePt, "pt-BR")); break; }
@@ -4192,7 +4325,11 @@ function renderCard(item, attrSorting) {
   card.addEventListener("click", () => openModal(item.slug));
 
   let sortStatHtml = "";
-  if (attrSorting) {
+  if (state.sort === "eff-desc" || state.sort === "eff-asc") {
+    const e = itemEfficiency(item);
+    if (e === null) card.classList.add("dimmed");
+    sortStatHtml = `<div class="card-sortstat${e === null ? " none" : ""}"><span class="label">Eficiência de ouro:</span> ${fmtEff(e)}</div>`;
+  } else if (attrSorting) {
     const v = statValue(item, state.sortAttr);
     if (v === null) {
       card.classList.add("dimmed");
@@ -4268,6 +4405,17 @@ function groupLabelFn(list) {
         const v = statValue(it, state.sortAttr);
         if (v === null) return `Não concede ${state.sortAttr}`;
         return `${state.sortAttr}: ${bandLabel(v, step, statUnit(it, state.sortAttr))}`;
+      };
+    }
+
+    case "eff-asc":
+    case "eff-desc": {
+      const vals = list.map(itemEfficiency).filter(v => v !== null);
+      if (!vals.length) return () => "Sem análise de custo";
+      const step = niceStep(Math.max(...vals));
+      return it => {
+        const e = itemEfficiency(it);
+        return e === null ? "Sem análise de custo" : `Eficiência: ${bandLabel(Math.floor(e), step, "%")}`;
       };
     }
 
@@ -4510,8 +4658,7 @@ function init() {
 
   document.getElementById("sort-select").addEventListener("change", (e) => {
     state.sort = e.target.value;
-    const isAttr = state.sort === "attr-desc" || state.sort === "attr-asc";
-    document.getElementById("sort-attr-wrap").classList.toggle("show", isAttr);
+    syncSortControls();
     render();
   });
 
