@@ -2975,6 +2975,11 @@ body:not(.editando) .build-empty::after { content: "Ligue \"Editar\" para criar 
   box-shadow: 0 1px 2px rgba(0,0,0,.6);
 }
 .item-tile.mf .mf-badge { display: block; }
+.item-tile.mf-elegivel .mf-badge { display: block; }
+body.editando .item-tile.mf-elegivel .item-icon { cursor: pointer; }
+body.editando .item-tile.mf-elegivel:not(.mf):hover .item-icon { border-color: #e7c46f; box-shadow: 0 0 12px rgba(231,196,111,.6); }
+.item-tile.mf-elegivel:not(.mf) .mf-badge { background: linear-gradient(180deg, #5a4d42, #3a312a); color: #c9b9a2; box-shadow: 0 1px 2px rgba(0,0,0,.6), inset 0 0 0 1px rgba(255,255,255,.08); }
+.item-tile.mf-elegivel:not(.mf) .mf-badge:hover { background: linear-gradient(160deg, #e7c46f, #b8863b); color: #2a1a0a; }
 .item-tooltip .tt-mf { margin-top: 7px; padding-top: 7px; border-top: 1px dashed var(--forja-tracejado); }
 .item-tooltip .tt-mf .k { font-family: var(--loja-gravado); font-size: 8.5px; letter-spacing: .16em; text-transform: uppercase; color: #c9973f; display: block; margin-bottom: 2px; }
 .item-tooltip .tt-mf div { font-size: 12px; }
@@ -3982,7 +3987,7 @@ function moveItem(fromCatId, fromIndex, toCatId) {
 //
 //   BUILD: Jinx padrão
 //   MODO: ARAM                    (opcional)
-//   MESTRE FORJADOR: sim          (opcional)
+//   MESTRE FORJADOR: Gume do Infinito   (opcional: o item forjado; "sim" só liga o interruptor)
 //
 //   [PRIORIDADE] Núcleo | ½
 //   # comprar sempre nessa ordem
@@ -4001,7 +4006,10 @@ const TEXT_SPAN = { "1/1": 1, "1": 1, "1/2": 2, "½": 2, "1/3": 3, "⅓": 3, "1/
 function buildToText() {
   const lines = [`BUILD: ${build.name}`];
   if (build.mode) lines.push(`MODO: ${build.mode}`);
-  if (build.masterwork) lines.push("MESTRE FORJADOR: sim");
+  if (build.masterwork) {
+    const f = forgedEntry();
+    lines.push(`MESTRE FORJADOR: ${f && byId[f.itemId] ? byId[f.itemId].namePt : "sim"}`);
+  }
   build.cats.forEach(cat => {
     lines.push("");
     lines.push(`[${KIND_LABEL[cat.kind].toUpperCase()}] ${cat.name} | ${SPAN_TEXT[cat.span]}`);
@@ -4029,7 +4037,7 @@ function getItemNameIndex() {
 
 function textToBuild(text) {
   const index = getItemNameIndex();
-  const result = { name: null, mode: "", masterwork: false, cats: [], unknown: [], ignored: 0 };
+  const result = { name: null, mode: "", masterwork: false, forgedId: null, cats: [], unknown: [], ignored: 0 };
   let current = null;
 
   text.split("\n").forEach(rawLine => {
@@ -4040,7 +4048,12 @@ function textToBuild(text) {
     if (mName) { result.name = mName[1].trim(); return; }
 
     const mMf = line.match(/^MESTRE\s+FORJADOR\s*:\s*(.+)$/i);
-    if (mMf) { result.masterwork = /^(sim|s|yes|1|ligado|on)$/i.test(mMf[1].trim()); return; }
+    if (mMf) {
+      result.masterwork = true;
+      const nome = mMf[1].trim();
+      if (!/^(sim|s|yes|1|ligado|on)$/i.test(nome)) result.forgedId = index.get(norm(nome)) || null;
+      return;
+    }
 
     const mMode = line.match(/^MODO\s*:\s*(.+)$/i);
     if (mMode) {
@@ -4123,12 +4136,32 @@ function esc(s) {
 // Elegível = masterwork.eligible === true no catálogo. Os atributos "como
 // fica" vêm de masterwork.stats (stat, base, bonus, total) — nada é calculado
 // aqui além de substituir o valor do atributo pelo total do catálogo.
-function mfApplies(item) {
-  return !!(build.masterwork && item && item.masterwork && item.masterwork.eligible === true && (item.masterwork.stats || []).length);
+// O Mestre Forjador aprimora UM item só (Leo, 13/09/2026): o interruptor habilita a
+// escolha e a entrada marcada com `mf` na build é a forjada. `entry` é o registro
+// {itemId, note, mf} da bancada; sem entry (ex.: Catálogo) nada se aplica.
+function mfEligible(item) {
+  return !!(item && item.masterwork && item.masterwork.eligible === true && (item.masterwork.stats || []).length);
 }
-function mfAttributes(item) {
+function mfApplies(item, entry) {
+  return !!(build.masterwork && entry && entry.mf && mfEligible(item));
+}
+function forgedEntry() {
+  for (const cat of (build.cats || [])) { const e = cat.items.find(x => x.mf); if (e) return e; }
+  return null;
+}
+function setForged(catId, index) {
+  const cat = getCat(catId);
+  const alvo = cat && cat.items[index];
+  if (!alvo || !mfEligible(byId[alvo.itemId])) return;
+  const jaEra = !!alvo.mf;
+  build.cats.forEach(c => c.items.forEach(e => { delete e.mf; }));
+  if (!jaEra) alvo.mf = true;          // clicar de novo desforja
+  saveBuild();
+  renderBuildAll();
+}
+function mfAttributes(item, entry) {
   const base = item.attributes || [];
-  if (!mfApplies(item)) return base;
+  if (!mfApplies(item, entry)) return base;
   return base.map(a => {
     const m = item.masterwork.stats.find(x => x.stat === a.stat);
     return m ? { ...a, value: m.total, mfBase: m.base, mfBonus: m.bonus } : a;
@@ -4140,8 +4173,8 @@ function fmtNum(n) { return Number(n).toLocaleString("pt-BR", { maximumFractionD
 // Atributos "como ficam": base → Mestre Forjador (total do catálogo) → Ápice
 // (valor extraído do texto; tem prioridade quando os dois mexem no mesmo
 // atributo). Soma-se por atributo, separando fixos de percentuais.
-function effectiveAttributes(item) {
-  let list = mfAttributes(item).map(a => ({ ...a, src: a.mfBase !== undefined ? "mf" : "" }));
+function effectiveAttributes(item, entry) {
+  let list = mfAttributes(item, entry).map(a => ({ ...a, src: a.mfBase !== undefined ? "mf" : "" }));
   if (state.applyApex && hasApex(item)) {
     const ap = apexAttributes(item);
     if (ap) {
@@ -4160,7 +4193,7 @@ function sumAttributes(entries) {
   entries.forEach(e => {
     const it = byId[e.itemId];
     if (!it) return;
-    effectiveAttributes(it).forEach(a => {
+    effectiveAttributes(it, e).forEach(a => {
       if (typeof a.value !== "number") return;
       const k = a.stat + "|" + a.unit;
       const t = totals.get(k) || { stat: a.stat, unit: a.unit, value: 0, srcs: new Set() };
@@ -4205,7 +4238,8 @@ function renderBuildTotals() {
   if (!all.length) { box.className = "build-totals"; box.innerHTML = ""; return; }
   const totals = sumAttributes(all);
   const eff = goldEfficiency(all);
-  const flags = [state.applyCashback ? "Reembolso" : "", build.masterwork ? "Mestre Forjador" : "", state.applyApex ? "Ápice" : ""].filter(Boolean);
+  const forjado = forgedEntry();
+  const flags = [state.applyCashback ? "Reembolso" : "", build.masterwork ? ("Mestre Forjador" + (forjado && byId[forjado.itemId] ? ` em ${byId[forjado.itemId].namePt}` : " (nenhum item forjado — na edição, clique no ícone de um Lendário elegível)")) : "", state.applyApex ? "Ápice" : ""].filter(Boolean);
   box.className = "build-totals show";
   box.innerHTML = `
     <div class="bt-head"><span class="bt-title">Atributos da build · ${all.length} ${all.length === 1 ? "item" : "itens"}</span>${effHtml(eff, "bt-eff")}</div>
@@ -4304,7 +4338,7 @@ function renderCategories() {
         const tile = document.createElement("div");
         const offMode = build.mode && !itemAvailableIn(item, build.mode);
         // O modo (compacto x nomeado) é decidido depois, medindo a largura real.
-        tile.className = "item-tile compact" + (entry.note ? " has-note" : "") + (offMode ? " off-mode" : "") + (mfApplies(item) ? " mf" : "") + (state.applyApex && hasApex(item) ? " apex" : "");
+        tile.className = "item-tile compact" + (entry.note ? " has-note" : "") + (offMode ? " off-mode" : "") + (mfApplies(item, entry) ? " mf" : "") + (build.masterwork && mfEligible(item) ? " mf-elegivel" : "") + (state.applyApex && hasApex(item) ? " apex" : "");
         if (offMode) tile.title = `${item.namePt} não existe em ${build.mode}`;
         tile.draggable = build.editing;
         tile.style.setProperty("--tier-color", TIER_CSS[item.tier] || "");
@@ -4320,7 +4354,7 @@ function renderCategories() {
             ${iconInner(item)}
             <span class="note-dot"></span>
           </div>
-          <span class="mf-badge">MF</span>
+          <span class="mf-badge" title="${build.masterwork && mfEligible(item) ? (entry.mf ? "Forjado pelo Mestre Forjador" : "Elegível ao Mestre Forjador") : ""}">MF</span>
           <span class="apex-badge">ÁPICE</span>
           <span class="tile-name">${esc(item.namePt)}</span>
           <span class="tier-strip"></span>`;
@@ -4599,7 +4633,15 @@ function initCategoryUI() {
       renderBuild(); saveBuild(); return;
     }
     if (e.target.closest(".cat-name") || e.target.closest(".cat-desc")) return;
-    if (e.target.closest(".item-tile")) return;
+    // Mestre Forjador: na edição, com o interruptor ligado, clicar no ÍCONE do
+    // molde forja aquele item (Leo, 13/09/2026); a placa MF é só indicador.
+    const tile = e.target.closest(".item-tile");
+    if (tile) {
+      if (build.editing && build.masterwork && e.target.closest(".item-icon")) {
+        setForged(tile.dataset.catId, Number(tile.dataset.index));
+      }
+      return;
+    }
     selectCategory(id);
   });
 
@@ -4706,7 +4748,7 @@ function showTooltip(tile) {
         ${(apexAttributes(item) || []).filter(a => a.changed).map(a => `<div><b>${esc(a.raw)}</b>${a.added ? " (só no ápice)" : ` <span style="opacity:.7">no lugar de ${esc(a.baseRaw)}</span>`}</div>`).join("") || `<div>${esc(item.apex)}</div>`}
       </div>` : ""}
     ${item.masterwork && item.masterwork.eligible === true && (item.masterwork.stats || []).length ? `
-      <div class="tt-mf${mfApplies(item) ? "" : " off"}"><span class="k">Mestre Forjador${mfApplies(item) ? "" : " (desligado)"}</span>
+      <div class="tt-mf${mfApplies(item, entry) ? "" : " off"}"><span class="k">Mestre Forjador${mfApplies(item, entry) ? " — forjado" : (build.masterwork ? (build.editing ? " — elegível, clique no ícone para forjar" : " — elegível (ligue Editar e clique no ícone)") : " (desligado)")}</span>
         ${item.masterwork.stats.map(m => `<div>${esc(m.stat)}: ${fmtNum(m.base)} (+${fmtNum(m.bonus)}) = <b>${fmtNum(m.total)}</b></div>`).join("")}
       </div>` : ""}
     ${entry.note ? `<div class="tt-note">${esc(entry.note)}</div>` : ""}
@@ -4926,7 +4968,13 @@ function initLibrary() {
     if (!r.cats.length) { showIoMsg("Não encontrei nenhuma categoria ou item válido nesse texto.", true); return; }
 
     createNewBuild(r.name || "Build importada", r.cats, r.mode);
-    if (r.masterwork) { build.masterwork = true; saveBuild(); renderBuildAll(); }
+    if (r.masterwork) {
+      build.masterwork = true;
+      if (r.forgedId) {
+        for (const c of build.cats) { const e = c.items.find(x => x.itemId === r.forgedId); if (e) { e.mf = true; break; } }
+      }
+      saveBuild(); renderBuildAll();
+    }
 
     const total = r.cats.reduce((s, c) => s + c.items.length, 0);
     let msg = `Importado: ${r.cats.length} categoria(s), ${total} item(ns)${r.mode ? `, modo ${r.mode}` : ""}.`;
@@ -5231,7 +5279,7 @@ function statsFromBuild() {
       if (!it) return;
       count++;
       // Atributos como ficam na build (Mestre Forjador / Ápice), só valores fixos.
-      const lista = typeof effectiveAttributes === "function" ? effectiveAttributes(it) : (it.attributes || []);
+      const lista = typeof effectiveAttributes === "function" ? effectiveAttributes(it, e) : (it.attributes || []);
       lista.forEach(a => {
         if (a.unit === "flat" && totals[a.stat] !== undefined && typeof a.value === "number") totals[a.stat] += a.value;
       });
