@@ -2981,6 +2981,24 @@ body:not(.editando) .build-empty::after { content: "Ligue \"Editar\" para criar 
 .item-tooltip .tt-mf b { color: #e7c46f; font-weight: 700; }
 .item-tooltip .tt-mf.off { opacity: .7; }
 
+/* ---- Fase 3, T8: Reembolso e Ápice na forja ---- */
+.item-tile .mf-badge { left: 4px; transform: none; }
+.item-tile .apex-badge {
+  display: none; position: absolute; top: 4px; right: 4px; z-index: 3;
+  font-family: var(--loja-gravado); font-size: 7px; font-weight: 700; letter-spacing: .1em;
+  padding: 1px 4px; border-radius: 999px;
+  background: linear-gradient(160deg, #ffd27a, #ff7a1e); color: #1a0d05;
+  box-shadow: 0 1px 2px rgba(0,0,0,.6);
+}
+.item-tile.apex .apex-badge { display: block; }
+.item-tile.apex .item-icon { box-shadow: 0 0 12px rgba(255,140,40,.8); }
+.item-tooltip .tt-apex { margin-top: 7px; padding-top: 7px; border-top: 1px dashed var(--forja-tracejado); font-size: 12px; }
+.item-tooltip .tt-apex .k { font-family: var(--loja-gravado); font-size: 8.5px; letter-spacing: .16em; text-transform: uppercase; color: var(--forja-brasa); display: block; margin-bottom: 2px; }
+.item-tooltip .tt-apex b { color: var(--forja-brasa-clara); }
+.item-tooltip .tt-cb { color: var(--forja-brasa-clara); font-style: italic; font-size: 11px; }
+.pk-price.discount { color: var(--loja-cera); }
+.pk-price.discount::before { content: "↓ "; font-size: 10px; }
+
 /* ---- Fase 3, T6: observação por item editada na própria tela (substitui o prompt) ---- */
 .note-editor {
   position: fixed; z-index: 70; display: none; width: 300px;
@@ -3160,6 +3178,14 @@ body.editando .cat-kind:hover { filter: brightness(1.15); }
     <input id="build-name-input" class="build-name" placeholder="Nome da build" spellcheck="false">
     <div id="build-summary" class="build-summary"></div>
     <div class="build-actions">
+      <label class="sw" id="cb-switch" title="Preços com o desconto da runa Reembolso (cashback.netGold), como no Catálogo">
+        <input type="checkbox" id="cb-toggle">
+        <i></i><span>Reembolso</span>
+      </label>
+      <label class="sw" id="apex-switch" title="Itens nos status máximos (campo apex do catálogo), como no Catálogo">
+        <input type="checkbox" id="apex-toggle">
+        <i></i><span>Ápice</span>
+      </label>
       <label class="sw" id="mf-switch" title="Aplica o Mestre Forjador aos Lendários elegíveis da build (masterwork.stats do catálogo)">
         <input type="checkbox" id="mf-toggle">
         <i></i><span>Mestre Forjador</span>
@@ -3707,6 +3733,8 @@ function renderSpanOptions() {
 function renderBuildSummary() {
   const mfToggle = document.getElementById("mf-toggle");
   if (mfToggle) mfToggle.checked = !!build.masterwork;
+  const cbT = document.getElementById("cb-toggle"); if (cbT) cbT.checked = !!state.applyCashback;
+  const apT = document.getElementById("apex-toggle"); if (apT) apT.checked = !!state.applyApex;
   const nameInput = document.getElementById("build-name-input");
   if (document.activeElement !== nameInput) nameInput.value = build.name;
   const total = buildTotal(null);
@@ -3714,8 +3742,8 @@ function renderBuildSummary() {
   const count = build.cats.reduce((s, c) => s + c.items.length, 0);
   document.getElementById("build-summary").innerHTML =
     `<span>${build.cats.length} ${build.cats.length === 1 ? "categoria" : "categorias"} · ${count} ${count === 1 ? "item" : "itens"}</span>
-     <span class="sum-prio">Prioridade: <b>${prio}g</b></span>
-     <span>Total geral: <b>${total}g</b></span>`;
+     <span class="sum-prio">Prioridade: <b>${fmtG(prio)}</b></span>
+     <span>Total geral: <b>${fmtG(total)}</b></span>`;
 }
 
 function renderCategories() {
@@ -3750,7 +3778,7 @@ function renderCategories() {
       </header>
       <input class="cat-desc" value="${esc(cat.desc || "")}" placeholder="Descrição — quando comprar, contra quem..." spellcheck="false">
       <div class="cat-body"></div>
-      <div class="cat-total" title="${cat.items.length} ${cat.items.length === 1 ? "item" : "itens"} nesta categoria">${catTotal(cat)}g</div>
+      <div class="cat-total" title="${cat.items.length} ${cat.items.length === 1 ? "item" : "itens"} nesta categoria">${fmtG(catTotal(cat))}</div>
       <div class="cat-resize" title="Arraste para redimensionar (encaixa em ¼ · ⅓ · ½ · 1/1)"></div>`;
 
     const body = el.querySelector(".cat-body");
@@ -3763,7 +3791,7 @@ function renderCategories() {
         const tile = document.createElement("div");
         const offMode = build.mode && !itemAvailableIn(item, build.mode);
         // O modo (compacto x nomeado) é decidido depois, medindo a largura real.
-        tile.className = "item-tile compact" + (entry.note ? " has-note" : "") + (offMode ? " off-mode" : "") + (mfApplies(item) ? " mf" : "");
+        tile.className = "item-tile compact" + (entry.note ? " has-note" : "") + (offMode ? " off-mode" : "") + (mfApplies(item) ? " mf" : "") + (state.applyApex && hasApex(item) ? " apex" : "");
         if (offMode) tile.title = `${item.namePt} não existe em ${build.mode}`;
         tile.draggable = build.editing;
         tile.style.setProperty("--tier-color", TIER_CSS[item.tier] || "");
@@ -3780,6 +3808,7 @@ function renderCategories() {
             <span class="note-dot"></span>
           </div>
           <span class="mf-badge">MF</span>
+          <span class="apex-badge">ÁPICE</span>
           <span class="tile-name">${esc(item.namePt)}</span>
           <span class="tier-strip"></span>`;
         body.appendChild(tile);
@@ -3861,7 +3890,7 @@ function renderPicker() {
     row.innerHTML = `
       <span class="pk-abbr">${iconInner(item)}</span>
       <span class="pk-name">${item.namePt}<span class="pk-tier">${TIER_LABEL[item.tier] || item.tier}</span></span>
-      <span class="pk-price">${effectivePrice(item)}g</span>`;
+      <span class="pk-price${state.applyCashback && hasCashback(item) ? " discount" : ""}">${fmtG(effectivePrice(item))}</span>`;
     frag.appendChild(row);
   });
   list.appendChild(frag);
@@ -4148,9 +4177,13 @@ function showTooltip(tile) {
   const tt = document.getElementById("item-tooltip");
   tt.innerHTML = `
     <div class="tt-name">${item.namePt}</div>
-    <div class="tt-sub">${item.nameEn} · ${effectivePrice(item)}g</div>
+    <div class="tt-sub">${item.nameEn} · ${fmtG(effectivePrice(item))}${state.applyCashback && hasCashback(item) ? ` <span class="tt-cb">com Reembolso (de ${fmtG(item.priceGold)})</span>` : ""}</div>
     ${build.mode && !itemAvailableIn(item, build.mode)
       ? `<div class="tt-offmode">Não disponível em ${build.mode}</div>` : ""}
+    ${state.applyApex && hasApex(item) ? `
+      <div class="tt-apex"><span class="k">Ápice</span>
+        ${(apexAttributes(item) || []).filter(a => a.changed).map(a => `<div><b>${esc(a.raw)}</b>${a.added ? " (só no ápice)" : ` <span style="opacity:.7">no lugar de ${esc(a.baseRaw)}</span>`}</div>`).join("") || `<div>${esc(item.apex)}</div>`}
+      </div>` : ""}
     ${item.masterwork && item.masterwork.eligible === true && (item.masterwork.stats || []).length ? `
       <div class="tt-mf${mfApplies(item) ? "" : " off"}"><span class="k">Mestre Forjador${mfApplies(item) ? "" : " (desligado)"}</span>
         ${item.masterwork.stats.map(m => `<div>${esc(m.stat)}: ${fmtNum(m.base)} (+${fmtNum(m.bonus)}) = <b>${fmtNum(m.total)}</b></div>`).join("")}
@@ -4411,6 +4444,20 @@ function initBuildBuilder() {
   };
   editToggle.addEventListener("change", () => applyEditing(editToggle.checked));
   applyEditing(false);
+
+  // Reembolso e Ápice: espelham as caixas do Catálogo (mesmo estado global).
+  const cbToggle = document.getElementById("cb-toggle");
+  const apexToggle = document.getElementById("apex-toggle");
+  cbToggle.addEventListener("change", () => {
+    const cb = document.querySelector('input[data-rune="cashback"]');
+    if (cb && cb.checked !== cbToggle.checked) cb.click();   // o handler do Catálogo cuida do resto
+    else renderBuildAll();
+  });
+  apexToggle.addEventListener("change", () => {
+    const cb = document.querySelector('input[data-rune="apex"]');
+    if (cb && cb.checked !== apexToggle.checked) cb.click();
+    renderBuildAll();
+  });
 
   // Mestre Forjador: salvo na build; o seletor reflete a build ativa.
   const mfToggle = document.getElementById("mf-toggle");
@@ -4961,7 +5008,7 @@ function apexAttributes(item) {
   const base = item.attributes || [];
   const list = base.map(a => {
     const x = ap.find(o => o.stat === a.stat);
-    return x ? { ...x, changed: true, baseRaw: a.raw } : a;
+    return x && (x.value !== a.value || x.unit !== a.unit) ? { ...x, changed: true, baseRaw: a.raw } : a;
   });
   ap.forEach(x => { if (!base.some(a => a.stat === x.stat)) list.push({ ...x, changed: true, added: true }); });
   return list;
@@ -5307,11 +5354,16 @@ function effectivePrice(item) {
   return item.priceGold;
 }
 
+// Ouro em pt-BR: 3.237,5g (o Reembolso deixa meio ouro).
+function fmtG(n) {
+  return (n === null || n === undefined || Number.isNaN(Number(n))) ? "—" : Number(n).toLocaleString("pt-BR", { maximumFractionDigits: 1 }) + "g";
+}
+
 function priceLabel(item) {
   const p = effectivePrice(item);
   if (p === 0) return "Grátis";
   const discounted = state.applyCashback && hasCashback(item);
-  return `<span class="${discounted ? "price-discounted" : ""}">${p}g</span>`;
+  return `<span class="${discounted ? "price-discounted" : ""}">${fmtG(p)}</span>`;
 }
 
 const MODE_SHORT = {
@@ -5974,10 +6026,15 @@ function init() {
     setTimeout(() => entrada.classList.add("fechada"), 900);
   }
   document.getElementById("entrar").addEventListener("click", () => entrarNaLoja(false));
-  if (/^#(item=|ficha=|apice$|animacoes$|build$|build-animacoes$|build-observacao$)/.test(location.hash)) entrarNaLoja(true);
+  if (/^#(item=|ficha=|apice$|animacoes$|build$|build-animacoes$|build-observacao$|build-apice$)/.test(location.hash)) entrarNaLoja(true);
   // #build abre direto na forja (link direto e captura); #build-animacoes congela
   // a queda e a remoção de um molde (só captura).
-  if (/^#build(-animacoes|-observacao)?$/.test(location.hash)) switchTab("build");
+  if (/^#build(-animacoes|-observacao|-apice)?$/.test(location.hash)) switchTab("build");
+  // #build-apice: forja com Reembolso e Ápice ligados (só captura).
+  if (location.hash === "#build-apice") {
+    ["cashback", "apex"].forEach(k => { const cb = document.querySelector(`input[data-rune="${k}"]`); if (cb && !cb.checked) cb.click(); });
+    renderBuildAll();
+  }
   // #build-observacao abre o editor de observação no primeiro molde (só captura).
   if (location.hash === "#build-observacao") {
     const t = document.getElementById("edit-toggle");
