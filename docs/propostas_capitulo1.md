@@ -11,6 +11,8 @@ Regra: eficiência = valor em ouro dos atributos ÷ preço pago. Cada interrupto
 | Mestre Forjador | valor em ouro sobe pelos atributos de `masterwork.stats` | `masterwork.stats[].bonus` por atributo (109 itens) | o valor em ouro do bônus: campo numérico `masterwork.bonusGoldTotal` (a regra "1.000g divididos igualmente" está só no texto `masterwork.raw`) ou `costAnalysis.parts[] = {stat, value, gold}` para valorar cada ponto |
 | Ápice | atributos nos valores máximos | `apex` (texto; 102 itens com ápice ≠ base) | `apexStats[] = {stat, value, unit}` e `apexGoldValueTotal` (ou `apexEfficiencyBase`) por item |
 
+Enquanto isso (Fase 2, T8b): o app extrai do texto `apex` só os "+N de <atributo>" com sinal e nome conhecido (21 dos 102 itens ganham atributos substituídos; os demais mostram o texto). Com `apexStats[]` no catálogo, a extração é desligada.
+
 Combinações: (valor base + bônus MF, ou valor no ápice) ÷ (preço ou preço líquido).
 
 ## 2. Fragmentos do Atributo adicional (Stat Bonus)

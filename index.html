@@ -2451,6 +2451,79 @@ select.sort-select, .sort-attr-wrap select {
 }
 .tab-btn.active .tab-count { background: #2a1a0a; color: #f4e6c4; }
 .tab-btn .tab-count:empty { display: none; }
+/* Categoria-alvo escolhida manualmente (nada é automático) e aviso */
+.cat-target { display: inline-flex; align-items: center; gap: 8px; font-family: var(--loja-texto); font-style: italic; font-size: 13px; color: var(--loja-legenda); }
+.cat-target select {
+  background: var(--loja-papel); color: var(--loja-tinta); border: 1px solid var(--loja-tinta-suave); border-radius: 2px;
+  font-family: var(--loja-texto); font-style: normal; font-size: 13px; padding: 4px 8px; max-width: 220px;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,.2), 0 2px 5px rgba(0,0,0,.4);
+}
+/* ---- Modo de exibição: cards ou só ícones (Leo, 13/09/2026) ---- */
+.grid-tools { display: inline-flex; align-items: center; gap: 16px; }
+.view-toggle { display: inline-flex; border: 1.5px solid var(--loja-tinta-suave); border-radius: 999px; overflow: hidden; background: var(--loja-papel); }
+.view-btn {
+  background: transparent; border: none; cursor: pointer;
+  font-family: var(--loja-texto); font-size: 12.5px; color: var(--loja-tinta-suave); padding: 3px 11px;
+}
+.view-btn.active { background: var(--loja-cera); color: var(--loja-cera-texto); }
+body.icons-only .grid { grid-template-columns: repeat(auto-fill, 78px); gap: 10px; }
+body.icons-only .card { height: 78px; }
+body.icons-only .card-surface { padding: 8px 8px 8px 12px; gap: 0; align-items: center; }
+body.icons-only .card-surface::before { width: 4px; }
+body.icons-only .card:not(.full) .card-main { display: none; }
+body.icons-only .card .tag.tier-badge { display: none; }
+body.icons-only .card .stamp { font-size: 8px; padding: 2px 5px; letter-spacing: .1em; border-width: 2px; }
+body.icons-only .card.full .card-surface { padding: 12px 12px 12px 16px; gap: 11px; align-items: stretch; }
+body.icons-only .card.full .card-main { display: flex; }
+body.icons-only .card.full .tag.tier-badge { display: inline-block; }
+/* Modo Nomes: ícone + nome, sem descrição (Leo, 13/09/2026) */
+body.names-only .grid { grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 10px; }
+body.names-only .card { height: 84px; }
+body.names-only .card-surface { padding: 10px 10px 10px 14px; align-items: center; }
+body.names-only .card:not(.full) .card-main { padding-bottom: 0; }
+body.names-only .card:not(.full) .card-name { font-size: 14.5px; max-height: none; }
+body.names-only .card:not(.full) .card-name .en,
+body.names-only .card:not(.full) .card-price,
+body.names-only .card:not(.full) .card-attrs,
+body.names-only .card:not(.full) .card-sortstat,
+body.names-only .card:not(.full) .tag.tier-badge { display: none; }
+body.names-only .card:not(.full) .card-top { margin: 0; }
+body.names-only .card .stamp { font-size: 9px; padding: 3px 7px; letter-spacing: .12em; }
+body.names-only .card.full .card-surface { padding: 12px 12px 12px 16px; align-items: stretch; }
+body.names-only .card.full .card-main { padding-bottom: 22px; }
+/* Sem categoria escolhida, o card abre o pergaminho; o cursor avisa. */
+body:not(.cat-selected) #grid .card { cursor: zoom-in; }
+
+/* ---- T8: caixa Ápice — card mostra o ápice do catálogo no lugar do resumo ---- */
+.cashback-banner.apex { color: var(--loja-latao-escuro); border-left-color: var(--loja-latao); }
+.card-apex {
+  margin-top: 6px;
+  font-family: var(--loja-texto);
+  font-style: italic;
+  font-size: 12.5px;
+  line-height: 1.35;
+  color: var(--loja-tinta);
+  max-height: calc(12.5px * 1.35 * 4);
+  overflow: hidden;
+}
+.card-apex .apex-label {
+  font-family: var(--loja-gravado);
+  font-style: normal;
+  font-size: 8.5px;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--loja-latao-escuro);
+  margin-right: 5px;
+}
+.card.apex-on .card-surface { box-shadow: 0 4px 10px rgba(0,0,0,.55), inset 0 0 0 1px rgba(182,135,58,.45); }
+
+/* ---- T8b: Ápice substitui os atributos (valores extraídos do texto do catálogo) ---- */
+.attr-line.apex-changed b { color: var(--loja-cera); }
+.attr-line.apex-changed::after { content: " ↑"; color: var(--loja-latao-escuro); font-size: 10px; }
+.card-apex-cond { margin-top: 4px; font-family: var(--loja-texto); font-style: italic; font-size: 11.5px; color: var(--loja-tinta-suave); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.card-apex-cond .apex-label, .card-apex .apex-label { font-family: var(--loja-gravado); font-style: normal; font-size: 8.5px; letter-spacing: .16em; text-transform: uppercase; color: var(--loja-latao-escuro); margin-right: 5px; }
+.modal .attr-line .base { color: var(--loja-tinta-suave); font-size: 12px; font-style: italic; margin-left: 6px; }
+.modal .attr-line.apex-changed { color: var(--loja-cera); font-weight: 700; }
 </style>
 </head>
 <body>
@@ -2491,6 +2564,9 @@ select.sort-select, .sort-attr-wrap select {
     <div id="cashback-banner" class="cashback-banner">
       Exibindo os preços já com o desconto da runa Reembolso. Itens que a runa não afeta seguem com o preço normal.
     </div>
+    <div id="apex-banner" class="cashback-banner apex">
+      Ápice ligado: cada card mostra o item nos status máximos que o catálogo registra. Itens "igual ao base" ficam como estão.
+    </div>
   </div>
 </header>
 
@@ -2505,6 +2581,14 @@ select.sort-select, .sort-attr-wrap select {
     <nav id="class-tabs" class="class-tabs" aria-label="Classe do item"></nav>
     <div class="grid-meta">
       <span id="result-count"></span>
+      <span class="grid-tools">
+        <span class="view-toggle" role="group" aria-label="Modo de exibição">
+          <button type="button" class="view-btn active" data-view="cards" title="Cards com nome, preço e atributos">Cards</button>
+          <button type="button" class="view-btn" data-view="names" title="Ícone e nome, sem descrição">Nomes</button>
+          <button type="button" class="view-btn" data-view="icons" title="Só os ícones dos itens">Ícones</button>
+        </span>
+        <label class="cat-target">Marcar em: <select id="catalog-cat-select"></select></label>
+      </span>
     </div>
     <div id="grid" class="grid"></div>
   </main>
@@ -4061,6 +4145,7 @@ const state = {
   stats: new Set(),      // atributos concedidos (attributes[].stat)
   runes: new Set(),      // filtro: "mf-yes"
   applyCashback: false,  // modo de exibição: troca os preços pelos com Reembolso
+  applyApex: false,      // modo de exibição: cards mostram o campo apex (status máximos)
   sort: "name-asc",
   sortAttr: "",          // stat escolhido quando sort é "attr-desc"/"attr-asc"
 };
@@ -4131,6 +4216,54 @@ function masterworkState(item) {
 // Reembolso só se aplica a item comprável: o catálogo registra "none" (texto em
 // cashback.raw, sem netGold) nos itens obtidos por transformação gratuita.
 function hasCashback(item) { return !!(item.cashback && typeof item.cashback.netGold === "number"); }
+// Ápice: texto livre do catálogo; "igual ao base" significa que nada muda no máximo.
+function hasApex(item) { return !!item.apex && !/^igual ao base/i.test(item.apex.trim()); }
+
+// Atributos no Ápice, extraídos do texto `apex` do catálogo (provisório: quando o
+// Capítulo 1 fornecer o ápice estruturado, este trecho passa a ler o campo).
+// Regra conservadora: só "+N de <atributo>" com sinal, em que <atributo> é um nome
+// que o catálogo já usa em attributes[].stat. Nada de cura, regeneração por
+// segundo ou totais sem sinal — esses ficam só no texto.
+let KNOWN_STATS = null;
+function apexStatsOf(item) {
+  if (item._apexStats) return item._apexStats;
+  if (!KNOWN_STATS) KNOWN_STATS = ALL_STATS.map(([st]) => st).sort((a, b) => b.length - a.length);
+  const out = [];
+  if (hasApex(item)) {
+    let t = item.apex;
+    KNOWN_STATS.forEach(st => {
+      const re = new RegExp("\\+(\\d[\\d.,]*)\\s*(%?)\\s+de\\s+" + st.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "(?![\\wÀ-ú])", "g");
+      t = t.replace(re, (m, num, pct) => {
+        const value = Number(num.replace(/\./g, "").replace(",", "."));
+        if (!Number.isNaN(value) && !out.some(o => o.stat === st)) {
+          out.push({ stat: st, value, unit: pct ? "percent" : "flat", raw: `+${num}${pct} de ${st}` });
+        }
+        return " ".repeat(m.length);
+      });
+    });
+  }
+  item._apexStats = out;
+  return out;
+}
+
+// Lista de atributos a exibir com o Ápice ligado: os do item, com o valor do
+// ápice onde ele existe (marcados), mais os que só aparecem no ápice.
+function apexAttributes(item) {
+  const ap = apexStatsOf(item);
+  if (!ap.length) return null;
+  const base = item.attributes || [];
+  const list = base.map(a => {
+    const x = ap.find(o => o.stat === a.stat);
+    return x ? { ...x, changed: true, baseRaw: a.raw } : a;
+  });
+  ap.forEach(x => { if (!base.some(a => a.stat === x.stat)) list.push({ ...x, changed: true, added: true }); });
+  return list;
+}
+// Condição do ápice: o trecho antes do primeiro ":" (ex.: "10 acúmulos de Glória").
+function apexCondition(item) {
+  const i = (item.apex || "").indexOf(":");
+  return i > 0 && i < 80 ? item.apex.slice(0, i) : "";
+}
 
 // ---------------- build filter option lists from meta ----------------
 // Cabeçalho de grupo recolhível. Grupos longos começam fechados para a
@@ -4161,7 +4294,7 @@ function refreshGroupCounts() {
     const badge = wrap.querySelector(".active-count");
     if (!badge) return;
     const n = key === "runes"
-      ? state.runes.size + (state.applyCashback ? 1 : 0)
+      ? state.runes.size + (state.applyCashback ? 1 : 0) + (state.applyApex ? 1 : 0)
       : (state[key] ? state[key].size : 0);
     badge.textContent = n;
     badge.classList.toggle("show", n > 0);
@@ -4213,6 +4346,22 @@ function buildFilterPanel() {
     if (typeof renderBuildAll === "function") renderBuildAll();
   });
   runeBody.appendChild(cbRow);
+
+  const apCount = CATALOG.items.filter(hasApex).length;
+  const apRow = document.createElement("label");
+  apRow.className = "toggle-row";
+  apRow.innerHTML = `
+    <input type="checkbox" data-rune="apex">
+    <span class="toggle-box"><svg viewBox="0 0 24 24" fill="none" stroke-width="3"><path d="M4 12l5 5L20 6"/></svg></span>
+    <span>Ápice: itens nos status máximos</span>
+    <span class="count">${apCount}</span>`;
+  apRow.querySelector("input").addEventListener("change", (e) => {
+    state.applyApex = e.target.checked;
+    document.getElementById("apex-banner").classList.toggle("show", e.target.checked);
+    updateClearButton();
+    render();
+  });
+  runeBody.appendChild(apRow);
 
   runeWrap.appendChild(runeBody);
   container.appendChild(runeWrap);
@@ -4310,7 +4459,7 @@ function updateClearButton() {
   const any = state.tiers.size || state.regions.size || state.archetypes.size ||
     state.categories.size || state.effects.size || state.runes.size ||
     state.modes.size || state.damage.size || state.prices.size || state.efficiency.size ||
-    state.stats.size || state.applyCashback || state.query;
+    state.stats.size || state.applyCashback || state.applyApex || state.query;
   document.getElementById("clear-filters").classList.toggle("show", !!any);
   refreshGroupCounts();
 }
@@ -4322,7 +4471,9 @@ function clearAllFilters() {
   state.classe = "";
   document.querySelectorAll(".class-tab").forEach(b => b.classList.toggle("active", b.dataset.classe === ""));
   state.applyCashback = false;
+  state.applyApex = false;
   document.getElementById("cashback-banner").classList.remove("show");
+  document.getElementById("apex-banner").classList.remove("show");
   document.querySelectorAll(".chip.active").forEach(c => c.classList.remove("active"));
   document.querySelectorAll("[data-rune]").forEach(cb => { cb.checked = false; });
   updateClearButton();
@@ -4477,15 +4628,23 @@ function shortStat(name) {
 // O card mostra os VALORES dos atributos, não as categorias nem os modos de jogo:
 // a categoria já está nos filtros e o modo, no modal.
 function attrValuesHtml(item) {
-  const list = item.attributes || [];
+  let list = item.attributes || [];
+  let apexCond = "";
+  if (state.applyApex && hasApex(item)) {
+    const merged = apexAttributes(item);
+    if (!merged) return `<div class="card-apex"><span class="apex-label">Ápice</span>${item.apex}</div>`;
+    list = merged;
+    const cond = apexCondition(item);
+    apexCond = `<div class="card-apex-cond"><span class="apex-label">Ápice</span>${esc(cond || "no máximo")}</div>`;
+  }
   if (!list.length) return "";
   // Teto de 3 linhas: é o que cabe na altura fixa do card sem cortar nada.
   const shown = list.length > 3 ? list.slice(0, 2) : list.slice(0, 3);
   const extra = list.length - shown.length;
   const linhas = shown.map(a =>
-    `<div class="attr-line"><b>+${a.value}${a.unit === "percent" ? "%" : ""}</b> ${shortStat(a.stat)}</div>`);
+    `<div class="attr-line${a.changed ? " apex-changed" : ""}"><b>+${a.value}${a.unit === "percent" ? "%" : ""}</b> ${shortStat(a.stat)}</div>`);
   if (extra) linhas.push(`<div class="attr-line more">+${extra} atributo${extra > 1 ? "s" : ""}</div>`);
-  return `<div class="card-attrs">${linhas.join("")}</div>`;
+  return `<div class="card-attrs">${linhas.join("")}${apexCond}</div>`;
 }
 
 function runeMarksHtml(item) {
@@ -4511,9 +4670,10 @@ function renderCard(item, attrSorting) {
   card.style.setProperty("--class-color", classColor(item));
   card.style.setProperty("--tex-pick", paperFor(item.slug));
   card.dataset.slug = item.slug;
-  card.title = "Clique: marcar para o Build · Ícone ou Shift+clique: abrir o pergaminho";
+  card.title = "Clique: marcar na categoria escolhida em \"Marcar em\" (sem categoria, abre o pergaminho) · Ícone ou Shift+clique: pergaminho";
   card.addEventListener("click", (e) => {
-    if (e.target.closest(".card-icon") || e.shiftKey) { openModal(item.slug); return; }
+    // Sem categoria selecionada, o clique abre o pergaminho (Leo, 13/09/2026).
+    if (e.target.closest(".card-icon") || e.shiftKey || !getCat(build.selectedCatId)) { openModal(item.slug); return; }
     toggleItemInBuild(item.slug);
   });
 
@@ -4533,6 +4693,7 @@ function renderCard(item, attrSorting) {
   }
 
   if (findInBuild(item.slug)) card.classList.add("in-build");
+  if (state.applyApex && hasApex(item)) card.classList.add("apex-on");
   card.innerHTML = `
     <div class="card-burst"></div>
     <span class="stamp">NO BUILD</span>
@@ -4688,21 +4849,36 @@ function toggleItemInBuild(slug) {
   if (found) {
     found.cat.items.splice(found.index, 1);
   } else {
-    let cat = getCat(build.selectedCatId) || build.cats[0];
-    if (!cat) {
-      build.cats.push({ id: "cat-" + Date.now() + "-" + build.seq, name: "Da loja", desc: "", kind: "comum", span: build.defaultSpan, items: [] });
-      build.seq++;
-      cat = build.cats[build.cats.length - 1];
-    }
+    // Nada automático (Leo, 13/09/2026): só entra na categoria escolhida à mão.
+    const cat = getCat(build.selectedCatId);
+    if (!cat) return;
     cat.items.push({ itemId: slug, note: "" });
   }
   saveBuild();
   renderBuild();          // já chama refreshInBuildMarks()
 }
 
-// Sincroniza o Catálogo com a build ativa: classe in-build nos cards e a
-// contagem na aba Build. Chamada pelo renderBuild() e pelo render().
+// Seletor "Marcar em:" do Catálogo: lista as categorias da build ativa e
+// reflete/define build.selectedCatId (a mesma seleção usada na aba Build).
+function refreshCatalogCatSelect() {
+  const sel = document.getElementById("catalog-cat-select");
+  if (!sel) return;
+  sel.innerHTML = "";
+  const none = document.createElement("option");
+  none.value = ""; none.textContent = build.cats.length ? "— escolha uma categoria —" : "— sem categorias na build —";
+  sel.appendChild(none);
+  build.cats.forEach(c => {
+    const o = document.createElement("option");
+    o.value = c.id; o.textContent = `${c.name} (${c.items.length})`;
+    sel.appendChild(o);
+  });
+  sel.value = getCat(build.selectedCatId) ? build.selectedCatId : "";
+}
+
+// Sincroniza o Catálogo com a build ativa: classe in-build nos cards, a
+// contagem na aba Build e o seletor de categoria. Chamada pelo renderBuild().
 function refreshInBuildMarks() {
+  refreshCatalogCatSelect();
   document.querySelectorAll("#grid .card").forEach(card => {
     card.classList.toggle("in-build", !!findInBuild(card.dataset.slug));
   });
@@ -4716,7 +4892,8 @@ function refreshInBuildMarks() {
 // todos os atributos, habilidades, análise de custo, Reembolso, Mestre
 // Forjador, modos. Tudo lido do catálogo; montado uma vez por card.
 function cardFullHtml(item) {
-  const attrs = (item.attributes || []).map(a => `<div class="cf-line">${esc(a.raw)}</div>`).join("")
+  const cfList = (state.applyApex && hasApex(item) && apexAttributes(item)) || item.attributes || [];
+  const attrs = cfList.map(a => `<div class="cf-line${a.changed ? " apex-changed" : ""}">${esc(a.raw)}${a.changed ? " ↑" : ""}</div>`).join("")
     || (item.attributesNote ? `<div class="cf-line">${esc(item.attributesNote)}</div>` : "");
   const abilities = (item.abilities || []).map(a =>
     `<div class="cf-ab">${a.name && a.name !== "—" ? `<b>${esc(a.name)}</b> — ` : ""}${a.description}</div>`).join("");
@@ -4727,6 +4904,7 @@ function cardFullHtml(item) {
   if (ca && ca.goldValue) kv.push(["Valor em ouro", ca.goldValue, ""]);
   if (hasCashback(item)) kv.push(["Reembolso", item.cashback.raw, ""]);
   if (item.masterwork && item.masterwork.eligible === true) kv.push(["Mestre Forjador", item.masterwork.raw, ""]);
+  if (item.apex) kv.push(["Ápice", item.apex, state.applyApex && hasApex(item) ? "cera" : ""]);
   if (item.combineCost) kv.push(["Combinação", `${item.combineCost}g`, ""]);
   if ((item.gameModes || []).length) kv.push(["Modos", item.gameModes.join(", "), ""]);
   if (item.condition) kv.push(["Condição", item.condition, ""]);
@@ -4829,8 +5007,9 @@ function openModal(id) {
   setPaper(modal, randomPaper());
 
   // Campo vazio não vira texto: a seção inteira some.
-  const attrHtml = (item.attributes || []).length
-    ? item.attributes.map(a => `<div class="attr-line">+${a.value}${a.unit === "percent" ? "%" : ""} de ${a.stat}</div>`).join("")
+  const attrList = (state.applyApex && hasApex(item) && apexAttributes(item)) || item.attributes || [];
+  const attrHtml = attrList.length
+    ? attrList.map(a => `<div class="attr-line${a.changed ? " apex-changed" : ""}">+${a.value}${a.unit === "percent" ? "%" : ""} de ${a.stat}${a.changed ? `<span class="base">${a.added ? "só no ápice" : "base " + esc(a.baseRaw)}</span>` : ""}</div>`).join("")
     : "";
 
   const abilitiesHtml = (item.abilities || []).length
@@ -5025,12 +5204,33 @@ function init() {
   render();
   initCardTilt();
   initShiftFullCard();
+  document.getElementById("catalog-cat-select").addEventListener("change", (e) => {
+    build.selectedCatId = e.target.value || null;
+    renderBuild();
+  });
+
+  // Modo de exibição (cards | ícones), lembrado no navegador.
+  const applyView = (view) => {
+    document.body.classList.toggle("icons-only", view === "icons");
+    document.body.classList.toggle("names-only", view === "names");
+    document.querySelectorAll(".view-btn").forEach(b => b.classList.toggle("active", b.dataset.view === view));
+    try { localStorage.setItem("catalogo.view", view); } catch (e) { /* sem persistência */ }
+  };
+  document.querySelectorAll(".view-btn").forEach(b => b.addEventListener("click", () => applyView(b.dataset.view)));
+  let savedView = "cards";
+  try { savedView = localStorage.getItem("catalogo.view") || "cards"; } catch (e) { /* idem */ }
+  applyView(["icons", "names"].includes(savedView) ? savedView : "cards");
   if (typeof initBuildBuilder === "function") initBuildBuilder();
   if (typeof initCalc === "function") initCalc();
 
   // Atalho: #item=<slug> abre o item direto (para compartilhar e para capturas).
   const m = location.hash.match(/^#item=([a-z0-9-]+)$/);
   if (m && byId[m[1]]) openModal(m[1]);
+  // #apice liga a caixa Ápice ao carregar (para compartilhar e para capturas).
+  if (/^#apice$/.test(location.hash)) {
+    const cb = document.querySelector('input[data-rune="apex"]');
+    if (cb && !cb.checked) cb.click();
+  }
   const f = location.hash.match(/^#ficha=([a-z0-9-]+)$/);
   if (f && byId[f[1]]) {
     const card = document.querySelector(`.card[data-slug="${f[1]}"]`);
