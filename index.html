@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Montador de Itens — LoL</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=IM+Fell+English+SC&family=IM+Fell+English:ital@0;1&family=Alegreya:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
 <style>
 /* ---------------------------------------------------------------
    Paleta: hextech do próprio LoL — navy quase-preto, dourado, teal.
@@ -1868,6 +1868,214 @@ select.sort-select {
 .card-icon:has(.item-art),
 .item-icon:has(.item-art) { background: transparent; }
 
+
+/* =====================================================================
+   FASE 2 — LOJA MEDIEVAL (direção de arte Opção A, docs/direcao_de_arte.md)
+   T1: esqueleto — madeira, cabeçalho em tábuas, busca e filtros em papel,
+   tipografia. Os cards e a tela Build continuam com o estilo anterior
+   até as tarefas seguintes. Nada aqui altera dado nem comportamento.
+   ===================================================================== */
+:root {
+  --loja-papel: #e5d3ad;
+  --loja-papel-escuro: #cdb689;
+  --loja-papel-borda: #a88f60;
+  --loja-tinta: #2c1d12;
+  --loja-tinta-suave: #5a4630;
+  --loja-madeira-1: #3b2617;
+  --loja-madeira-2: #2a1a0f;
+  --loja-madeira-3: #21130a;
+  --loja-madeira-escura: #1c120b;
+  --loja-latao: #b6873a;
+  --loja-latao-claro: #d5b35a;
+  --loja-latao-escuro: #8a5f18;
+  --loja-cera: #8d2c22;
+  --loja-cera-borda: #5c150d;
+  --loja-cera-sombra: #4a1109;
+  --loja-cera-texto: #f4e6c4;
+  --loja-titulo: #e8d3a2;
+  --loja-legenda: #b89a66;
+  --loja-rotulo: #d9c08a;
+  --loja-titulos: 'IM Fell English SC', 'IM Fell English', Georgia, 'Times New Roman', serif;
+  --loja-texto: 'Alegreya', Georgia, 'Times New Roman', serif;
+  --loja-gravado: 'Cinzel', Georgia, serif;
+  --tex-01: url("assets/textures/shopitem_papertexture01_psd.png");
+  --tex-02: url("assets/textures/shopitem_papertexture02_psd.png");
+  --tex-03: url("assets/textures/shopitem_papertexture03_psd.png");
+}
+
+/* Papel: cor de base + textura real por cima em multiply (nunca crua). */
+.papel { position: relative; isolation: isolate; background: var(--loja-papel); color: var(--loja-tinta); }
+.papel::before {
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background-image: var(--tex, var(--tex-02)); background-size: 420px;
+  mix-blend-mode: multiply; opacity: .9;
+}
+
+html, body {
+  background: var(--loja-madeira-escura);
+  color: var(--loja-titulo);
+  font-family: var(--loja-texto);
+}
+body {
+  background-image:
+    repeating-linear-gradient(180deg, transparent 0 5px, rgba(36,24,16,.9) 5px 6px);
+}
+::selection { background: var(--loja-cera); color: var(--loja-cera-texto); }
+
+/* ---- Cabeçalho: tábuas de madeira ---- */
+header.top {
+  border-bottom: 2px solid #120a04;
+  padding: 26px 32px 22px;
+  background:
+    repeating-linear-gradient(90deg, rgba(0,0,0,.09) 0 2px, transparent 2px 11px),
+    linear-gradient(180deg, var(--loja-madeira-1), var(--loja-madeira-2) 60%, var(--loja-madeira-3));
+  box-shadow: inset 0 0 50px rgba(0,0,0,.55), 0 6px 14px rgba(0,0,0,.6);
+}
+h1 {
+  font-family: var(--loja-titulos);
+  font-weight: 400;
+  font-size: 34px;
+  letter-spacing: .04em;
+  color: var(--loja-titulo);
+  text-shadow: 0 2px 0 #1a0d05;
+}
+h1 .sub {
+  font-family: var(--loja-texto);
+  font-style: italic;
+  font-size: 13px;
+  letter-spacing: .02em;
+  text-transform: none;
+  color: var(--loja-legenda);
+}
+.counts { color: var(--loja-legenda); font-family: var(--loja-texto); font-style: italic; }
+.counts b { color: var(--loja-latao-claro); }
+
+/* Abas Catálogo / Build / Calculadora: placas de latão numa régua de madeira */
+.tabs {
+  background: #150c06;
+  border: 1px solid #0d0703;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 2px 6px rgba(0,0,0,.5);
+  border-radius: 3px;
+}
+.tab-btn {
+  font-family: var(--loja-gravado);
+  font-size: 12.5px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--loja-legenda);
+  border-radius: 2px;
+}
+.tab-btn:hover { color: var(--loja-titulo); }
+.tab-btn.active {
+  background: linear-gradient(160deg, #e7c46f 0%, #b8863b 38%, #8a5f22 62%, #d9b25c 100%);
+  color: #2a1a0a;
+  font-weight: 700;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.45), 0 1px 2px rgba(0,0,0,.6);
+}
+
+/* ---- Busca e ordenação: papel de balcão ---- */
+.search-box input {
+  background: var(--loja-papel);
+  background-image: var(--tex-02);
+  background-size: 420px;
+  background-blend-mode: multiply;
+  border: 1px solid var(--loja-tinta-suave);
+  border-radius: 2px;
+  color: var(--loja-tinta);
+  font-family: var(--loja-texto);
+  font-size: 15.5px;
+  box-shadow: inset 0 2px 6px rgba(0,0,0,.25), 0 2px 6px rgba(0,0,0,.45);
+}
+.search-box input:focus { border-color: var(--loja-cera); box-shadow: inset 0 2px 6px rgba(0,0,0,.25), 0 0 0 2px rgba(141,44,34,.35); }
+.search-box input::placeholder { color: var(--loja-tinta-suave); font-style: italic; }
+.search-box svg { stroke: var(--loja-tinta-suave); }
+select.sort-select, .sort-attr-wrap select {
+  background: var(--loja-papel);
+  border: 1px solid var(--loja-tinta-suave);
+  border-radius: 2px;
+  color: var(--loja-tinta);
+  font-family: var(--loja-texto);
+  font-size: 14px;
+  box-shadow: inset 0 2px 6px rgba(0,0,0,.2), 0 2px 6px rgba(0,0,0,.45);
+}
+.sort-attr-wrap label { color: var(--loja-legenda); font-family: var(--loja-texto); font-style: italic; font-size: 13px; }
+.cashback-banner {
+  background: var(--loja-papel);
+  color: var(--loja-cera);
+  border: 1px solid var(--loja-papel-borda);
+  border-left: 5px solid var(--loja-cera);
+  border-radius: 2px;
+  font-family: var(--loja-texto);
+  font-size: 13.5px;
+}
+
+/* ---- Painel de filtros: folha de papel presa na madeira ---- */
+.filters {
+  position: sticky;
+  background: var(--loja-papel);
+  background-image: var(--tex-02);
+  background-size: 420px;
+  background-blend-mode: multiply;
+  border: 1px solid var(--loja-papel-borda);
+  border-radius: 2px;
+  color: var(--loja-tinta);
+  box-shadow: 0 6px 14px rgba(0,0,0,.6), inset 0 0 0 1px rgba(255,255,255,.25);
+}
+.filters::-webkit-scrollbar-thumb { background: var(--loja-papel-escuro); border-color: var(--loja-papel); }
+.filters::-webkit-scrollbar-thumb:hover { background: var(--loja-papel-borda); }
+.filters .clear-btn {
+  color: var(--loja-cera);
+  font-family: var(--loja-texto);
+  font-style: italic;
+  font-size: 13px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.filter-group-title {
+  font-family: var(--loja-gravado);
+  font-size: 10.5px;
+  letter-spacing: .2em;
+  color: var(--loja-tinta-suave);
+  border-bottom: 1px solid rgba(90,70,48,.35);
+  padding: 4px 0 5px;
+}
+.filter-group-title:hover { color: var(--loja-tinta); }
+.filter-group-title .active-count { background: var(--loja-cera); color: var(--loja-cera-texto); font-family: var(--loja-texto); }
+
+/* Chips: etiquetas de tinta; ativo = cera */
+.chip {
+  font-family: var(--loja-texto);
+  font-size: 13px;
+  padding: 4px 11px;
+  border-radius: 999px;
+  border: 1.5px solid var(--loja-tinta);
+  background: transparent;
+  color: var(--loja-tinta);
+}
+.chip:hover { border-color: var(--loja-cera); color: var(--loja-cera); }
+.chip.active {
+  background: var(--loja-cera);
+  border-color: var(--loja-cera-borda);
+  color: var(--loja-cera-texto);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.15), 0 1px 2px rgba(0,0,0,.35);
+}
+
+/* Caixas de marcação (Mestre Forjador, Reembolso) */
+.toggle-row { color: var(--loja-tinta); font-family: var(--loja-texto); font-size: 14px; }
+.toggle-row:hover { color: var(--loja-cera); }
+.toggle-box { background: transparent; border: 1.5px solid var(--loja-tinta); border-radius: 2px; }
+.toggle-row input:checked + .toggle-box { background: var(--loja-cera); border-color: var(--loja-cera-borda); }
+.toggle-box svg { stroke: var(--loja-cera-texto); }
+.toggle-row .count { color: var(--loja-tinta-suave); }
+
+/* ---- Contagem e cabeçalhos de grupo: escritos na madeira ---- */
+.grid-meta { color: var(--loja-legenda); font-family: var(--loja-texto); font-style: italic; font-size: 14px; }
+.grid-meta b { color: var(--loja-titulo); }
+.group-head { border-bottom: 1px solid rgba(217,192,138,.25); }
+.group-head .g-label { font-family: var(--loja-gravado); color: var(--loja-rotulo); letter-spacing: .2em; }
+.group-head .g-count { color: var(--loja-legenda); font-family: var(--loja-texto); font-style: italic; font-size: 12px; }
+.empty-state { color: var(--loja-legenda); font-family: var(--loja-texto); font-style: italic; }
+.empty-state svg { stroke: var(--loja-legenda); }
 </style>
 </head>
 <body>

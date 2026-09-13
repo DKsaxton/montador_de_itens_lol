@@ -1,5 +1,5 @@
 # Checkpoint — Montador de Itens de LoL (Capítulo 2 · Forjador)
-Última atualização: 13/09/2026 — FASE 1 CONCLUÍDA (Opção A aprovada); próxima: Fase 2, tarefa 1
+Última atualização: 13/09/2026 — Fase 2: T1 aprovada e commitada; T2 (card) em andamento
 
 ## 1. Objetivo geral
 Evoluir o Montador de Itens (index.html) para a versão com identidade visual de loja medieval (Catálogo) e forja (Build), dados do Capítulo 1 (225 itens, patch 16.18.1) via data/catalog.js, sistema de áudio com lojista, e publicação no GitHub Pages — em fases aprovadas por captura de tela.
@@ -12,6 +12,9 @@ Evoluir o Montador de Itens (index.html) para a versão com identidade visual de
 - Fase 1, T2 — amostra em docs/amostras/fase1-amostra.html (captura `docs/screenshots/fase1-tarefa2-amostra.png`), duas direções lado a lado, lendo Quebrapassos, Bastão das Eras, Sinal de Sterak e Cristal de Rubi do catalog.js e as três texturas reais (tingidas por multiply sobre a cor do papel: 01 = card, 02 = busca/barra de filtros, 03 = placa de entrada). A = Taverna e pergaminho (papel #e5d3ad, tinta #2c1d12, madeira #3b2617, latão #b6873a, cera #8d2c22; títulos IM Fell English SC, texto Alegreya; selo de cera para tier, faixa lateral na cor da classe, chips como etiquetas de tinta/cera). B = Guilda e latão (papel #d9c59c, madeira #1d1713, latão #c9973f, bronze #7a5a1e; títulos Cinzel, texto Crimson Pro; etiqueta de latão para tier, borda superior na cor da classe, chips como placas de latão). Classe nas duas: AD laranja, AP roxo, Vitalidade verde. Forja igual nas duas (ferro #15110f, brasa #ff7a1e, moldes com rebites, faíscas, interruptores de brasa). Leo escolheu a Opção A em 13/09/2026. Commit "F1-T2".
 - T3 — docs/direcao_de_arte.md escrito com a Opção A (paleta com códigos, classe, forja, tipografia, uso de cada textura, anatomia dos componentes, família de animações). FASE 1 CONCLUÍDA em 13/09/2026.
 
+### Fase 2 — Catálogo (loja medieval)
+- Fase 2, T1 — esqueleto na paleta A (captura `docs/screenshots/fase2-tarefa1-esqueleto-loja.png`) — aprovado pelo Leo em 13/09/2026, commit "F2-T1". Um bloco CSS novo no fim do <style> (209 linhas) com variáveis --loja-*, fundo de madeira escura com frisos, cabeçalho em tábuas, abas como placas de latão, busca/ordenação/painel de filtros em papel com a textura 02 (multiply), chips de tinta com ativo em cera, caixas de marcação de tinta/cera, contagem e cabeçalhos de grupo escritos na madeira; fontes IM Fell English SC + Alegreya adicionadas ao link do Google Fonts. Cards e Build intactos. Testado: 225 cards, filtros funcionando (Distribuído = 5), fontes carregadas, console limpo.
+
 ### Fase 0 — Fundação de dados
 - T1 — Assets conferidos e commit inicial (`docs/screenshots/fase0-tarefa1-baseline.png`): 82 mp3 batendo um a um com docs/mapa_de_audio.md; 3 texturas; captura de baseline do index.html antigo (227 itens embutidos). Commit ed64738, aprovado pelo Leo.
 - T2 — catalog.js regerado e integridade conferida (sem captura: tarefa de dados). Python 3.12.10 via winget; gerador rodado com `PYTHONUTF8=1` (o `print` final quebra no console cp1252; arquivo já escrito antes; script intocado). Saída idêntica ao commitado: 225 itens, 7 avisos, 0 linhas não reconhecidas. Checagem própria: 225 itens, sem duplicatas, sem campo obrigatório vazio, preços e somas de receita batendo, todo Lendário com masterwork. Os achados (Shattered Armguard ausente, Atlas → Missão de Suporte, id de Stat Bonus, Atma's Reckoning) são decisões já tomadas no Capítulo 1 — registradas em docs/decisoes_capitulo1.md, não como pendência.
@@ -20,11 +23,10 @@ Evoluir o Montador de Itens (index.html) para a versão com identidade visual de
 - T4 — Pages testado (`docs/screenshots/fase0-tarefa4-pages.png`): deploy no ar 30 s após o push; index.html, data/catalog.js, textura, áudio e .nojekyll respondem 200 em https://dksaxton.github.io/montador_de_itens_lol/; DOM do site publicado com 225 cards e contador 225 (Chrome headless — o navegador embutido não tem permissão para o domínio github.io). Do disco (file://) também 225. FASE 0 CONCLUÍDA em 13/09/2026.
 
 ## 3. Em andamento
-Nada. Próxima: Fase 2, tarefa 1.
+- Fase 2, T2 — card redesenhado (iniciando).
 
 ## 4. Próximos passos
 Fase 2 — Catálogo (loja medieval), sempre com docs/direcao_de_arte.md como régua e o hover intocado. Tarefas pequenas, uma captura cada:
-1. Esqueleto na paleta A: fundo de madeira, cabeçalho em tábuas, busca e barra de filtros em papel (texturas 02/03), tipografia IM Fell English SC + Alegreya + Cinzel. Cards ainda os antigos.
 2. Card redesenhado (papel 01, faixa de classe, selo de tier para os 11 tiers, preço em cera, atributos com travessão) — hover preservado, brilho em latão.
 3. Abas de Classe TODOS · AD · AP · VITALIDADE no topo da listagem (Garrabrasa em AD e AP).
 4. Filtros novos: tipo de dano, custo (faixas), maior/menor atributo, eficiência de ouro (com "sem análise" no fim) — mais os existentes.
@@ -43,6 +45,7 @@ Fase 3 — Build (forja). Além do CLAUDE.md:
   e. Eficiência de ouro por categoria da build: soma de `costAnalysis.goldValueTotal` ÷ soma de `priceGold` dos itens da categoria (só aritmética sobre os campos do catálogo; itens sem análise ficam de fora e a caixa avisa).
   f. Atributo adicional na build: escolher qual fragmento o item concede exige lista estruturada de fragmentos (stat, valor, nível). Hoje é texto em `mechanics` → propor ao Capítulo 1 um campo estruturado antes de implementar; o Forjador não digita a lista à mão.
   g. Visão Ápice na build lê o mesmo campo `apex` (texto), como no CLAUDE.md.
+  i. Dois modos na Build (Leo, 13/09/2026): **visualização** (padrão ao abrir — a build como ficha limpa: sem alças de arrastar, sem botões de remover/redimensionar, campos de nome/descrição não editáveis, observações só ao passar o mouse) e **edição** (interruptor "Editar" liberando drag-and-drop, caixas, observações, remover). Biblioteca, exportar/importar e os interruptores Mestre Forjador/Reembolso/Ápice funcionam nos dois modos.
   h. Eficiência de ouro recalculada pelos interruptores (Leo, 13/09/2026): com Reembolso = `goldValueTotal ÷ cashback.netGold` (dá para fazer já); com Mestre Forjador e Ápice depende de campos numéricos que o catálogo não tem → docs/propostas_capitulo1.md. Vale no Catálogo (Fase 2) e na eficiência por categoria da Build (Fase 3).
 Fase 4 — Som e lojista · Fase 5 — Calculadora e biblioteca · Fase 6 — Publicação e QA
 
