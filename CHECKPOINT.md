@@ -1,11 +1,16 @@
 # Checkpoint — Montador de Itens de LoL (Capítulo 2 · Forjador)
-Última atualização: 13/09/2026 — FASE 0 CONCLUÍDA (T1–T4); próxima: Fase 1, tarefa 1
+Última atualização: 13/09/2026 — FASE 1 CONCLUÍDA (Opção A aprovada); próxima: Fase 2, tarefa 1
 
 ## 1. Objetivo geral
 Evoluir o Montador de Itens (index.html) para a versão com identidade visual de loja medieval (Catálogo) e forja (Build), dados do Capítulo 1 (225 itens, patch 16.18.1) via data/catalog.js, sistema de áudio com lojista, e publicação no GitHub Pages — em fases aprovadas por captura de tela.
 
 ## 2. Concluído
 - Montagem do agente (fora do Code): CLAUDE.md, docs/, data/catalog.js já gerado (225 itens), data/gerar_catalog_json.py, index.html da primeira tentativa como base.
+
+### Fase 1 — Direção de arte
+- T1 — Briefing lido (docs/direcao_de_arte.md, docs/PROMPT_Claude_Design_Fase1.md); Leo aprovou seguir sem handoff do Claude Design (13/09/2026). Texturas conferidas: as três são papel amassado quase branco, precisam de tingimento por blend.
+- Fase 1, T2 — amostra em docs/amostras/fase1-amostra.html (captura `docs/screenshots/fase1-tarefa2-amostra.png`), duas direções lado a lado, lendo Quebrapassos, Bastão das Eras, Sinal de Sterak e Cristal de Rubi do catalog.js e as três texturas reais (tingidas por multiply sobre a cor do papel: 01 = card, 02 = busca/barra de filtros, 03 = placa de entrada). A = Taverna e pergaminho (papel #e5d3ad, tinta #2c1d12, madeira #3b2617, latão #b6873a, cera #8d2c22; títulos IM Fell English SC, texto Alegreya; selo de cera para tier, faixa lateral na cor da classe, chips como etiquetas de tinta/cera). B = Guilda e latão (papel #d9c59c, madeira #1d1713, latão #c9973f, bronze #7a5a1e; títulos Cinzel, texto Crimson Pro; etiqueta de latão para tier, borda superior na cor da classe, chips como placas de latão). Classe nas duas: AD laranja, AP roxo, Vitalidade verde. Forja igual nas duas (ferro #15110f, brasa #ff7a1e, moldes com rebites, faíscas, interruptores de brasa). Leo escolheu a Opção A em 13/09/2026. Commit "F1-T2".
+- T3 — docs/direcao_de_arte.md escrito com a Opção A (paleta com códigos, classe, forja, tipografia, uso de cada textura, anatomia dos componentes, família de animações). FASE 1 CONCLUÍDA em 13/09/2026.
 
 ### Fase 0 — Fundação de dados
 - T1 — Assets conferidos e commit inicial (`docs/screenshots/fase0-tarefa1-baseline.png`): 82 mp3 batendo um a um com docs/mapa_de_audio.md; 3 texturas; captura de baseline do index.html antigo (227 itens embutidos). Commit ed64738, aprovado pelo Leo.
@@ -15,14 +20,20 @@ Evoluir o Montador de Itens (index.html) para a versão com identidade visual de
 - T4 — Pages testado (`docs/screenshots/fase0-tarefa4-pages.png`): deploy no ar 30 s após o push; index.html, data/catalog.js, textura, áudio e .nojekyll respondem 200 em https://dksaxton.github.io/montador_de_itens_lol/; DOM do site publicado com 225 cards e contador 225 (Chrome headless — o navegador embutido não tem permissão para o domínio github.io). Do disco (file://) também 225. FASE 0 CONCLUÍDA em 13/09/2026.
 
 ## 3. Em andamento
-Nada. Próxima: Fase 1, tarefa 1.
-
+Nada. Próxima: Fase 2, tarefa 1.
 
 ## 4. Próximos passos
-Fase 1 — Direção de arte (nada de tela real muda antes do aprovado)
-1. Ler docs/direcao_de_arte.md (briefing) e docs/PROMPT_Claude_Design_Fase1.md; perguntar ao Leo se ele traz um handoff do Claude Design (export HTML em docs/amostras/) ou se o Forjador propõe direto. Handoff = referência de estilo, nunca substitui o app.
-2. Amostra em docs/amostras/fase1-amostra.html com DUAS opções renderizadas lado a lado: paleta (loja: as três texturas de papel de assets/textures, madeira, latão, tinta ferrogálica; forja: ferro escuro, brasa, faísca), tipografia, um card de item redesenhado (dados reais do catalog.js) e um trecho do Build em tema de forja. Incluir as cores de Classe pedidas pelo Leo: AD laranja, AP roxo místico, Vitalidade verde. Captura + aprovado.
-3. Registrar o aprovado em docs/direcao_de_arte.md (paleta com códigos, fontes, uso de cada textura, anatomia do card e da caixa da forja). Commit "Fase 1 concluída". O hover dos ícones é intocável.
+Fase 2 — Catálogo (loja medieval), sempre com docs/direcao_de_arte.md como régua e o hover intocado. Tarefas pequenas, uma captura cada:
+1. Esqueleto na paleta A: fundo de madeira, cabeçalho em tábuas, busca e barra de filtros em papel (texturas 02/03), tipografia IM Fell English SC + Alegreya + Cinzel. Cards ainda os antigos.
+2. Card redesenhado (papel 01, faixa de classe, selo de tier para os 11 tiers, preço em cera, atributos com travessão) — hover preservado, brilho em latão.
+3. Abas de Classe TODOS · AD · AP · VITALIDADE no topo da listagem (Garrabrasa em AD e AP).
+4. Filtros novos: tipo de dano, custo (faixas), maior/menor atributo, eficiência de ouro (com "sem análise" no fim) — mais os existentes.
+5. Modal do item em pergaminho (textura 03) mostrando também `mechanics` das habilidades, `costAnalysis` (valor em ouro, eficiência), `apex`, e referências de receita fora do catálogo como nome sem link.
+6. Shift pressionado: card mostra os dados completos em vez do resumo.
+7. Clique no card marca para o Build; itens já no Build ficam a .45 com carimbo "NO BUILD".
+8. Caixa Ápice ao lado do Reembolso (mostra `apex`); eficiência recalculada com Reembolso (`goldValueTotal ÷ netGold`).
+9. Animação de clique por tier (11 tiers, uma família — ver direção de arte).
+10. Tela de entrada "Entrar na loja" (placa com correntes; o áudio entra na Fase 4).
 Fase 2 — Catálogo (loja medieval). Além do CLAUDE.md, pedidos do Leo em 13/09/2026:
   a. Classe como 4 ABAS no topo do Catálogo, modelo Deadlock: TODOS · AD (laranja) · AP (roxo místico) · VITALIDADE (verde), lendo `itemClass.core`; Filhote de Garrabrasa ("AD e AP") aparece em AD e em AP. As três cores entram na direção de arte da Fase 1.
   b. Análise de custo: filtro/ordenação por eficiência de ouro (`costAnalysis.efficiencyBase`, 210 de 225 itens; os 15 sem valor — pets, consumíveis, trinkets, Stat Bonus, elixires — vão para o fim com "sem análise"). Mostrar `costAnalysis.goldValue` e `efficiency` no modal.
