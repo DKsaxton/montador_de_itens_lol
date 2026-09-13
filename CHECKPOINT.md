@@ -1,5 +1,5 @@
 # Checkpoint — Montador de Itens de LoL (Capítulo 2 · Forjador)
-Última atualização: 13/09/2026 — Fase 4: T1–T5 aprovadas e commitadas; T6 (QA no Pages) em andamento
+Última atualização: 13/09/2026 — FASE 4 CONCLUÍDA; próxima: Fase 5, tarefa 1
 
 ## 1. Objetivo geral
 Evoluir o Montador de Itens (index.html) para a versão com identidade visual de loja medieval (Catálogo) e forja (Build), dados do Capítulo 1 (225 itens, patch 16.18.1) via data/catalog.js, sistema de áudio com lojista, e publicação no GitHub Pages — em fases aprovadas por captura de tela.
@@ -22,6 +22,7 @@ Evoluir o Montador de Itens (index.html) para a versão com identidade visual de
 - Fase 4, T5b — regras do lojista (Leo, 13/09/2026: "não reseta a cada acionamento… meio segundo de acréscimo… falar de vez em quando"): a fala em curso nunca é cortada; nova fala só após a atual terminar (evento ended) + 500 ms de folga; falas de aba e de efeito passam por 40% de chance e intervalo mínimo de 15 s entre falas; falas raras por item sempre tocam (sem chance), respeitando fila e folga. Constantes ajustáveis em `Som.LOJISTA` (FOLGA_MS 500, INTERVALO_MIN_MS 15000, CHANCE 0.4). Mapa de áudio atualizado. Verificado no navegador embutido com espião: três trocas de aba seguidas → 1 fala; logo após terminar → bloqueada pela folga; dentro dos 15 s → bloqueada; com intervalo zerado → fala; fala rara com chance 0 → toca.
 - Fase 4, T5c — Leo (13/09/2026): "shopkeeper_tag_open_* não tocam ao adicionar itens à build" → ao entrar um item na bancada, se ele não tem fala rara própria, o lojista comenta pelo núcleo do item (shopkeeper_tag_open_<núcleo>), sujeito a chance/intervalo/folga; a troca de aba continua valendo. Mapa de áudio atualizado.
 - Fase 4, T5d — Leo (13/09/2026): shopkeeper_build_efeitosespeciais_* ativa ao adicionar à build qualquer item com o efeito (Dano ao Longo do Tempo: 11 itens; Lentidão: 10). Prioridade na entrada: fala rara do item > fala do efeito > comentário do núcleo (uma só, nas regras do lojista). O gatilho no chip do efeito foi mantido. Mapa de áudio atualizado. Pergunta do Leo sobre ui_catalog_tag_select ("ativa quando abre os detalhes do item?"): hoje toca nos chips; abrir o pergaminho toca o clique do núcleo — ofereci mover para a abertura do pergaminho, aguardando resposta.
+- Fase 4, T6 — QA de áudio: commit "F4-T1..T5" publicado (0a753f5), Pages atualizado em 30 s; HEAD nos 82 arquivos em https://dksaxton.github.io/montador_de_itens_lol/assets/audio/ → 82 × 200 (audio/mp3), 0 falhas; no disco e no servidor local `Som.verificar()` = 82 ok; 27 eventos com gatilho, 0 órfãos; mudo e volume persistem. Pendência de decisão do Leo: mover `ui_catalog_tag_select` para a abertura do pergaminho (hoje nos chips). FASE 4 CONCLUÍDA em 13/09/2026.
 
 ### Fase 3 — Build (forja)
 - Fase 3, T1 — esqueleto da forja (captura `docs/screenshots/fase3-tarefa1-esqueleto-forja.png`) — aprovado pelo Leo em 13/09/2026, commit "F3-T1". Bloco CSS "FORJA" com variáveis --forja-*: ao entrar na aba Build o body ganha a classe `forja` (fundo de ferro com brasa subindo do rodapé, cabeçalho em ferro, aba ativa e contagem em brasa) e a vista sobe (animação `forja-sobe`); ao sair volta à madeira e a loja (ou a Calculadora) desce clareando (animação `loja-desce`, pedido do Leo: a volta também tem que acontecer); fundo e cabeçalho com transição de .5s. Barra da build, biblioteca e painel exportar/importar como placas de ferro com rebites; nome da build em IM Fell sobre linha tracejada com foco em brasa; botões de ferro (primário em brasa), seletor de largura com ativo em brasa, selects e textarea de ferro, aviso de modo em placa com brasa. Atalho `#build` abre direto na forja. Tiles, categorias e picker continuam no estilo anterior (T2). Ganchos comentados para Som.play("build:open"/"build:close"). Testado no navegador embutido: classe forja e animação ao entrar, fundo #100d0b, IM Fell no nome, volta à madeira ao sair, console limpo.
@@ -59,11 +60,15 @@ Evoluir o Montador de Itens (index.html) para a versão com identidade visual de
 - T4 — Pages testado (`docs/screenshots/fase0-tarefa4-pages.png`): deploy no ar 30 s após o push; index.html, data/catalog.js, textura, áudio e .nojekyll respondem 200 em https://dksaxton.github.io/montador_de_itens_lol/; DOM do site publicado com 225 cards e contador 225 (Chrome headless — o navegador embutido não tem permissão para o domínio github.io). Do disco (file://) também 225. FASE 0 CONCLUÍDA em 13/09/2026.
 
 ## 3. Em andamento
-- Fase 4, T6 — QA de áudio no Pages (iniciando).
+Nada. Próxima: Fase 5, tarefa 1.
 
 ## 4. Próximos passos
-Fase 4 — Som e lojista (docs/mapa_de_audio.md é a régua; 82 arquivos em assets/audio, nomes intocados; nada toca antes do clique em "Entrar na loja"). Tarefas pequenas, uma captura cada:
-6. QA de áudio: todos os 27 eventos disparam, nenhum 404 em assets/audio no disco e no Pages, mudo persiste, volume persiste. Commit "Fase 4 concluída".
+Fase 5 — Calculadora e biblioteca (manter funcionando com o tema novo e o catalog.js; aviso por modo de jogo). Tarefas pequenas, uma captura cada:
+1. Calculadora como pergaminho de contas (papel, tipografia da loja, campos e barras em tinta/cera), fórmulas intocadas; "Puxar da build ativa" soma os atributos efetivos (Mestre Forjador/Ápice) só dos valores fixos; preços de referência continuam lidos do catálogo (Cristal de Rubi, Armadura de Pano, Cota de Malha, Manto Nulificador, Capa de Negatron).
+2. Biblioteca: exportar/importar testados com o catalog.js (nomes PT e EN, [OBRIGATÓRIA] e [PRIORIDADE], MODO, observações, Mestre Forjador salvo na build); painel exportar/importar já na forja; mensagens em tipografia da forja; importar build antiga (chaves sem apóstrofo) confirmado.
+3. Aviso por modo de jogo: o mode-warning da forja em placa de brasa; no Catálogo, ao marcar um item fora do modo da build ativa, aviso curto em papel/cera; seletor de modo da build e chips de modo do Catálogo coerentes.
+4. QA da Fase 5 no disco e no Pages; commit "Fase 5 concluída".
+Decisão pendente do Leo: `ui_catalog_tag_select` ao abrir o pergaminho (mover ou manter nos chips).
 Fase 3 — Build (forja). Além do CLAUDE.md:
   e. Eficiência de ouro por categoria da build: soma de `costAnalysis.goldValueTotal` ÷ soma de `priceGold` dos itens da categoria (só aritmética sobre os campos do catálogo; itens sem análise ficam de fora e a caixa avisa).
   f. Atributo adicional na build: escolher qual fragmento o item concede exige lista estruturada de fragmentos (stat, valor, nível). Hoje é texto em `mechanics` → propor ao Capítulo 1 um campo estruturado antes de implementar; o Forjador não digita a lista à mão.

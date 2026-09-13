@@ -71,6 +71,8 @@ As três texturas são papel amassado quase branco; nunca usadas cruas. Aplicaç
 
 **Interruptores (Reembolso, Ápice, Mestre Forjador, Editar)** (Fase 3): trilho 36×19px na barra da build; desligado ferro, ligado brasa com glow; rótulo em Cinzel.
 
+**Controle de som (Fase 4)**: sino de balcão em latão no cabeçalho (brasa na forja) que silencia/reativa, com régua de volume ao lado; riscado quando mudo, apagado antes de entrar na loja.
+
 **Forja consolidada (Fase 3)**: bancadas de ferro com placa de tipo (ferro/latão/aço), moldes com rebites e brasa (placas MF e ÁPICE), tooltip e editor de observação em placa de ferro com borda de brasa, placas "Atributos da caixa" e "Atributos da build" (números em brasa clara, MF em latão, Ápice em brasa), picker em papel de balcão. Animações: molde levanta ao pegar, placa de pedra cai ao soltar (bancada treme, baforada de brasa), brasa apaga e placa afunda ao remover; loja ↔ forja com o fundo escurecendo/clareando e a vista subindo/descendo.
 
 ## Animações (a definir nas Fases 2–3, dentro desta paleta)
