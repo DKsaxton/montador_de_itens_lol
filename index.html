@@ -2368,6 +2368,45 @@ select.sort-select, .sort-attr-wrap select {
 .modal-icon .abbr { font-family: var(--loja-titulos); font-size: 20px; color: var(--loja-titulo); }
 .modal-head .en-name { margin-bottom: 0; }
 .modal-head h2 { padding-right: 0; }
+
+/* ---- T6: Shift segurado = ficha completa do item no card sob o mouse ----
+   O card expandido cresce por cima dos vizinhos (a grade não se mexe). */
+.card.full { z-index: 30; }
+.card.full .card-surface {
+  position: absolute;
+  top: 0; left: 0; right: auto;
+  width: max(100%, 380px);
+  height: auto;
+  min-height: 100%;
+  overflow: visible;
+  transform: none !important;
+  box-shadow: 0 18px 40px rgba(0,0,0,.75), 0 0 0 1px #d8b96a, 0 0 22px rgba(232,200,120,.45);
+}
+/* Perto da borda direita da grade, a ficha abre para a esquerda. */
+.card.full.at-right .card-surface { left: auto; right: 0; }
+.card.full .card-attrs, .card.full .card-sortstat { display: none; }
+.card.full .card-main { padding-bottom: 26px; }
+.card-full { display: none; }
+.card.full .card-full { display: block; margin-top: 6px; }
+.card-full .cf-title {
+  font-family: var(--loja-gravado);
+  font-size: 8.5px;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--loja-tinta-suave);
+  border-bottom: 1px solid rgba(90,70,48,.3);
+  margin: 8px 0 4px;
+  padding-bottom: 2px;
+}
+.card-full .cf-line { font-family: var(--loja-texto); font-size: 12.5px; line-height: 1.4; color: var(--loja-tinta); }
+.card-full .cf-line::before { content: "— "; color: var(--loja-tinta-suave); }
+.card-full .cf-ab { font-family: var(--loja-texto); font-size: 12.5px; line-height: 1.4; color: var(--loja-tinta); margin-bottom: 4px; }
+.card-full .cf-ab b { font-weight: 700; }
+.card-full .cf-kv { display: flex; justify-content: space-between; gap: 10px; font-family: var(--loja-texto); font-size: 12.5px; line-height: 1.4; }
+.card-full .cf-kv .k { color: var(--loja-tinta-suave); font-style: italic; flex: none; }
+.card-full .cf-kv .v { text-align: right; }
+.card-full .cf-kv .v.cera { color: var(--loja-cera); font-weight: 700; }
+.card-full .cf-hint { margin-top: 8px; font-family: var(--loja-texto); font-style: italic; font-size: 11px; color: var(--loja-tinta-suave); }
 </style>
 </head>
 <body>
@@ -4426,6 +4465,7 @@ function renderCard(item, attrSorting) {
   card.style.setProperty("--tier-color", TIER_CSS[item.tier] || "");
   card.style.setProperty("--class-color", classColor(item));
   card.style.setProperty("--tex-pick", paperFor(item.slug));
+  card.dataset.slug = item.slug;
   card.addEventListener("click", () => openModal(item.slug));
 
   let sortStatHtml = "";
@@ -4460,6 +4500,7 @@ function renderCard(item, attrSorting) {
         </div>
         ${attrValuesHtml(item)}
         ${sortStatHtml}
+        <div class="card-full"></div>
       </div>
       <div class="card-sheen"></div>
     </div>
@@ -4577,6 +4618,68 @@ function render() {
     g.items.forEach(it => frag.appendChild(renderCard(it, attrSorting)));
   });
   grid.appendChild(frag);
+}
+
+// ---------------- Shift: ficha completa no card (Fase 2, T6) ----------------
+// Com Shift segurado, o card sob o mouse troca o resumo pela ficha completa:
+// todos os atributos, habilidades, análise de custo, Reembolso, Mestre
+// Forjador, modos. Tudo lido do catálogo; montado uma vez por card.
+function cardFullHtml(item) {
+  const attrs = (item.attributes || []).map(a => `<div class="cf-line">${esc(a.raw)}</div>`).join("")
+    || (item.attributesNote ? `<div class="cf-line">${esc(item.attributesNote)}</div>` : "");
+  const abilities = (item.abilities || []).map(a =>
+    `<div class="cf-ab">${a.name && a.name !== "—" ? `<b>${esc(a.name)}</b> — ` : ""}${a.description}</div>`).join("");
+  const ca = item.costAnalysis;
+  const kv = [];
+  if (ca && ca.efficiency) kv.push(["Eficiência", ca.efficiency, "cera"]);
+  if (state.applyCashback && hasCashback(item) && itemEfficiency(item) !== null) kv.push(["Com Reembolso", fmtEff(itemEfficiency(item)), "cera"]);
+  if (ca && ca.goldValue) kv.push(["Valor em ouro", ca.goldValue, ""]);
+  if (hasCashback(item)) kv.push(["Reembolso", item.cashback.raw, ""]);
+  if (item.masterwork && item.masterwork.eligible === true) kv.push(["Mestre Forjador", item.masterwork.raw, ""]);
+  if (item.combineCost) kv.push(["Combinação", `${item.combineCost}g`, ""]);
+  if ((item.gameModes || []).length) kv.push(["Modos", item.gameModes.join(", "), ""]);
+  if (item.condition) kv.push(["Condição", item.condition, ""]);
+  return `
+    ${attrs ? `<div class="cf-title">Atributos</div>${attrs}` : ""}
+    ${abilities ? `<div class="cf-title">Habilidade</div>${abilities}` : ""}
+    ${kv.length ? `<div class="cf-title">Ficha</div>${kv.map(([k, v, c]) => `<div class="cf-kv"><span class="k">${k}</span><span class="v ${c}">${v}</span></div>`).join("")}` : ""}
+    <div class="cf-hint">Solte o Shift para voltar ao resumo · clique para abrir o pergaminho</div>`;
+}
+
+let shiftHeld = false;
+let hoveredCard = null;
+
+function applyFullCard() {
+  document.querySelectorAll(".card.full").forEach(c => { if (c !== hoveredCard || !shiftHeld) c.classList.remove("full"); });
+  if (!shiftHeld || !hoveredCard) return;
+  const box = hoveredCard.querySelector(".card-full");
+  if (box && !box.innerHTML) {
+    const item = byId[hoveredCard.dataset.slug];
+    if (item) box.innerHTML = cardFullHtml(item);
+  }
+  const grid = document.getElementById("grid").getBoundingClientRect();
+  const r = hoveredCard.getBoundingClientRect();
+  hoveredCard.classList.toggle("at-right", r.left + 380 > grid.right);
+  hoveredCard.classList.add("full");
+}
+
+function initShiftFullCard() {
+  const grid = document.getElementById("grid");
+  grid.addEventListener("mouseover", (e) => {
+    const card = e.target.closest(".card");
+    if (card && card !== hoveredCard) { hoveredCard = card; applyFullCard(); }
+  });
+  grid.addEventListener("mouseout", (e) => {
+    const card = e.target.closest(".card");
+    if (card && !card.contains(e.relatedTarget)) { hoveredCard = null; applyFullCard(); }
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Shift" && !shiftHeld) { shiftHeld = true; applyFullCard(); }
+  });
+  document.addEventListener("keyup", (e) => {
+    if (e.key === "Shift") { shiftHeld = false; applyFullCard(); }
+  });
+  window.addEventListener("blur", () => { shiftHeld = false; applyFullCard(); });
 }
 
 // ---------------- efeito de hover nos cards (inclinação 3D + brilho) ----------------
@@ -4830,12 +4933,18 @@ function init() {
 
   render();
   initCardTilt();
+  initShiftFullCard();
   if (typeof initBuildBuilder === "function") initBuildBuilder();
   if (typeof initCalc === "function") initCalc();
 
   // Atalho: #item=<slug> abre o item direto (para compartilhar e para capturas).
   const m = location.hash.match(/^#item=([a-z0-9-]+)$/);
   if (m && byId[m[1]]) openModal(m[1]);
+  const f = location.hash.match(/^#ficha=([a-z0-9-]+)$/);
+  if (f && byId[f[1]]) {
+    const card = document.querySelector(`.card[data-slug="${f[1]}"]`);
+    if (card) { hoveredCard = card; shiftHeld = true; applyFullCard(); }
+  }
 }
 
 init();
