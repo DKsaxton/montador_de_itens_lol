@@ -830,7 +830,6 @@ select.sort-select {
 }
 .build-summary b { color: var(--teal); font-weight: 600; }
 .build-summary .sum-prio b { color: var(--gold); }
-.build-summary .sum-opc b { color: #0ac8b9; }
 
 .build-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
 
@@ -2427,12 +2426,10 @@ function renderBuildSummary() {
   if (document.activeElement !== nameInput) nameInput.value = build.name;
   const total = buildTotal(null);
   const prio = buildTotal("prioridade");
-  const opc = buildTotal("opcional");
   const count = build.cats.reduce((s, c) => s + c.items.length, 0);
   document.getElementById("build-summary").innerHTML =
     `<span>${build.cats.length} ${build.cats.length === 1 ? "categoria" : "categorias"} · ${count} ${count === 1 ? "item" : "itens"}</span>
      <span class="sum-prio">Prioridade: <b>${prio}g</b></span>
-     <span class="sum-opc">Opcional: <b>${opc}g</b></span>
      <span>Total geral: <b>${total}g</b></span>`;
 }
 
