@@ -2076,6 +2076,129 @@ select.sort-select, .sort-attr-wrap select {
 .group-head .g-count { color: var(--loja-legenda); font-family: var(--loja-texto); font-style: italic; font-size: 12px; }
 .empty-state { color: var(--loja-legenda); font-family: var(--loja-texto); font-style: italic; }
 .empty-state svg { stroke: var(--loja-legenda); }
+
+/* ---- T2: card de item em papel (textura 01), faixa de classe, selo de tier ----
+   O hover (inclinação 3D, brilho, explosão de raios) é o do HTML anterior:
+   as regras de transform/transition/animation não são tocadas — só cores. */
+:root {
+  --loja-ad: #c8641e;
+  --loja-ap: #7b4fb5;
+  --loja-vit: #4d8b3a;
+  /* Cera de cada tier (o selo). Starter e Básico são tinta, não cera. */
+  --tier-starter: #5a4630;
+  --tier-basic: #5a4630;
+  --tier-epic: #3f5a8a;
+  --tier-legendary: #b6873a;
+  --tier-boots: #7a4a2a;
+  --tier-trinket: #a56a2c;
+  --tier-potion: #3d6b4a;
+  --tier-distributed: #6f6a66;
+  --tier-aram: #7a2f5a;
+}
+.card { height: 196px; }
+.card-surface {
+  background: var(--loja-papel);
+  background-image: var(--tex-01);
+  background-size: 420px;
+  background-blend-mode: multiply;
+  border: 1px solid var(--loja-papel-borda);
+  border-radius: 2px;
+  padding-left: 16px;
+  color: var(--loja-tinta);
+  box-shadow: 0 4px 10px rgba(0,0,0,.55);
+}
+.card:hover .card-surface {
+  background: #ecdcb8;
+  background-image: var(--tex-01);
+  background-size: 420px;
+  background-blend-mode: multiply;
+  border-color: #d8b96a;
+  box-shadow:
+    0 14px 26px rgba(0,0,0,.7),
+    0 0 0 1px #d8b96a,
+    0 0 22px rgba(232,200,120,.45);
+}
+.card-surface::before {
+  content: "";
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 6px;
+  z-index: 0;
+  background: var(--class-color, var(--loja-tinta-suave));
+}
+.card-sheen {
+  background:
+    radial-gradient(340px circle at var(--mx) var(--my),
+      rgba(255,246,220,.55), rgba(255,240,200,.18) 40%, transparent 65%);
+}
+.card-icon {
+  border: 2px solid var(--loja-tinta-suave);
+  border-radius: 1px;
+  background: #1b120a;
+  box-shadow: 0 2px 4px rgba(0,0,0,.4);
+}
+.card:hover .card-icon { border-color: var(--loja-latao); }
+.card-icon .abbr { font-family: var(--loja-titulos); color: var(--loja-titulo); }
+.card-icon .tier-strip { display: none; }
+.card-name {
+  font-family: var(--loja-titulos);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.12;
+  color: var(--loja-tinta);
+}
+.card-name .en {
+  font-family: var(--loja-texto);
+  font-style: italic;
+  font-size: 12px;
+  color: var(--loja-tinta-suave);
+  margin-top: 3px;
+}
+.card-price { font-family: var(--loja-texto); font-weight: 500; font-size: 14px; color: var(--loja-cera); }
+.price-discounted { color: var(--loja-cera); }
+/* Preço fica fixo à direita; o nome quebra à esquerda em vez de empurrar o preço para baixo. */
+.card-top { margin-bottom: 6px; flex-wrap: nowrap; }
+.card-name { min-width: 0; }
+/* Nome com no máximo duas linhas (mais a linha em inglês); o excedente é cortado
+   para os atributos nunca saírem do card em colunas estreitas. */
+.card-name { max-height: calc(16px * 1.12 * 2 + 17px); overflow: hidden; }
+.card-name .en { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.card-attrs { margin-top: 6px; }
+.attr-line { font-family: var(--loja-texto); font-size: 13px; color: var(--loja-tinta); }
+.attr-line::before { content: "— "; color: var(--loja-tinta-suave); }
+.attr-line b { color: var(--loja-tinta); font-weight: 700; }
+.attr-line.more, .card-attrs.empty { color: var(--loja-tinta-suave); }
+.attr-line.more::before { content: ""; }
+.card-tags { margin-top: 0; }
+/* Selo de tier: pingo de cera no canto inferior direito */
+.card .tag.tier-badge {
+  position: absolute;
+  right: 10px;
+  bottom: 9px;
+  z-index: 2;
+  font-family: var(--loja-gravado);
+  font-size: 8.5px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  padding: 4px 9px;
+  border-radius: 999px;
+  border: none;
+  color: var(--loja-cera-texto);
+  background: radial-gradient(circle at 35% 30%, rgba(255,255,255,.28), transparent 45%), var(--tier-color, var(--loja-tinta-suave));
+  box-shadow: 0 1px 3px rgba(0,0,0,.55), inset 0 0 0 1px rgba(255,255,255,.18);
+}
+/* Faixa inferior do card (22px) reservada: marca de runa à esquerda, selo de tier à direita,
+   ambos ancorados no card inteiro (card-main volta a ser estático para não os conter). */
+.card-surface { align-items: stretch; }
+.card-main { position: static; padding-bottom: 22px; }
+.card-attrs, .card-top { flex-shrink: 0; }
+/* A marca "Mestre Forjador" não aparece mais no card (Leo, 13/09/2026); só no modal. */
+.card-sortstat { color: var(--loja-tinta); font-family: var(--loja-texto); border-top-color: rgba(90,70,48,.4); }
+.card-sortstat .label, .card-sortstat.none { color: var(--loja-tinta-suave); }
+.rune-mark.mf { color: var(--loja-latao-escuro); border-color: var(--loja-latao); background: rgba(182,135,58,.12); font-family: var(--loja-texto); font-size: 11px; }
+.rune-mark.mf .dot { background: var(--loja-latao); }
+.rune-marks { margin-top: 6px; }
+.card.dimmed { opacity: .45; }
 </style>
 </head>
 <body>
@@ -3949,10 +4072,19 @@ function runeMarksHtml(item) {
   return marks.length ? `<div class="rune-marks">${marks.join("")}</div>` : "";
 }
 
+const CLASS_CSS = {
+  "AD": "var(--loja-ad)", "AP": "var(--loja-ap)", "Vitalidade": "var(--loja-vit)",
+  "AD e AP": "linear-gradient(180deg, var(--loja-ad) 50%, var(--loja-ap) 50%)",
+};
+function classColor(item) {
+  return CLASS_CSS[item.itemClass && item.itemClass.core] || "";
+}
+
 function renderCard(item, attrSorting) {
   const card = document.createElement("div");
   card.className = "card";
   card.style.setProperty("--tier-color", TIER_CSS[item.tier] || "");
+  card.style.setProperty("--class-color", classColor(item));
   card.addEventListener("click", () => openModal(item.slug));
 
   let sortStatHtml = "";
@@ -3975,14 +4107,13 @@ function renderCard(item, attrSorting) {
       </div>
       <div class="card-main">
         <div class="card-top">
-          <div class="card-name">${item.namePt}<span class="en">${item.nameEn}</span></div>
+          <div class="card-name">${item.namePt}<span class="en">${item.nameEn}${item.itemClass && item.itemClass.core ? " · " + item.itemClass.core : ""}</span></div>
           <div class="card-price">${priceLabel(item)}</div>
         </div>
         <div class="card-tags">
           <span class="tag tier-badge">${TIER_LABEL[item.tier] || item.tier}</span>
         </div>
         ${attrValuesHtml(item)}
-        ${runeMarksHtml(item)}
         ${sortStatHtml}
       </div>
       <div class="card-sheen"></div>

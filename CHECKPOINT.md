@@ -1,5 +1,5 @@
 # Checkpoint — Montador de Itens de LoL (Capítulo 2 · Forjador)
-Última atualização: 13/09/2026 — Fase 2: T1 aprovada e commitada; T2 (card) em andamento
+Última atualização: 13/09/2026 — Fase 2, tarefa 2 executada, aguardando aprovado
 
 ## 1. Objetivo geral
 Evoluir o Montador de Itens (index.html) para a versão com identidade visual de loja medieval (Catálogo) e forja (Build), dados do Capítulo 1 (225 itens, patch 16.18.1) via data/catalog.js, sistema de áudio com lojista, e publicação no GitHub Pages — em fases aprovadas por captura de tela.
@@ -23,7 +23,7 @@ Evoluir o Montador de Itens (index.html) para a versão com identidade visual de
 - T4 — Pages testado (`docs/screenshots/fase0-tarefa4-pages.png`): deploy no ar 30 s após o push; index.html, data/catalog.js, textura, áudio e .nojekyll respondem 200 em https://dksaxton.github.io/montador_de_itens_lol/; DOM do site publicado com 225 cards e contador 225 (Chrome headless — o navegador embutido não tem permissão para o domínio github.io). Do disco (file://) também 225. FASE 0 CONCLUÍDA em 13/09/2026.
 
 ## 3. Em andamento
-- Fase 2, T2 — card redesenhado (iniciando).
+- Fase 2, T2 — card em papel (captura `docs/screenshots/fase2-tarefa2-card-papel.png`), aguardando aprovado para commit "F2-T2". CSS no bloco da loja: papel com textura 01 (multiply), faixa vertical de 6px na cor da classe (AD laranja, AP roxo, Vitalidade verde; Garrabrasa dividida), selo de cera com o nome do tier no canto inferior direito (cores por tier nas variáveis --tier-*; Starter e Básico em tinta), nome em IM Fell English SC 16px limitado a duas linhas, inglês + classe em itálico com reticências, preço em cera fixo à direita, atributos com travessão, ícone com moldura de tinta; hover intocado (só cores: brilho de latão, papel mais claro). Card de 196px com faixa inferior de 22px reservada ao selo. JS: `--class-color` por card (CLASS_CSS) e " · classe" no nome em inglês; a marca "Mestre Forjador" saiu do card a pedido do Leo (o filtro lateral e o modal continuam). Medido no navegador embutido: 225 cards, 0 cortados, 0 selos sobre texto, console limpo.
 
 ## 4. Próximos passos
 Fase 2 — Catálogo (loja medieval), sempre com docs/direcao_de_arte.md como régua e o hover intocado. Tarefas pequenas, uma captura cada:
