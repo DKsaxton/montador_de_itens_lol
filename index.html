@@ -3119,6 +3119,24 @@ body.editando .cat-kind:hover { filter: brightness(1.15); }
 .build-totals .bt-eff b { color: var(--forja-brasa-clara); font-style: normal; }
 .build-totals .bt-note { font-family: var(--loja-texto); font-style: italic; font-size: 11px; color: #7a6a5a; margin-top: 5px; }
 .build-totals .cs-list span { font-size: 13px; }
+
+/* ---- Fase 4, T1: controle de som (sino de balcão) ---- */
+.counts-wrap { display: flex; align-items: center; gap: 14px; }
+.som-ctl { display: inline-flex; align-items: center; gap: 8px; }
+.som-btn {
+  width: 32px; height: 32px; border-radius: 50%; cursor: pointer; padding: 5px;
+  background: linear-gradient(160deg, #e7c46f 0%, #b8863b 38%, #8a5f22 62%, #d9b25c 100%);
+  border: 1px solid #5a3f12; color: #2a1a0a;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.45), 0 2px 5px rgba(0,0,0,.6);
+}
+.som-btn svg { width: 100%; height: 100%; }
+.som-btn .som-risco { display: none; }
+.som-btn.mudo { filter: grayscale(.8) brightness(.8); }
+.som-btn.mudo .som-risco { display: block; }
+.som-btn.travado { opacity: .55; }
+#som-volume { width: 84px; accent-color: #c9973f; cursor: pointer; }
+body.forja .som-btn { background: linear-gradient(160deg, #ffd27a, #ff7a1e 55%, #b34d0e); border-color: #b34d0e; }
+body.forja #som-volume { accent-color: #ff7a1e; }
 </style>
 </head>
 <body>
@@ -3144,7 +3162,18 @@ body.editando .cat-kind:hover { filter: brightness(1.15); }
       <button class="tab-btn" data-tab="build">Build<span class="tab-count" id="build-tab-count"></span></button>
       <button class="tab-btn" data-tab="calc">Calculadora</button>
     </nav>
-    <div class="counts"><b id="total-count">0</b> itens catalogados</div>
+    <div class="counts-wrap">
+      <div class="counts"><b id="total-count">0</b> itens catalogados</div>
+      <div class="som-ctl" title="Som da loja">
+        <button type="button" id="som-mudo" class="som-btn" aria-label="Silenciar ou reativar o som">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15L6 16z"/><path d="M10 20a2 2 0 0 0 4 0"/><path d="M12 3v2"/>
+            <path class="som-risco" d="M4 4l16 16"/>
+          </svg>
+        </button>
+        <input type="range" id="som-volume" min="0" max="100" step="5" aria-label="Volume">
+      </div>
+    </div>
   </div>
 
   <div id="catalog-controls">
@@ -3315,6 +3344,314 @@ body.editando .cat-kind:hover { filter: brightness(1.15); }
 </div>
 
 <script src="data/catalog.js"></script>
+<script>
+// ============================================================
+// Som — módulo único de áudio (Fase 4). docs/mapa_de_audio.md é a régua.
+// Nenhum outro trecho do app chama new Audio(): tudo passa por Som.play(evento, contexto).
+// - SOM_ARQUIVOS: evento-base → variantes, gerado da lista real de assets/audio (nomes intocados).
+// - REGRA DO LEO (13/09/2026): sempre que um evento tiver mais de um arquivo, a
+//   ativação é aleatória — um deles é sorteado a cada disparo, sem repetir o anterior.
+// - Pré-carregamento de todos os arquivos ao destravar: o som toca no instante do
+//   evento (hover em qualquer card dispara na hora, sem cooldown).
+// - Falas do lojista não se sobrepõem: se uma estiver tocando, a nova é descartada.
+// - Volume e mudo persistem em localStorage (som.volume, som.mudo).
+// - Nada toca antes de Som.destravar(), chamado no clique em "Entrar na loja".
+// ============================================================
+const SOM_ARQUIVOS = {
+ "build_close": [
+  "build_close.mp3"
+ ],
+ "build_item_add": [
+  "build_item_add_01.mp3",
+  "build_item_add_02.mp3",
+  "build_item_add_03.mp3",
+  "build_item_add_04.mp3"
+ ],
+ "build_open": [
+  "build_open_01.mp3",
+  "build_open_02.mp3",
+  "build_open_03.mp3",
+  "build_open_04.mp3",
+  "build_open_05.mp3",
+  "build_open_06.mp3"
+ ],
+ "close_catalog": [
+  "close_catalog.mp3"
+ ],
+ "open_catalog": [
+  "open_catalog.mp3"
+ ],
+ "shopkeeper_build_add_bloodthirster": [
+  "shopkeeper_build_add_bloodthirster_01.mp3"
+ ],
+ "shopkeeper_build_add_heartsteel": [
+  "shopkeeper_build_add_heartsteel_01.mp3"
+ ],
+ "shopkeeper_build_add_infinityedge": [
+  "shopkeeper_build_add_infinityedge_01.mp3"
+ ],
+ "shopkeeper_build_add_jakshotheprotean": [
+  "shopkeeper_build_add_jakshotheprotean_01.mp3"
+ ],
+ "shopkeeper_build_add_rabadonsdeathcap": [
+  "shopkeeper_build_add_rabadonsdeathcap_01.mp3"
+ ],
+ "shopkeeper_build_add_rylaiscrystalscepter": [
+  "shopkeeper_build_add_rylaiscrystalscepter_01.mp3"
+ ],
+ "shopkeeper_build_efeitosespeciais_danoaolongodotempo_select": [
+  "shopkeeper_build_efeitosespeciais_danoaolongodotempo_select_01.mp3",
+  "shopkeeper_build_efeitosespeciais_danoaolongodotempo_select_02.mp3"
+ ],
+ "shopkeeper_build_efeitosespeciais_lentidao_select": [
+  "shopkeeper_build_efeitosespeciais_lentidao_select_01.mp3"
+ ],
+ "shopkeeper_tag_open_danodeataque": [
+  "shopkeeper_tag_open_danodeataque_01.mp3",
+  "shopkeeper_tag_open_danodeataque_02.mp3",
+  "shopkeeper_tag_open_danodeataque_03.mp3",
+  "shopkeeper_tag_open_danodeataque_04.mp3",
+  "shopkeeper_tag_open_danodeataque_05.mp3"
+ ],
+ "shopkeeper_tag_open_poderdehabilidade": [
+  "shopkeeper_tag_open_poderdehabilidade_01.mp3",
+  "shopkeeper_tag_open_poderdehabilidade_02.mp3",
+  "shopkeeper_tag_open_poderdehabilidade_03.mp3",
+  "shopkeeper_tag_open_poderdehabilidade_04.mp3",
+  "shopkeeper_tag_open_poderdehabilidade_05.mp3"
+ ],
+ "shopkeeper_tag_open_tank": [
+  "shopkeeper_tag_open_tank_01.mp3",
+  "shopkeeper_tag_open_tank_02.mp3",
+  "shopkeeper_tag_open_tank_03.mp3",
+  "shopkeeper_tag_open_tank_04.mp3",
+  "shopkeeper_tag_open_tank_05.mp3"
+ ],
+ "ui_build_mod_add_legendary_danodeataque": [
+  "ui_build_mod_add_legendary_danodeataque.mp3"
+ ],
+ "ui_build_mod_add_legendary_poderdehabilidade": [
+  "ui_build_mod_add_legendary_poderdehabilidade.mp3"
+ ],
+ "ui_build_mod_add_legendary_tank": [
+  "ui_build_mod_add_legendary_tank.mp3"
+ ],
+ "ui_catalog_mod_hover_danodeataque": [
+  "ui_catalog_mod_hover_danodeataque_01.mp3",
+  "ui_catalog_mod_hover_danodeataque_02.mp3",
+  "ui_catalog_mod_hover_danodeataque_03.mp3",
+  "ui_catalog_mod_hover_danodeataque_04.mp3",
+  "ui_catalog_mod_hover_danodeataque_05.mp3",
+  "ui_catalog_mod_hover_danodeataque_06.mp3",
+  "ui_catalog_mod_hover_danodeataque_07.mp3",
+  "ui_catalog_mod_hover_danodeataque_08.mp3",
+  "ui_catalog_mod_hover_danodeataque_09.mp3",
+  "ui_catalog_mod_hover_danodeataque_10.mp3",
+  "ui_catalog_mod_hover_danodeataque_11.mp3"
+ ],
+ "ui_catalog_mod_hover_poderdehabilidade": [
+  "ui_catalog_mod_hover_poderdehabilidade_01.mp3",
+  "ui_catalog_mod_hover_poderdehabilidade_02.mp3",
+  "ui_catalog_mod_hover_poderdehabilidade_03.mp3",
+  "ui_catalog_mod_hover_poderdehabilidade_04.mp3",
+  "ui_catalog_mod_hover_poderdehabilidade_05.mp3",
+  "ui_catalog_mod_hover_poderdehabilidade_06.mp3",
+  "ui_catalog_mod_hover_poderdehabilidade_07.mp3",
+  "ui_catalog_mod_hover_poderdehabilidade_08.mp3",
+  "ui_catalog_mod_hover_poderdehabilidade_09.mp3",
+  "ui_catalog_mod_hover_poderdehabilidade_10.mp3",
+  "ui_catalog_mod_hover_poderdehabilidade_11.mp3"
+ ],
+ "ui_catalog_mod_hover_tank": [
+  "ui_catalog_mod_hover_tank_01.mp3",
+  "ui_catalog_mod_hover_tank_02.mp3",
+  "ui_catalog_mod_hover_tank_03.mp3",
+  "ui_catalog_mod_hover_tank_04.mp3",
+  "ui_catalog_mod_hover_tank_05.mp3",
+  "ui_catalog_mod_hover_tank_06.mp3",
+  "ui_catalog_mod_hover_tank_07.mp3",
+  "ui_catalog_mod_hover_tank_08.mp3",
+  "ui_catalog_mod_hover_tank_09.mp3",
+  "ui_catalog_mod_hover_tank_10.mp3"
+ ],
+ "ui_catalog_tag_select": [
+  "ui_catalog_tag_select_01.mp3",
+  "ui_catalog_tag_select_02.mp3",
+  "ui_catalog_tag_select_03.mp3",
+  "ui_catalog_tag_select_04.mp3",
+  "ui_catalog_tag_select_05.mp3",
+  "ui_catalog_tag_select_06.mp3"
+ ],
+ "ui_shop_click_consumivel_distribuido_talisma": [
+  "ui_shop_click_consumivel_distribuido_talisma.mp3"
+ ],
+ "ui_shop_click_danodeataque": [
+  "ui_shop_click_danodeataque.mp3"
+ ],
+ "ui_shop_click_poderdehabilidade": [
+  "ui_shop_click_poderdehabilidade.mp3"
+ ],
+ "ui_shop_click_tank": [
+  "ui_shop_click_tank.mp3"
+ ]
+};
+
+const Som = (() => {
+  const BASE = "assets/audio/";
+  const NUCLEO = { "AD": "danodeataque", "AP": "poderdehabilidade", "Vitalidade": "tank" };
+  const TIERS_NEUTROS = ["Consumível", "Distribuído", "Trinket"];
+  const estado = { volume: 0.8, mudo: false, destravado: false };
+  const ultimo = {};        // base → último arquivo sorteado
+  const cooldownAte = {};   // grupo → instante em que pode tocar de novo
+  let falaAtual = null;     // Audio do lojista em reprodução
+  let falaLivreEm = 0;      // instante em que o lojista pode falar de novo (fim da fala + folga)
+  let ultimaFala = 0;       // instante da última fala (para o intervalo mínimo)
+  const ouvintes = [];
+  // Lojista (regras do Leo, 13/09/2026): nunca corta a fala em curso; nova fala só
+  // depois da atual terminar + FOLGA; fala "de vez em quando": CHANCE por acionamento
+  // e INTERVALO_MIN entre falas. Falas raras por item (build_add_<item>) sempre
+  // passam pela chance, mas respeitam a fila e a folga.
+  const LOJISTA = { FOLGA_MS: 500, INTERVALO_MIN_MS: 15000, CHANCE: 0.4 };
+  const cache = {};         // arquivo → Audio pré-carregado (pronto para tocar sem atraso)
+
+  function precarregar() {
+    Object.values(SOM_ARQUIVOS).flat().forEach(f => {
+      if (cache[f]) return;
+      const a = new Audio();
+      a.preload = "auto";
+      a.src = BASE + f;
+      a.load();
+      cache[f] = a;
+    });
+  }
+
+  const chave = s => String(s || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]/g, "");
+
+  function carregar() {
+    try {
+      const v = localStorage.getItem("som.volume");
+      const m = localStorage.getItem("som.mudo");
+      if (v !== null && !Number.isNaN(Number(v))) estado.volume = Math.min(1, Math.max(0, Number(v)));
+      estado.mudo = m === "1";
+    } catch (e) { /* sem persistência */ }
+  }
+  function salvar() {
+    try { localStorage.setItem("som.volume", String(estado.volume)); localStorage.setItem("som.mudo", estado.mudo ? "1" : "0"); } catch (e) { /* idem */ }
+  }
+  function avisar() { ouvintes.forEach(fn => fn({ ...estado })); }
+
+  function nucleoDe(ctx) {
+    if (ctx.nucleo) return NUCLEO[ctx.nucleo] || null;
+    const core = ctx.item && ctx.item.itemClass && ctx.item.itemClass.core;
+    if (core === "AD e AP") return Math.random() < 0.5 ? NUCLEO.AD : NUCLEO.AP;   // único caso: Filhote de Garrabrasa
+    return NUCLEO[core] || null;
+  }
+
+  function sortear(base) {
+    const lista = SOM_ARQUIVOS[base];
+    if (!lista || !lista.length) return null;
+    if (lista.length === 1) return lista[0];
+    let f;
+    do { f = lista[Math.floor(Math.random() * lista.length)]; } while (f === ultimo[base]);
+    ultimo[base] = f;
+    return f;
+  }
+
+  // Toca uma base de arquivo. opts: { cooldown, grupo, lojista }
+  function tocar(base, opts = {}) {
+    if (!estado.destravado || estado.mudo || !SOM_ARQUIVOS[base]) return false;
+    const grupo = opts.grupo || base;
+    const agora = Date.now();
+    if (cooldownAte[grupo] && agora < cooldownAte[grupo]) return false;
+    if (opts.lojista) {
+      if (falaAtual && !falaAtual.ended && !falaAtual.paused) return false;   // não corta
+      if (agora < falaLivreEm) return false;                                  // folga após a fala
+      if (!opts.sempre) {
+        if (agora - ultimaFala < LOJISTA.INTERVALO_MIN_MS) return false;      // de vez em quando
+        if (Math.random() > LOJISTA.CHANCE) return false;
+      }
+    }
+    const f = sortear(base);
+    if (!f) return false;
+    if (opts.cooldown) cooldownAte[grupo] = agora + opts.cooldown;
+    // Usa o elemento pré-carregado; se ele ainda estiver tocando, um clone (já em cache do navegador).
+    let a = cache[f];
+    if (!a) { a = new Audio(BASE + f); cache[f] = a; }
+    if (!a.paused && !a.ended) a = a.cloneNode(); else a.currentTime = 0;
+    a.volume = estado.volume;
+    const p = a.play();
+    if (p && p.catch) p.catch(() => { /* autoplay bloqueado ou arquivo ausente: silêncio */ });
+    if (opts.lojista) {
+      falaAtual = a;
+      ultimaFala = agora;
+      falaLivreEm = Infinity;                       // enquanto fala, ninguém entra
+      const liberar = () => { falaLivreEm = Date.now() + LOJISTA.FOLGA_MS; };
+      a.addEventListener("ended", liberar, { once: true });
+      a.addEventListener("error", liberar, { once: true });
+    }
+    return true;
+  }
+
+  // Eventos do app → arquivos (tabela do docs/mapa_de_audio.md)
+  function play(evento, ctx = {}) {
+    const n = nucleoDe(ctx);
+    switch (evento) {
+      case "catalog:open":  return tocar("open_catalog");
+      case "catalog:close": return tocar("close_catalog");
+      case "build:open":    return tocar("build_open");
+      case "build:close":   return tocar("build_close");
+      case "catalog:hover": return n ? tocar("ui_catalog_mod_hover_" + n) : false;   // sem cooldown: toca em todo card que o mouse tocar
+      case "catalog:click": {
+        const neutro = !n || (ctx.item && TIERS_NEUTROS.includes(ctx.item.tier));
+        return tocar(neutro ? "ui_shop_click_consumivel_distribuido_talisma" : "ui_shop_click_" + n, { cooldown: 80, grupo: "click" });
+      }
+      case "catalog:tag_select": return tocar("ui_catalog_tag_select", { cooldown: 80, grupo: "chip" });
+      case "lojista:tag_open": return n ? tocar("shopkeeper_tag_open_" + n, { lojista: true }) : false;
+      case "lojista:efeito_select": return tocar("shopkeeper_build_efeitosespeciais_" + chave(ctx.efeito) + "_select", { lojista: true });
+      case "build:item_add": {
+        const it = ctx.item;
+        const lendario = it && /^Lendário/.test(it.tier) && n;
+        const ok = tocar(lendario ? "ui_build_mod_add_legendary_" + n : "build_item_add");
+        // Lojista: fala rara do item (sempre) ou, se o item não tem uma, o comentário do
+        // núcleo (shopkeeper_tag_open_<núcleo>), sujeito a chance/intervalo (Leo, 13/09/2026).
+        // Prioridade (Leo, 13/09/2026): fala rara do item > fala do efeito especial
+        // (item que tem Dano ao Longo do Tempo / Lentidão) > comentário do núcleo.
+        const rara = it && SOM_ARQUIVOS["shopkeeper_build_add_" + chave(it.nameEn)];
+        const efeito = it && (it.specialEffects || []).find(e => SOM_ARQUIVOS["shopkeeper_build_efeitosespeciais_" + chave(e) + "_select"]);
+        if (rara) tocar("shopkeeper_build_add_" + chave(it.nameEn), { lojista: true, sempre: true });
+        else if (efeito) tocar("shopkeeper_build_efeitosespeciais_" + chave(efeito) + "_select", { lojista: true });
+        else if (n) tocar("shopkeeper_tag_open_" + n, { lojista: true });
+        return ok;
+      }
+    }
+    return false;
+  }
+
+  function destravar() { estado.destravado = true; precarregar(); avisar(); }
+  function setVolume(v) { estado.volume = Math.min(1, Math.max(0, Number(v) || 0)); salvar(); avisar(); }
+  function setMudo(m) { estado.mudo = !!m; salvar(); avisar(); }
+  function alternarMudo() { setMudo(!estado.mudo); }
+  function onChange(fn) { ouvintes.push(fn); }
+
+  // Dev/QA: confere que todos os arquivos do mapa carregam (relata no console).
+  function verificar() {
+    const todos = Object.values(SOM_ARQUIVOS).flat();
+    let ok = 0, falhas = [];
+    return new Promise(resolve => {
+      todos.forEach(f => {
+        const a = new Audio();
+        a.preload = "metadata";
+        a.addEventListener("loadedmetadata", () => { ok++; if (ok + falhas.length === todos.length) resolve({ ok, falhas }); });
+        a.addEventListener("error", () => { falhas.push(f); console.warn("Som: não carregou", f); if (ok + falhas.length === todos.length) resolve({ ok, falhas }); });
+        a.src = BASE + f;
+      });
+    });
+  }
+
+  carregar();
+  return { play, destravar, setVolume, setMudo, alternarMudo, onChange, verificar, LOJISTA, get estado() { return { ...estado }; }, ARQUIVOS: SOM_ARQUIVOS };
+})();
+</script>
 <script>
 // ============================================================
 // Aba Build — modelo do editor de build do Deadlock:
@@ -3547,7 +3884,7 @@ function addItemToCategory(itemId, catId) {
   if (!cat) return false;
   cat.items.push({ itemId, note: "" });
   lastDrop = { catId: cat.id, index: cat.items.length - 1 };
-  // Fase 4: Som.play("build:item_add" / "build:add_legendary:<núcleo>", item) entra aqui.
+  Som.play("build:item_add", { item: byId[itemId] });   // genérico, ou Lendário por núcleo + fala rara
   renderBuild();
   saveBuild();
   return true;
@@ -4356,8 +4693,9 @@ function switchTab(tab) {
     : saindoDaForja ? document.getElementById(tab === "calc" ? "view-calc" : "view-catalog") : null;
   if (alvo) {
     alvo.classList.remove("entrando"); void alvo.offsetWidth; alvo.classList.add("entrando");
-    // Fase 4: Som.play("build:open") ao entrar; Som.play("build:close") ao sair.
   }
+  if (entrandoNaForja) { Som.play("catalog:close"); Som.play("build:open"); }
+  if (saindoDaForja) { Som.play("build:close"); Som.play("catalog:open"); }
   if (tab === "build") renderBuildAll();
   if (tab === "calc" && typeof renderCalc === "function") renderCalc();
 }
@@ -5317,9 +5655,14 @@ function syncSortControls() {
 }
 
 function toggleFilter(group, value, chipEl) {
+  Som.play("catalog:tag_select");
   const set = state[group];
   if (set.has(value)) { set.delete(value); chipEl.classList.remove("active"); }
-  else { set.add(value); chipEl.classList.add("active"); }
+  else {
+    set.add(value); chipEl.classList.add("active");
+    // Lojista comenta o efeito marcado (só existe fala para Lentidão e Dano ao Longo do Tempo).
+    if (group === "effects") Som.play("lojista:efeito_select", { efeito: value });
+  }
   if (group === "stats") {
     const first = [...state.stats][0];
     if (first && (state.sort === "attr-desc" || state.sort === "attr-asc")) { state.sortAttr = first; syncSortControls(); }
@@ -5393,6 +5736,8 @@ function buildClassTabs() {
     const n = CATALOG.items.filter(it => itemInClass(it, t.classe)).length;
     btn.innerHTML = `<span>${t.label}</span><span class="n">${n}</span>`;
     btn.addEventListener("click", () => {
+      // Fala do lojista ao TROCAR para a aba AD/AP/Vitalidade (Leo, 13/09/2026); Todos não fala.
+      if (t.classe && t.classe !== state.classe) Som.play("lojista:tag_open", { nucleo: t.classe });
       state.classe = t.classe;
       nav.querySelectorAll(".class-tab").forEach(b => b.classList.toggle("active", b.dataset.classe === t.classe));
       render();
@@ -5551,6 +5896,7 @@ function renderCard(item, attrSorting) {
   card.title = "Clique: marcar na categoria escolhida em \"Marcar em\" (sem categoria, abre o pergaminho) · Ícone ou Shift+clique: pergaminho";
   card.addEventListener("click", (e) => {
     playTierAnimation(card, item);
+    Som.play("catalog:click", { item });
     // Sem categoria selecionada, o clique abre o pergaminho (Leo, 13/09/2026).
     if (e.target.closest(".card-icon") || e.shiftKey || !getCat(build.selectedCatId)) { openModal(item.slug); return; }
     toggleItemInBuild(item.slug);
@@ -5836,7 +6182,10 @@ function initShiftFullCard() {
   const grid = document.getElementById("grid");
   grid.addEventListener("mouseover", (e) => {
     const card = e.target.closest(".card");
-    if (card && card !== hoveredCard) { hoveredCard = card; applyFullCard(); }
+    if (card && card !== hoveredCard) {
+      hoveredCard = card; applyFullCard();
+      Som.play("catalog:hover", { item: byId[card.dataset.slug] });
+    }
   });
   grid.addEventListener("mouseout", (e) => {
     const card = e.target.closest(".card");
@@ -6131,6 +6480,20 @@ function init() {
   if (typeof initBuildBuilder === "function") initBuildBuilder();
   if (typeof initCalc === "function") initCalc();
 
+  // Controle de som (Fase 4, T1): sino = mudo, régua = volume; persistem.
+  const somBtn = document.getElementById("som-mudo");
+  const somVol = document.getElementById("som-volume");
+  const refletirSom = (e) => {
+    somBtn.classList.toggle("mudo", e.mudo);
+    somBtn.classList.toggle("travado", !e.destravado);
+    somBtn.title = e.destravado ? (e.mudo ? "Som silenciado — clique para reativar" : "Som ligado — clique para silenciar") : "O som nasce ao entrar na loja";
+    somVol.value = Math.round(e.volume * 100);
+  };
+  Som.onChange(refletirSom);
+  refletirSom(Som.estado);
+  somBtn.addEventListener("click", () => Som.alternarMudo());
+  somVol.addEventListener("input", () => Som.setVolume(Number(somVol.value) / 100));
+
   // Tela de entrada: cobre a loja até o clique em "Entrar na loja" (o áudio
   // nasce nesse clique, na Fase 4). Links diretos (#item, #ficha, #apice,
   // #animacoes) já entram na loja.
@@ -6139,7 +6502,9 @@ function init() {
   const entrada = document.getElementById("entrada");
   function entrarNaLoja(imediato) {
     if (!entrada || entrada.classList.contains("saindo") || entrada.classList.contains("fechada")) return;
-    // Fase 4: Som.play("catalog:open") entra aqui.
+    // O som nasce aqui: o clique destrava o áudio e a loja abre.
+    Som.destravar();
+    if (!imediato) Som.play("catalog:open");
     if (imediato) { entrada.classList.add("fechada"); return; }
     entrada.classList.add("saindo");
     setTimeout(() => entrada.classList.add("fechada"), 900);
