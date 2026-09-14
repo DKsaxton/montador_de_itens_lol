@@ -101,3 +101,6 @@ As três texturas são papel amassado quase branco; nunca usadas cruas. Aplicaç
 - Etiquetas da lista, todas gravadas em Cinzel miúdo: "Popular hoje" em brasa #ff7a1e sobre tinta escura, "Popular da semana" em bronze #7a5a1e, "desatualizada" em cera, "favorita" só contorno de latão, "publicada" em azul-aço #3b4a6b, "na forja" em latão.
 - Na aba Públicas, o seletor de quantidade e o botão ↻ entram na barra de ações; o coração da linha acende em brasa quando favorita.
 
+## Soltar em posição (Fase 8, T7 — 14/09/2026)
+- Ao arrastar um molde sobre outro, o alvo abre um vão de 5 px para o lado e uma barra vertical de brasa com brilho marca onde a placa vai cair: à esquerda quando o ponteiro está na metade esquerda, à direita na outra metade. Sobre o vazio da bancada, sem barra: cai no fim.
+

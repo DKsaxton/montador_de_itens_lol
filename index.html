@@ -3478,6 +3478,10 @@ body.editando .save-wrap { display: inline-flex; }
 .revisao-box { font-family: var(--loja-texto); font-size: 13.5px; line-height: 1.5; color: var(--forja-texto); margin-bottom: 8px; }
 .revisao-box .k { color: #ff9b6a; font-style: normal; }
 .bi-detail .revisao-box { background: rgba(141,44,34,.12); border: 1px solid rgba(141,44,34,.5); border-left: 3px solid #8d2c22; border-radius: 3px; padding: 8px 10px; }
+
+/* ---- Fase 8, T7: soltar em posição — barra de brasa entre os moldes ---- */
+.item-tile.ins-before { transform: translateX(5px); box-shadow: -9px 0 0 -1px var(--forja-brasa), -9px 0 14px var(--forja-brasa-glow), inset 0 3px 8px rgba(0,0,0,.9); }
+.item-tile.ins-after  { transform: translateX(-5px); box-shadow: 9px 0 0 -1px var(--forja-brasa), 9px 0 14px var(--forja-brasa-glow), inset 0 3px 8px rgba(0,0,0,.9); }
 </style>
 </head>
 <body>
@@ -4562,11 +4566,13 @@ function setGeneralSpan(span) {
 // Último item que caiu numa bancada: a renderização seguinte anima só ele.
 let lastDrop = null;
 
-function addItemToCategory(itemId, catId) {
+// `index` (opcional): posição onde o item entra; sem ele, vai para o fim.
+function addItemToCategory(itemId, catId, index) {
   const cat = getCat(catId || build.selectedCatId);
   if (!cat) return false;
-  cat.items.push({ itemId, note: "" });
-  lastDrop = { catId: cat.id, index: cat.items.length - 1 };
+  const pos = Number.isInteger(index) ? Math.max(0, Math.min(cat.items.length, index)) : cat.items.length;
+  cat.items.splice(pos, 0, { itemId, note: "" });
+  lastDrop = { catId: cat.id, index: pos };
   Som.play("build:item_add", { item: byId[itemId] });   // genérico, ou Lendário por núcleo + fala rara
   renderBuild();
   saveBuild();
@@ -4587,14 +4593,22 @@ function removeItemFromCategory(catId, index) {
   }
 }
 
-function moveItem(fromCatId, fromIndex, toCatId) {
+// Move para outra bancada ou para uma posição específica (Leo, 14/09/2026: "poder
+// empurrar os itens para uma posição mais específica"). `toIndex` é a posição de
+// destino antes de tirar o item da origem; sem ele, vai para o fim.
+function moveItem(fromCatId, fromIndex, toCatId, toIndex) {
   const from = getCat(fromCatId), to = getCat(toCatId);
   if (!from || !to) return;
-  if (from === to && fromIndex === from.items.length - 1) return;   // já está ali, no fim
+  let pos = Number.isInteger(toIndex) ? toIndex : to.items.length;
+  if (from === to) {
+    if (pos === fromIndex || pos === fromIndex + 1) return;   // soltou onde já estava
+    if (pos > fromIndex) pos--;                                // tirar o item desloca o que vem depois
+  }
   const [entry] = from.items.splice(fromIndex, 1);
   if (!entry) return;
-  to.items.push(entry);
-  lastDrop = { catId: to.id, index: to.items.length - 1 };
+  pos = Math.max(0, Math.min(to.items.length, pos));
+  to.items.splice(pos, 0, entry);
+  lastDrop = { catId: to.id, index: pos };
   Som.play("build:item_move", { item: byId[entry.itemId] });   // a placa cai; o lojista não comenta
   renderBuild();
   saveBuild();
@@ -5588,9 +5602,12 @@ function chamarEditar() {
   }
 }
 
+let dropPos = null;   // {catId, index} da posição entre moldes apontada pelo arraste
 function clearDropMarks() {
   document.querySelectorAll(".build-cat").forEach(c =>
     c.classList.remove("drop-before", "drop-after", "drop-into"));
+  document.querySelectorAll(".item-tile.ins-before, .item-tile.ins-after").forEach(t =>
+    t.classList.remove("ins-before", "ins-after"));
 }
 
 function initCategoryDrag() {
@@ -5652,6 +5669,15 @@ function initCategoryDrag() {
       catEl.classList.add(e.clientX > r.left + r.width / 2 ? "drop-after" : "drop-before");
     } else {
       catEl.classList.add("drop-into");
+      // Posição entre os moldes: metade esquerda = antes, metade direita = depois.
+      const tile = e.target.closest(".item-tile");
+      dropPos = null;
+      if (tile && tile.dataset.catId === catEl.dataset.catId && !tile.classList.contains("dragging")) {
+        const r = tile.getBoundingClientRect();
+        const antes = e.clientX < r.left + r.width / 2;
+        tile.classList.add(antes ? "ins-before" : "ins-after");
+        dropPos = { catId: catEl.dataset.catId, index: Number(tile.dataset.index) + (antes ? 0 : 1) };
+      }
     }
   });
 
@@ -5665,12 +5691,15 @@ function initCategoryDrag() {
       const r = catEl.getBoundingClientRect();
       moveCategory(dragCatId, targetId, e.clientX > r.left + r.width / 2);
     } else if (dragItemPayload && dragItemPayload.from === "cat") {
-      moveItem(dragItemPayload.catId, dragItemPayload.index, targetId);
+      const pos = dropPos && dropPos.catId === targetId ? dropPos.index : undefined;
+      moveItem(dragItemPayload.catId, dragItemPayload.index, targetId, pos);
     } else if (dragItemPayload && dragItemPayload.from === "picker") {
-      addItemToCategory(dragItemPayload.itemId, targetId);
+      const pos = dropPos && dropPos.catId === targetId ? dropPos.index : undefined;
+      addItemToCategory(dragItemPayload.itemId, targetId, pos);
     }
     dragCatId = null;
     dragItemPayload = null;
+    dropPos = null;
     clearDropMarks();
   });
 }
