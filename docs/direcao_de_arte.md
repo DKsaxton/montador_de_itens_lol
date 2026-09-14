@@ -86,3 +86,8 @@ As três texturas são papel amassado quase branco; nunca usadas cruas. Aplicaç
 ## Arsenais — lista de builds (Fase 7, T3 — 14/09/2026)
 - A aba Build abre numa tabela de ferro (mesma placa da forja): cabeçalho gravado em Cinzel (Nome · Campeão · Modo · Itens), linhas com o nome em IM Fell, o retrato do campeão em medalhão de latão de 36 px (∞ para todos), modo e contagem em Alegreya itálico, e duas ações discretas (⧉ ✕). Hover acende o nome em brasa; a build ativa leva um friso de brasa à esquerda. Referência: a tela "Arsenais" do cliente do LoL.
 - Na forja, "‹ Arsenais" volta à lista e o nome da build ganha um seletor ▾ (painel de ferro igual ao de campeão) para trocar de build sem sair.
+
+## Marcadores da build (Fase 7, T5 — 14/09/2026)
+- Até três por build. Na forja, três quadrados de ferro (40 px, borda tracejada quando vazios, latão quando cheios) ao lado do nome; na lista de Arsenais, a coluna "Marcadores" com os mesmos ícones a 30 px. Os SVGs dos marcadores padrão são os do Deadlock, colocados pelo Leo em `assets/Icon/panorama/images/builds`, usados nas cores originais sobre o ferro; habilidades e itens levam moldura de latão.
+- Diálogo "Selecionar marcador": placa de ferro centrada, filete de brasa no topo, título em IM Fell, três grupos rotulados em Cinzel gravado (Marcadores padrão · Habilidades · Itens no guia), células de 54 px que acendem em brasa no hover e ganham borda de latão quando são a escolha atual.
+

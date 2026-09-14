@@ -3298,8 +3298,8 @@ body.forja #som-volume { accent-color: #ff7a1e; }
   border: 1px solid var(--forja-placa-borda);
   box-shadow: inset 0 1px 0 rgba(255,255,255,.05), inset 0 0 40px rgba(0,0,0,.45), 0 6px 14px rgba(0,0,0,.55);
 }
-.bi-head, .bi-row { display: grid; grid-template-columns: minmax(0, 1fr) 120px 170px 80px 90px; align-items: center; gap: 12px; padding: 10px 18px; }
-@media (max-width: 900px) { .bi-head, .bi-row { grid-template-columns: minmax(0, 1fr) 64px 120px 64px 84px; gap: 8px; padding: 8px 12px; } .bi-name { font-size: 16px; } }
+.bi-head, .bi-row { display: grid; grid-template-columns: minmax(0, 1fr) 120px 170px 124px 90px; align-items: center; gap: 12px; padding: 10px 18px; }
+@media (max-width: 900px) { .bi-head, .bi-row { grid-template-columns: minmax(0, 1fr) 64px 110px 104px 84px; gap: 8px; padding: 8px 12px; } .bi-name { font-size: 16px; } .bi-marks .mk { width: 28px; height: 28px; } }
 .bi-head { font-family: var(--loja-gravado); font-size: 9.5px; letter-spacing: .2em; text-transform: uppercase; color: var(--forja-titulo); background: rgba(0,0,0,.28); border-bottom: 1px solid var(--forja-placa-borda); }
 .bi-row { border-bottom: 1px solid rgba(255,255,255,.04); cursor: pointer; transition: background .15s; }
 .bi-row:last-child { border-bottom: none; }
@@ -3324,6 +3324,45 @@ body.forja #som-volume { accent-color: #ff7a1e; }
 .bs-list { display: flex; flex-direction: column; gap: 2px; max-height: 360px; overflow: auto; }
 .bs-list .champ-row { white-space: normal; }
 .bs-list .champ-row .bs-meta { margin-left: auto; font-size: 11.5px; font-style: italic; color: var(--forja-texto-suave); white-space: nowrap; }
+
+/* ---- Fase 7, T5: marcadores da build (até 3), como os marcadores dos guias do Deadlock ---- */
+.build-marks { display: inline-flex; gap: 6px; margin-left: 12px; flex-shrink: 0; }
+.mark-slot {
+  width: 40px; height: 40px; border: 1px dashed #4a3f36; border-radius: 4px; background: rgba(0,0,0,.35); cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center; position: relative; color: #7a6a5a; font-size: 20px; padding: 0; line-height: 1;
+}
+.mark-slot:hover { border-color: var(--forja-brasa); color: var(--forja-brasa-clara); }
+.mark-slot.cheio { border-style: solid; border-color: #c9973f; box-shadow: inset 0 0 8px rgba(0,0,0,.6); }
+.mk { width: 30px; height: 30px; object-fit: contain; display: inline-block; }
+.mk-item, .mk-hab { border-radius: 3px; border: 1px solid #c9973f; box-shadow: 0 0 6px rgba(0,0,0,.7); }
+.mk-letra { display: inline-flex; align-items: center; justify-content: center; font-family: var(--loja-gravado); font-size: 12px; color: #c9973f; background: rgba(0,0,0,.4); }
+.mark-slot .mark-x {
+  position: absolute; top: -7px; right: -7px; width: 16px; height: 16px; border-radius: 50%; background: #8d2c22; color: #fff;
+  font-size: 12px; line-height: 1; display: none; align-items: center; justify-content: center; box-shadow: 0 1px 3px rgba(0,0,0,.8);
+}
+.mark-slot.cheio:hover .mark-x { display: inline-flex; }
+.bi-marks { display: inline-flex; gap: 6px; align-items: center; min-height: 30px; }
+.bi-marks .vazio { color: #4a3f36; font-size: 12px; font-style: italic; font-family: var(--loja-texto); }
+.marker-dialog { position: fixed; inset: 0; z-index: 95; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,.62); padding: 16px; }
+.marker-dialog[hidden] { display: none; }
+.md-panel {
+  width: min(720px, 100%); max-height: calc(100vh - 40px); overflow: auto; position: relative; padding: 22px 26px 18px;
+  background: linear-gradient(180deg, var(--forja-placa-1), var(--forja-placa-2));
+  border: 1px solid var(--forja-placa-borda); border-top: 3px solid var(--forja-brasa); border-radius: 3px; color: var(--forja-texto);
+  box-shadow: 0 20px 50px rgba(0,0,0,.8), 0 0 24px var(--forja-brasa-glow); animation: modal-unroll .25s ease-out;
+}
+.md-title { font-family: var(--loja-titulos); font-weight: 400; font-size: 30px; text-align: center; color: var(--forja-titulo); margin: 0 0 10px; }
+.md-close { position: absolute; top: 8px; right: 12px; background: transparent; border: none; color: var(--forja-texto-suave); font-size: 24px; cursor: pointer; line-height: 1; }
+.md-close:hover { color: var(--forja-brasa-clara); }
+.md-label { font-family: var(--loja-gravado); font-size: 10px; letter-spacing: .2em; text-transform: uppercase; color: var(--forja-titulo); margin: 14px 0 8px; }
+.md-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+.md-cell { width: 54px; height: 54px; border: 1px solid #3a3029; border-radius: 4px; background: rgba(0,0,0,.35); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; padding: 0; }
+.md-cell:hover { border-color: var(--forja-brasa); box-shadow: 0 0 10px var(--forja-brasa-glow); }
+.md-cell.ativo { border-color: #c9973f; box-shadow: 0 0 0 1px #c9973f; }
+.md-cell .mk { width: 40px; height: 40px; }
+.md-note { font-family: var(--loja-texto); font-style: italic; color: var(--forja-texto-suave); margin: 4px 0 0; font-size: 13px; }
+.md-note[hidden] { display: none; }
+.md-foot { margin-top: 16px; text-align: right; }
 </style>
 </head>
 <body>
@@ -3432,7 +3471,7 @@ body.forja #som-volume { accent-color: #ff7a1e; }
       </div>
     </div>
     <div class="bi-table">
-      <div class="bi-head"><span>Nome</span><span>Campeão</span><span>Modo</span><span>Itens</span><span></span></div>
+      <div class="bi-head"><span>Nome</span><span>Campeão</span><span>Modo</span><span>Marcadores</span><span></span></div>
       <div id="bi-rows" class="bi-rows"></div>
     </div>
     <p class="bi-note">salvas neste navegador · clique numa build para abrir a forja</p>
@@ -3444,6 +3483,7 @@ body.forja #som-volume { accent-color: #ff7a1e; }
     <button id="build-back" class="btn ghost build-back" type="button" title="Voltar à lista de builds">‹ Arsenais</button>
     <img id="build-champ-art" class="build-champ-art" alt="" hidden>
     <input id="build-name-input" class="build-name" placeholder="Nome da build" spellcheck="false">
+    <div id="build-marks" class="build-marks" title="Marcadores da build (até 3): clique num espaço para escolher"></div>
     <div class="build-switch" id="build-switch">
       <button type="button" id="build-switch-btn" class="build-switch-btn" title="Trocar de build" aria-haspopup="listbox" aria-expanded="false"><i class="champ-caret" aria-hidden="true"></i></button>
       <div id="build-switch-menu" class="champ-menu build-switch-menu" hidden><div id="build-switch-list" class="bs-list" role="listbox"></div></div>
@@ -3567,6 +3607,16 @@ body.forja #som-volume { accent-color: #ff7a1e; }
 </div>
 
 <div id="item-tooltip" class="item-tooltip"></div>
+<div id="marker-dialog" class="marker-dialog" role="dialog" aria-label="Selecionar marcador" hidden>
+  <div class="md-panel">
+    <button type="button" class="md-close" id="md-close" aria-label="Fechar">×</button>
+    <h3 class="md-title">Selecionar marcador</h3>
+    <div class="md-group"><div class="md-label">Marcadores padrão</div><div class="md-grid" id="md-tags"></div></div>
+    <div class="md-group"><div class="md-label">Habilidades</div><div class="md-grid" id="md-habs"></div><p class="md-note" id="md-habs-note" hidden></p></div>
+    <div class="md-group"><div class="md-label">Itens no guia</div><div class="md-grid" id="md-items"></div><p class="md-note" id="md-items-note" hidden></p></div>
+    <div class="md-foot"><button type="button" class="btn ghost" id="md-clear">Limpar este espaço</button></div>
+  </div>
+</div>
 <div id="note-editor" class="note-editor" role="dialog" aria-label="Observação do item">
   <div class="ne-title"><span class="ne-label">Observação</span><span class="ne-item"></span></div>
   <textarea id="note-text" rows="3" placeholder="Quando comprar, contra quem, o que segurar…" spellcheck="false"></textarea>
@@ -3960,20 +4010,90 @@ const Campeoes = (() => {
       .catch(err => { promessa = null; falha = err; throw err; });
     return promessa;
   }
+  // Habilidades Q/W/E/R do campeão (sem a passiva), do mesmo Data Dragon, guardadas por versão.
+  const habs = {}, habsPromessa = {};
+  function habilidadesCache(id) {
+    if (habs[id]) return habs[id];
+    try { const j = localStorage.getItem(`campeoes.hab.${patch}.${id}`); if (j) return (habs[id] = JSON.parse(j)); } catch (e) { /* sem cache */ }
+    return null;
+  }
+  function habilidades(id) {
+    const c = habilidadesCache(id);
+    if (c) return Promise.resolve(c);
+    if (habsPromessa[id]) return habsPromessa[id];
+    habsPromessa[id] = fetch(`${DD}/data/pt_BR/champion/${id}.json`)
+      .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+      .then(j => {
+        const d = j.data[id];
+        const letras = ["Q", "W", "E", "R"];
+        habs[id] = (d.spells || []).slice(0, 4).map((sp, i) => ({ letter: letras[i], name: sp.name, img: sp.image.full }));
+        try { localStorage.setItem(`campeoes.hab.${patch}.${id}`, JSON.stringify(habs[id])); } catch (e) { /* idem */ }
+        return habs[id];
+      })
+      .catch(err => { delete habsPromessa[id]; throw err; });
+    return habsPromessa[id];
+  }
+  function spellUrl(img) { return `${DD}/img/spell/${img}`; }
   function porChave(key) { return (lista || []).find(c => c.key === String(key)) || null; }
   function porNome(nome) {
     const n = norm(nome);
     return (lista || []).find(c => norm(c.name) === n || norm(c.id) === n) || null;
   }
-  return { carregar, iconUrl, porChave, porNome, get lista() { return lista; }, get falha() { return falha; }, patch };
+  return { carregar, iconUrl, porChave, porNome, habilidades, habilidadesCache, spellUrl, get lista() { return lista; }, get falha() { return falha; }, patch };
 })();
+
+// ---------------- Marcadores da build (Fase 7, T5) ----------------
+// Até 3 por build, como os marcadores dos guias do Deadlock (Leo, 14/09/2026):
+// marcadores padrão (ícones em assets/Icon/panorama/images/builds, colocados
+// pelo Leo; rótulos do Leo), habilidades Q/W/E/R do campeão (Data Dragon) e
+// itens do guia (ícones do catálogo). Forma: {t:"tag", id} | {t:"hab", letter} | {t:"item", slug}.
+const MARCADORES_DIR = "assets/Icon/panorama/images/builds/";
+const MARCADORES = [
+  // Rótulos nos termos do LoL (Leo, 14/09/2026): Balístico → AD, Espiritual → AP, Golpes → Burst, Malefícios → Debuff.
+  { id: "weapon", label: "AD" }, { id: "vitality", label: "Vitalidade" }, { id: "spirit", label: "AP" },
+  { id: "complexity_1", label: "Para novos jogadores" }, { id: "complexity_2", label: "Para jogadores intermediários" }, { id: "complexity_3", label: "Para jogadores avançados" },
+  { id: "damage", label: "Dano" }, { id: "utility", label: "Utilidade" }, { id: "healing", label: "Cura" }, { id: "crowd_control", label: "Controle de grupo" },
+  { id: "mobility", label: "Mobilidade" }, { id: "melee", label: "Burst" }, { id: "debuff", label: "Debuff" },
+];
+const MAX_MARCADORES = 3;
+function marcadorUrl(id) { return MARCADORES_DIR + "citadel_build_tag_" + id + ".svg"; }
+function normMarkers(list) {
+  if (!Array.isArray(list)) return [];
+  const out = [];
+  list.forEach(m => {
+    if (!m || out.length >= MAX_MARCADORES) return;
+    if (m.t === "tag" && MARCADORES.some(x => x.id === m.id)) out.push({ t: "tag", id: m.id });
+    else if (m.t === "hab" && /^[QWER]$/.test(String(m.letter))) out.push({ t: "hab", letter: String(m.letter) });
+    else if (m.t === "item" && byId[m.slug]) out.push({ t: "item", slug: m.slug });
+  });
+  return out;
+}
+function markerLabel(m, champ) {
+  if (m.t === "tag") return (MARCADORES.find(x => x.id === m.id) || {}).label || m.id;
+  if (m.t === "item") return byId[m.slug] ? byId[m.slug].namePt : m.slug;
+  const h = champ && Campeoes.habilidadesCache(champ.id);
+  const sp = h && h.find(x => x.letter === m.letter);
+  return `Habilidade ${m.letter}` + (sp ? ` · ${sp.name}` : "");
+}
+// Ícone do marcador. Habilidade sem a lista carregada mostra a letra e pede a
+// lista; quando chega, quem chamou (`aoCarregar`) redesenha.
+function markerHtml(m, champ, aoCarregar) {
+  const title = esc(markerLabel(m, champ));
+  if (m.t === "tag") return `<img class="mk mk-tag" src="${marcadorUrl(m.id)}" alt="" title="${title}">`;
+  if (m.t === "item") return byId[m.slug] ? `<img class="mk mk-item" src="${byId[m.slug].iconUrl}" alt="" title="${title}" loading="lazy">` : "";
+  const h = champ && Campeoes.habilidadesCache(champ.id);
+  const sp = h && h.find(x => x.letter === m.letter);
+  if (sp) return `<img class="mk mk-hab" src="${Campeoes.spellUrl(sp.img)}" alt="" title="${title}" loading="lazy">`;
+  if (champ && aoCarregar) Campeoes.habilidades(champ.id).then(aoCarregar).catch(() => { /* fica a letra */ });
+  return `<span class="mk mk-hab mk-letra" title="${title}">${m.letter}</span>`;
+}
 
 function newBuildId() {
   return "b-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 6);
 }
 
 function snapshotActive() {
-  return { id: build.id, name: build.name, cats: build.cats, seq: build.seq, mode: build.mode, masterwork: !!build.masterwork, champion: build.champion || null };
+  return { id: build.id, name: build.name, cats: build.cats, seq: build.seq, mode: build.mode, masterwork: !!build.masterwork, champion: build.champion || null, markers: normMarkers(build.markers) };
 }
 
 function saveBuild() {
@@ -4018,6 +4138,7 @@ function loadBuild() {
           masterwork: !!b.masterwork,
           // Campeão (Fase 7, T2): sem esta linha o campo se perdia a cada recarga.
           champion: b.champion && b.champion.key && b.champion.id ? { key: String(b.champion.key), id: String(b.champion.id), name: String(b.champion.name || b.champion.id) } : null,
+          markers: normMarkers(b.markers),
           cats: normalizeCats(b.cats),
         }));
         library.activeId = d.activeId && library.builds.some(b => b.id === d.activeId)
@@ -4058,12 +4179,13 @@ function activateBuild(id, skipSave) {
   build.mode = ALL_MODES.includes(b.mode) ? b.mode : "";
   build.masterwork = !!b.masterwork;
   build.champion = b.champion && b.champion.key ? { key: String(b.champion.key), id: String(b.champion.id), name: String(b.champion.name) } : null;
+  build.markers = normMarkers(b.markers);
   build.selectedCatId = null;
   library.activeId = b.id;
   if (!skipSave) { saveBuild(); renderBuildAll(); }
 }
 
-function createNewBuild(name, cats, mode, champion) {
+function createNewBuild(name, cats, mode, champion, markers) {
   saveBuild();
   const b = {
     id: newBuildId(),
@@ -4071,6 +4193,7 @@ function createNewBuild(name, cats, mode, champion) {
     seq: (cats ? cats.length : 0) + 1,
     mode: mode || "",
     champion: champion || null,
+    markers: normMarkers(markers),
     cats: cats || [],
   };
   library.builds.push(b);
@@ -4209,6 +4332,7 @@ function moveItem(fromCatId, fromIndex, toCatId) {
 //   BUILD: Jinx padrão
 //   MODO: ARAM                    (opcional)
 //   CAMPEÃO: Jinx                 (opcional; nome do Data Dragon em pt-BR)
+//   MARCADORES: AD | Habilidade Q | Gume do Infinito   (opcional; até 3)
 //   MESTRE FORJADOR: Gume do Infinito   (opcional: o item forjado; "sim" só liga o interruptor)
 //
 //   [PRIORIDADE] Núcleo | ½
@@ -4229,6 +4353,8 @@ function buildToText() {
   const lines = [`BUILD: ${build.name}`];
   if (build.mode) lines.push(`MODO: ${build.mode}`);
   if (build.champion) lines.push(`CAMPEÃO: ${build.champion.name}`);
+  const marks = normMarkers(build.markers);
+  if (marks.length) lines.push(`MARCADORES: ${marks.map(m => m.t === "hab" ? `Habilidade ${m.letter}` : markerLabel(m, null)).join(" | ")}`);
   if (build.masterwork) {
     const f = forgedEntry();
     lines.push(`MESTRE FORJADOR: ${f && byId[f.itemId] ? byId[f.itemId].namePt : "sim"}`);
@@ -4367,7 +4493,7 @@ function getItemNameIndex() {
 
 function textToBuild(text) {
   const index = getItemNameIndex();
-  const result = { name: null, mode: "", masterwork: false, forgedId: null, championName: null, cats: [], unknown: [], ignored: 0 };
+  const result = { name: null, mode: "", masterwork: false, forgedId: null, championName: null, markers: [], cats: [], unknown: [], ignored: 0 };
   let current = null;
 
   text.split("\n").forEach(rawLine => {
@@ -4385,6 +4511,17 @@ function textToBuild(text) {
       return;
     }
 
+    const mMarks = line.match(/^MARCADORES\s*:\s*(.+)$/i);
+    if (mMarks) {
+      mMarks[1].split("|").map(t => t.trim()).filter(Boolean).forEach(tok => {
+        const tag = MARCADORES.find(x => norm(x.label) === norm(tok));
+        const hab = tok.match(/^habilidade\s+([qwer])$/i);
+        if (tag) result.markers.push({ t: "tag", id: tag.id });
+        else if (hab) result.markers.push({ t: "hab", letter: hab[1].toUpperCase() });
+        else if (index.get(norm(tok))) result.markers.push({ t: "item", slug: index.get(norm(tok)) });
+      });
+      return;
+    }
     const mChamp = line.match(/^CAMPE[ÃA]O\s*:\s*(.+)$/i);
     if (mChamp) { result.championName = mChamp[1].trim(); return; }
     const mMode = line.match(/^MODO\s*:\s*(.+)$/i);
@@ -4695,8 +4832,79 @@ function renderChampSelect() {
   if (note) note.textContent = build.champion ? `(conjunto só de ${build.champion.name})` : "(vale para todos os campeões)";
 }
 
+function renderMarkSlots() {
+  const box = document.getElementById("build-marks");
+  if (!box) return;
+  const ms = normMarkers(build.markers);
+  box.innerHTML = Array.from({ length: MAX_MARCADORES }, (_, i) => {
+    const m = ms[i];
+    if (!m) return `<button type="button" class="mark-slot" data-i="${i}" title="Escolher marcador">+</button>`;
+    return `<button type="button" class="mark-slot cheio" data-i="${i}" title="${esc(markerLabel(m, build.champion))} — clique para trocar">${markerHtml(m, build.champion, renderMarkSlots)}<span class="mark-x" data-x="${i}" title="Remover">×</span></button>`;
+  }).join("");
+}
+
+let markerSlot = 0;
+function openMarkerDialog(i) {
+  markerSlot = i;
+  const dlg = document.getElementById("marker-dialog");
+  const atual = normMarkers(build.markers)[i] || null;
+  const same = (m) => atual && JSON.stringify(m) === JSON.stringify(atual);
+  const cell = (m, inner, label) => `<button type="button" class="md-cell${same(m) ? " ativo" : ""}" data-m='${esc(JSON.stringify(m))}' title="${esc(label)}">${inner}</button>`;
+  // padrão
+  document.getElementById("md-tags").innerHTML = MARCADORES.map(t => cell({ t: "tag", id: t.id }, `<img class="mk" src="${marcadorUrl(t.id)}" alt="">`, t.label)).join("");
+  // habilidades do campeão
+  const habs = document.getElementById("md-habs"), habsNote = document.getElementById("md-habs-note");
+  habs.innerHTML = ""; habsNote.hidden = true;
+  if (!build.champion) { habsNote.textContent = "Escolha um campeão na barra da biblioteca para ver as habilidades."; habsNote.hidden = false; }
+  else {
+    habsNote.textContent = "Buscando as habilidades no Data Dragon…"; habsNote.hidden = false;
+    const champId = build.champion.id;
+    Campeoes.habilidades(champId).then(list => {
+      if (dlg.hidden || !build.champion || build.champion.id !== champId) return;
+      habs.innerHTML = list.map(sp => cell({ t: "hab", letter: sp.letter }, `<img class="mk mk-hab" src="${Campeoes.spellUrl(sp.img)}" alt="">`, `${sp.letter} · ${sp.name}`)).join("");
+      habsNote.hidden = true;
+    }).catch(() => { habsNote.textContent = "Sem internet para buscar as habilidades (Data Dragon)."; habsNote.hidden = false; });
+  }
+  // itens do guia (únicos, na ordem das bancadas)
+  const vistos = new Set(); const itens = [];
+  build.cats.forEach(c => c.items.forEach(e => { if (byId[e.itemId] && !vistos.has(e.itemId)) { vistos.add(e.itemId); itens.push(byId[e.itemId]); } }));
+  document.getElementById("md-items").innerHTML = itens.map(it => cell({ t: "item", slug: it.slug }, `<img class="mk mk-item" src="${it.iconUrl}" alt="" loading="lazy">`, it.namePt)).join("");
+  const itNote = document.getElementById("md-items-note");
+  itNote.hidden = itens.length > 0; itNote.textContent = "A build ainda não tem itens.";
+  document.getElementById("md-clear").disabled = !atual;
+  dlg.hidden = false;
+  Som.play("catalog:pergaminho");
+}
+function closeMarkerDialog() { document.getElementById("marker-dialog").hidden = true; }
+function setMarker(i, m) {
+  const ms = normMarkers(build.markers);
+  if (m) { if (i < ms.length) ms[i] = m; else ms.push(m); }
+  else ms.splice(i, 1);
+  build.markers = normMarkers(ms);
+  saveBuild();
+  renderBuildAll();
+}
+function initMarkers() {
+  document.getElementById("build-marks").addEventListener("click", (e) => {
+    const x = e.target.closest(".mark-x");
+    if (x) { e.stopPropagation(); setMarker(Number(x.dataset.x), null); return; }
+    const slot = e.target.closest(".mark-slot");
+    if (slot) openMarkerDialog(Number(slot.dataset.i));
+  });
+  const dlg = document.getElementById("marker-dialog");
+  dlg.addEventListener("click", (e) => {
+    if (e.target === dlg) { closeMarkerDialog(); return; }
+    const c = e.target.closest(".md-cell");
+    if (c) { setMarker(markerSlot, JSON.parse(c.dataset.m)); closeMarkerDialog(); }
+  });
+  document.getElementById("md-close").addEventListener("click", closeMarkerDialog);
+  document.getElementById("md-clear").addEventListener("click", () => { setMarker(markerSlot, null); closeMarkerDialog(); });
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !dlg.hidden) { e.stopPropagation(); closeMarkerDialog(); } });
+}
+
 function renderBuildSummary() {
   renderChampSelect();
+  renderMarkSlots();
   const mfToggle = document.getElementById("mf-toggle");
   if (mfToggle) mfToggle.checked = !!build.masterwork;
   const cbT = document.getElementById("cb-toggle"); if (cbT) cbT.checked = !!state.applyCashback;
@@ -5350,6 +5558,7 @@ function buildResumo(b) {
     name: isActive ? build.name : b.name,
     mode: isActive ? build.mode : (b.mode || ""),
     champ: isActive ? build.champion : (b.champion || null),
+    markers: normMarkers(isActive ? build.markers : b.markers),
     n: cats.reduce((s, c) => s + c.items.length, 0),
   };
 }
@@ -5380,7 +5589,7 @@ function renderBuildIndex() {
       <span class="bi-name">${esc(d.name)}</span>
       <span class="bi-champ">${champIconHtml(d.champ, "")}</span>
       <span class="bi-mode">${esc(d.mode || "todos os modos")}</span>
-      <span class="bi-count">${d.n} ${d.n === 1 ? "item" : "itens"}</span>
+      <span class="bi-marks" title="${d.n} ${d.n === 1 ? "item" : "itens"}">${d.markers.length ? d.markers.map(m => markerHtml(m, d.champ, renderBuildIndex)).join("") : `<span class="vazio">sem marcadores</span>`}</span>
       <span class="bi-menu">
         <button type="button" class="btn ghost mini" data-act="dup" title="Duplicar">⧉</button>
         <button type="button" class="btn ghost mini" data-act="del" title="Excluir"${soUma ? " disabled" : ""}>✕</button>
@@ -5478,6 +5687,7 @@ function initLibrary() {
   initChampPicker();
 
   initBuildIndex();
+  initMarkers();
 
   document.getElementById("new-build").addEventListener("click", () => {
     createNewBuild();
@@ -5564,7 +5774,7 @@ function initLibrary() {
     const r = textToBuild(text);
     if (!r.cats.length) { showIoMsg("Não encontrei nenhuma categoria ou item válido nesse texto.", true); return; }
 
-    createNewBuild(r.name || "Build importada", r.cats, r.mode);
+    createNewBuild(r.name || "Build importada", r.cats, r.mode, null, r.markers);
     if (r.championName) {
       const idNova = build.id;
       Campeoes.carregar().then(() => {
