@@ -3292,25 +3292,13 @@ body.forja #som-volume { accent-color: #ff7a1e; }
   font-family: var(--loja-texto); font-size: 14px;
 }
 #bi-search:focus { outline: none; border-color: var(--forja-brasa); box-shadow: 0 0 10px var(--forja-brasa-glow); }
-.bi-table {
-  position: relative; border-radius: 3px; overflow: hidden;
-  background: linear-gradient(180deg, var(--forja-placa-1), var(--forja-placa-2));
-  border: 1px solid var(--forja-placa-borda);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.05), inset 0 0 40px rgba(0,0,0,.45), 0 6px 14px rgba(0,0,0,.55);
-}
-.bi-head, .bi-row { display: grid; grid-template-columns: minmax(0, 1fr) 120px 170px 124px 90px; align-items: center; gap: 12px; padding: 10px 18px; }
-@media (max-width: 900px) { .bi-head, .bi-row { grid-template-columns: minmax(0, 1fr) 64px 110px 104px 84px; gap: 8px; padding: 8px 12px; } .bi-name { font-size: 16px; } .bi-marks .mk { width: 28px; height: 28px; } }
-.bi-head { font-family: var(--loja-gravado); font-size: 9.5px; letter-spacing: .2em; text-transform: uppercase; color: var(--forja-titulo); background: rgba(0,0,0,.28); border-bottom: 1px solid var(--forja-placa-borda); }
 .bi-row { border-bottom: 1px solid rgba(255,255,255,.04); cursor: pointer; transition: background .15s; }
 .bi-row:last-child { border-bottom: none; }
 .bi-row:hover { background: rgba(255,120,30,.08); }
 .bi-row:hover .bi-name, .bi-row.ativa .bi-name { color: var(--forja-brasa-clara); }
-.bi-row.ativa { box-shadow: inset 3px 0 0 var(--forja-brasa); }
 .bi-name { font-family: var(--loja-titulos); font-size: 18px; color: var(--forja-titulo); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .bi-champ img, .bi-champ .bp-todos { width: 36px; height: 36px; border-radius: 50%; border: 1px solid #c9973f; object-fit: cover; box-shadow: 0 0 6px rgba(0,0,0,.7); }
 .bi-champ .bp-todos { display: inline-flex; align-items: center; justify-content: center; font-family: var(--loja-gravado); font-size: 11px; color: #c9973f; background: rgba(0,0,0,.4); }
-.bi-mode, .bi-count { font-family: var(--loja-texto); font-style: italic; font-size: 13px; color: var(--forja-texto-suave); }
-.bi-menu { display: flex; gap: 6px; justify-content: flex-end; }
 .btn.mini { padding: 3px 9px; font-size: 13px; line-height: 1.2; min-width: 0; }
 .bi-empty { padding: 34px 18px; text-align: center; font-family: var(--loja-texto); font-style: italic; color: var(--forja-texto-suave); }
 .bi-note { margin: 10px 0 0; font-family: var(--loja-texto); font-style: italic; font-size: 12px; color: var(--forja-texto-suave); text-align: right; }
@@ -3363,6 +3351,93 @@ body.forja #som-volume { accent-color: #ff7a1e; }
 .md-note { font-family: var(--loja-texto); font-style: italic; color: var(--forja-texto-suave); margin: 4px 0 0; font-size: 13px; }
 .md-note[hidden] { display: none; }
 .md-foot { margin-top: 16px; text-align: right; }
+
+/* ---- Fase 8, T1: tela "Builds" — abas, lista + detalhe, filtro por marcador, descrição, chuva ---- */
+.bi-tabs { display: inline-flex; gap: 4px; }
+.bi-tab {
+  font-family: var(--loja-gravado); font-size: 10px; letter-spacing: .2em; text-transform: uppercase; cursor: pointer;
+  padding: 9px 18px; border-radius: 3px 3px 0 0; color: var(--forja-texto-suave);
+  background: linear-gradient(180deg, #1f1813, #15100d); border: 1px solid var(--forja-placa-borda); border-bottom: none;
+}
+.bi-tab.ativa { color: var(--forja-brasa-clara); background: linear-gradient(180deg, var(--forja-placa-1), var(--forja-placa-2)); box-shadow: inset 0 2px 0 var(--forja-brasa); }
+.bi-tab:disabled { opacity: .45; cursor: not-allowed; }
+.bi-filter-wrap { position: relative; }
+.bi-filter-menu { width: 520px; left: 0; right: auto; }
+.bi-filter-menu .md-label { margin: 6px 0 6px; }
+.bf-champs { display: flex; flex-wrap: wrap; gap: 6px; }
+.bf-champ { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px 3px 4px; border-radius: 20px; cursor: pointer; border: 1px solid #3a3029; background: rgba(0,0,0,.3); color: var(--forja-texto); font-family: var(--loja-texto); font-size: 13px; }
+.bf-champ img, .bf-champ .bp-todos { width: 24px; height: 24px; border-radius: 50%; border: 1px solid #c9973f; object-fit: cover; }
+.bf-champ .bp-todos { display: inline-flex; align-items: center; justify-content: center; font-family: var(--loja-gravado); font-size: 9px; color: #c9973f; }
+.bf-champ:hover { border-color: var(--forja-brasa); }
+.bf-champ.ativo { border-color: #c9973f; color: var(--forja-brasa-clara); box-shadow: 0 0 0 1px #c9973f; }
+.bi-filter-menu { max-height: calc(100vh - 120px); overflow: auto; }
+#bf-item-search { width: 100%; box-sizing: border-box; padding: 6px 10px; margin-bottom: 8px; border-radius: 2px; background: rgba(0,0,0,.35); border: 1px solid #3a3029; color: var(--forja-texto); font-family: var(--loja-texto); font-size: 13.5px; }
+#bf-item-search:focus { outline: none; border-color: var(--forja-brasa); }
+.bf-items { max-height: 260px; overflow: auto; gap: 5px; }
+.bf-items .md-cell { width: 44px; height: 44px; }
+.bf-items .md-cell .mk { width: 34px; height: 34px; }
+.bf-items .md-cell[hidden] { display: none; }
+#bi-filter.ativo { border-color: var(--forja-brasa); color: var(--forja-brasa-clara); box-shadow: 0 0 10px var(--forja-brasa-glow); }
+.bi-body { display: grid; grid-template-columns: minmax(0, 1fr) 400px; gap: 14px; align-items: start; }
+@media (max-width: 980px) { .bi-body { grid-template-columns: 1fr; } }
+.bi-rows {
+  border-radius: 3px; overflow: hidden;
+  background: linear-gradient(180deg, var(--forja-placa-1), var(--forja-placa-2));
+  border: 1px solid var(--forja-placa-borda);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.05), inset 0 0 40px rgba(0,0,0,.45), 0 6px 14px rgba(0,0,0,.55);
+}
+.bi-row { display: grid; grid-template-columns: 44px minmax(0, 1fr) auto 36px; align-items: center; gap: 12px; padding: 9px 14px; border-bottom: 1px solid rgba(255,255,255,.04); cursor: pointer; transition: background .15s; }
+.bi-row:last-child { border-bottom: none; }
+.bi-row:hover { background: rgba(255,120,30,.08); }
+.bi-row.sel { background: rgba(255,120,30,.14); box-shadow: inset 3px 0 0 var(--forja-brasa); }
+.bi-row.sel .bi-name, .bi-row:hover .bi-name { color: var(--forja-brasa-clara); }
+.bi-row .bi-champ img, .bi-row .bi-champ .bp-todos { width: 36px; height: 36px; }
+.bi-name-wrap { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.bi-name { font-size: 17px; }
+.bi-etiqueta { font-family: var(--loja-gravado); font-size: 8px; letter-spacing: .14em; text-transform: uppercase; padding: 2px 6px; border-radius: 2px; background: #c9973f; color: #2a1a0a; white-space: nowrap; }
+.bi-etiqueta.desatualizada { background: #8d2c22; color: #f3d9c2; }
+.bi-fav { background: transparent; border: none; cursor: pointer; color: #4a3f36; font-size: 20px; line-height: 1; padding: 4px; }
+.bi-fav:hover { color: var(--forja-brasa-clara); }
+.bi-fav.on { color: #ff7a1e; text-shadow: 0 0 8px rgba(255,120,30,.7); }
+.bi-marks { justify-content: flex-end; min-width: 108px; }
+.bi-detail {
+  position: sticky; top: 14px; padding: 18px 20px 16px; border-radius: 3px; min-height: 320px;
+  background: linear-gradient(180deg, var(--forja-placa-1), var(--forja-placa-2));
+  border: 1px solid var(--forja-placa-borda); border-top: 3px solid var(--forja-brasa);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.05), inset 0 0 40px rgba(0,0,0,.45), 0 6px 14px rgba(0,0,0,.55);
+  color: var(--forja-texto); font-family: var(--loja-texto);
+}
+.bi-detail .bd-empty { font-style: italic; color: var(--forja-texto-suave); }
+.bd-head { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+.bd-head img, .bd-head .bp-todos { width: 48px; height: 48px; border-radius: 50%; border: 2px solid #c9973f; object-fit: cover; box-shadow: 0 0 10px rgba(0,0,0,.7); flex-shrink: 0; }
+.bd-head .bp-todos { display: inline-flex; align-items: center; justify-content: center; font-family: var(--loja-gravado); color: #c9973f; background: rgba(0,0,0,.4); }
+.bd-head h3 { font-family: var(--loja-titulos); font-weight: 400; font-size: 24px; color: var(--forja-titulo); margin: 0; line-height: 1.15; }
+.bd-marks { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+.bd-mark { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px 3px 4px; border-radius: 3px; background: rgba(0,0,0,.35); border: 1px solid #3a3029; font-size: 12.5px; color: var(--forja-texto); }
+.bd-mark .mk { width: 24px; height: 24px; }
+.bd-mark.vazio { border-style: dashed; color: #7a6a5a; font-style: italic; }
+.bd-meta { font-family: var(--loja-gravado); font-size: 9.5px; letter-spacing: .16em; text-transform: uppercase; color: var(--forja-texto-suave); margin-bottom: 8px; line-height: 1.8; }
+.bd-meta b { color: var(--forja-titulo); font-weight: 400; }
+.bd-desc { font-size: 14px; line-height: 1.5; margin: 0 0 12px; white-space: pre-wrap; }
+.bd-desc.vazia { font-style: italic; color: #7a6a5a; }
+.bd-items { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+.bd-items img { width: 40px; height: 40px; border-radius: 3px; border: 1px solid #c9973f; box-shadow: 0 0 6px rgba(0,0,0,.7); }
+.bd-items .bd-sem { font-style: italic; color: #7a6a5a; font-size: 13px; }
+.bd-label { font-family: var(--loja-gravado); font-size: 9px; letter-spacing: .2em; text-transform: uppercase; color: var(--forja-titulo); margin: 10px 0 6px; }
+.bd-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.bd-pub-note { margin: 8px 0 0; font-size: 12px; font-style: italic; color: var(--forja-texto-suave); }
+.bd-pub-note b { color: #ff9b6a; font-style: normal; }
+.build-desc {
+  display: block; width: 100%; box-sizing: border-box; margin-top: 8px; padding: 6px 10px; resize: vertical; min-height: 40px;
+  background: rgba(0,0,0,.28); border: 1px solid transparent; border-bottom: 1px dashed var(--forja-tracejado); border-radius: 2px;
+  color: var(--forja-texto); font-family: var(--loja-texto); font-style: italic; font-size: 13.5px; line-height: 1.45;
+}
+.build-desc::placeholder { color: #7a6a5a; }
+.build-desc:focus { outline: none; border-color: var(--forja-brasa); background: rgba(0,0,0,.4); font-style: normal; }
+body:not(.editando) .build-desc { pointer-events: none; border-bottom-color: transparent; }
+body:not(.editando) .build-desc:placeholder-shown { display: none; }
+/* chuva de entrada: a tela é revelada por pingos (máscara com círculos crescendo) */
+.chovendo { will-change: mask-image, -webkit-mask-image; }
 </style>
 </head>
 <body>
@@ -3385,7 +3460,7 @@ body.forja #som-volume { accent-color: #ff7a1e; }
     <h1>Montador de Itens<span class="sub">LEAGUE OF LEGENDS · CATÁLOGO CAPÍTULO 1</span></h1>
     <nav class="tabs">
       <button class="tab-btn active" data-tab="catalog">Catálogo</button>
-      <button class="tab-btn" data-tab="build">Build<span class="tab-count" id="build-tab-count"></span></button>
+      <button class="tab-btn" data-tab="build">Builds<span class="tab-count" id="build-tab-count"></span></button>
       <button class="tab-btn" data-tab="calc">Calculadora</button>
     </nav>
     <div class="counts-wrap">
@@ -3461,26 +3536,46 @@ body.forja #som-volume { accent-color: #ff7a1e; }
 <!-- ============ ABA BUILD ============ -->
 <div id="view-build" class="build-view hidden">
   <!-- Tela 1 (Fase 7, T3): lista de arsenais, como no cliente do LoL. Clique abre a forja. -->
-  <section id="build-index" class="build-index" hidden aria-label="Suas builds">
+  <section id="build-index" class="build-index" hidden aria-label="Builds">
     <div class="bi-toolbar">
-      <h2 class="bi-title">Arsenais</h2>
+      <h2 class="bi-title">Builds</h2>
+      <div class="bi-tabs" role="tablist">
+        <button type="button" class="bi-tab ativa" data-view="minhas" role="tab">Minhas</button>
+        <button type="button" class="bi-tab" data-view="publicas" role="tab" disabled title="Precisa do servidor (Fase 8, T2–T4)">Públicas</button>
+      </div>
       <div class="bi-actions">
         <button id="bi-new" class="btn" type="button">+ Nova build</button>
-        <button id="bi-import" class="btn ghost" type="button" title="Importar uma build a partir do texto">Importar</button>
-        <input id="bi-search" type="search" placeholder="Buscar builds…" spellcheck="false" autocomplete="off" aria-label="Buscar builds">
+        <button id="bi-import" class="btn ghost" type="button" title="Importar uma build a partir do texto ou do Arsenal.json do cliente">Importar</button>
+        <div class="bi-filter-wrap" id="bi-filter-wrap">
+          <button id="bi-filter" class="btn ghost" type="button" aria-haspopup="true" aria-expanded="false">Filtrar por marcador</button>
+          <div id="bi-filter-menu" class="champ-menu bi-filter-menu" hidden>
+            <div class="md-label">Campeão do filtro</div>
+            <div id="bf-champs" class="bf-champs"></div>
+            <div class="md-label">Marcadores padrão</div>
+            <div id="bf-tags" class="md-grid"></div>
+            <div class="md-label">Habilidades</div>
+            <div id="bf-habs" class="md-grid"></div>
+            <p id="bf-habs-note" class="md-note">Escolha um campeão no filtro para ver as habilidades.</p>
+            <div class="md-label">Itens</div>
+            <input id="bf-item-search" type="search" placeholder="Buscar item…" spellcheck="false" autocomplete="off" aria-label="Buscar item no filtro">
+            <div id="bf-items" class="md-grid bf-items"></div>
+            <div class="md-foot"><button type="button" class="btn ghost" id="bf-clear">Limpar filtro</button></div>
+          </div>
+        </div>
+        <input id="bi-search" type="search" placeholder="Buscar por nome ou ID" spellcheck="false" autocomplete="off" aria-label="Buscar por nome ou ID">
       </div>
     </div>
-    <div class="bi-table">
-      <div class="bi-head"><span>Nome</span><span>Campeão</span><span>Modo</span><span>Marcadores</span><span></span></div>
-      <div id="bi-rows" class="bi-rows"></div>
+    <div class="bi-body">
+      <div id="bi-rows" class="bi-rows" role="listbox" aria-label="Lista de builds"></div>
+      <aside id="bi-detail" class="bi-detail" aria-live="polite"></aside>
     </div>
-    <p class="bi-note">salvas neste navegador · clique numa build para abrir a forja</p>
+    <p class="bi-note">salvas neste navegador · clique numa build para ver o resumo, duas vezes para abrir a forja</p>
   </section>
 
   <!-- Tela 2: a forja (tudo o que já existia). -->
   <div id="build-editor" hidden>
   <div class="build-bar">
-    <button id="build-back" class="btn ghost build-back" type="button" title="Voltar à lista de builds">‹ Arsenais</button>
+    <button id="build-back" class="btn ghost build-back" type="button" title="Voltar à lista de builds">‹ Builds</button>
     <img id="build-champ-art" class="build-champ-art" alt="" hidden>
     <input id="build-name-input" class="build-name" placeholder="Nome da build" spellcheck="false">
     <div id="build-marks" class="build-marks" title="Marcadores da build (até 3): clique num espaço para escolher"></div>
@@ -3489,6 +3584,7 @@ body.forja #som-volume { accent-color: #ff7a1e; }
       <div id="build-switch-menu" class="champ-menu build-switch-menu" hidden><div id="build-switch-list" class="bs-list" role="listbox"></div></div>
     </div>
     <div id="build-summary" class="build-summary"></div>
+    <textarea id="build-desc" class="build-desc" rows="2" spellcheck="false" placeholder="Descrição da build — o que ela faz, quando usar, contra quem… (obrigatória para publicar)"></textarea>
     <div class="build-actions">
       <label class="sw" id="cb-switch" title="Preços com o desconto da runa Reembolso (cashback.netGold), como no Catálogo">
         <input type="checkbox" id="cb-toggle">
@@ -4093,15 +4189,22 @@ function newBuildId() {
 }
 
 function snapshotActive() {
-  return { id: build.id, name: build.name, cats: build.cats, seq: build.seq, mode: build.mode, masterwork: !!build.masterwork, champion: build.champion || null, markers: normMarkers(build.markers) };
+  return { id: build.id, name: build.name, cats: build.cats, seq: build.seq, mode: build.mode, masterwork: !!build.masterwork, champion: build.champion || null, markers: normMarkers(build.markers), desc: build.desc || "", fav: !!build.fav, updatedAt: build.updatedAt || 0 };
 }
 
 function saveBuild() {
   try {
     // Espelha o estado atual dentro da biblioteca antes de gravar.
     const i = library.builds.findIndex(b => b.id === build.id);
-    if (i >= 0) library.builds[i] = snapshotActive();
-    else { library.builds.push(snapshotActive()); library.activeId = build.id; }
+    const snap = snapshotActive();
+    // "Última atualização" só muda quando a build mudou de verdade (não ao só trocar de build).
+    const semData = (b) => JSON.stringify({ ...b, updatedAt: 0 });
+    if (i >= 0) {
+      if (semData(library.builds[i]) !== semData(snap)) snap.updatedAt = Date.now();
+      else snap.updatedAt = library.builds[i].updatedAt || snap.updatedAt;
+      build.updatedAt = snap.updatedAt;
+      library.builds[i] = snap;
+    } else { snap.updatedAt = build.updatedAt = Date.now(); library.builds.push(snap); library.activeId = build.id; }
     localStorage.setItem(STORAGE_KEY, JSON.stringify({
       builds: library.builds,
       activeId: build.id,
@@ -4139,6 +4242,9 @@ function loadBuild() {
           // Campeão (Fase 7, T2): sem esta linha o campo se perdia a cada recarga.
           champion: b.champion && b.champion.key && b.champion.id ? { key: String(b.champion.key), id: String(b.champion.id), name: String(b.champion.name || b.champion.id) } : null,
           markers: normMarkers(b.markers),
+          desc: typeof b.desc === "string" ? b.desc : "",
+          fav: !!b.fav,
+          updatedAt: Number(b.updatedAt) || 0,
           cats: normalizeCats(b.cats),
         }));
         library.activeId = d.activeId && library.builds.some(b => b.id === d.activeId)
@@ -4180,6 +4286,9 @@ function activateBuild(id, skipSave) {
   build.masterwork = !!b.masterwork;
   build.champion = b.champion && b.champion.key ? { key: String(b.champion.key), id: String(b.champion.id), name: String(b.champion.name) } : null;
   build.markers = normMarkers(b.markers);
+  build.desc = typeof b.desc === "string" ? b.desc : "";
+  build.fav = !!b.fav;
+  build.updatedAt = Number(b.updatedAt) || 0;
   build.selectedCatId = null;
   library.activeId = b.id;
   if (!skipSave) { saveBuild(); renderBuildAll(); }
@@ -4194,6 +4303,9 @@ function createNewBuild(name, cats, mode, champion, markers) {
     mode: mode || "",
     champion: champion || null,
     markers: normMarkers(markers),
+    desc: "",
+    fav: false,
+    updatedAt: Date.now(),
     cats: cats || [],
   };
   library.builds.push(b);
@@ -4333,6 +4445,7 @@ function moveItem(fromCatId, fromIndex, toCatId) {
 //   MODO: ARAM                    (opcional)
 //   CAMPEÃO: Jinx                 (opcional; nome do Data Dragon em pt-BR)
 //   MARCADORES: AD | Habilidade Q | Gume do Infinito   (opcional; até 3)
+//   DESCRIÇÃO: texto numa linha ("/" separa parágrafos)   (opcional)
 //   MESTRE FORJADOR: Gume do Infinito   (opcional: o item forjado; "sim" só liga o interruptor)
 //
 //   [PRIORIDADE] Núcleo | ½
@@ -4353,6 +4466,7 @@ function buildToText() {
   const lines = [`BUILD: ${build.name}`];
   if (build.mode) lines.push(`MODO: ${build.mode}`);
   if (build.champion) lines.push(`CAMPEÃO: ${build.champion.name}`);
+  if (build.desc) lines.push(`DESCRIÇÃO: ${build.desc.replace(/\s*\n\s*/g, " / ")}`);
   const marks = normMarkers(build.markers);
   if (marks.length) lines.push(`MARCADORES: ${marks.map(m => m.t === "hab" ? `Habilidade ${m.letter}` : markerLabel(m, null)).join(" | ")}`);
   if (build.masterwork) {
@@ -4493,7 +4607,7 @@ function getItemNameIndex() {
 
 function textToBuild(text) {
   const index = getItemNameIndex();
-  const result = { name: null, mode: "", masterwork: false, forgedId: null, championName: null, markers: [], cats: [], unknown: [], ignored: 0 };
+  const result = { name: null, mode: "", masterwork: false, forgedId: null, championName: null, markers: [], desc: "", cats: [], unknown: [], ignored: 0 };
   let current = null;
 
   text.split("\n").forEach(rawLine => {
@@ -4511,6 +4625,8 @@ function textToBuild(text) {
       return;
     }
 
+    const mDesc = line.match(/^DESCRI[ÇC][ÃA]O\s*:\s*(.+)$/i);
+    if (mDesc) { result.desc = mDesc[1].trim().replace(/\s*\/\s*/g, "\n"); return; }
     const mMarks = line.match(/^MARCADORES\s*:\s*(.+)$/i);
     if (mMarks) {
       mMarks[1].split("|").map(t => t.trim()).filter(Boolean).forEach(tok => {
@@ -4911,6 +5027,8 @@ function renderBuildSummary() {
   const apT = document.getElementById("apex-toggle"); if (apT) apT.checked = !!state.applyApex;
   const nameInput = document.getElementById("build-name-input");
   if (document.activeElement !== nameInput) nameInput.value = build.name;
+  const descInput = document.getElementById("build-desc");
+  if (descInput && document.activeElement !== descInput) descInput.value = build.desc || "";
   // Total geral sem as caixas Opcionais (Leo, 13/09/2026: opcional não conta).
   const total = buildTotal("comum") + buildTotal("prioridade");
   const prio = buildTotal("prioridade");
@@ -5559,6 +5677,10 @@ function buildResumo(b) {
     mode: isActive ? build.mode : (b.mode || ""),
     champ: isActive ? build.champion : (b.champion || null),
     markers: normMarkers(isActive ? build.markers : b.markers),
+    desc: isActive ? (build.desc || "") : (b.desc || ""),
+    fav: isActive ? !!build.fav : !!b.fav,
+    updatedAt: isActive ? (build.updatedAt || 0) : (b.updatedAt || 0),
+    cats,
     n: cats.reduce((s, c) => s + c.items.length, 0),
   };
 }
@@ -5572,29 +5694,149 @@ function showBuildScreen(tela) {
   const index = document.getElementById("build-index");
   const editor = document.getElementById("build-editor");
   if (!index || !editor) return;
+  const abrindoLista = tela === "lista" && index.hidden;
   index.hidden = tela !== "lista";
   editor.hidden = tela !== "forja";
-  if (tela === "lista") renderBuildIndex(); else renderBuildAll();
+  if (tela === "lista") { if (!biSelected) biSelected = build.id; renderBuildIndex(); if (abrindoLista) chuvaDeEntrada(index); }
+  else renderBuildAll();
+}
+
+// Estado da tela "Builds": seleção, filtro por marcador (+ campeão) e aba.
+let biSelected = null;
+const biFilter = { marker: null, champ: null };   // marker: {t,id|letter}; champ: {key,id,name}
+
+function fmtData(ts) {
+  if (!ts) return "—";
+  const d = new Date(ts);
+  return d.toLocaleDateString("pt-BR", { weekday: "long", day: "numeric", month: "long", year: "numeric" }) + " " + d.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
+}
+function markerEquals(a, b) { return !!a && !!b && JSON.stringify(a) === JSON.stringify(b); }
+
+function buildsFiltradas() {
+  const q = norm((document.getElementById("bi-search").value || "").trim());
+  return library.builds.map(buildResumo).filter(d => {
+    if (q && !norm(`${d.name} ${d.id} ${d.champ ? d.champ.name : ""} ${d.mode}`).includes(q)) return false;
+    if (biFilter.champ && !(d.champ && d.champ.key === biFilter.champ.key)) return false;
+    if (biFilter.marker) {
+      const temMarcador = d.markers.some(m => markerEquals(m, biFilter.marker));
+      const temItem = biFilter.marker.t === "item" && d.cats.some(c => c.items.some(e => e.itemId === biFilter.marker.slug));
+      if (!temMarcador && !temItem) return false;   // item vale como marcador ou como item da build
+    }
+    return true;
+  });
+}
+
+// O que falta para publicar (regra do Leo, 14/09/2026): itens, nome, descrição, 3 marcadores.
+function faltaParaPublicar(d) {
+  const falta = [];
+  if (!d.n) falta.push("itens");
+  if (!d.name || !d.name.trim() || /^Build \d+$/.test(d.name.trim()) || d.name.trim() === "Build sem nome") falta.push("nome");
+  if (!d.desc || !d.desc.trim()) falta.push("descrição");
+  if (d.markers.length < MAX_MARCADORES) falta.push(`${MAX_MARCADORES - d.markers.length} marcador(es)`);
+  return falta;
 }
 
 function renderBuildIndex() {
   const rows = document.getElementById("bi-rows");
   if (!rows) return;
-  const q = norm((document.getElementById("bi-search").value || "").trim());
-  const dados = library.builds.map(buildResumo)
-    .filter(d => !q || norm(`${d.name} ${d.champ ? d.champ.name : ""} ${d.mode}`).includes(q));
-  const soUma = library.builds.length <= 1;
+  const dados = buildsFiltradas();
+  if (!dados.some(d => d.id === biSelected)) biSelected = dados.some(d => d.id === build.id) ? build.id : (dados[0] ? dados[0].id : null);
+  const filtrando = !!(biFilter.marker || biFilter.champ || (document.getElementById("bi-search").value || "").trim());
   rows.innerHTML = dados.length ? dados.map(d => `
-    <div class="bi-row${d.isActive ? " ativa" : ""}" data-id="${d.id}" role="button" tabindex="0" title="Abrir na forja">
-      <span class="bi-name">${esc(d.name)}</span>
+    <div class="bi-row${d.id === biSelected ? " sel" : ""}" data-id="${d.id}" role="option" aria-selected="${d.id === biSelected}" tabindex="0">
       <span class="bi-champ">${champIconHtml(d.champ, "")}</span>
-      <span class="bi-mode">${esc(d.mode || "todos os modos")}</span>
+      <span class="bi-name-wrap"><span class="bi-name">${esc(d.name)}</span>${d.id === build.id ? `<span class="bi-etiqueta" title="Aberta na forja">na forja</span>` : ""}</span>
       <span class="bi-marks" title="${d.n} ${d.n === 1 ? "item" : "itens"}">${d.markers.length ? d.markers.map(m => markerHtml(m, d.champ, renderBuildIndex)).join("") : `<span class="vazio">sem marcadores</span>`}</span>
-      <span class="bi-menu">
-        <button type="button" class="btn ghost mini" data-act="dup" title="Duplicar">⧉</button>
-        <button type="button" class="btn ghost mini" data-act="del" title="Excluir"${soUma ? " disabled" : ""}>✕</button>
-      </span>
-    </div>`).join("") : `<div class="bi-empty">${q ? "Nenhuma build combina com a busca." : "Nenhuma build ainda — comece por “Nova build”."}</div>`;
+      <button type="button" class="bi-fav${d.fav ? " on" : ""}" data-fav="${d.id}" title="${d.fav ? "Favorita — clique para tirar" : "Marcar como favorita"}">${d.fav ? "♥" : "♡"}</button>
+    </div>`).join("") : `<div class="bi-empty">${filtrando ? "Nenhuma build combina com a busca ou o filtro." : "Nenhuma build ainda — comece por “Nova build”."}</div>`;
+  renderBuildDetail();
+}
+
+function renderBuildDetail() {
+  const box = document.getElementById("bi-detail");
+  if (!box) return;
+  const b = library.builds.find(x => x.id === biSelected);
+  if (!b) { box.innerHTML = `<p class="bd-empty">Selecione uma build na lista para ver o resumo.</p>`; return; }
+  const d = buildResumo(b);
+  // itens do resumo: tudo menos as caixas Opcionais, sem repetir
+  const vistos = new Set(); const itens = [];
+  d.cats.forEach(c => { if (c.kind === "opcional") return; c.items.forEach(e => { if (byId[e.itemId] && !vistos.has(e.itemId)) { vistos.add(e.itemId); itens.push(byId[e.itemId]); } }); });
+  const falta = faltaParaPublicar(d);
+  const marcas = Array.from({ length: MAX_MARCADORES }, (_, i) => d.markers[i]
+    ? `<span class="bd-mark">${markerHtml(d.markers[i], d.champ, renderBuildDetail)}${esc(markerLabel(d.markers[i], d.champ))}</span>`
+    : `<span class="bd-mark vazio">marcador ${i + 1}</span>`).join("");
+  box.innerHTML = `
+    <div class="bd-head">${champIconHtml(d.champ, "")}<h3>${esc(d.name)}</h3></div>
+    <div class="bd-marks">${marcas}</div>
+    <div class="bd-meta">Versão: <b>0</b> · ID: <b>não publicada</b><br>Última atualização: <b>${esc(fmtData(d.updatedAt))}</b>${d.mode ? `<br>Modo: <b>${esc(d.mode)}</b>` : ""}</div>
+    ${d.desc ? `<p class="bd-desc">${esc(d.desc)}</p>` : `<p class="bd-desc vazia">Sem descrição — escreva uma na forja (obrigatória para publicar).</p>`}
+    <div class="bd-label">Itens (sem os opcionais)</div>
+    <div class="bd-items">${itens.length ? itens.map(it => `<img src="${it.iconUrl}" alt="" title="${esc(it.namePt)}" loading="lazy">`).join("") : `<span class="bd-sem">nenhum item ainda</span>`}</div>
+    <div class="bd-actions">
+      <button type="button" class="btn ghost" data-act="copy" title="Cria uma cópia e abre na forja">Copiar e editar</button>
+      <button type="button" class="btn primary" data-act="edit">Editar</button>
+      <button type="button" class="btn" data-act="publish" disabled title="Precisa do servidor (Fase 8, T3)">Publicar</button>
+      <button type="button" class="btn ghost" data-act="del"${library.builds.length <= 1 ? " disabled" : ""}>Excluir</button>
+    </div>
+    <p class="bd-pub-note">${falta.length ? `Para publicar ainda falta: <b>${esc(falta.join(", "))}</b>.` : "Pronta para publicar quando o servidor entrar (Fase 8)."}</p>`;
+}
+
+// ---- filtro por marcador (+ campeão): habilidades só com campeão no filtro (Leo, 14/09/2026)
+function renderFilterMenu() {
+  const champs = new Map();
+  library.builds.forEach(b => { if (b.champion && b.champion.key) champs.set(b.champion.key, b.champion); });
+  document.getElementById("bf-champs").innerHTML = `<button type="button" class="bf-champ${biFilter.champ ? "" : " ativo"}" data-key=""><span class="bp-todos">∞</span>Todos</button>` +
+    [...champs.values()].sort((a, b) => a.name.localeCompare(b.name, "pt-BR")).map(c =>
+      `<button type="button" class="bf-champ${biFilter.champ && biFilter.champ.key === c.key ? " ativo" : ""}" data-key="${c.key}"><img src="${Campeoes.iconUrl(c.id)}" alt="">${esc(c.name)}</button>`).join("");
+  const cell = (m, inner, label) => `<button type="button" class="md-cell${markerEquals(m, biFilter.marker) ? " ativo" : ""}" data-m='${esc(JSON.stringify(m))}' title="${esc(label)}">${inner}</button>`;
+  document.getElementById("bf-tags").innerHTML = MARCADORES.map(t => cell({ t: "tag", id: t.id }, `<img class="mk" src="${marcadorUrl(t.id)}" alt="">`, t.label)).join("");
+  // Itens (Leo, 14/09/2026: "deve aparecer o ícone de todos os itens"): os 225 do catálogo, com busca
+  const itemsBox = document.getElementById("bf-items");
+  if (!itemsBox.dataset.filled) {
+    itemsBox.innerHTML = CATALOG.items.slice().sort((a, b) => a.namePt.localeCompare(b.namePt, "pt-BR")).map(it =>
+      `<button type="button" class="md-cell" data-m='${esc(JSON.stringify({ t: "item", slug: it.slug }))}' data-nome="${esc(norm(it.namePt + " " + it.nameEn))}" title="${esc(it.namePt)}"><img class="mk mk-item" src="${it.iconUrl}" alt="" loading="lazy"></button>`).join("");
+    itemsBox.dataset.filled = "1";
+  }
+  itemsBox.querySelectorAll(".md-cell").forEach(c => c.classList.toggle("ativo", markerEquals(JSON.parse(c.dataset.m), biFilter.marker)));
+  filtrarItensDoFiltro();
+  const habs = document.getElementById("bf-habs"), note = document.getElementById("bf-habs-note");
+  if (!biFilter.champ) { habs.innerHTML = ""; note.hidden = false; note.textContent = "Escolha um campeão no filtro para ver as habilidades."; return; }
+  const cache = Campeoes.habilidadesCache(biFilter.champ.id);
+  const pinta = (list) => { habs.innerHTML = list.map(sp => cell({ t: "hab", letter: sp.letter }, `<img class="mk mk-hab" src="${Campeoes.spellUrl(sp.img)}" alt="">`, `${sp.letter} · ${sp.name}`)).join(""); note.hidden = true; };
+  if (cache) pinta(cache);
+  else { habs.innerHTML = ""; note.hidden = false; note.textContent = "Buscando as habilidades no Data Dragon…"; Campeoes.habilidades(biFilter.champ.id).then(pinta).catch(() => { note.textContent = "Sem internet para buscar as habilidades."; }); }
+}
+function filtrarItensDoFiltro() {
+  const q = norm((document.getElementById("bf-item-search").value || "").trim());
+  document.querySelectorAll("#bf-items .md-cell").forEach(c => { c.hidden = !!q && !c.dataset.nome.includes(q); });
+}
+function refletirFiltro() {
+  const btn = document.getElementById("bi-filter");
+  const ativo = !!(biFilter.marker || biFilter.champ);
+  btn.classList.toggle("ativo", ativo);
+  btn.textContent = ativo ? `Filtro: ${[biFilter.champ ? biFilter.champ.name : "", biFilter.marker ? markerLabel(biFilter.marker, biFilter.champ) : ""].filter(Boolean).join(" · ")}` : "Filtrar por marcador";
+}
+
+// ---- chuva de entrada (Leo, 14/09/2026): pingos revelam a tela, como tinta molhada
+function chuvaDeEntrada(el) {
+  if (!el || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const r = el.getBoundingClientRect();
+  const W = Math.max(1, r.width), H = Math.max(1, Math.min(r.height, window.innerHeight));
+  const pingos = Array.from({ length: 34 }, () => ({ x: Math.random() * W, y: Math.random() * H, d: Math.random() * 520, r: 90 + Math.random() * 160 }));
+  const t0 = performance.now(), DUR = 900;
+  el.classList.add("chovendo");
+  const quadro = (t) => {
+    const dt = t - t0;
+    const layers = pingos.map(p => {
+      const k = Math.max(0, Math.min(1, (dt - p.d) / 420));
+      const rr = p.r * (1 - Math.pow(1 - k, 3));
+      return `radial-gradient(circle at ${p.x}px ${p.y}px, #000 ${rr}px, transparent ${rr + 1}px)`;
+    }).join(",");
+    el.style.webkitMaskImage = layers; el.style.maskImage = layers;
+    if (dt < DUR) requestAnimationFrame(quadro);
+    else { el.style.webkitMaskImage = ""; el.style.maskImage = ""; el.classList.remove("chovendo"); }
+  };
+  requestAnimationFrame(quadro);
 }
 
 // Lista do seletor no topo da forja (nome da build ▾)
@@ -5622,21 +5864,34 @@ function initBuildIndex() {
   const rows = document.getElementById("bi-rows");
   const abrir = (id) => { activateBuild(id); showBuildScreen("forja"); };
   rows.addEventListener("click", (e) => {
-    const row = e.target.closest(".bi-row");
-    if (!row) return;
-    const act = e.target.closest("[data-act]");
-    if (act && act.dataset.act === "dup") { duplicateBuild(row.dataset.id); showBuildScreen("lista"); return; }
-    if (act && act.dataset.act === "del") {
-      if (library.builds.length <= 1) return;
-      const d = buildResumo(library.builds.find(b => b.id === row.dataset.id));
-      if (window.confirm(`Excluir a build "${d.name}"? Isso não dá pra desfazer.`)) { deleteBuild(row.dataset.id); renderBuildIndex(); }
+    const fav = e.target.closest("[data-fav]");
+    if (fav) {
+      const b = library.builds.find(x => x.id === fav.dataset.fav);
+      if (b) { if (b.id === build.id) { build.fav = !build.fav; saveBuild(); } else { b.fav = !b.fav; saveBuild(); } renderBuildIndex(); }
       return;
     }
-    abrir(row.dataset.id);
+    const row = e.target.closest(".bi-row");
+    if (!row) return;
+    biSelected = row.dataset.id;
+    renderBuildIndex();
+    Som.play("catalog:tag_select");
   });
+  rows.addEventListener("dblclick", (e) => { const row = e.target.closest(".bi-row"); if (row) abrir(row.dataset.id); });
   rows.addEventListener("keydown", (e) => {
     const row = e.target.closest(".bi-row");
-    if (row && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); abrir(row.dataset.id); }
+    if (row && e.key === "Enter") { e.preventDefault(); abrir(row.dataset.id); }
+  });
+  document.getElementById("bi-detail").addEventListener("click", (e) => {
+    const act = e.target.closest("[data-act]");
+    if (!act || !biSelected) return;
+    const b = library.builds.find(x => x.id === biSelected);
+    if (!b) return;
+    if (act.dataset.act === "edit") abrir(b.id);
+    if (act.dataset.act === "copy") { duplicateBuild(b.id); showBuildScreen("forja"); }
+    if (act.dataset.act === "del") {
+      if (library.builds.length <= 1) return;
+      if (window.confirm(`Excluir a build "${buildResumo(b).name}"? Isso não dá pra desfazer.`)) { deleteBuild(b.id); biSelected = null; renderBuildIndex(); }
+    }
   });
   document.getElementById("bi-search").addEventListener("input", renderBuildIndex);
   document.getElementById("bi-new").addEventListener("click", () => { createNewBuild(); showBuildScreen("forja"); });
@@ -5647,6 +5902,36 @@ function initBuildIndex() {
     document.getElementById("import-text").focus();
   });
   document.getElementById("build-back").addEventListener("click", () => showBuildScreen("lista"));
+
+  // abas Minhas / Públicas (Públicas espera o servidor)
+  document.querySelectorAll(".bi-tab").forEach(t => t.addEventListener("click", () => {
+    if (t.disabled) return;
+    document.querySelectorAll(".bi-tab").forEach(x => x.classList.toggle("ativa", x === t));
+  }));
+
+  // filtro por marcador
+  const fbtn = document.getElementById("bi-filter");
+  const fmenu = document.getElementById("bi-filter-menu");
+  const abrirFiltro = (on) => { fmenu.hidden = !on; fbtn.setAttribute("aria-expanded", on ? "true" : "false"); if (on) renderFilterMenu(); };
+  fbtn.addEventListener("click", () => abrirFiltro(fmenu.hidden));
+  fmenu.addEventListener("click", (e) => {
+    const c = e.target.closest(".bf-champ");
+    if (c) {
+      biFilter.champ = c.dataset.key ? (library.builds.map(b => b.champion).find(x => x && x.key === c.dataset.key) || null) : null;
+      if (!biFilter.champ && biFilter.marker && biFilter.marker.t === "hab") biFilter.marker = null;
+      renderFilterMenu(); refletirFiltro(); renderBuildIndex(); return;
+    }
+    const cell = e.target.closest(".md-cell");
+    if (cell) {
+      const m = JSON.parse(cell.dataset.m);
+      biFilter.marker = markerEquals(m, biFilter.marker) ? null : m;
+      renderFilterMenu(); refletirFiltro(); renderBuildIndex(); return;
+    }
+    if (e.target.closest("#bf-clear")) { biFilter.marker = null; biFilter.champ = null; refletirFiltro(); renderBuildIndex(); abrirFiltro(false); }
+  });
+  document.getElementById("bf-item-search").addEventListener("input", filtrarItensDoFiltro);
+  document.addEventListener("mousedown", (e) => { if (!fmenu.hidden && !e.target.closest("#bi-filter-wrap")) abrirFiltro(false); });
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !fmenu.hidden) abrirFiltro(false); });
 
   // Seletor de build no topo da forja
   const btn = document.getElementById("build-switch-btn");
@@ -5688,6 +5973,7 @@ function initLibrary() {
 
   initBuildIndex();
   initMarkers();
+  document.getElementById("build-desc").addEventListener("change", (e) => { build.desc = e.target.value.trim(); saveBuild(); renderLibrary(); });
 
   document.getElementById("new-build").addEventListener("click", () => {
     createNewBuild();
@@ -5775,6 +6061,7 @@ function initLibrary() {
     if (!r.cats.length) { showIoMsg("Não encontrei nenhuma categoria ou item válido nesse texto.", true); return; }
 
     createNewBuild(r.name || "Build importada", r.cats, r.mode, null, r.markers);
+    if (r.desc) { build.desc = r.desc; saveBuild(); }
     if (r.championName) {
       const idNova = build.id;
       Campeoes.carregar().then(() => {

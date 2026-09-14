@@ -5,7 +5,7 @@ O app aceita um `#hash` na URL. Todos entram na loja sem a placa de entrada (o �
 | Hash | O que faz | Uso |
 |---|---|---|
 | `#item=<slug>` | abre o pergaminho do item (ex.: `#item=infinity-edge`) | compartilhar um item |
-| `#build` | abre direto na forja (sem hash, a aba Build abre na lista de Arsenais) | compartilhar / captura |
+| `#build` | abre direto na forja (sem hash, a aba Builds abre na lista "Builds", com a chuva de entrada) | compartilhar / captura |
 | `#calc` | abre direto na Calculadora | idem |
 | `#apice` | liga a caixa Ápice no Catálogo | idem |
 | `#ficha=<slug>` | deixa a ficha completa (Shift) daquele card aberta | captura |
