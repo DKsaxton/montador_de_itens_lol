@@ -96,3 +96,8 @@ As três texturas são papel amassado quase branco; nunca usadas cruas. Aplicaç
 - Detalhe à direita: placa de ferro com filete de brasa no topo, retrato grande, marcadores com rótulo em fichas de ferro (vazios tracejados), metadados gravados em Cinzel (versão, ID, última atualização), descrição em Alegreya, itens em molduras de latão, botões da forja. Descrição na forja: caixa escura sob o nome, em itálico até ganhar foco.
 - Chuva de entrada: a tela aparece por pingos — círculos que crescem em pontos aleatórios e revelam o conteúdo, como tinta molhada, em menos de um segundo.
 
+## Publicação e aba Públicas (Fase 8, T2–T4 — 14/09/2026)
+- Placas de publicação: a mesma placa de ferro dos diálogos, filete de brasa no topo enquanto "Publicando a build" (reticências animadas), filete verde #4d8b3a no sucesso, cera #8d2c22 no erro.
+- Etiquetas da lista, todas gravadas em Cinzel miúdo: "Popular hoje" em brasa #ff7a1e sobre tinta escura, "Popular da semana" em bronze #7a5a1e, "desatualizada" em cera, "favorita" só contorno de latão, "publicada" em azul-aço #3b4a6b, "na forja" em latão.
+- Na aba Públicas, o seletor de quantidade e o botão ↻ entram na barra de ações; o coração da linha acende em brasa quando favorita.
+
