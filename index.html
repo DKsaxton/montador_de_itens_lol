@@ -3228,6 +3228,13 @@ body.forja #som-volume { accent-color: #ff7a1e; }
 }
 .edit-hint b { color: var(--forja-brasa-clara); font-style: normal; }
 .edit-hint.show { opacity: 1; transform: translateX(-50%); }
+
+/* ---- Fase 6, T6: exportar como conjunto de itens do cliente do LoL ---- */
+.io-client { flex-basis: 100%; border-top: 1px dashed var(--forja-tracejado); padding-top: 12px; margin-top: 2px; }
+.io-client-head { font-family: var(--loja-gravado); font-size: 9.5px; letter-spacing: .2em; text-transform: uppercase; color: var(--forja-titulo); margin-bottom: 8px; }
+.io-hint.wide { max-width: none; margin-top: 8px; }
+.io-hint code { font-family: var(--loja-texto); font-style: normal; color: var(--forja-texto); background: rgba(0,0,0,.3); padding: 0 5px; border-radius: 2px; }
+.io-hint b { color: var(--forja-brasa-clara); font-style: normal; }
 </style>
 </head>
 <body>
@@ -3387,6 +3394,15 @@ body.forja #som-volume { accent-color: #ff7a1e; }
         <button id="import-btn" class="btn primary">Importar como nova build</button>
         <p id="io-msg" class="io-msg"></p>
       </div>
+    </div>
+    <div class="io-client">
+      <div class="io-client-head">Cliente do LoL · conjunto de itens</div>
+      <div class="io-row">
+        <button id="client-copy-btn" class="btn">Copiar para o cliente</button>
+        <button id="client-save-btn" class="btn ghost">Salvar arquivo .json</button>
+        <p id="client-msg" class="io-msg"></p>
+      </div>
+      <p class="io-hint wide">No cliente: <b>Coleção → Itens → Importar</b> e cole. Ou salve o arquivo em <code>League of Legends\Config\Global\Recommended\</code> (vale para todos os campeões). Cada categoria vira um bloco com os itens na ordem da bancada; observações, Mestre Forjador, Ápice e Reembolso não existem no formato do cliente.</p>
     </div>
   </div>
 
@@ -4057,6 +4073,67 @@ function buildToText() {
     });
   });
   return lines.join("\n");
+}
+
+// ---------------- Conjunto de itens do cliente do LoL (Fase 6, T6) ----------------
+// Formato que Coleção → Itens → Importar lê da área de transferência, e que os
+// arquivos em Config\...\Recommended\ usam: title + blocks[{type, items[{id, count}]}],
+// associatedMaps/associatedChampions vazios (= todos os mapas e campeões) e as chaves
+// antigas (type/map/mode/priority/sortrank) que a versão em arquivo espera. Só o id
+// numérico do catálogo entra; item sem id numérico fica de fora e é avisado.
+function buildToItemSet() {
+  const blocks = [];
+  const semId = [];
+  build.cats.forEach(cat => {
+    const counts = new Map();   // mesmo item repetido na bancada vira count
+    cat.items.forEach(e => {
+      const it = byId[e.itemId];
+      if (!it) return;
+      if (!/^\d+$/.test(String(it.id))) { semId.push(it.namePt); return; }
+      const id = String(it.id);
+      counts.set(id, (counts.get(id) || 0) + 1);
+    });
+    if (!counts.size) return;
+    blocks.push({ type: `${KIND_LABEL[cat.kind]} · ${cat.name}`, items: [...counts].map(([id, count]) => ({ id, count })) });
+  });
+  const set = { title: build.name, type: "custom", map: "any", mode: "any", priority: false, sortrank: 0, associatedMaps: [], associatedChampions: [], blocks };
+  return { json: JSON.stringify(set, null, 2), blocks: blocks.length, semId };
+}
+
+function nomeArquivoItemSet() {
+  const base = String(build.name || "build").replace(/[\\/:*?"<>|]+/g, "-").replace(/\s+/g, " ").trim() || "build";
+  return base + ".json";
+}
+
+// Salva com a janela nativa "Salvar como" (dá pra apontar direto a pasta do cliente);
+// onde não existe, cai no download comum.
+async function salvarItemSet(nome, texto) {
+  if (window.showSaveFilePicker) {
+    try {
+      const h = await window.showSaveFilePicker({ suggestedName: nome, types: [{ description: "Conjunto de itens do LoL", accept: { "application/json": [".json"] } }] });
+      const w = await h.createWritable();
+      await w.write(texto);
+      await w.close();
+      return "salvo";
+    } catch (e) {
+      if (e && e.name === "AbortError") return "cancelado";
+      // qualquer outro erro: tenta o download comum
+    }
+  }
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([texto], { type: "application/json" }));
+  a.download = nome;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+  return "baixado";
+}
+
+function showClientMsg(text, isError) {
+  const el = document.getElementById("client-msg");
+  el.textContent = text;
+  el.className = "io-msg " + (isError ? "error" : "ok");
 }
 
 // Nomes → id, aceitando português ou inglês, sem diferenciar acento/caixa.
@@ -5025,6 +5102,29 @@ function initLibrary() {
       ta.select();
       showIoMsg("Não deu pra copiar automático — o texto já está selecionado aí, use Ctrl+C.", true);
     }
+  });
+
+  // Conjunto de itens do cliente (Fase 6, T6)
+  const avisoSemId = (r) => r.semId.length ? ` Ficou de fora (sem id numérico no catálogo): ${r.semId.join(", ")}.` : "";
+  document.getElementById("client-copy-btn").addEventListener("click", async () => {
+    const r = buildToItemSet();
+    if (!r.blocks) { showClientMsg("Esta build ainda não tem itens pra levar ao cliente.", true); return; }
+    try {
+      await navigator.clipboard.writeText(r.json);
+      showClientMsg(`Copiado (${r.blocks} ${r.blocks === 1 ? "bloco" : "blocos"}). No cliente: Coleção → Itens → Importar.` + avisoSemId(r), false);
+    } catch (e) {
+      const ta = document.getElementById("import-text");
+      ta.value = r.json; ta.focus(); ta.select();
+      showClientMsg("Não deu pra copiar automático — o JSON está selecionado na caixa, use Ctrl+C.", true);
+    }
+  });
+  document.getElementById("client-save-btn").addEventListener("click", async () => {
+    const r = buildToItemSet();
+    if (!r.blocks) { showClientMsg("Esta build ainda não tem itens pra levar ao cliente.", true); return; }
+    const nome = nomeArquivoItemSet();
+    const como = await salvarItemSet(nome, r.json);
+    if (como === "cancelado") { showClientMsg("Salvar cancelado.", true); return; }
+    showClientMsg((como === "salvo" ? `Salvo como ${nome}.` : `${nome} foi para a pasta de downloads — mova para Config\Global\Recommended\.`) + avisoSemId(r), false);
   });
 
   document.getElementById("import-btn").addEventListener("click", () => {
