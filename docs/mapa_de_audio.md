@@ -15,6 +15,7 @@
 |---|---|---|---|
 | `build:close` | sair da tela Build | `build_close.mp3` | 1 |
 | `build:item_add` | item não Lendário entra no Build pela forja, ou QUALQUER item marcado pelo Catálogo (Leo, 14/09/2026: o som de Lendário é só da forja) | `build_item_add_01.mp3`, `build_item_add_02.mp3`, `build_item_add_03.mp3`, `build_item_add_04.mp3` | 4 |
+| `build:save` | Salvar na forja (botão ou Ctrl+S) e "Salvar e sair" da placa de alterações não salvas | os mesmos `build_open_*.mp3` (cooldown 300 ms) | — |
 | `build:item_move` | molde arrastado de uma bancada para outra (sem fala do lojista) | os mesmos `build_item_add_01..04.mp3` | 4 |
 | `build:open` | entrar na tela Build | `build_open_01.mp3`, `build_open_02.mp3`, `build_open_03.mp3`, `build_open_04.mp3`, `build_open_05.mp3`, `build_open_06.mp3` | 6 |
 | `catalog:close` | sair do Catálogo | `close_catalog.mp3` | 1 |

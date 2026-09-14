@@ -3427,6 +3427,8 @@ body.forja #som-volume { accent-color: #ff7a1e; }
 .bd-actions { display: flex; flex-wrap: wrap; gap: 8px; }
 .bd-pub-note { margin: 8px 0 0; font-size: 12px; font-style: italic; color: var(--forja-texto-suave); }
 .bd-pub-note b { color: #ff9b6a; font-style: normal; }
+.bd-link { display: block; width: 100%; box-sizing: border-box; margin-top: 6px; padding: 6px 8px; background: rgba(0,0,0,.35); border: 1px solid #3a3029; border-radius: 2px; color: var(--forja-texto); font-family: var(--loja-texto); font-size: 12px; }
+.bd-link[hidden] { display: none; }
 .build-desc {
   display: block; width: 100%; box-sizing: border-box; margin-top: 8px; padding: 6px 10px; resize: vertical; min-height: 40px;
   background: rgba(0,0,0,.28); border: 1px solid transparent; border-bottom: 1px dashed var(--forja-tracejado); border-radius: 2px;
@@ -3438,6 +3440,26 @@ body:not(.editando) .build-desc { pointer-events: none; border-bottom-color: tra
 body:not(.editando) .build-desc:placeholder-shown { display: none; }
 /* chuva de entrada: a tela é revelada por pingos (máscara com círculos crescendo) */
 .chovendo { will-change: mask-image, -webkit-mask-image; }
+
+/* ---- Fase 8, T1c: Salvar / Descartar na forja (Leo: "muito útil o botão de salvar") ---- */
+.save-wrap { display: none; align-items: center; gap: 8px; margin-left: 6px; }
+body.editando .save-wrap { display: inline-flex; }
+.save-btn:disabled { opacity: .5; }
+.save-btn.sujo { box-shadow: 0 0 0 1px var(--forja-brasa), 0 0 14px var(--forja-brasa-glow); animation: chamar-editar 1.2s ease-out 1; }
+.save-status { font-family: var(--loja-texto); font-style: italic; font-size: 12px; color: var(--forja-texto-suave); white-space: nowrap; }
+.save-status.sujo { color: #ff9b6a; }
+.save-status.ok { color: var(--forja-brasa-clara); }
+.md-panel-small { width: min(520px, 100%); }
+.md-text { font-family: var(--loja-texto); font-size: 14.5px; line-height: 1.5; color: var(--forja-texto); margin: 0; text-align: center; }
+.md-foot-3 { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+
+/* ---- Fase 8, T2/T3: publicação ---- */
+#pub-dialog .md-panel-small { text-align: center; }
+#pub-dialog.aguardando .md-title::after { content: "…"; animation: pub-pontos 1.2s steps(4) infinite; display: inline-block; width: 1.2em; text-align: left; }
+@keyframes pub-pontos { 0% { clip-path: inset(0 100% 0 0); } 100% { clip-path: inset(0 0 0 0); } }
+#pub-dialog.sucesso .md-panel { border-top-color: #4d8b3a; box-shadow: 0 20px 50px rgba(0,0,0,.8), 0 0 24px rgba(77,139,58,.45); }
+#pub-dialog.erro .md-panel { border-top-color: #8d2c22; box-shadow: 0 20px 50px rgba(0,0,0,.8), 0 0 24px rgba(141,44,34,.5); }
+.bd-meta .pub-id { font-family: var(--loja-texto); font-size: 13px; letter-spacing: 0; text-transform: none; color: var(--forja-brasa-clara); }
 </style>
 </head>
 <body>
@@ -3602,6 +3624,11 @@ body:not(.editando) .build-desc:placeholder-shown { display: none; }
         <input type="checkbox" id="edit-toggle">
         <i></i><span>Editar</span>
       </label>
+      <span class="save-wrap">
+        <button id="save-btn" class="btn primary save-btn" type="button" disabled title="Grava as alterações desta build (Ctrl+S)">Salvar</button>
+        <button id="discard-btn" class="btn ghost" type="button" hidden title="Volta ao último estado salvo">Descartar</button>
+        <span id="save-status" class="save-status" aria-live="polite"></span>
+      </span>
       <div class="span-general" title="Largura padrão das categorias — aplica em todas">
         <span class="span-general-label">Largura</span>
         <button class="span-opt" data-span="1">1/1</button>
@@ -3647,6 +3674,7 @@ body:not(.editando) .build-desc:placeholder-shown { display: none; }
   <div id="io-panel" class="io-panel">
     <div class="io-col">
       <button id="export-btn" class="btn">Copiar esta build</button>
+      <button id="link-btn" class="btn ghost" type="button" title="Copia um link com a build inteira dentro">Copiar link</button>
       <p class="io-hint">Copia a build atual como texto, pra colar onde quiser. A caixa ao lado importa esse texto ou o JSON exportado pelo cliente do LoL.</p>
     </div>
     <div class="io-col grow">
@@ -3703,6 +3731,24 @@ body:not(.editando) .build-desc:placeholder-shown { display: none; }
 </div>
 
 <div id="item-tooltip" class="item-tooltip"></div>
+<div id="pub-dialog" class="marker-dialog" role="dialog" aria-label="Publicação" hidden>
+  <div class="md-panel md-panel-small">
+    <h3 class="md-title" id="pub-title">Publicando a build</h3>
+    <p class="md-text" id="pub-text">Aguarde</p>
+    <div class="md-foot md-foot-3" id="pub-foot" hidden><button type="button" class="btn primary" id="pub-close">Fechar</button></div>
+  </div>
+</div>
+<div id="save-dialog" class="marker-dialog" role="dialog" aria-label="Alterações não salvas" hidden>
+  <div class="md-panel md-panel-small">
+    <h3 class="md-title">Alterações não salvas</h3>
+    <p class="md-text">Esta build tem alterações que ainda não foram salvas. O que fazer com elas?</p>
+    <div class="md-foot md-foot-3">
+      <button type="button" class="btn ghost" data-sd="voltar">Continuar editando</button>
+      <button type="button" class="btn ghost" data-sd="descartar">Descartar</button>
+      <button type="button" class="btn primary" data-sd="salvar">Salvar e sair</button>
+    </div>
+  </div>
+</div>
 <div id="marker-dialog" class="marker-dialog" role="dialog" aria-label="Selecionar marcador" hidden>
   <div class="md-panel">
     <button type="button" class="md-close" id="md-close" aria-label="Fechar">×</button>
@@ -3725,6 +3771,7 @@ body:not(.editando) .build-desc:placeholder-shown { display: none; }
 </div>
 
 <script src="data/catalog.js"></script>
+<script src="data/servidor.js"></script>
 <script>
 // ============================================================
 // Som — módulo único de áudio (Fase 4). docs/mapa_de_audio.md é a régua.
@@ -3981,6 +4028,7 @@ const Som = (() => {
       case "catalog:close": return tocar("close_catalog");
       case "build:open":    return tocar("build_open");
       case "build:close":   return tocar("build_close");
+      case "build:save":    return tocar("build_open", { cooldown: 300, grupo: "save" });   // martelo curto ao gravar
       case "catalog:hover": return n ? tocar("ui_catalog_mod_hover_" + n) : false;   // sem cooldown: toca em todo card que o mouse tocar
       case "catalog:click": {
         const neutro = !n || (ctx.item && TIERS_NEUTROS.includes(ctx.item.tier));
@@ -4189,10 +4237,20 @@ function newBuildId() {
 }
 
 function snapshotActive() {
-  return { id: build.id, name: build.name, cats: build.cats, seq: build.seq, mode: build.mode, masterwork: !!build.masterwork, champion: build.champion || null, markers: normMarkers(build.markers), desc: build.desc || "", fav: !!build.fav, updatedAt: build.updatedAt || 0 };
+  return { id: build.id, name: build.name, cats: JSON.parse(JSON.stringify(build.cats)), seq: build.seq, mode: build.mode, masterwork: !!build.masterwork, champion: build.champion || null, markers: normMarkers(build.markers), desc: build.desc || "", fav: !!build.fav, updatedAt: build.updatedAt || 0, pubId: build.pubId || null, pubVersao: build.pubVersao || 0, pubEm: build.pubEm || 0, pubPatch: build.pubPatch || "" };
 }
 
+// Em modo Editar as alterações ficam em rascunho (Leo, 14/09/2026): saveBuild() só
+// marca "não salvo"; o botão Salvar (ou Ctrl+S) grava; Descartar volta ao salvo.
+// Fora da edição (modo, campeão, marcadores, interruptores) continua gravando na hora.
+const rascunho = { sujo: false };
 function saveBuild() {
+  if (build.editing) { rascunho.sujo = true; refletirSalvar(); return; }
+  gravarBuild();
+}
+function gravarBuild() {
+  rascunho.sujo = false;
+  refletirSalvar();
   try {
     // Espelha o estado atual dentro da biblioteca antes de gravar.
     const i = library.builds.findIndex(b => b.id === build.id);
@@ -4211,6 +4269,56 @@ function saveBuild() {
       defaultSpan: build.defaultSpan,
     }));
   } catch (e) { /* sem persistência: segue funcionando, só não lembra */ }
+}
+
+function refletirSalvar(msg) {
+  const btn = document.getElementById("save-btn"), dis = document.getElementById("discard-btn"), st = document.getElementById("save-status");
+  if (!btn) return;
+  btn.disabled = !rascunho.sujo;
+  btn.classList.toggle("sujo", rascunho.sujo);
+  dis.hidden = !rascunho.sujo;
+  st.className = "save-status" + (rascunho.sujo ? " sujo" : (msg ? " ok" : ""));
+  st.textContent = rascunho.sujo ? "alterações não salvas" : (msg || "");
+}
+function salvarAgora() {
+  if (!build.editing) return;
+  gravarBuild();
+  Som.play("build:save");
+  refletirSalvar("salvo");
+  renderLibrary();
+  clearTimeout(salvarAgora._t); salvarAgora._t = setTimeout(() => refletirSalvar(), 2500);
+}
+function descartarAlteracoes() {
+  rascunho.sujo = false;
+  activateBuild(build.id, true);   // recarrega a cópia salva da biblioteca
+  refletirSalvar();
+  renderBuildAll();
+}
+// Antes de sair da forja (aba, lista, outra build, desligar Editar): pergunta o que
+// fazer com o rascunho. Sem rascunho, segue direto.
+let saidaPendente = null;
+function confirmarSaida(depois) {
+  if (!rascunho.sujo) { depois(); return; }
+  saidaPendente = depois;
+  document.getElementById("save-dialog").hidden = false;
+}
+function initSalvar() {
+  document.getElementById("save-btn").addEventListener("click", salvarAgora);
+  document.getElementById("discard-btn").addEventListener("click", () => confirmarSaida(() => {}));
+  const dlg = document.getElementById("save-dialog");
+  dlg.addEventListener("click", (e) => {
+    const b = e.target.closest("[data-sd]");
+    if (!b) return;
+    const depois = saidaPendente; saidaPendente = null;
+    dlg.hidden = true;
+    if (b.dataset.sd === "salvar") { gravarBuild(); Som.play("build:save"); if (depois) depois(); }
+    else if (b.dataset.sd === "descartar") { descartarAlteracoes(); if (depois) depois(); }
+  });
+  document.addEventListener("keydown", (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "s" && document.body.classList.contains("forja") && build.editing) { e.preventDefault(); salvarAgora(); }
+    if (e.key === "Escape" && !dlg.hidden) { dlg.hidden = true; saidaPendente = null; }
+  });
+  window.addEventListener("beforeunload", (e) => { if (rascunho.sujo) { e.preventDefault(); e.returnValue = ""; } });
 }
 
 function normalizeCats(cats) {
@@ -4245,6 +4353,7 @@ function loadBuild() {
           desc: typeof b.desc === "string" ? b.desc : "",
           fav: !!b.fav,
           updatedAt: Number(b.updatedAt) || 0,
+          pubId: b.pubId || null, pubVersao: Number(b.pubVersao) || 0, pubEm: Number(b.pubEm) || 0, pubPatch: b.pubPatch || "",
           cats: normalizeCats(b.cats),
         }));
         library.activeId = d.activeId && library.builds.some(b => b.id === d.activeId)
@@ -4277,10 +4386,10 @@ function loadBuild() {
 function activateBuild(id, skipSave) {
   const b = library.builds.find(x => x.id === id);
   if (!b) return;
-  if (!skipSave && build.id && build.id !== id) saveBuild();
+  if (!skipSave && build.id && build.id !== id) gravarBuild();
   build.id = b.id;
   build.name = b.name;
-  build.cats = b.cats;
+  build.cats = JSON.parse(JSON.stringify(b.cats || []));   // cópia própria: a da biblioteca só muda ao gravar
   build.seq = b.seq;
   build.mode = ALL_MODES.includes(b.mode) ? b.mode : "";
   build.masterwork = !!b.masterwork;
@@ -4289,13 +4398,14 @@ function activateBuild(id, skipSave) {
   build.desc = typeof b.desc === "string" ? b.desc : "";
   build.fav = !!b.fav;
   build.updatedAt = Number(b.updatedAt) || 0;
+  build.pubId = b.pubId || null; build.pubVersao = Number(b.pubVersao) || 0; build.pubEm = Number(b.pubEm) || 0; build.pubPatch = b.pubPatch || "";
   build.selectedCatId = null;
   library.activeId = b.id;
-  if (!skipSave) { saveBuild(); renderBuildAll(); }
+  if (!skipSave) { gravarBuild(); renderBuildAll(); }
 }
 
 function createNewBuild(name, cats, mode, champion, markers) {
-  saveBuild();
+  gravarBuild();
   const b = {
     id: newBuildId(),
     name: name || `Build ${library.builds.length + 1}`,
@@ -4310,13 +4420,16 @@ function createNewBuild(name, cats, mode, champion, markers) {
   };
   library.builds.push(b);
   activateBuild(b.id, true);
-  saveBuild();
+  gravarBuild();
   renderBuildAll();
   return b;
 }
 
 function deleteBuild(id) {
   const eraAtiva = id === build.id;
+  const alvo = library.builds.find(b => b.id === id);
+  if (alvo && alvo.pubId && Servidor.ativo()) Servidor.rpc("apagar_build", { p_id: alvo.pubId, p_segredo: Servidor.segredo() }).catch(() => { /* já não estava lá, ou sem internet */ });
+  if (eraAtiva) rascunho.sujo = false;
   library.builds = library.builds.filter(b => b.id !== id);
   if (!library.builds.length) {
     build.id = null;
@@ -4324,7 +4437,7 @@ function deleteBuild(id) {
     return;
   }
   if (eraAtiva) activateBuild(library.builds[0].id, true);
-  saveBuild();
+  gravarBuild();
   renderBuildAll();
 }
 
@@ -4555,6 +4668,149 @@ function itemSetToBuild(obj) {
     result.cats.push({ id: "cat-" + (i + 1), name, desc: "", kind, span: build.defaultSpan || 2, items });
   });
   return result;
+}
+
+// ---------------- Link com a build dentro (Fase 8, T1b) ----------------
+// A build inteira vai codificada no #hash (base64url de um JSON compacto). Quem
+// abre o link recebe a build na biblioteca (id derivado do conteúdo, então o mesmo
+// link não duplica) e cai direto na forja. Não precisa de servidor.
+function b64urlEncode(str) {
+  const bytes = new TextEncoder().encode(str);
+  let bin = ""; bytes.forEach(b => { bin += String.fromCharCode(b); });
+  return btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+function b64urlDecode(str) {
+  const b = str.replace(/-/g, "+").replace(/_/g, "/") + "===".slice((str.length + 3) % 4);
+  const bin = atob(b);
+  return new TextDecoder().decode(Uint8Array.from(bin, c => c.charCodeAt(0)));
+}
+function hashCurto(str) {   // FNV-1a, só para dar um id estável ao link
+  let h = 0x811c9dc5;
+  for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 0x01000193) >>> 0; }
+  return h.toString(36);
+}
+function buildParaLink(b) {
+  const d = buildResumo(b);
+  const compacto = {
+    v: 1, n: d.name, m: d.mode || "", d: d.desc || "",
+    c: d.champ ? { k: d.champ.key, i: d.champ.id, n: d.champ.name } : null,
+    k: d.markers,
+    cats: d.cats.map(c => ({ n: c.name, d: c.desc || "", k: c.kind, s: c.span, i: c.items.map(e => e.note ? [e.itemId, e.note, e.mf ? 1 : 0] : (e.mf ? [e.itemId, "", 1] : [e.itemId])) })),
+  };
+  const base = location.href.split("#")[0];
+  return base + "#b=" + b64urlEncode(JSON.stringify(compacto));
+}
+function linkParaBuild(hash) {
+  const m = /^#b=([A-Za-z0-9_-]+)$/.exec(hash || "");
+  if (!m) return null;
+  let o = null;
+  try { o = JSON.parse(b64urlDecode(m[1])); } catch (e) { return null; }
+  if (!o || !Array.isArray(o.cats)) return null;
+  const id = "l-" + hashCurto(m[1]);
+  const cats = o.cats.map((c, i) => ({
+    id: "cat-" + (i + 1), name: String(c.n || `Caixa ${i + 1}`), desc: String(c.d || ""),
+    kind: KINDS.includes(c.k) ? c.k : "comum", span: SPANS.includes(c.s) ? c.s : (build.defaultSpan || 2),
+    items: (Array.isArray(c.i) ? c.i : []).map(x => Array.isArray(x) ? { itemId: x[0], note: String(x[1] || ""), ...(x[2] ? { mf: true } : {}) } : { itemId: x, note: "" }),
+  }));
+  return {
+    id, name: String(o.n || "Build recebida"), mode: ALL_MODES.includes(o.m) ? o.m : "", desc: String(o.d || ""),
+    champion: o.c && o.c.k ? { key: String(o.c.k), id: String(o.c.i || ""), name: String(o.c.n || o.c.i || "") } : null,
+    markers: normMarkers(o.k), cats: normalizeCats(cats),
+  };
+}
+// Recebe a build do link: se já está na biblioteca (mesmo link), só ativa.
+function receberBuildDoLink(hash) {
+  const r = linkParaBuild(hash);
+  if (!r) return false;
+  if (!library.builds.some(b => b.id === r.id)) {
+    gravarBuild();
+    library.builds.push({ id: r.id, name: r.name, seq: r.cats.length + 1, mode: r.mode, masterwork: false, champion: r.champion, markers: r.markers, desc: r.desc, fav: false, updatedAt: Date.now(), cats: r.cats });
+  }
+  activateBuild(r.id, true);
+  gravarBuild();
+  return true;
+}
+async function copiarLinkDaBuild(b, aoFalhar) {
+  const link = buildParaLink(b);
+  try { await navigator.clipboard.writeText(link); return true; }
+  catch (e) { if (aoFalhar) aoFalhar(link); return false; }
+}
+
+// ---------------- Servidor das builds publicadas (Fase 8, T2) ----------------
+// Supabase via REST: a chave pública só enxerga a view builds_publicas e as
+// funções publicar_build / apagar_build / registrar_evento (docs/servidor/).
+// Quem publica ganha um segredo aleatório guardado neste navegador; só ele
+// atualiza ou apaga o que publicou (o servidor guarda o hash).
+const Servidor = (() => {
+  const cfg = window.SERVIDOR || {};
+  const ativo = () => !!(cfg.url && cfg.anonKey);
+  const headers = () => ({ apikey: cfg.anonKey, Authorization: "Bearer " + cfg.anonKey, "Content-Type": "application/json" });
+  async function pedir(url, opts) {
+    const r = await fetch(url, opts);
+    const txt = await r.text();
+    let j = null; try { j = txt ? JSON.parse(txt) : null; } catch (e) { /* resposta sem JSON */ }
+    if (!r.ok) throw new Error((j && (j.message || j.hint)) || `HTTP ${r.status}`);
+    return j;
+  }
+  function rpc(nome, params) { return pedir(`${cfg.url}/rest/v1/rpc/${nome}`, { method: "POST", headers: headers(), body: JSON.stringify(params || {}) }); }
+  function get(caminho) { return pedir(`${cfg.url}/rest/v1/${caminho}`, { headers: headers() }); }
+  function segredo() {
+    let s = null;
+    try { s = localStorage.getItem("publicacao.segredo"); } catch (e) { /* sem persistência */ }
+    if (!s) {
+      s = Array.from(crypto.getRandomValues(new Uint8Array(16)), b => b.toString(16).padStart(2, "0")).join("");
+      try { localStorage.setItem("publicacao.segredo", s); } catch (e) { /* idem */ }
+    }
+    return s;
+  }
+  return { ativo, rpc, get, segredo };
+})();
+
+// Placa de publicação (Leo, 14/09/2026, com print do Deadlock): "Publicando a build — Aguarde"
+// e, no fim, "Build publicada com sucesso". Sem menu.
+function mostrarPub(titulo, texto, estado) {
+  const dlg = document.getElementById("pub-dialog");
+  dlg.className = "marker-dialog " + (estado || "aguardando");
+  document.getElementById("pub-title").textContent = titulo;
+  document.getElementById("pub-text").innerHTML = texto;
+  document.getElementById("pub-foot").hidden = !estado || estado === "aguardando";
+  dlg.hidden = false;
+}
+function fecharPub() { document.getElementById("pub-dialog").hidden = true; }
+
+function caixasParaServidor(cats) {
+  return cats.map(c => ({ name: c.name, desc: c.desc || "", kind: c.kind, span: c.span, items: c.items.map(e => ({ itemId: e.itemId, note: e.note || "", ...(e.mf ? { mf: true } : {}) })) }));
+}
+
+async function publicarBuild(id) {
+  const b = library.builds.find(x => x.id === id);
+  if (!b) return;
+  const d = buildResumo(b);
+  const falta = faltaParaPublicar(d);
+  if (falta.length) { mostrarPub("Ainda não dá para publicar", `Falta: <b>${esc(falta.join(", "))}</b>.`, "erro"); return; }
+  if (!Servidor.ativo()) { mostrarPub("Sem servidor", "A página não tem a URL e a chave do servidor (data/servidor.js).", "erro"); return; }
+  mostrarPub("Publicando a build", "Aguarde");
+  const params = {
+    p_nome: d.name, p_descricao: d.desc, p_campeao: d.champ, p_modo: d.mode, p_marcadores: d.markers,
+    p_caixas: caixasParaServidor(d.cats), p_patch: CATALOG.meta.patch, p_autor: "", p_segredo: Servidor.segredo(), p_id: d.pubId || null,
+  };
+  try {
+    let r;
+    try { r = await Servidor.rpc("publicar_build", params); }
+    catch (e) {
+      // Publicada por outro navegador (ou apagada no servidor): vira uma publicação nova.
+      if (d.pubId && /não encontrada|segredo/i.test(e.message)) r = await Servidor.rpc("publicar_build", { ...params, p_id: null });
+      else throw e;
+    }
+    const alvo = b.id === build.id ? build : b;
+    alvo.pubId = r.id; alvo.pubVersao = r.versao; alvo.pubEm = Date.now(); alvo.pubPatch = CATALOG.meta.patch;
+    if (b.id === build.id) gravarBuild(); else { gravarBuild(); }
+    Som.play("build:save");
+    mostrarPub("Build publicada com sucesso", `ID da build: <b class="pub-id">${esc(r.id)}</b> · versão <b>${r.versao}</b>`, "sucesso");
+    if (buildScreen === "lista") renderBuildIndex(); else renderBuildAll();
+  } catch (e) {
+    mostrarPub("Não deu para publicar", esc(e.message || "erro desconhecido"), "erro");
+  }
 }
 
 function nomeArquivoItemSet() {
@@ -5021,6 +5277,7 @@ function initMarkers() {
 function renderBuildSummary() {
   renderChampSelect();
   renderMarkSlots();
+  refletirSalvar();
   const mfToggle = document.getElementById("mf-toggle");
   if (mfToggle) mfToggle.checked = !!build.masterwork;
   const cbT = document.getElementById("cb-toggle"); if (cbT) cbT.checked = !!state.applyCashback;
@@ -5680,6 +5937,10 @@ function buildResumo(b) {
     desc: isActive ? (build.desc || "") : (b.desc || ""),
     fav: isActive ? !!build.fav : !!b.fav,
     updatedAt: isActive ? (build.updatedAt || 0) : (b.updatedAt || 0),
+    pubId: (isActive ? build.pubId : b.pubId) || null,
+    pubVersao: (isActive ? build.pubVersao : b.pubVersao) || 0,
+    pubEm: (isActive ? build.pubEm : b.pubEm) || 0,
+    pubPatch: (isActive ? build.pubPatch : b.pubPatch) || "",
     cats,
     n: cats.reduce((s, c) => s + c.items.length, 0),
   };
@@ -5768,17 +6029,20 @@ function renderBuildDetail() {
   box.innerHTML = `
     <div class="bd-head">${champIconHtml(d.champ, "")}<h3>${esc(d.name)}</h3></div>
     <div class="bd-marks">${marcas}</div>
-    <div class="bd-meta">Versão: <b>0</b> · ID: <b>não publicada</b><br>Última atualização: <b>${esc(fmtData(d.updatedAt))}</b>${d.mode ? `<br>Modo: <b>${esc(d.mode)}</b>` : ""}</div>
+    <div class="bd-meta">Versão: <b>${d.pubVersao || 0}</b> · ID: ${d.pubId ? `<b class="pub-id">${esc(d.pubId)}</b>` : `<b>não publicada</b>`}<br>Última atualização: <b>${esc(fmtData(d.updatedAt))}</b>${d.pubEm ? `<br>Publicada: <b>${esc(fmtData(d.pubEm))}</b>${d.pubPatch && d.pubPatch !== CATALOG.meta.patch ? ` · <b class="pub-id">desatualizada (${esc(d.pubPatch)})</b>` : ""}` : ""}${d.mode ? `<br>Modo: <b>${esc(d.mode)}</b>` : ""}</div>
     ${d.desc ? `<p class="bd-desc">${esc(d.desc)}</p>` : `<p class="bd-desc vazia">Sem descrição — escreva uma na forja (obrigatória para publicar).</p>`}
     <div class="bd-label">Itens (sem os opcionais)</div>
     <div class="bd-items">${itens.length ? itens.map(it => `<img src="${it.iconUrl}" alt="" title="${esc(it.namePt)}" loading="lazy">`).join("") : `<span class="bd-sem">nenhum item ainda</span>`}</div>
     <div class="bd-actions">
       <button type="button" class="btn ghost" data-act="copy" title="Cria uma cópia e abre na forja">Copiar e editar</button>
+      <button type="button" class="btn ghost" data-act="link" title="Copia um link com a build inteira dentro — quem abre recebe a build">Copiar link</button>
       <button type="button" class="btn primary" data-act="edit">Editar</button>
-      <button type="button" class="btn" data-act="publish" disabled title="Precisa do servidor (Fase 8, T3)">Publicar</button>
+      <button type="button" class="btn" data-act="publish"${!Servidor.ativo() || falta.length ? " disabled" : ""} title="${!Servidor.ativo() ? "Sem servidor configurado (data/servidor.js)" : falta.length ? "Falta: " + esc(falta.join(", ")) : (d.pubId ? "Envia esta versão para o site (versão " + (d.pubVersao + 1) + ")" : "Publica esta build no site")}">${d.pubId ? "Atualizar publicação" : "Publicar"}</button>
       <button type="button" class="btn ghost" data-act="del"${library.builds.length <= 1 ? " disabled" : ""}>Excluir</button>
     </div>
-    <p class="bd-pub-note">${falta.length ? `Para publicar ainda falta: <b>${esc(falta.join(", "))}</b>.` : "Pronta para publicar quando o servidor entrar (Fase 8)."}</p>`;
+    <p class="bd-pub-note">${falta.length ? `Para publicar ainda falta: <b>${esc(falta.join(", "))}</b>.` : !Servidor.ativo() ? "Pronta para publicar — falta configurar o servidor." : d.pubId ? (d.updatedAt > d.pubEm ? `Há alterações depois da última publicação (versão ${d.pubVersao}).` : `Publicada na versão ${d.pubVersao}.`) : "Pronta para publicar."}</p>
+    <p id="bd-link-msg" class="bd-pub-note" hidden></p>
+    <input id="bd-link" class="bd-link" type="text" readonly hidden aria-label="Link da build">`;
 }
 
 // ---- filtro por marcador (+ campeão): habilidades só com campeão no filtro (Leo, 14/09/2026)
@@ -5857,7 +6121,8 @@ function duplicateBuild(id) {
   const d = buildResumo(b);
   // Cópia profunda: a duplicata não pode compartilhar itens com a original.
   const cats = JSON.parse(JSON.stringify(d.isActive ? build.cats : (b.cats || [])));
-  createNewBuild(d.name + " (cópia)", cats, d.mode, d.champ ? { ...d.champ } : null);
+  createNewBuild(d.name + " (cópia)", cats, d.mode, d.champ ? { ...d.champ } : null, d.markers);
+  build.desc = d.desc || ""; gravarBuild();
 }
 
 function initBuildIndex() {
@@ -5887,10 +6152,18 @@ function initBuildIndex() {
     const b = library.builds.find(x => x.id === biSelected);
     if (!b) return;
     if (act.dataset.act === "edit") abrir(b.id);
+    if (act.dataset.act === "publish") publicarBuild(b.id);
     if (act.dataset.act === "copy") { duplicateBuild(b.id); showBuildScreen("forja"); }
+    if (act.dataset.act === "link") {
+      const msg = document.getElementById("bd-link-msg"), box = document.getElementById("bd-link");
+      copiarLinkDaBuild(b, (link) => { box.value = link; box.hidden = false; box.focus(); box.select(); }).then(ok => {
+        msg.hidden = false;
+        msg.innerHTML = ok ? "Link copiado — quem abrir recebe esta build na biblioteca." : "Não deu pra copiar automático: o link está selecionado abaixo, use <b>Ctrl+C</b>.";
+      });
+    }
     if (act.dataset.act === "del") {
       if (library.builds.length <= 1) return;
-      if (window.confirm(`Excluir a build "${buildResumo(b).name}"? Isso não dá pra desfazer.`)) { deleteBuild(b.id); biSelected = null; renderBuildIndex(); }
+      if (window.confirm(`Excluir a build "${buildResumo(b).name}"?${b.pubId ? " Ela também sai do site." : ""} Isso não dá pra desfazer.`)) { deleteBuild(b.id); biSelected = null; renderBuildIndex(); }
     }
   });
   document.getElementById("bi-search").addEventListener("input", renderBuildIndex);
@@ -5901,7 +6174,7 @@ function initBuildIndex() {
     document.getElementById("toggle-io").classList.add("active");
     document.getElementById("import-text").focus();
   });
-  document.getElementById("build-back").addEventListener("click", () => showBuildScreen("lista"));
+  document.getElementById("build-back").addEventListener("click", () => confirmarSaida(() => showBuildScreen("lista")));
 
   // abas Minhas / Públicas (Públicas espera o servidor)
   document.querySelectorAll(".bi-tab").forEach(t => t.addEventListener("click", () => {
@@ -5948,7 +6221,7 @@ function initBuildIndex() {
     const row = e.target.closest(".champ-row");
     if (!row) return;
     abrirMenu(false);
-    if (row.dataset.id !== build.id) activateBuild(row.dataset.id);
+    if (row.dataset.id !== build.id) confirmarSaida(() => activateBuild(row.dataset.id));
   });
   document.addEventListener("mousedown", (e) => {
     if (!menu.hidden && !e.target.closest("#build-switch")) abrirMenu(false);
@@ -5975,11 +6248,9 @@ function initLibrary() {
   initMarkers();
   document.getElementById("build-desc").addEventListener("change", (e) => { build.desc = e.target.value.trim(); saveBuild(); renderLibrary(); });
 
-  document.getElementById("new-build").addEventListener("click", () => {
-    createNewBuild();
-  });
+  document.getElementById("new-build").addEventListener("click", () => confirmarSaida(() => createNewBuild()));
 
-  document.getElementById("dup-build").addEventListener("click", () => duplicateBuild(build.id));
+  document.getElementById("dup-build").addEventListener("click", () => confirmarSaida(() => duplicateBuild(build.id)));
 
   document.getElementById("del-build").addEventListener("click", () => {
     if (library.builds.length <= 1) return;
@@ -6032,6 +6303,13 @@ function initLibrary() {
     const como = await salvarItemSet(nome, r.json);
     if (como === "cancelado") { showClientMsg("Salvar cancelado.", true); return; }
     showClientMsg((como === "salvo" ? `Salvo como ${nome}.` : `${nome} foi para a pasta de downloads — mova para ${pastaCliente()}`) + avisoSemId(r), false);
+  });
+
+  document.getElementById("link-btn").addEventListener("click", () => {
+    if (!build.cats.length) { showIoMsg("Esta build ainda não tem categorias pra levar no link.", true); return; }
+    const ta = document.getElementById("import-text");
+    copiarLinkDaBuild(library.builds.find(b => b.id === build.id) || snapshotActive(), (link) => { ta.value = link; ta.focus(); ta.select(); })
+      .then(ok => showIoMsg(ok ? "Link copiado — quem abrir recebe esta build na biblioteca." : "Não deu pra copiar automático — o link está selecionado na caixa, use Ctrl+C.", !ok));
   });
 
   document.getElementById("import-btn").addEventListener("click", () => {
@@ -6101,7 +6379,7 @@ function initBuildBuilder() {
   }
 
   document.querySelectorAll(".tab-btn").forEach(btn => {
-    btn.addEventListener("click", () => switchTab(btn.dataset.tab));
+    btn.addEventListener("click", () => confirmarSaida(() => switchTab(btn.dataset.tab)));
   });
 
   document.getElementById("add-cat").addEventListener("click", () => addCategory());
@@ -6115,7 +6393,13 @@ function initBuildBuilder() {
     if (!build.editing) build.selectedCatId = null;
     renderBuildAll();
   };
-  editToggle.addEventListener("change", () => applyEditing(editToggle.checked));
+  editToggle.addEventListener("change", () => {
+    if (!editToggle.checked && rascunho.sujo) { editToggle.checked = true; confirmarSaida(() => applyEditing(false)); return; }
+    applyEditing(editToggle.checked);
+  });
+  initSalvar();
+  document.getElementById("pub-close").addEventListener("click", fecharPub);
+  document.getElementById("pub-dialog").addEventListener("click", (e) => { if (e.target.id === "pub-dialog" && !document.getElementById("pub-foot").hidden) fecharPub(); });
   applyEditing(false);
 
   // Reembolso e Ápice: espelham as caixas do Catálogo (mesmo estado global).
@@ -7748,9 +8032,11 @@ function init() {
     setTimeout(() => entrada.classList.add("fechada"), 900);
   }
   document.getElementById("entrar").addEventListener("click", () => entrarNaLoja(false));
-  if (/^#(item=|ficha=|apice$|animacoes$|build$|build-animacoes$|build-observacao$|build-apice$|build-exportar$|calc$)/.test(location.hash)) entrarNaLoja(true);
+  if (/^#(item=|ficha=|apice$|animacoes$|build$|build-animacoes$|build-observacao$|build-apice$|build-exportar$|calc$|b=)/.test(location.hash)) entrarNaLoja(true);
+  // Link com a build dentro (#b=...): recebe na biblioteca e abre a forja.
+  if (/^#b=/.test(location.hash) && receberBuildDoLink(location.hash)) { switchTab("build"); }
   // A aba Build abre na lista de arsenais (Fase 7, T3); #build* vai direto à forja.
-  showBuildScreen(/^#build/.test(location.hash) ? "forja" : "lista");
+  showBuildScreen(/^#(build|b=)/.test(location.hash) ? "forja" : "lista");
   // #build abre direto na forja (link direto e captura); #build-animacoes congela
   // a queda e a remoção de um molde (só captura).
   if (/^#build(-animacoes|-observacao|-apice)?$/.test(location.hash)) switchTab("build");
