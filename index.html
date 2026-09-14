@@ -2787,8 +2787,13 @@ header.top { transition: background .5s ease, border-color .5s ease; }
 #view-build .btn.ghost:hover { border-color: var(--forja-brasa); color: var(--forja-brasa-clara); }
 #view-build .btn:disabled, #view-build .btn:disabled:hover { border-color: #2a2420; color: #4a3f36; }
 #view-build .io-toggle.active { border-color: var(--forja-brasa); color: var(--forja-brasa-clara); }
-.build-select { font-size: 13px; }
+.build-select { font-size: 13px; color-scheme: dark; }
 .build-select:focus { border-color: var(--forja-brasa); box-shadow: 0 0 10px var(--forja-brasa-glow); }
+/* A lista aberta do <select> é desenhada pelo sistema: sem isto fica texto claro
+   sobre fundo claro (Leo, 14/09/2026). Fundo de ferro e tinta da forja nas opções. */
+.build-select option { background: #1f1813; color: var(--forja-texto); }
+.build-select option:checked { background: #3a2a12; color: var(--forja-brasa-clara); }
+.build-select option:disabled { color: #7a6a5a; }
 .io-panel textarea {
   background: rgba(0,0,0,.35);
   border: 1px solid #3a3029;
@@ -3235,6 +3240,45 @@ body.forja #som-volume { accent-color: #ff7a1e; }
 .io-hint.wide { max-width: none; margin-top: 8px; }
 .io-hint code { font-family: var(--loja-texto); font-style: normal; color: var(--forja-texto); background: rgba(0,0,0,.3); padding: 0 5px; border-radius: 2px; }
 .io-hint b { color: var(--forja-brasa-clara); font-style: normal; }
+
+/* ---- Fase 7, T2: campeão da build (Data Dragon) ---- */
+.champ-pick { display: inline-flex; align-items: center; gap: 7px; }
+.champ-icon { width: 26px; height: 26px; border-radius: 50%; border: 1px solid #c9973f; box-shadow: 0 0 6px rgba(0,0,0,.7); object-fit: cover; }
+.build-champ-art { width: 46px; height: 46px; border-radius: 50%; border: 2px solid #c9973f; box-shadow: 0 0 0 1px #3a2a12, 0 0 14px rgba(201,151,63,.45), 0 4px 10px rgba(0,0,0,.7); object-fit: cover; flex-shrink: 0; margin-right: 12px; }
+
+/* ---- Fase 7, T2: seletor de campeão com retrato (Leo: "tem muito campeão que só é reconhecido pelo ícone") ---- */
+.champ-pick { position: relative; display: inline-block; }
+.champ-btn { display: inline-flex; align-items: center; gap: 8px; min-width: 230px; text-align: left; cursor: pointer; padding-right: 30px; position: relative; }
+.champ-btn .champ-caret { position: absolute; right: 11px; top: 50%; width: 7px; height: 7px; border-right: 2px solid var(--forja-texto-suave); border-bottom: 2px solid var(--forja-texto-suave); transform: translateY(-70%) rotate(45deg); }
+.champ-btn.aberto { border-color: var(--forja-brasa); box-shadow: 0 0 10px var(--forja-brasa-glow); }
+.champ-menu {
+  position: absolute; z-index: 90; top: calc(100% + 6px); left: 0; width: 460px; max-width: calc(100vw - 40px);
+  display: flex; flex-direction: column; gap: 8px; padding: 10px;
+  background: linear-gradient(180deg, var(--forja-placa-1), var(--forja-placa-2));
+  border: 1px solid var(--forja-placa-borda); border-radius: 3px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.05), inset 0 0 40px rgba(0,0,0,.45), 0 14px 30px rgba(0,0,0,.75);
+}
+.champ-menu[hidden] { display: none; }
+#champ-search {
+  width: 100%; box-sizing: border-box; padding: 7px 10px; border-radius: 2px;
+  background: rgba(0,0,0,.35); border: 1px solid #3a3029; color: var(--forja-texto);
+  font-family: var(--loja-texto); font-size: 14px;
+}
+#champ-search:focus { outline: none; border-color: var(--forja-brasa); box-shadow: 0 0 10px var(--forja-brasa-glow); }
+.champ-list { max-height: 380px; overflow: auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px 6px; padding-right: 4px; }
+.champ-row {
+  display: flex; align-items: center; gap: 8px; padding: 4px 8px; border-radius: 3px; cursor: pointer;
+  font-family: var(--loja-texto); font-size: 13.5px; color: var(--forja-texto); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  border: 1px solid transparent;
+}
+.champ-row:hover { background: rgba(255,120,30,.12); color: var(--forja-brasa-clara); }
+.champ-row.ativo { border-color: #c9973f; color: var(--forja-brasa-clara); }
+.champ-row[hidden] { display: none; }
+.champ-row img, .champ-row .champ-todos { width: 30px; height: 30px; border-radius: 50%; border: 1px solid #c9973f; object-fit: cover; flex-shrink: 0; box-shadow: 0 0 6px rgba(0,0,0,.7); }
+.champ-row .champ-todos { display: inline-flex; align-items: center; justify-content: center; font-family: var(--loja-gravado); font-size: 10px; color: #c9973f; background: rgba(0,0,0,.4); }
+.champ-row.todos { grid-column: 1 / -1; }
+.champ-note { margin: 0; font-family: var(--loja-texto); font-style: italic; font-size: 12.5px; color: var(--forja-texto-suave); }
+.champ-note[hidden] { display: none; }
 </style>
 </head>
 <body>
@@ -3333,6 +3377,7 @@ body.forja #som-volume { accent-color: #ff7a1e; }
 <!-- ============ ABA BUILD ============ -->
 <div id="view-build" class="build-view hidden">
   <div class="build-bar">
+    <img id="build-champ-art" class="build-champ-art" alt="" hidden>
     <input id="build-name-input" class="build-name" placeholder="Nome da build" spellcheck="false">
     <div id="build-summary" class="build-summary"></div>
     <div class="build-actions">
@@ -3374,6 +3419,19 @@ body.forja #som-volume { accent-color: #ff7a1e; }
   <div class="library-bar">
     <span class="library-label">Modo</span>
     <select id="build-mode" class="build-select mode-select" title="Limita a build a um modo de jogo"></select>
+    <span class="library-label">Campeão</span>
+    <div class="champ-pick" id="champ-pick">
+      <button type="button" id="build-champ-btn" class="build-select champ-btn" title="Associa a build a um campeão: vale para o conjunto de itens do cliente e para os filtros" aria-haspopup="listbox" aria-expanded="false">
+        <img id="build-champ-icon" class="champ-icon" alt="" hidden>
+        <span id="build-champ-label">Todos os campeões</span>
+        <i class="champ-caret" aria-hidden="true"></i>
+      </button>
+      <div id="champ-menu" class="champ-menu" hidden>
+        <input id="champ-search" type="search" placeholder="Buscar campeão…" spellcheck="false" autocomplete="off">
+        <div id="champ-list" class="champ-list" role="listbox"></div>
+        <p id="champ-note" class="champ-note" hidden></p>
+      </div>
+    </div>
     <span class="library-label">Suas builds</span>
     <select id="build-select" class="build-select"></select>
     <button id="new-build" class="btn">Nova build</button>
@@ -3402,7 +3460,7 @@ body.forja #som-volume { accent-color: #ff7a1e; }
         <button id="client-save-btn" class="btn ghost">Salvar arquivo .json</button>
         <p id="client-msg" class="io-msg"></p>
       </div>
-      <p class="io-hint wide">No cliente: <b>Coleção → Itens → Importar</b> e cole. Ou salve o arquivo em <code>League of Legends\Config\Global\Recommended\</code> (vale para todos os campeões). Cada categoria vira um bloco com os itens na ordem da bancada; observações, Mestre Forjador, Ápice e Reembolso não existem no formato do cliente.</p>
+      <p class="io-hint wide">No cliente: <b>Coleção → Itens → Importar</b> e cole. Ou salve o arquivo em <code id="client-folder">League of Legends\Config\Global\Recommended\</code> <span id="client-folder-note">(vale para todos os campeões)</span>. Cada categoria vira um bloco com os itens na ordem da bancada; observações, Mestre Forjador, Ápice e Reembolso não existem no formato do cliente.</p>
     </div>
   </div>
 
@@ -3804,12 +3862,50 @@ const library = {
   activeId: null,
 };
 
+// ---------------- Campeões — Data Dragon (Fase 7, T2) ----------------
+// O catálogo não tem campeão. A lista vem do Data Dragon da Riot na MESMA versão
+// do catálogo (CATALOG.meta.patch), a mesma fonte dos ícones de item, em pt-BR,
+// guardada no navegador por versão. Nada é digitado à mão. Sem internet na
+// primeira vez, a build fica em "Todos os campeões" e o seletor avisa.
+const Campeoes = (() => {
+  const patch = CATALOG.meta.patch;
+  const DD = "https://ddragon.leagueoflegends.com/cdn/" + patch;
+  const CHAVE = "campeoes." + patch;
+  let lista = null, promessa = null, falha = null;
+  function iconUrl(id) { return `${DD}/img/champion/${id}.png`; }
+  function daCache() {
+    try { const j = localStorage.getItem(CHAVE); if (j) lista = JSON.parse(j); } catch (e) { /* sem cache */ }
+    return lista;
+  }
+  function carregar() {
+    if (lista || daCache()) return Promise.resolve(lista);
+    if (promessa) return promessa;
+    promessa = fetch(`${DD}/data/pt_BR/champion.json`)
+      .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+      .then(j => {
+        lista = Object.values(j.data).map(c => ({ key: String(c.key), id: c.id, name: c.name }))
+          .sort((a, b) => a.name.localeCompare(b.name, "pt-BR"));
+        falha = null;
+        try { localStorage.setItem(CHAVE, JSON.stringify(lista)); } catch (e) { /* sem persistência */ }
+        return lista;
+      })
+      .catch(err => { promessa = null; falha = err; throw err; });
+    return promessa;
+  }
+  function porChave(key) { return (lista || []).find(c => c.key === String(key)) || null; }
+  function porNome(nome) {
+    const n = norm(nome);
+    return (lista || []).find(c => norm(c.name) === n || norm(c.id) === n) || null;
+  }
+  return { carregar, iconUrl, porChave, porNome, get lista() { return lista; }, get falha() { return falha; }, patch };
+})();
+
 function newBuildId() {
   return "b-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 6);
 }
 
 function snapshotActive() {
-  return { id: build.id, name: build.name, cats: build.cats, seq: build.seq, mode: build.mode, masterwork: !!build.masterwork };
+  return { id: build.id, name: build.name, cats: build.cats, seq: build.seq, mode: build.mode, masterwork: !!build.masterwork, champion: build.champion || null };
 }
 
 function saveBuild() {
@@ -3891,18 +3987,20 @@ function activateBuild(id, skipSave) {
   build.seq = b.seq;
   build.mode = ALL_MODES.includes(b.mode) ? b.mode : "";
   build.masterwork = !!b.masterwork;
+  build.champion = b.champion && b.champion.key ? { key: String(b.champion.key), id: String(b.champion.id), name: String(b.champion.name) } : null;
   build.selectedCatId = null;
   library.activeId = b.id;
   if (!skipSave) { saveBuild(); renderBuildAll(); }
 }
 
-function createNewBuild(name, cats, mode) {
+function createNewBuild(name, cats, mode, champion) {
   saveBuild();
   const b = {
     id: newBuildId(),
     name: name || `Build ${library.builds.length + 1}`,
     seq: (cats ? cats.length : 0) + 1,
     mode: mode || "",
+    champion: champion || null,
     cats: cats || [],
   };
   library.builds.push(b);
@@ -4039,6 +4137,7 @@ function moveItem(fromCatId, fromIndex, toCatId) {
 //
 //   BUILD: Jinx padrão
 //   MODO: ARAM                    (opcional)
+//   CAMPEÃO: Jinx                 (opcional; nome do Data Dragon em pt-BR)
 //   MESTRE FORJADOR: Gume do Infinito   (opcional: o item forjado; "sim" só liga o interruptor)
 //
 //   [PRIORIDADE] Núcleo | ½
@@ -4058,6 +4157,7 @@ const TEXT_SPAN = { "1/1": 1, "1": 1, "1/2": 2, "½": 2, "1/3": 3, "⅓": 3, "1/
 function buildToText() {
   const lines = [`BUILD: ${build.name}`];
   if (build.mode) lines.push(`MODO: ${build.mode}`);
+  if (build.champion) lines.push(`CAMPEÃO: ${build.champion.name}`);
   if (build.masterwork) {
     const f = forgedEntry();
     lines.push(`MESTRE FORJADOR: ${f && byId[f.itemId] ? byId[f.itemId].namePt : "sim"}`);
@@ -4096,7 +4196,8 @@ function buildToItemSet() {
     if (!counts.size) return;
     blocks.push({ type: `${KIND_LABEL[cat.kind]} · ${cat.name}`, items: [...counts].map(([id, count]) => ({ id, count })) });
   });
-  const set = { title: build.name, type: "custom", map: "any", mode: "any", priority: false, sortrank: 0, associatedMaps: [], associatedChampions: [], blocks };
+  const set = { title: build.name, type: "custom", map: "any", mode: "any", priority: false, sortrank: 0, associatedMaps: [],
+    associatedChampions: build.champion ? [Number(build.champion.key)] : [], blocks };
   return { json: JSON.stringify(set, null, 2), blocks: blocks.length, semId };
 }
 
@@ -4150,7 +4251,7 @@ function getItemNameIndex() {
 
 function textToBuild(text) {
   const index = getItemNameIndex();
-  const result = { name: null, mode: "", masterwork: false, forgedId: null, cats: [], unknown: [], ignored: 0 };
+  const result = { name: null, mode: "", masterwork: false, forgedId: null, championName: null, cats: [], unknown: [], ignored: 0 };
   let current = null;
 
   text.split("\n").forEach(rawLine => {
@@ -4168,6 +4269,8 @@ function textToBuild(text) {
       return;
     }
 
+    const mChamp = line.match(/^CAMPE[ÃA]O\s*:\s*(.+)$/i);
+    if (mChamp) { result.championName = mChamp[1].trim(); return; }
     const mMode = line.match(/^MODO\s*:\s*(.+)$/i);
     if (mMode) {
       const wanted = norm(mMode[1]);
@@ -4388,7 +4491,96 @@ function renderSpanOptions() {
     b.classList.toggle("active", Number(b.dataset.span) === build.defaultSpan));
 }
 
+function setBuildChampion(c) {
+  build.champion = c ? { key: String(c.key), id: String(c.id), name: String(c.name) } : null;
+  saveBuild();
+  renderBuildAll();
+}
+
+function initChampPicker() {
+  const btn = document.getElementById("build-champ-btn");
+  const menu = document.getElementById("champ-menu");
+  const search = document.getElementById("champ-search");
+  const list = document.getElementById("champ-list");
+  const abrir = (on) => {
+    menu.hidden = !on;
+    btn.classList.toggle("aberto", on);
+    btn.setAttribute("aria-expanded", on ? "true" : "false");
+    if (on) {
+      renderChampSelect();          // garante a lista (e dispara a busca no Data Dragon se faltar)
+      search.value = ""; filtrar("");
+      search.focus();
+      const ativo = list.querySelector(".champ-row.ativo");
+      if (ativo) ativo.scrollIntoView({ block: "nearest" });
+    }
+  };
+  const filtrar = (q) => {
+    const n = norm(q.trim());
+    list.querySelectorAll(".champ-row").forEach(r => { r.hidden = !!n && !r.classList.contains("todos") && !(r.dataset.nome || "").includes(n); });
+  };
+  btn.addEventListener("click", () => abrir(menu.hidden));
+  search.addEventListener("input", () => filtrar(search.value));
+  search.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") { e.preventDefault(); abrir(false); btn.focus(); }
+    if (e.key === "Enter") {   // primeiro visível (sem contar "Todos") vira o campeão
+      const first = [...list.querySelectorAll(".champ-row:not(.todos)")].find(r => !r.hidden);
+      if (first) { setBuildChampion(Campeoes.porChave(first.dataset.key)); abrir(false); }
+    }
+  });
+  list.addEventListener("click", (e) => {
+    const row = e.target.closest(".champ-row");
+    if (!row) return;
+    setBuildChampion(row.dataset.key ? Campeoes.porChave(row.dataset.key) : null);
+    abrir(false);
+  });
+  document.addEventListener("mousedown", (e) => {
+    if (!menu.hidden && !e.target.closest("#champ-pick")) abrir(false);
+  });
+}
+
+function pastaCliente() {
+  return build.champion ? `League of Legends\\Config\\Champions\\${build.champion.id}\\Recommended\\` : "League of Legends\\Config\\Global\\Recommended\\";
+}
+
+// Seletor próprio (um <select> nativo não mostra imagem; Leo, 14/09/2026: "tem muito
+// campeão que só é reconhecido pelo ícone"): botão com retrato + nome, lista com
+// busca, retrato de cada campeão do Data Dragon.
+function renderChampSelect() {
+  const list = document.getElementById("champ-list");
+  const label = document.getElementById("build-champ-label");
+  const champNote = document.getElementById("champ-note");
+  if (!list) return;
+  const lista = Campeoes.lista;
+  if (lista && list.dataset.filled !== Campeoes.patch) {
+    list.innerHTML = `<div class="champ-row todos" data-key="" role="option"><span class="champ-todos">∞</span><span>Todos os campeões</span></div>` +
+      lista.map(c => `<div class="champ-row" data-key="${c.key}" data-nome="${esc(norm(c.name + " " + c.id))}" role="option" title="${esc(c.name)}"><img src="${Campeoes.iconUrl(c.id)}" alt="" loading="lazy"><span>${esc(c.name)}</span></div>`).join("");
+    list.dataset.filled = Campeoes.patch;
+    champNote.hidden = true;
+  } else if (!lista && !list.dataset.filled) {
+    if (!list.innerHTML) list.innerHTML = `<div class="champ-row todos" data-key="" role="option"><span class="champ-todos">∞</span><span>Todos os campeões</span></div>`;
+    // Primeira vez: busca a lista e volta aqui. Sem internet, avisa e fica em "Todos".
+    Campeoes.carregar().then(() => renderBuildSummary()).catch(() => {
+      champNote.textContent = "Lista de campeões indisponível sem internet (Data Dragon " + Campeoes.patch + ").";
+      champNote.hidden = false;
+    });
+  }
+  list.querySelectorAll(".champ-row").forEach(r => r.classList.toggle("ativo", (build.champion ? build.champion.key : "") === r.dataset.key));
+  label.textContent = build.champion ? build.champion.name : "Todos os campeões";
+  const icon = document.getElementById("build-champ-icon");
+  const art = document.getElementById("build-champ-art");
+  [icon, art].forEach(img => {
+    if (!img) return;
+    if (build.champion) { img.src = Campeoes.iconUrl(build.champion.id); img.alt = build.champion.name; img.title = build.champion.name; img.hidden = false; }
+    else { img.hidden = true; img.removeAttribute("src"); }
+  });
+  const folder = document.getElementById("client-folder");
+  const note = document.getElementById("client-folder-note");
+  if (folder) folder.textContent = pastaCliente();
+  if (note) note.textContent = build.champion ? `(conjunto só de ${build.champion.name})` : "(vale para todos os campeões)";
+}
+
 function renderBuildSummary() {
+  renderChampSelect();
   const mfToggle = document.getElementById("mf-toggle");
   if (mfToggle) mfToggle.checked = !!build.masterwork;
   const cbT = document.getElementById("cb-toggle"); if (cbT) cbT.checked = !!state.applyCashback;
@@ -5060,6 +5252,8 @@ function initLibrary() {
     renderBuildAll();
   });
 
+  initChampPicker();
+
   document.getElementById("build-select").addEventListener("change", (e) => {
     activateBuild(e.target.value);
   });
@@ -5124,7 +5318,7 @@ function initLibrary() {
     const nome = nomeArquivoItemSet();
     const como = await salvarItemSet(nome, r.json);
     if (como === "cancelado") { showClientMsg("Salvar cancelado.", true); return; }
-    showClientMsg((como === "salvo" ? `Salvo como ${nome}.` : `${nome} foi para a pasta de downloads — mova para Config\Global\Recommended\.`) + avisoSemId(r), false);
+    showClientMsg((como === "salvo" ? `Salvo como ${nome}.` : `${nome} foi para a pasta de downloads — mova para ${pastaCliente()}`) + avisoSemId(r), false);
   });
 
   document.getElementById("import-btn").addEventListener("click", () => {
@@ -5134,6 +5328,14 @@ function initLibrary() {
     if (!r.cats.length) { showIoMsg("Não encontrei nenhuma categoria ou item válido nesse texto.", true); return; }
 
     createNewBuild(r.name || "Build importada", r.cats, r.mode);
+    if (r.championName) {
+      const idNova = build.id;
+      Campeoes.carregar().then(() => {
+        const c = Campeoes.porNome(r.championName);
+        if (c && build.id === idNova) { build.champion = c; saveBuild(); renderBuildAll(); }
+        else if (!c) showIoMsg(`Campeão "${r.championName}" não está na lista do Data Dragon; a build ficou em Todos os campeões.`, true);
+      }).catch(() => showIoMsg(`Sem internet para conferir o campeão "${r.championName}"; a build ficou em Todos os campeões.`, true));
+    }
     if (r.masterwork) {
       build.masterwork = true;
       if (r.forgedId) {

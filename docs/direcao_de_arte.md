@@ -79,3 +79,6 @@ As três texturas são papel amassado quase branco; nunca usadas cruas. Aplicaç
 - Catálogo (implementado na Fase 2, T9): uma animação de clique por tier, 350–750 ms, só CSS sobre o DOM — cera derretendo no selo (Lendário e Lendário (Evolução)), carimbo batendo (Starter, Básico), tinta espirrando do ponto do clique (Épico e Épico (Evolução)), página virando (Consumível), sino de balcão (Trinket), moeda girando no ícone (Distribuído), bota batendo (Bota), brasa acendendo no ícone e na faixa (Evolução). Respeita prefers-reduced-motion.
 - Forja: pegar = molde acende; arrastar = faíscas seguem; soltar = martelada (som na Fase 4); remover = brasa apaga.
 - Transição loja → forja: o papel escurece e o ferro sobe de baixo (sair da loja, entrar na forja).
+
+## Campeão da build (Fase 7, T2 — 14/09/2026)
+- Retrato do campeão (Data Dragon, mesma versão do catálogo) em medalhão redondo de 46 px antes do nome da build, borda de latão #c9973f com brilho fraco; na barra da biblioteca, versão de 26 px dentro do botão "Campeão". O seletor é próprio (não o `<select>` do sistema): painel de ferro com busca e lista em 3 colunas, cada campeão com retrato de 30 px em medalhão de latão; o escolhido leva borda de latão e tinta de brasa; "Todos os campeões" ocupa a primeira linha com o símbolo ∞. Sem campeão, nada aparece no cabeçalho (a build vale para todos).
