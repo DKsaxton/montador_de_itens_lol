@@ -4866,6 +4866,42 @@ async function publicarBuild(id) {
   }
 }
 
+// Despublicar (Leo, 14/09/2026: "e se eu subir errado a build?"): tira do site e
+// mantém a build local. Só funciona no navegador que publicou (o segredo mora nele);
+// noutro navegador, o servidor recusa e a placa explica.
+async function despublicarBuild(id) {
+  const b = library.builds.find(x => x.id === id);
+  const pubId = b ? b.pubId : null;
+  if (!pubId) return;
+  if (!window.confirm(`Tirar "${buildResumo(b).name}" do site? A build continua na sua biblioteca.`)) return;
+  mostrarPub("Tirando do site", "Aguarde");
+  try {
+    const ok = await Servidor.rpc("apagar_build", { p_id: pubId, p_segredo: Servidor.segredo() });
+    if (!ok) throw new Error("O servidor não encontrou a publicação, ou ela foi feita em outro navegador (o segredo não confere). Nesse caso, apague pelo painel do Supabase.");
+    const alvo = b.id === build.id ? build : b;
+    alvo.pubId = null; alvo.pubVersao = 0; alvo.pubEm = 0; alvo.pubPatch = "";
+    gravarBuild();
+    publicas.lista = publicas.lista.filter(x => x.id !== pubId); publicas.favs = publicas.favs.filter(x => x.id !== pubId);
+    mostrarPub("Build retirada do site", `A publicação <b class="pub-id">${esc(pubId)}</b> foi apagada. A build continua aqui, na sua biblioteca.`, "sucesso");
+    if (buildScreen === "lista") renderBuildIndex(); else renderBuildAll();
+  } catch (e) { mostrarPub("Não deu para tirar do site", esc(e.message || "erro desconhecido"), "erro"); }
+}
+// Excluir uma publicação vista na aba Públicas (só as suas: o servidor confere o segredo).
+async function excluirPublicacao(pubId) {
+  const local = library.builds.find(x => x.pubId === pubId);
+  if (local) { await despublicarBuild(local.id); return; }
+  if (!window.confirm(`Excluir a publicação ${pubId} do site? Isso não dá pra desfazer.`)) return;
+  mostrarPub("Excluindo do site", "Aguarde");
+  try {
+    const ok = await Servidor.rpc("apagar_build", { p_id: pubId, p_segredo: Servidor.segredo() });
+    if (!ok) throw new Error("Essa publicação não é deste navegador (o segredo não confere). Só quem publicou pode excluir; se foi você em outro navegador, apague pelo painel do Supabase.");
+    publicas.lista = publicas.lista.filter(x => x.id !== pubId); publicas.favs = publicas.favs.filter(x => x.id !== pubId);
+    biSelected = null;
+    mostrarPub("Publicação excluída", `A build <b class="pub-id">${esc(pubId)}</b> saiu do site.`, "sucesso");
+    renderBuildIndex();
+  } catch (e) { mostrarPub("Não deu para excluir", esc(e.message || "erro desconhecido"), "erro"); }
+}
+
 function nomeArquivoItemSet() {
   const base = String(build.name || "build").replace(/[\\/:*?"<>|]+/g, "-").replace(/\s+/g, " ").trim() || "build";
   return base + ".json";
@@ -6170,7 +6206,9 @@ function renderPublicDetail(box, d) {
     <div class="bd-actions">
       <button type="button" class="btn primary" data-act="copypub" title="Traz uma cópia para a sua biblioteca e abre na forja">Copiar e editar</button>
       <button type="button" class="btn ghost" data-act="favpub">${d.fav ? "♥ Tirar dos favoritos" : "♡ Favoritar"}</button>
-    </div>`;
+      ${library.builds.some(b => b.pubId === d.pubId) ? `<button type="button" class="btn ghost" data-act="delpub" title="Tira esta publicação do site (a build continua na sua biblioteca)">Excluir do site</button>` : ""}
+    </div>
+    ${library.builds.some(b => b.pubId === d.pubId) ? `<p class="bd-pub-note">Publicada por você neste navegador.</p>` : ""}`;
   // conta a visualização, uma por sessão
   if (!publicas.vistos.has(d.pubId) && Servidor.ativo()) { publicas.vistos.add(d.pubId); Servidor.rpc("registrar_evento", { p_id: d.pubId, p_tipo: "visualizacao" }).catch(() => {}); }
 }
@@ -6274,7 +6312,8 @@ function renderBuildDetail() {
       <button type="button" class="btn ghost" data-act="link" title="Copia um link com a build inteira dentro — quem abre recebe a build">Copiar link</button>
       <button type="button" class="btn primary" data-act="edit">Editar</button>
       <button type="button" class="btn" data-act="publish"${!Servidor.ativo() || falta.length ? " disabled" : ""} title="${!Servidor.ativo() ? "Sem servidor configurado (data/servidor.js)" : falta.length ? "Falta: " + esc(falta.join(", ")) : (d.pubId ? "Envia esta versão para o site (versão " + (d.pubVersao + 1) + ")" : "Publica esta build no site")}">${d.pubId ? "Atualizar publicação" : "Publicar"}</button>
-      <button type="button" class="btn ghost" data-act="del"${library.builds.length <= 1 ? " disabled" : ""}>Excluir</button>
+      ${d.pubId ? `<button type="button" class="btn ghost" data-act="unpub" title="Tira do site e mantém a build aqui">Despublicar</button>` : ""}
+      <button type="button" class="btn ghost" data-act="del"${library.builds.length <= 1 ? " disabled" : ""} title="${d.pubId ? "Apaga a build daqui e do site" : "Apaga a build da biblioteca"}">Excluir</button>
     </div>
     <p class="bd-pub-note">${falta.length ? `Para publicar ainda falta: <b>${esc(falta.join(", "))}</b>.` : !Servidor.ativo() ? "Pronta para publicar — falta configurar o servidor." : d.pubId ? (d.updatedAt > d.pubEm ? `Há alterações depois da última publicação (versão ${d.pubVersao}).` : `Publicada na versão ${d.pubVersao}.`) : "Pronta para publicar."}</p>
     <p id="bd-link-msg" class="bd-pub-note" hidden></p>
@@ -6393,12 +6432,14 @@ function initBuildIndex() {
       if (!p) return;
       if (act.dataset.act === "copypub") copiarPublica(publicaResumo(p));
       if (act.dataset.act === "favpub") { toggleFavorito(p.id); renderBuildIndex(); }
+      if (act.dataset.act === "delpub") excluirPublicacao(p.id);
       return;
     }
     const b = library.builds.find(x => x.id === biSelected);
     if (!b) return;
     if (act.dataset.act === "edit") abrir(b.id);
     if (act.dataset.act === "publish") publicarBuild(b.id);
+    if (act.dataset.act === "unpub") despublicarBuild(b.id);
     if (act.dataset.act === "copy") { duplicateBuild(b.id); showBuildScreen("forja"); }
     if (act.dataset.act === "link") {
       const msg = document.getElementById("bd-link-msg"), box = document.getElementById("bd-link");
