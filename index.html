@@ -3249,7 +3249,7 @@ body.forja #som-volume { accent-color: #ff7a1e; }
 /* ---- Fase 7, T2: seletor de campeão com retrato (Leo: "tem muito campeão que só é reconhecido pelo ícone") ---- */
 .champ-pick { position: relative; display: inline-block; }
 .champ-btn { display: inline-flex; align-items: center; gap: 8px; min-width: 230px; text-align: left; cursor: pointer; padding-right: 30px; position: relative; }
-.champ-btn .champ-caret { position: absolute; right: 11px; top: 50%; width: 7px; height: 7px; border-right: 2px solid var(--forja-texto-suave); border-bottom: 2px solid var(--forja-texto-suave); transform: translateY(-70%) rotate(45deg); }
+.champ-btn .champ-caret, .build-switch-btn .champ-caret { position: absolute; right: 11px; top: 50%; width: 7px; height: 7px; border-right: 2px solid var(--forja-texto-suave); border-bottom: 2px solid var(--forja-texto-suave); transform: translateY(-70%) rotate(45deg); }
 .champ-btn.aberto { border-color: var(--forja-brasa); box-shadow: 0 0 10px var(--forja-brasa-glow); }
 .champ-menu {
   position: absolute; z-index: 90; top: calc(100% + 6px); left: 0; width: 460px; max-width: calc(100vw - 40px);
@@ -3279,6 +3279,51 @@ body.forja #som-volume { accent-color: #ff7a1e; }
 .champ-row.todos { grid-column: 1 / -1; }
 .champ-note { margin: 0; font-family: var(--loja-texto); font-style: italic; font-size: 12.5px; color: var(--forja-texto-suave); }
 .champ-note[hidden] { display: none; }
+
+
+/* ---- Fase 7, T3: lista de arsenais (tela inicial da aba Build, como no cliente) ---- */
+.build-index[hidden], #build-editor[hidden] { display: none; }
+.bi-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; margin-bottom: 14px; }
+.bi-title { font-family: var(--loja-titulos); font-weight: 400; font-size: 30px; color: var(--forja-titulo); margin: 0; letter-spacing: .02em; }
+.bi-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+#bi-search {
+  width: 260px; padding: 8px 12px; border-radius: 2px;
+  background: rgba(0,0,0,.35); border: 1px solid #3a3029; color: var(--forja-texto);
+  font-family: var(--loja-texto); font-size: 14px;
+}
+#bi-search:focus { outline: none; border-color: var(--forja-brasa); box-shadow: 0 0 10px var(--forja-brasa-glow); }
+.bi-table {
+  position: relative; border-radius: 3px; overflow: hidden;
+  background: linear-gradient(180deg, var(--forja-placa-1), var(--forja-placa-2));
+  border: 1px solid var(--forja-placa-borda);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.05), inset 0 0 40px rgba(0,0,0,.45), 0 6px 14px rgba(0,0,0,.55);
+}
+.bi-head, .bi-row { display: grid; grid-template-columns: minmax(0, 1fr) 120px 170px 80px 90px; align-items: center; gap: 12px; padding: 10px 18px; }
+@media (max-width: 900px) { .bi-head, .bi-row { grid-template-columns: minmax(0, 1fr) 64px 120px 64px 84px; gap: 8px; padding: 8px 12px; } .bi-name { font-size: 16px; } }
+.bi-head { font-family: var(--loja-gravado); font-size: 9.5px; letter-spacing: .2em; text-transform: uppercase; color: var(--forja-titulo); background: rgba(0,0,0,.28); border-bottom: 1px solid var(--forja-placa-borda); }
+.bi-row { border-bottom: 1px solid rgba(255,255,255,.04); cursor: pointer; transition: background .15s; }
+.bi-row:last-child { border-bottom: none; }
+.bi-row:hover { background: rgba(255,120,30,.08); }
+.bi-row:hover .bi-name, .bi-row.ativa .bi-name { color: var(--forja-brasa-clara); }
+.bi-row.ativa { box-shadow: inset 3px 0 0 var(--forja-brasa); }
+.bi-name { font-family: var(--loja-titulos); font-size: 18px; color: var(--forja-titulo); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bi-champ img, .bi-champ .bp-todos { width: 36px; height: 36px; border-radius: 50%; border: 1px solid #c9973f; object-fit: cover; box-shadow: 0 0 6px rgba(0,0,0,.7); }
+.bi-champ .bp-todos { display: inline-flex; align-items: center; justify-content: center; font-family: var(--loja-gravado); font-size: 11px; color: #c9973f; background: rgba(0,0,0,.4); }
+.bi-mode, .bi-count { font-family: var(--loja-texto); font-style: italic; font-size: 13px; color: var(--forja-texto-suave); }
+.bi-menu { display: flex; gap: 6px; justify-content: flex-end; }
+.btn.mini { padding: 3px 9px; font-size: 13px; line-height: 1.2; min-width: 0; }
+.bi-empty { padding: 34px 18px; text-align: center; font-family: var(--loja-texto); font-style: italic; color: var(--forja-texto-suave); }
+.bi-note { margin: 10px 0 0; font-family: var(--loja-texto); font-style: italic; font-size: 12px; color: var(--forja-texto-suave); text-align: right; }
+/* forja: voltar à lista e trocar de build pelo nome */
+.build-back { margin-right: 12px; white-space: nowrap; }
+.build-switch { position: relative; margin-left: 2px; }
+.build-switch-btn { width: 30px; height: 30px; background: transparent; border: 1px solid #3a3029; border-radius: 3px; cursor: pointer; position: relative; }
+.build-switch-btn .champ-caret { right: 10px; }
+.build-switch-btn:hover, .build-switch-btn.aberto { border-color: var(--forja-brasa); box-shadow: 0 0 10px var(--forja-brasa-glow); }
+.build-switch-menu { width: 360px; left: auto; right: 0; }
+.bs-list { display: flex; flex-direction: column; gap: 2px; max-height: 360px; overflow: auto; }
+.bs-list .champ-row { white-space: normal; }
+.bs-list .champ-row .bs-meta { margin-left: auto; font-size: 11.5px; font-style: italic; color: var(--forja-texto-suave); white-space: nowrap; }
 </style>
 </head>
 <body>
@@ -3376,9 +3421,33 @@ body.forja #som-volume { accent-color: #ff7a1e; }
 
 <!-- ============ ABA BUILD ============ -->
 <div id="view-build" class="build-view hidden">
+  <!-- Tela 1 (Fase 7, T3): lista de arsenais, como no cliente do LoL. Clique abre a forja. -->
+  <section id="build-index" class="build-index" hidden aria-label="Suas builds">
+    <div class="bi-toolbar">
+      <h2 class="bi-title">Arsenais</h2>
+      <div class="bi-actions">
+        <button id="bi-new" class="btn" type="button">+ Nova build</button>
+        <button id="bi-import" class="btn ghost" type="button" title="Importar uma build a partir do texto">Importar</button>
+        <input id="bi-search" type="search" placeholder="Buscar builds…" spellcheck="false" autocomplete="off" aria-label="Buscar builds">
+      </div>
+    </div>
+    <div class="bi-table">
+      <div class="bi-head"><span>Nome</span><span>Campeão</span><span>Modo</span><span>Itens</span><span></span></div>
+      <div id="bi-rows" class="bi-rows"></div>
+    </div>
+    <p class="bi-note">salvas neste navegador · clique numa build para abrir a forja</p>
+  </section>
+
+  <!-- Tela 2: a forja (tudo o que já existia). -->
+  <div id="build-editor" hidden>
   <div class="build-bar">
+    <button id="build-back" class="btn ghost build-back" type="button" title="Voltar à lista de builds">‹ Arsenais</button>
     <img id="build-champ-art" class="build-champ-art" alt="" hidden>
     <input id="build-name-input" class="build-name" placeholder="Nome da build" spellcheck="false">
+    <div class="build-switch" id="build-switch">
+      <button type="button" id="build-switch-btn" class="build-switch-btn" title="Trocar de build" aria-haspopup="listbox" aria-expanded="false"><i class="champ-caret" aria-hidden="true"></i></button>
+      <div id="build-switch-menu" class="champ-menu build-switch-menu" hidden><div id="build-switch-list" class="bs-list" role="listbox"></div></div>
+    </div>
     <div id="build-summary" class="build-summary"></div>
     <div class="build-actions">
       <label class="sw" id="cb-switch" title="Preços com o desconto da runa Reembolso (cashback.netGold), como no Catálogo">
@@ -3432,8 +3501,6 @@ body.forja #som-volume { accent-color: #ff7a1e; }
         <p id="champ-note" class="champ-note" hidden></p>
       </div>
     </div>
-    <span class="library-label">Suas builds</span>
-    <select id="build-select" class="build-select"></select>
     <button id="new-build" class="btn">Nova build</button>
     <button id="dup-build" class="btn ghost">Duplicar</button>
     <button id="del-build" class="btn ghost">Excluir</button>
@@ -3481,6 +3548,7 @@ body.forja #som-volume { accent-color: #ff7a1e; }
 
     <div id="build-canvas" class="build-canvas"></div>
   </div>
+  </div><!-- /build-editor -->
 </div>
 
 <!-- ============ ABA CALCULADORA ============ -->
@@ -3948,6 +4016,8 @@ function loadBuild() {
           seq: b.seq || 1,
           mode: ALL_MODES.includes(b.mode) ? b.mode : "",
           masterwork: !!b.masterwork,
+          // Campeão (Fase 7, T2): sem esta linha o campo se perdia a cada recarga.
+          champion: b.champion && b.champion.key && b.champion.id ? { key: String(b.champion.key), id: String(b.champion.id), name: String(b.champion.name || b.champion.id) } : null,
           cats: normalizeCats(b.cats),
         }));
         library.activeId = d.activeId && library.builds.some(b => b.id === d.activeId)
@@ -4011,13 +4081,14 @@ function createNewBuild(name, cats, mode, champion) {
 }
 
 function deleteBuild(id) {
+  const eraAtiva = id === build.id;
   library.builds = library.builds.filter(b => b.id !== id);
   if (!library.builds.length) {
     build.id = null;
     createNewBuild("Build sem nome");
     return;
   }
-  activateBuild(library.builds[0].id, true);
+  if (eraAtiva) activateBuild(library.builds[0].id, true);
   saveBuild();
   renderBuildAll();
 }
@@ -4176,11 +4247,11 @@ function buildToText() {
 }
 
 // ---------------- Conjunto de itens do cliente do LoL (Fase 6, T6) ----------------
-// Formato que Coleção → Itens → Importar lê da área de transferência, e que os
-// arquivos em Config\...\Recommended\ usam: title + blocks[{type, items[{id, count}]}],
-// associatedMaps/associatedChampions vazios (= todos os mapas e campeões) e as chaves
-// antigas (type/map/mode/priority/sortrank) que a versão em arquivo espera. Só o id
-// numérico do catálogo entra; item sem id numérico fica de fora e é avisado.
+// Formato que o cliente grava e lê (Coleção → Itens → Importar/Exportar): title,
+// associatedMaps (vazio = todos), associatedChampions (chave numérica do Data Dragon)
+// e blocks[{items[{id, count}], type}] — conferido chave a chave com um Arsenal.json
+// exportado do cliente (build de Ornn do Leo, 14/09/2026; 21 de 21 ids iguais aos
+// do catálogo). Só o id numérico do catálogo entra; item sem id fica de fora e é avisado.
 function buildToItemSet() {
   const blocks = [];
   const semId = [];
@@ -4194,10 +4265,12 @@ function buildToItemSet() {
       counts.set(id, (counts.get(id) || 0) + 1);
     });
     if (!counts.size) return;
-    blocks.push({ type: `${KIND_LABEL[cat.kind]} · ${cat.name}`, items: [...counts].map(([id, count]) => ({ id, count })) });
+    // Nome do bloco = nome da categoria; Prioridade/Opcional vão como sufixo (o cliente não tem tipos de bloco).
+    const type = cat.kind === "comum" ? cat.name : `${cat.name} · ${KIND_LABEL[cat.kind]}`;
+    blocks.push({ items: [...counts].map(([id, count]) => ({ id, count })), type });
   });
-  const set = { title: build.name, type: "custom", map: "any", mode: "any", priority: false, sortrank: 0, associatedMaps: [],
-    associatedChampions: build.champion ? [Number(build.champion.key)] : [], blocks };
+  // Exatamente as chaves que o cliente grava (conferido com um Arsenal.json exportado do cliente, 14/09/2026).
+  const set = { title: build.name, associatedMaps: [], associatedChampions: build.champion ? [Number(build.champion.key)] : [], blocks };
   return { json: JSON.stringify(set, null, 2), blocks: blocks.length, semId };
 }
 
@@ -5138,7 +5211,7 @@ function switchTab(tab) {
   }
   if (entrandoNaForja) { Som.play("catalog:close"); Som.play("build:open"); }
   if (saindoDaForja) { Som.play("build:close"); Som.play("catalog:open"); }
-  if (tab === "build") renderBuildAll();
+  if (tab === "build") { if (buildScreen === "lista") renderBuildIndex(); else renderBuildAll(); }
   if (tab === "calc" && typeof renderCalc === "function") renderCalc();
 }
 
@@ -5219,24 +5292,131 @@ function renderModeSelect() {
   sel.value = build.mode || "";
 }
 
+// ---------------- Lista de arsenais + troca pelo nome (Fase 7, T3) ----------------
+// Leo (14/09/2026): "seria melhor como é no LoL" — a aba Build abre numa lista
+// (nome, campeão, modo, itens), o clique abre a forja, e no topo da forja o nome
+// da build tem um seletor para trocar de build. Resumo de cada build lido do
+// estado ao vivo quando é a ativa (a cópia da biblioteca só sincroniza no save).
+let buildScreen = "lista";
+
+function buildResumo(b) {
+  const isActive = b.id === build.id;
+  const cats = isActive ? build.cats : (b.cats || []);
+  return {
+    id: b.id, isActive,
+    name: isActive ? build.name : b.name,
+    mode: isActive ? build.mode : (b.mode || ""),
+    champ: isActive ? build.champion : (b.champion || null),
+    n: cats.reduce((s, c) => s + c.items.length, 0),
+  };
+}
+function champIconHtml(champ, cls) {
+  return champ ? `<img class="${cls}" src="${Campeoes.iconUrl(champ.id)}" alt="" title="${esc(champ.name)}" loading="lazy">`
+               : `<span class="${cls} bp-todos" title="Todos os campeões">∞</span>`;
+}
+
+function showBuildScreen(tela) {
+  buildScreen = tela;
+  const index = document.getElementById("build-index");
+  const editor = document.getElementById("build-editor");
+  if (!index || !editor) return;
+  index.hidden = tela !== "lista";
+  editor.hidden = tela !== "forja";
+  if (tela === "lista") renderBuildIndex(); else renderBuildAll();
+}
+
+function renderBuildIndex() {
+  const rows = document.getElementById("bi-rows");
+  if (!rows) return;
+  const q = norm((document.getElementById("bi-search").value || "").trim());
+  const dados = library.builds.map(buildResumo)
+    .filter(d => !q || norm(`${d.name} ${d.champ ? d.champ.name : ""} ${d.mode}`).includes(q));
+  const soUma = library.builds.length <= 1;
+  rows.innerHTML = dados.length ? dados.map(d => `
+    <div class="bi-row${d.isActive ? " ativa" : ""}" data-id="${d.id}" role="button" tabindex="0" title="Abrir na forja">
+      <span class="bi-name">${esc(d.name)}</span>
+      <span class="bi-champ">${champIconHtml(d.champ, "")}</span>
+      <span class="bi-mode">${esc(d.mode || "todos os modos")}</span>
+      <span class="bi-count">${d.n} ${d.n === 1 ? "item" : "itens"}</span>
+      <span class="bi-menu">
+        <button type="button" class="btn ghost mini" data-act="dup" title="Duplicar">⧉</button>
+        <button type="button" class="btn ghost mini" data-act="del" title="Excluir"${soUma ? " disabled" : ""}>✕</button>
+      </span>
+    </div>`).join("") : `<div class="bi-empty">${q ? "Nenhuma build combina com a busca." : "Nenhuma build ainda — comece por “Nova build”."}</div>`;
+}
+
+// Lista do seletor no topo da forja (nome da build ▾)
 function renderLibrary() {
-  const sel = document.getElementById("build-select");
-  if (!sel) return;
-  sel.innerHTML = "";
-  library.builds.forEach(b => {
-    const opt = document.createElement("option");
-    opt.value = b.id;
-    // A build ativa é lida do estado ao vivo: a cópia na biblioteca só é
-    // sincronizada no save, e ficaria uma edição atrás no rótulo.
-    const isActive = b.id === build.id;
-    const name = isActive ? build.name : b.name;
-    const cats = isActive ? build.cats : (b.cats || []);
-    const n = cats.reduce((s, c) => s + c.items.length, 0);
-    opt.textContent = `${name} (${n} ${n === 1 ? "item" : "itens"})`;
-    sel.appendChild(opt);
+  const list = document.getElementById("build-switch-list");
+  if (list) {
+    list.innerHTML = library.builds.map(buildResumo).map(d =>
+      `<div class="champ-row${d.isActive ? " ativo" : ""}" data-id="${d.id}" role="option" aria-selected="${d.isActive}">${champIconHtml(d.champ, "")}<span>${esc(d.name)}</span><span class="bs-meta">${d.n} ${d.n === 1 ? "item" : "itens"}${d.mode ? " · " + esc(d.mode) : ""}</span></div>`).join("");
+  }
+  const del = document.getElementById("del-build");
+  if (del) del.disabled = library.builds.length <= 1;
+  if (buildScreen === "lista") renderBuildIndex();
+}
+
+function duplicateBuild(id) {
+  const b = library.builds.find(x => x.id === id);
+  if (!b) return;
+  const d = buildResumo(b);
+  // Cópia profunda: a duplicata não pode compartilhar itens com a original.
+  const cats = JSON.parse(JSON.stringify(d.isActive ? build.cats : (b.cats || [])));
+  createNewBuild(d.name + " (cópia)", cats, d.mode, d.champ ? { ...d.champ } : null);
+}
+
+function initBuildIndex() {
+  const rows = document.getElementById("bi-rows");
+  const abrir = (id) => { activateBuild(id); showBuildScreen("forja"); };
+  rows.addEventListener("click", (e) => {
+    const row = e.target.closest(".bi-row");
+    if (!row) return;
+    const act = e.target.closest("[data-act]");
+    if (act && act.dataset.act === "dup") { duplicateBuild(row.dataset.id); showBuildScreen("lista"); return; }
+    if (act && act.dataset.act === "del") {
+      if (library.builds.length <= 1) return;
+      const d = buildResumo(library.builds.find(b => b.id === row.dataset.id));
+      if (window.confirm(`Excluir a build "${d.name}"? Isso não dá pra desfazer.`)) { deleteBuild(row.dataset.id); renderBuildIndex(); }
+      return;
+    }
+    abrir(row.dataset.id);
   });
-  sel.value = build.id || "";
-  document.getElementById("del-build").disabled = library.builds.length <= 1;
+  rows.addEventListener("keydown", (e) => {
+    const row = e.target.closest(".bi-row");
+    if (row && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); abrir(row.dataset.id); }
+  });
+  document.getElementById("bi-search").addEventListener("input", renderBuildIndex);
+  document.getElementById("bi-new").addEventListener("click", () => { createNewBuild(); showBuildScreen("forja"); });
+  document.getElementById("bi-import").addEventListener("click", () => {
+    showBuildScreen("forja");
+    document.getElementById("io-panel").classList.add("show");
+    document.getElementById("toggle-io").classList.add("active");
+    document.getElementById("import-text").focus();
+  });
+  document.getElementById("build-back").addEventListener("click", () => showBuildScreen("lista"));
+
+  // Seletor de build no topo da forja
+  const btn = document.getElementById("build-switch-btn");
+  const menu = document.getElementById("build-switch-menu");
+  const list = document.getElementById("build-switch-list");
+  const abrirMenu = (on) => {
+    menu.hidden = !on;
+    btn.classList.toggle("aberto", on);
+    btn.setAttribute("aria-expanded", on ? "true" : "false");
+    if (on) renderLibrary();
+  };
+  btn.addEventListener("click", () => abrirMenu(menu.hidden));
+  list.addEventListener("click", (e) => {
+    const row = e.target.closest(".champ-row");
+    if (!row) return;
+    abrirMenu(false);
+    if (row.dataset.id !== build.id) activateBuild(row.dataset.id);
+  });
+  document.addEventListener("mousedown", (e) => {
+    if (!menu.hidden && !e.target.closest("#build-switch")) abrirMenu(false);
+  });
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !menu.hidden) abrirMenu(false); });
 }
 
 function showIoMsg(text, isError) {
@@ -5254,19 +5434,13 @@ function initLibrary() {
 
   initChampPicker();
 
-  document.getElementById("build-select").addEventListener("change", (e) => {
-    activateBuild(e.target.value);
-  });
+  initBuildIndex();
 
   document.getElementById("new-build").addEventListener("click", () => {
     createNewBuild();
   });
 
-  document.getElementById("dup-build").addEventListener("click", () => {
-    // Cópia profunda: a duplicata não pode compartilhar itens com a original.
-    const copy = JSON.parse(JSON.stringify(build.cats));
-    createNewBuild(build.name + " (cópia)", copy);
-  });
+  document.getElementById("dup-build").addEventListener("click", () => duplicateBuild(build.id));
 
   document.getElementById("del-build").addEventListener("click", () => {
     if (library.builds.length <= 1) return;
@@ -7015,6 +7189,8 @@ function init() {
   }
   document.getElementById("entrar").addEventListener("click", () => entrarNaLoja(false));
   if (/^#(item=|ficha=|apice$|animacoes$|build$|build-animacoes$|build-observacao$|build-apice$|build-exportar$|calc$)/.test(location.hash)) entrarNaLoja(true);
+  // A aba Build abre na lista de arsenais (Fase 7, T3); #build* vai direto à forja.
+  showBuildScreen(/^#build/.test(location.hash) ? "forja" : "lista");
   // #build abre direto na forja (link direto e captura); #build-animacoes congela
   // a queda e a remoção de um molde (só captura).
   if (/^#build(-animacoes|-observacao|-apice)?$/.test(location.hash)) switchTab("build");

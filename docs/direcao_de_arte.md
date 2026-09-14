@@ -82,3 +82,7 @@ As três texturas são papel amassado quase branco; nunca usadas cruas. Aplicaç
 
 ## Campeão da build (Fase 7, T2 — 14/09/2026)
 - Retrato do campeão (Data Dragon, mesma versão do catálogo) em medalhão redondo de 46 px antes do nome da build, borda de latão #c9973f com brilho fraco; na barra da biblioteca, versão de 26 px dentro do botão "Campeão". O seletor é próprio (não o `<select>` do sistema): painel de ferro com busca e lista em 3 colunas, cada campeão com retrato de 30 px em medalhão de latão; o escolhido leva borda de latão e tinta de brasa; "Todos os campeões" ocupa a primeira linha com o símbolo ∞. Sem campeão, nada aparece no cabeçalho (a build vale para todos).
+
+## Arsenais — lista de builds (Fase 7, T3 — 14/09/2026)
+- A aba Build abre numa tabela de ferro (mesma placa da forja): cabeçalho gravado em Cinzel (Nome · Campeão · Modo · Itens), linhas com o nome em IM Fell, o retrato do campeão em medalhão de latão de 36 px (∞ para todos), modo e contagem em Alegreya itálico, e duas ações discretas (⧉ ✕). Hover acende o nome em brasa; a build ativa leva um friso de brasa à esquerda. Referência: a tela "Arsenais" do cliente do LoL.
+- Na forja, "‹ Arsenais" volta à lista e o nome da build ganha um seletor ▾ (painel de ferro igual ao de campeão) para trocar de build sem sair.
