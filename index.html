@@ -3511,7 +3511,7 @@ body.forja #som-volume { accent-color: #ff7a1e; }
   <div id="io-panel" class="io-panel">
     <div class="io-col">
       <button id="export-btn" class="btn">Copiar esta build</button>
-      <p class="io-hint">Copia a build atual como texto, pra colar onde quiser.</p>
+      <p class="io-hint">Copia a build atual como texto, pra colar onde quiser. A caixa ao lado importa esse texto ou o JSON exportado pelo cliente do LoL.</p>
     </div>
     <div class="io-col grow">
       <textarea id="import-text" rows="5" spellcheck="false" placeholder="BUILD: Jinx padrão&#10;&#10;[PRIORIDADE] Núcleo | 1/2&#10;# comprar sempre nessa ordem&#10;- Cutelo Negro&#10;- Espada Longa * segurar até os 20min"></textarea>
@@ -4265,13 +4265,56 @@ function buildToItemSet() {
       counts.set(id, (counts.get(id) || 0) + 1);
     });
     if (!counts.size) return;
-    // Nome do bloco = nome da categoria; Prioridade/Opcional vão como sufixo (o cliente não tem tipos de bloco).
-    const type = cat.kind === "comum" ? cat.name : `${cat.name} · ${KIND_LABEL[cat.kind]}`;
+    // Nome do bloco = nome da categoria; Prioridade/Opcional vão como sufixo, do jeito
+    // que o Leo pediu (14/09/2026): "Core - PRIORIDADE", "4° item - Opcional".
+    const type = cat.kind === "comum" ? cat.name : `${cat.name} - ${cat.kind === "prioridade" ? "PRIORIDADE" : "Opcional"}`;
     blocks.push({ items: [...counts].map(([id, count]) => ({ id, count })), type });
   });
   // Exatamente as chaves que o cliente grava (conferido com um Arsenal.json exportado do cliente, 14/09/2026).
   const set = { title: build.name, associatedMaps: [], associatedChampions: build.champion ? [Number(build.champion.key)] : [], blocks };
   return { json: JSON.stringify(set, null, 2), blocks: blocks.length, semId };
+}
+
+// Sentido inverso (Fase 7, T4): o JSON exportado pelo cliente (Coleção → Itens →
+// Exportar, ou o arquivo em Config\\...\\Recommended\\) vira uma build. Cada bloco vira
+// uma categoria; o sufixo " · Prioridade"/" · Opcional" gravado pelo Montador volta a
+// ser o tipo da caixa; count N repete o item N vezes; ids que não estão no catálogo
+// são listados. Campeão pela chave do Data Dragon; mapa 11/12 vira o modo.
+let byRiotId = null;
+function getRiotIdIndex() {
+  if (byRiotId) return byRiotId;
+  byRiotId = new Map();
+  CATALOG.items.forEach(it => { if (/^\d+$/.test(String(it.id))) byRiotId.set(String(it.id), it.slug); });
+  return byRiotId;
+}
+const MAPA_MODO = { 11: "Summoner's Rift", 12: "ARAM" };   // ids de mapa da Riot → modos do catálogo
+
+function itemSetToBuild(obj) {
+  const idx = getRiotIdIndex();
+  const result = { name: null, mode: "", championKey: null, cats: [], unknown: [], total: 0 };
+  if (!obj || !Array.isArray(obj.blocks)) return null;
+  result.name = typeof obj.title === "string" && obj.title.trim() ? obj.title.trim() : null;
+  const maps = Array.isArray(obj.associatedMaps) ? obj.associatedMaps.map(Number) : [];
+  if (maps.length === 1 && MAPA_MODO[maps[0]] && ALL_MODES.includes(MAPA_MODO[maps[0]])) result.mode = MAPA_MODO[maps[0]];
+  const champs = Array.isArray(obj.associatedChampions) ? obj.associatedChampions : [];
+  if (champs.length === 1) result.championKey = String(champs[0]);
+  obj.blocks.forEach((b, i) => {
+    let name = typeof b.type === "string" && b.type.trim() ? b.type.trim() : `Bloco ${i + 1}`;
+    let kind = "comum";
+    const m = name.match(/^(.*?)\s*[-–·]\s*(Prioridade|Opcional)$/i);   // "- PRIORIDADE", "- Opcional" (ou o "·" antigo)
+    if (m) { name = m[1].trim() || name; kind = m[2].toLowerCase() === "prioridade" ? "prioridade" : "opcional"; }
+    const items = [];
+    (Array.isArray(b.items) ? b.items : []).forEach(x => {
+      const id = String(x && x.id);
+      const n = Math.max(1, Math.min(9, Number(x && x.count) || 1));
+      const slug = idx.get(id);
+      if (!slug) { result.unknown.push(id); return; }
+      for (let k = 0; k < n; k++) items.push({ itemId: slug, note: "" });
+    });
+    result.total += items.length;
+    result.cats.push({ id: "cat-" + (i + 1), name, desc: "", kind, span: build.defaultSpan || 2, items });
+  });
+  return result;
 }
 
 function nomeArquivoItemSet() {
@@ -5498,6 +5541,26 @@ function initLibrary() {
   document.getElementById("import-btn").addEventListener("click", () => {
     const text = document.getElementById("import-text").value;
     if (!text.trim()) { showIoMsg("Cole o texto de uma build primeiro.", true); return; }
+    // JSON do cliente do LoL (Fase 7, T4): começa com "{" e tem blocks.
+    if (text.trim().startsWith("{")) {
+      let obj = null;
+      try { obj = JSON.parse(text); } catch (e) { showIoMsg("Isso parece JSON, mas não deu pra ler. Cole o Arsenal.json inteiro, como o cliente exportou.", true); return; }
+      const r = itemSetToBuild(obj);
+      if (!r) { showIoMsg("Esse JSON não tem os blocos de um conjunto de itens do cliente.", true); return; }
+      if (!r.total) { showIoMsg("Nenhum item desse conjunto está no catálogo (ids: " + (r.unknown.slice(0, 5).join(", ") || "nenhum") + ").", true); return; }
+      createNewBuild(r.name || "Arsenal importado", r.cats, r.mode);
+      let msg = `Importado do cliente: ${r.cats.length} bloco(s), ${r.total} item(ns)${r.mode ? `, modo ${r.mode}` : ""}.`;
+      if (r.unknown.length) msg += ` ${r.unknown.length} id(s) fora do catálogo: ${r.unknown.slice(0, 4).join(", ")}${r.unknown.length > 4 ? "…" : ""}.`;
+      showIoMsg(msg, r.unknown.length > 0);
+      if (r.championKey) {
+        const idNova = build.id;
+        Campeoes.carregar().then(() => {
+          const c = Campeoes.porChave(r.championKey);
+          if (c && build.id === idNova) { build.champion = c; saveBuild(); renderBuildAll(); }
+        }).catch(() => { /* sem internet: fica em Todos os campeões */ });
+      }
+      return;
+    }
     const r = textToBuild(text);
     if (!r.cats.length) { showIoMsg("Não encontrei nenhuma categoria ou item válido nesse texto.", true); return; }
 
