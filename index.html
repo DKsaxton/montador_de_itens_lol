@@ -3210,6 +3210,24 @@ body.forja #som-volume { accent-color: #ff7a1e; }
 .calc-verdict-line b { color: var(--loja-tinta); font-style: normal; }
 .calc-verdict p { color: var(--loja-tinta); line-height: 1.55; }
 .calc-view.entrando { animation: loja-desce .55s cubic-bezier(.2,.9,.3,1); }
+
+/* ---- Fase 6, T5: tentativa de arrastar em visualização chama o "Editar" ---- */
+#edit-switch { border-radius: 4px; }
+#edit-switch.chamar { animation: chamar-editar 1.1s ease-out 2; }
+@keyframes chamar-editar {
+  0%, 100% { box-shadow: none; }
+  50% { box-shadow: 0 0 0 3px var(--forja-brasa), 0 0 18px var(--forja-brasa-glow); }
+}
+.edit-hint {
+  position: fixed; left: 50%; bottom: 28px; z-index: 70; pointer-events: none;
+  transform: translateX(-50%) translateY(12px); opacity: 0; transition: opacity .25s, transform .25s;
+  background: linear-gradient(180deg, var(--forja-placa-1), var(--forja-placa-2));
+  border: 1px solid var(--forja-placa-borda); border-left: 3px solid var(--forja-brasa); border-radius: 3px;
+  color: var(--forja-texto); font-family: var(--loja-texto); font-style: italic; font-size: 14px;
+  padding: 10px 16px; box-shadow: 0 8px 26px rgba(0,0,0,.7), 0 0 14px var(--forja-brasa-glow);
+}
+.edit-hint b { color: var(--forja-brasa-clara); font-style: normal; }
+.edit-hint.show { opacity: 1; transform: translateX(-50%); }
 </style>
 </head>
 <body>
@@ -3343,6 +3361,7 @@ body.forja #som-volume { accent-color: #ff7a1e; }
   </div>
 
   <div id="mode-warning" class="mode-warning"></div>
+  <div id="edit-hint" class="edit-hint" aria-live="polite"></div>
   <div id="build-totals" class="build-totals"></div>
 
   <div class="library-bar">
@@ -3684,9 +3703,12 @@ const Som = (() => {
       case "catalog:pergaminho": return tocar("ui_catalog_tag_select", { cooldown: 120, grupo: "pergaminho", ganho: 0.5 });
       case "lojista:tag_open": return n ? tocar("shopkeeper_tag_open_" + n, { lojista: true }) : false;
       case "lojista:efeito_select": return tocar("shopkeeper_build_efeitosespeciais_" + chave(ctx.efeito) + "_select", { lojista: true });
+      case "build:item_move":   // molde levado de uma bancada a outra: só o baque, sem fala
+        return tocar("build_item_add");
       case "build:item_add": {
         const it = ctx.item;
-        const lendario = it && /^Lendário/.test(it.tier) && n;
+        // O som próprio de Lendário é só da forja; marcado pelo Catálogo toca o genérico (Leo, 14/09/2026).
+        const lendario = it && /^Lendário/.test(it.tier) && n && ctx.origem !== "catalogo";
         const ok = tocar(lendario ? "ui_build_mod_add_legendary_" + n : "build_item_add");
         // Lojista: fala rara do item (sempre) ou, se o item não tem uma, o comentário do
         // núcleo (shopkeeper_tag_open_<núcleo>), sujeito a chance/intervalo (Leo, 13/09/2026).
@@ -3983,10 +4005,12 @@ function removeItemFromCategory(catId, index) {
 function moveItem(fromCatId, fromIndex, toCatId) {
   const from = getCat(fromCatId), to = getCat(toCatId);
   if (!from || !to) return;
+  if (from === to && fromIndex === from.items.length - 1) return;   // já está ali, no fim
   const [entry] = from.items.splice(fromIndex, 1);
   if (!entry) return;
   to.items.push(entry);
   lastDrop = { catId: to.id, index: to.items.length - 1 };
+  Som.play("build:item_move", { item: byId[entry.itemId] });   // a placa cai; o lojista não comenta
   renderBuild();
   saveBuild();
 }
@@ -4468,6 +4492,19 @@ function renderPicker() {
 let dragCatId = null;
 let dragItemPayload = null;
 
+let editHintTimer = null;
+function chamarEditar() {
+  const sw = document.getElementById("edit-switch");
+  const hint = document.getElementById("edit-hint");
+  if (sw) { sw.classList.remove("chamar"); void sw.offsetWidth; sw.classList.add("chamar"); }
+  if (hint) {
+    hint.innerHTML = `A build está em <b>visualização</b> — ligue <b>Editar</b> para mover os moldes.`;
+    hint.classList.add("show");
+    clearTimeout(editHintTimer);
+    editHintTimer = setTimeout(() => hint.classList.remove("show"), 3200);
+  }
+}
+
 function clearDropMarks() {
   document.querySelectorAll(".build-cat").forEach(c =>
     c.classList.remove("drop-before", "drop-after", "drop-into"));
@@ -4496,6 +4533,19 @@ function initCategoryDrag() {
     }
   });
 
+  // Visualização (padrão): os moldes não são arrastáveis. Se o Leo tenta puxar um
+  // mesmo assim, o interruptor "Editar" acende e uma placa explica (14/09/2026).
+  let tentativa = null;
+  canvas.addEventListener("mousedown", (e) => {
+    if (build.editing || e.button !== 0) return;
+    if (e.target.closest(".item-tile")) tentativa = { x: e.clientX, y: e.clientY };
+  });
+  window.addEventListener("mousemove", (e) => {
+    if (!tentativa) return;
+    if (Math.abs(e.clientX - tentativa.x) + Math.abs(e.clientY - tentativa.y) > 6) { tentativa = null; chamarEditar(); }
+  });
+  window.addEventListener("mouseup", () => { tentativa = null; });
+
   canvas.addEventListener("dragend", () => {
     dragCatId = null;
     dragItemPayload = null;
@@ -4507,7 +4557,11 @@ function initCategoryDrag() {
     const catEl = e.target.closest(".build-cat");
     if (!catEl) return;
     e.preventDefault();
-    e.dataTransfer.dropEffect = dragCatId ? "move" : "copy";
+    // "move" para categoria e para molde que já está numa bancada; "copy" só
+    // vindo do seletor. Tem de casar com o effectAllowed do dragstart, senão o
+    // navegador recusa a soltura e o drop nunca dispara.
+    const movendo = dragCatId || (dragItemPayload && dragItemPayload.from === "cat");
+    e.dataTransfer.dropEffect = movendo ? "move" : "copy";
     clearDropMarks();
     if (dragCatId) {
       if (catEl.dataset.catId === dragCatId) return;
@@ -6024,9 +6078,11 @@ function renderCard(item, attrSorting) {
   card.title = "Clique: marcar na categoria escolhida em \"Marcar em\" (sem categoria, abre o pergaminho) · Ícone ou Shift+clique: pergaminho";
   card.addEventListener("click", (e) => {
     playTierAnimation(card, item);
-    Som.play("catalog:click", { item });
     // Sem categoria selecionada, o clique abre o pergaminho (Leo, 13/09/2026).
-    if (e.target.closest(".card-icon") || e.shiftKey || !getCat(build.selectedCatId)) { openModal(item.slug); return; }
+    if (e.target.closest(".card-icon") || e.shiftKey || !getCat(build.selectedCatId)) { Som.play("catalog:click", { item }); openModal(item.slug); return; }
+    // Marcar para a build toca o mesmo som de "item na build" da forja (Leo, 14/09/2026),
+    // disparado em toggleItemInBuild; desmarcar toca o clique da loja.
+    if (findInBuild(item.slug)) Som.play("catalog:click", { item });
     toggleItemInBuild(item.slug);
   });
 
@@ -6227,8 +6283,9 @@ function toggleItemInBuild(slug) {
     const cat = getCat(build.selectedCatId);
     if (!cat) return;
     cat.items.push({ itemId: slug, note: "" });
-    // Aviso por modo de jogo (Fase 5, T3): a build tem modo e o item não existe nele.
     const it = byId[slug];
+    Som.play("build:item_add", { item: it, origem: "catalogo" });   // sempre o genérico (Leo, 14/09/2026), com o lojista
+    // Aviso por modo de jogo (Fase 5, T3): a build tem modo e o item não existe nele.
     if (build.mode && it && !itemAvailableIn(it, build.mode)) {
       showCatalogModeHint(`<b>${esc(it.namePt)}</b> não existe em <b>${esc(build.mode)}</b>, o modo da build "${esc(build.name)}". Foi marcado mesmo assim; na forja ele aparece apagado.`);
     }
