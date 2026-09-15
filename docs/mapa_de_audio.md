@@ -64,3 +64,7 @@ const chave = s => s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase
 - `shopitem_papertexture01_psd.png`
 - `shopitem_papertexture02_psd.png`
 - `shopitem_papertexture03_psd.png`
+
+## Canais e mudo (Fase 9, T6 — 15/09/2026)
+- O painel do alto-falante tem **Som geral** (tudo mudo) e três canais independentes, guardados em `localStorage som.canais`: **Interface** (`ui_catalog_*`, `ui_shop_*`, `ui_catalog_tag_select`, `open_catalog`, `close_catalog`), **Forja** (`build_*`, `ui_build_mod_add_legendary_*`) e **Lojista** (`shopkeeper_*`). Um canal mudo não toca nada dele; o volume é geral.
+

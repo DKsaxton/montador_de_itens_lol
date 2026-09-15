@@ -3578,6 +3578,28 @@ table.lay-grid td.faixa { background: transparent; border: none; font-family: va
 body:not(.editando) .slot-vazio { opacity: .35; }
 .build-cat.resizing::after { content: attr(data-grade); position: absolute; right: 12px; bottom: 12px; font-family: var(--loja-gravado); font-size: 11px; letter-spacing: .12em; color: #2a1a0a; background: var(--forja-brasa-clara); padding: 2px 8px; border-radius: 2px; z-index: 5; width: auto; height: auto; box-shadow: 0 2px 6px rgba(0,0,0,.6); }
 .cat-resize { cursor: nwse-resize; }
+
+/* ---- Fase 9, T6: alto-falante e painel de som por canal ---- */
+.som-ctl { position: relative; }
+.som-btn .som-onda, .som-btn .som-risco { transition: opacity .15s; }
+.som-btn.mudo .som-onda { opacity: 0; }
+.som-btn:not(.mudo) .som-risco { display: none; }
+.som-btn.parcial .som-onda:last-of-type { opacity: .35; }
+.som-menu {
+  position: absolute; right: 0; top: calc(100% + 10px); z-index: 90; width: 260px; padding: 10px 12px 8px;
+  background: linear-gradient(180deg, #2a2420, #1a1512); border: 1px solid #443a32; border-top: 3px solid #b6873a; border-radius: 3px;
+  box-shadow: 0 14px 30px rgba(0,0,0,.75); color: #d8cbb6; font-family: var(--loja-texto); text-align: left;
+}
+.som-menu[hidden] { display: none; }
+.som-menu-title { font-family: var(--loja-gravado); font-size: 10px; letter-spacing: .2em; text-transform: uppercase; color: #e9b36a; margin-bottom: 6px; }
+.som-opt { display: grid; grid-template-columns: 18px 1fr; column-gap: 8px; align-items: center; padding: 5px 0; cursor: pointer; }
+.som-opt input { margin: 0; accent-color: #c9973f; width: 16px; height: 16px; }
+.som-opt span { font-size: 14px; color: #e2d6c2; }
+.som-opt small { grid-column: 2; font-size: 11.5px; font-style: italic; color: #8f8074; line-height: 1.3; }
+.som-opt.geral span { font-family: var(--loja-titulos); font-size: 15px; color: #e9b36a; }
+.som-opt input:disabled + span { opacity: .45; }
+.som-sep { border-top: 1px dashed #3a3029; margin: 4px 0; }
+body.forja .som-menu { border-top-color: #ff7a1e; }
 </style>
 </head>
 <body>
@@ -3605,14 +3627,23 @@ body:not(.editando) .slot-vazio { opacity: .35; }
     </nav>
     <div class="counts-wrap">
       <div class="counts"><b id="total-count">0</b> itens catalogados</div>
-      <div class="som-ctl" title="Som da loja">
-        <button type="button" id="som-mudo" class="som-btn" aria-label="Silenciar ou reativar o som">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15L6 16z"/><path d="M10 20a2 2 0 0 0 4 0"/><path d="M12 3v2"/>
-            <path class="som-risco" d="M4 4l16 16"/>
+      <div class="som-ctl" id="som-ctl">
+        <button type="button" id="som-mudo" class="som-btn" aria-label="Opções de som" aria-haspopup="true" aria-expanded="false" title="Som: clique para as opções">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 9.5v5h3.5L12 18.5v-13L7.5 9.5H4z" fill="currentColor" stroke="none"/>
+            <path class="som-onda" d="M15 9.2a4 4 0 0 1 0 5.6"/><path class="som-onda" d="M17.6 6.8a7.5 7.5 0 0 1 0 10.4"/>
+            <path class="som-risco" d="M15 9l6 6M21 9l-6 6"/>
           </svg>
         </button>
-        <input type="range" id="som-volume" min="0" max="100" step="5" aria-label="Volume">
+        <input type="range" id="som-volume" min="0" max="100" step="5" aria-label="Volume" title="Volume geral">
+        <div id="som-menu" class="som-menu" hidden>
+          <div class="som-menu-title">Som</div>
+          <label class="som-opt geral"><input type="checkbox" id="som-geral"><span>Som geral</span><small>tudo ligado ou tudo mudo</small></label>
+          <div class="som-sep"></div>
+          <label class="som-opt"><input type="checkbox" id="som-canal-interface"><span>Interface</span><small>cliques, passar o mouse, chips, abrir e fechar</small></label>
+          <label class="som-opt"><input type="checkbox" id="som-canal-forja"><span>Forja</span><small>moldes caindo, martelo, item na build</small></label>
+          <label class="som-opt"><input type="checkbox" id="som-canal-lojista"><span>Lojista</span><small>as falas do vendedor</small></label>
+        </div>
       </div>
     </div>
   </div>
@@ -4054,7 +4085,14 @@ const Som = (() => {
   const BASE = "assets/audio/";
   const NUCLEO = { "AD": "danodeataque", "AP": "poderdehabilidade", "Vitalidade": "tank" };
   const TIERS_NEUTROS = ["Consumível", "Distribuído", "Trinket"];
-  const estado = { volume: 0.8, mudo: false, destravado: false };
+  // Canais (Leo, 15/09/2026: "tenho amigos que mutaram tudo só para mutar o shopkeeper"):
+  // interface (cliques, hover, chips, abrir/fechar), forja (moldes, martelo) e lojista (falas).
+  const estado = { volume: 0.8, mudo: false, destravado: false, canais: { interface: true, forja: true, lojista: true } };
+  function canalDe(base, opts) {
+    if (opts.lojista || base.startsWith("shopkeeper_")) return "lojista";
+    if (base.startsWith("build_") || base.startsWith("ui_build")) return "forja";
+    return "interface";
+  }
   const ultimo = {};        // base → último arquivo sorteado
   const cooldownAte = {};   // grupo → instante em que pode tocar de novo
   let falaAtual = null;     // Audio do lojista em reprodução
@@ -4087,10 +4125,12 @@ const Som = (() => {
       const m = localStorage.getItem("som.mudo");
       if (v !== null && !Number.isNaN(Number(v))) estado.volume = Math.min(1, Math.max(0, Number(v)));
       estado.mudo = m === "1";
+      const c = JSON.parse(localStorage.getItem("som.canais") || "null");
+      if (c && typeof c === "object") Object.keys(estado.canais).forEach(k => { if (typeof c[k] === "boolean") estado.canais[k] = c[k]; });
     } catch (e) { /* sem persistência */ }
   }
   function salvar() {
-    try { localStorage.setItem("som.volume", String(estado.volume)); localStorage.setItem("som.mudo", estado.mudo ? "1" : "0"); } catch (e) { /* idem */ }
+    try { localStorage.setItem("som.volume", String(estado.volume)); localStorage.setItem("som.mudo", estado.mudo ? "1" : "0"); localStorage.setItem("som.canais", JSON.stringify(estado.canais)); } catch (e) { /* idem */ }
   }
   function avisar() { ouvintes.forEach(fn => fn({ ...estado })); }
 
@@ -4114,6 +4154,7 @@ const Som = (() => {
   // Toca uma base de arquivo. opts: { cooldown, grupo, lojista }
   function tocar(base, opts = {}) {
     if (!estado.destravado || estado.mudo || !SOM_ARQUIVOS[base]) return false;
+    if (!estado.canais[canalDe(base, opts)]) return false;   // canal silenciado
     const grupo = opts.grupo || base;
     const agora = Date.now();
     if (cooldownAte[grupo] && agora < cooldownAte[grupo]) return false;
@@ -4191,6 +4232,7 @@ const Som = (() => {
   function setVolume(v) { estado.volume = Math.min(1, Math.max(0, Number(v) || 0)); salvar(); avisar(); }
   function setMudo(m) { estado.mudo = !!m; salvar(); avisar(); }
   function alternarMudo() { setMudo(!estado.mudo); }
+  function setCanal(nome, on) { if (nome in estado.canais) { estado.canais[nome] = !!on; salvar(); avisar(); } }
   function onChange(fn) { ouvintes.push(fn); }
 
   // Dev/QA: confere que todos os arquivos do mapa carregam (relata no console).
@@ -4209,7 +4251,7 @@ const Som = (() => {
   }
 
   carregar();
-  return { play, destravar, setVolume, setMudo, alternarMudo, onChange, verificar, LOJISTA, get estado() { return { ...estado }; }, ARQUIVOS: SOM_ARQUIVOS };
+  return { play, destravar, setVolume, setMudo, alternarMudo, setCanal, onChange, verificar, LOJISTA, get estado() { return { ...estado, canais: { ...estado.canais } }; }, ARQUIVOS: SOM_ARQUIVOS };
 })();
 </script>
 <script>
@@ -6722,8 +6764,11 @@ function initBuildIndex() {
     }
     const row = e.target.closest(".bi-row");
     if (!row) return;
+    // Só troca a seleção no lugar: redesenhar a lista aqui mataria o duplo clique
+    // (o segundo clique cairia num elemento novo e o navegador não conta como dblclick).
     biSelected = row.dataset.id;
-    renderBuildIndex();
+    rows.querySelectorAll(".bi-row").forEach(r => { const on = r.dataset.id === biSelected; r.classList.toggle("sel", on); r.setAttribute("aria-selected", String(on)); });
+    renderBuildDetail();
     Som.play("catalog:tag_select");
   });
   const abrirOuCopiar = (id) => { if (String(id).startsWith("pub:")) { const p = publicaPorId(id.slice(4)); if (p) abrirPublicaTemporaria(publicaResumo(p)); } else abrir(id); };
@@ -8621,15 +8666,27 @@ function init() {
   // Controle de som (Fase 4, T1): sino = mudo, régua = volume; persistem.
   const somBtn = document.getElementById("som-mudo");
   const somVol = document.getElementById("som-volume");
+  const somMenu = document.getElementById("som-menu");
+  const somGeral = document.getElementById("som-geral");
+  const canais = ["interface", "forja", "lojista"];
   const refletirSom = (e) => {
+    const algumCanalMudo = canais.some(k => !e.canais[k]);
     somBtn.classList.toggle("mudo", e.mudo);
+    somBtn.classList.toggle("parcial", !e.mudo && algumCanalMudo);
     somBtn.classList.toggle("travado", !e.destravado);
-    somBtn.title = e.destravado ? (e.mudo ? "Som silenciado — clique para reativar" : "Som ligado — clique para silenciar") : "O som nasce ao entrar na loja";
+    somBtn.title = !e.destravado ? "O som nasce ao entrar na loja" : e.mudo ? "Som mudo — clique para as opções" : algumCanalMudo ? "Som ligado, com canais mudos — clique para as opções" : "Som ligado — clique para as opções";
     somVol.value = Math.round(e.volume * 100);
+    somGeral.checked = !e.mudo;
+    canais.forEach(k => { const cb = document.getElementById("som-canal-" + k); cb.checked = !!e.canais[k]; cb.disabled = e.mudo; });
   };
   Som.onChange(refletirSom);
   refletirSom(Som.estado);
-  somBtn.addEventListener("click", () => Som.alternarMudo());
+  const abrirSom = (on) => { somMenu.hidden = !on; somBtn.setAttribute("aria-expanded", on ? "true" : "false"); };
+  somBtn.addEventListener("click", () => abrirSom(somMenu.hidden));
+  somGeral.addEventListener("change", () => Som.setMudo(!somGeral.checked));
+  canais.forEach(k => document.getElementById("som-canal-" + k).addEventListener("change", (ev) => Som.setCanal(k, ev.target.checked)));
+  document.addEventListener("mousedown", (ev) => { if (!somMenu.hidden && !ev.target.closest("#som-ctl")) abrirSom(false); });
+  document.addEventListener("keydown", (ev) => { if (ev.key === "Escape" && !somMenu.hidden) abrirSom(false); });
   somVol.addEventListener("input", () => Som.setVolume(Number(somVol.value) / 100));
 
   // Tela de entrada: cobre a loja até o clique em "Entrar na loja" (o áudio
