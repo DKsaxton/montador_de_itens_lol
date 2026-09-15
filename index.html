@@ -3305,7 +3305,18 @@ body.forja #som-volume { accent-color: #ff7a1e; }
 .bi-empty { padding: 34px 18px; text-align: center; font-family: var(--loja-texto); font-style: italic; color: var(--forja-texto-suave); }
 .bi-note { margin: 10px 0 0; font-family: var(--loja-texto); font-style: italic; font-size: 12px; color: var(--forja-texto-suave); text-align: right; }
 /* forja: voltar à lista e trocar de build pelo nome */
-.build-back { margin-right: 12px; white-space: nowrap; }
+/* F9-T8: o "‹ Builds" sumia no ferro (Leo, 15/09/2026) — vira uma placa de latão
+   com letra clara e a seta em brasa, como os botões de alternar e o "Nova build". */
+#view-build .btn.ghost.build-back {
+  margin-right: 12px; white-space: nowrap;
+  background: linear-gradient(180deg, var(--forja-placa-1), var(--forja-placa-2));
+  border-color: #c9973f; color: var(--forja-titulo);
+  font-family: var(--loja-gravado); font-size: 12px; letter-spacing: .08em; text-transform: uppercase;
+  padding: 6px 14px 6px 10px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 0 0 1px rgba(0,0,0,.6), 0 2px 6px rgba(0,0,0,.6);
+}
+#view-build .btn.ghost.build-back::before { content: "‹"; color: var(--forja-brasa); font-size: 18px; line-height: 0; margin-right: 6px; vertical-align: -1px; }
+#view-build .btn.ghost.build-back:hover { border-color: var(--forja-brasa); color: var(--forja-brasa-clara); box-shadow: 0 0 12px var(--forja-brasa-glow); }
 .build-switch { position: relative; margin-left: 2px; }
 .build-switch-btn { width: 30px; height: 30px; background: transparent; border: 1px solid #3a3029; border-radius: 3px; cursor: pointer; position: relative; }
 .build-switch-btn .champ-caret { right: 10px; }
@@ -3760,7 +3771,7 @@ body.forja .build-cat.drop-after  { transform: translateX(-5px); box-shadow: ins
   <!-- Tela 2: a forja (tudo o que já existia). -->
   <div id="build-editor" hidden>
   <div class="build-bar">
-    <button id="build-back" class="btn ghost build-back" type="button" title="Voltar à lista de builds">‹ Builds</button>
+    <button id="build-back" class="btn ghost build-back" type="button" title="Voltar à lista de builds">Builds</button>
     <img id="build-champ-art" class="build-champ-art" alt="" hidden>
     <input id="build-name-input" class="build-name" placeholder="Nome da build" spellcheck="false">
     <div id="build-marks" class="build-marks" title="Marcadores da build (até 3): clique num espaço para escolher"></div>
