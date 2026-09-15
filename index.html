@@ -2466,10 +2466,12 @@ select.sort-select, .sort-attr-wrap select {
   font-family: var(--loja-texto); font-size: 12.5px; color: var(--loja-tinta-suave); padding: 3px 11px;
 }
 .view-btn.active { background: var(--loja-cera); color: var(--loja-cera-texto); }
-body.icons-only .grid { grid-template-columns: repeat(auto-fill, 78px); gap: 10px; }
-body.icons-only .card { height: 78px; }
-body.icons-only .card-surface { padding: 8px 8px 8px 12px; gap: 0; align-items: center; }
-body.icons-only .card-surface::before { width: 4px; }
+/* sem folga em volta do ícone (Leo, 15/09/2026): célula = ícone + faixa da classe */
+body.icons-only .grid { grid-template-columns: repeat(auto-fill, 64px); gap: 3px; }   /* 3 px de vão (Leo, 15/09/2026) */
+body.icons-only .card { height: 64px; }
+body.icons-only .card-surface { padding: 4px 4px 4px 9px; gap: 0; align-items: center; }
+body.icons-only .card:not(.full) .card-icon { width: 52px; height: 52px; }
+body.icons-only .card-surface::before { width: 5px; }   /* faixa da classe com 5 px (Leo, 15/09/2026) */
 body.icons-only .card:not(.full) .card-main { display: none; }
 body.icons-only .card .tag.tier-badge { display: none; }
 body.icons-only .card .stamp { font-size: 8px; padding: 2px 5px; letter-spacing: .1em; border-width: 2px; }
@@ -3630,7 +3632,7 @@ body:not(.editando) .slot-vazio { opacity: .35; }
         <option value="attr-asc">Atributo: menor primeiro</option>
         <option value="eff-desc">Eficiência de ouro: maior primeiro</option>
         <option value="eff-asc">Eficiência de ouro: menor primeiro</option>
-        <option value="tier">Tier: Starter → Evolução</option>
+        <option value="tier" selected>Tier: Starter → Evolução</option>
       </select>
     </div>
     <div id="sort-attr-wrap" class="sort-attr-wrap">
@@ -7473,7 +7475,7 @@ const state = {
   runes: new Set(),      // filtro: "mf-yes"
   applyCashback: false,  // modo de exibição: troca os preços pelos com Reembolso
   applyApex: false,      // modo de exibição: cards mostram o campo apex (status máximos)
-  sort: "name-asc",
+  sort: "tier",   // padrão em ordem de tier, não alfabética (Leo, 15/09/2026)
   sortAttr: "",          // stat escolhido quando sort é "attr-desc"/"attr-asc"
 };
 
@@ -7635,7 +7637,7 @@ function buildFilterPanel() {
   // --- Runas ---
   // Duas funções diferentes: o Mestre Forjador FILTRA a lista; o Reembolso
   // não filtra nada, apenas troca os preços exibidos pelo valor com desconto.
-  const runeWrap = makeGroupHeader("Runas", false);
+  const runeWrap = makeGroupHeader("Runas", true);   // tudo recolhido por padrão (Leo, 15/09/2026)
   runeWrap.dataset.group = "runes";
   const runeBody = document.createElement("div");
   runeBody.className = "group-body";
@@ -7694,13 +7696,13 @@ function buildFilterPanel() {
   container.appendChild(runeWrap);
 
   const groups = [
-    { key: "modes", title: "Modo de jogo", collapsed: false, options: ALL_MODES.map(m => ({ value: m, label: m })) },
-    { key: "tiers", title: "Tier", collapsed: false, options: TIER_ORDER.map(t => ({ value: t, label: TIER_LABEL[t] })) },
-    { key: "damage", title: "Tipo de dano", collapsed: false, options: DAMAGE_OPTIONS.map(v => ({ value: v, label: v })) },
-    { key: "prices", title: "Custo", collapsed: false, options: PRICE_BANDS.map(b => ({ value: b.value, label: b.label })) },
-    { key: "efficiency", title: "Eficiência de ouro", collapsed: false, options: EFF_BANDS.map(b => ({ value: b.value, label: b.label })) },
+    { key: "modes", title: "Modo de jogo", collapsed: true, options: ALL_MODES.map(m => ({ value: m, label: m })) },
+    { key: "tiers", title: "Tier", collapsed: true, options: TIER_ORDER.map(t => ({ value: t, label: TIER_LABEL[t] })) },
+    { key: "damage", title: "Tipo de dano", collapsed: true, options: DAMAGE_OPTIONS.map(v => ({ value: v, label: v })) },
+    { key: "prices", title: "Custo", collapsed: true, options: PRICE_BANDS.map(b => ({ value: b.value, label: b.label })) },
+    { key: "efficiency", title: "Eficiência de ouro", collapsed: true, options: EFF_BANDS.map(b => ({ value: b.value, label: b.label })) },
     { key: "stats", title: "Atributo", collapsed: true, options: ALL_STATS.map(([stat, count]) => ({ value: stat, label: stat })), attrOrder: true },
-    { key: "archetypes", title: "Arquétipo Recomendado", collapsed: false, options: CATALOG.meta.recommendedArchetype.map(v => ({ value: v, label: v })) },
+    { key: "archetypes", title: "Arquétipo Recomendado", collapsed: true, options: CATALOG.meta.recommendedArchetype.map(v => ({ value: v, label: v })) },
     { key: "categories", title: "Categoria de Atributo", collapsed: true, options: CATALOG.meta.attributeCategory.map(v => ({ value: v, label: v })) },
     { key: "effects", title: "Efeitos Especiais", collapsed: true, options: CATALOG.meta.specialEffects.map(v => ({ value: v, label: v })) },
     { key: "regions", title: "Região", collapsed: true, options: CATALOG.meta.region.map(v => ({ value: v, label: v })) },
