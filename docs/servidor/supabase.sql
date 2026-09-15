@@ -28,6 +28,8 @@ create table if not exists public.builds (
   visualizacoes  integer not null default 0,
   copias         integer not null default 0
 );
+-- Fase 9: layout de leitura da build (tabuleiro | nucleo | trilha | grade). Pode rodar de novo.
+alter table public.builds add column if not exists layout text not null default 'tabuleiro';
 
 -- Eventos de visualização e cópia, para o "popular hoje / da semana".
 create table if not exists public.eventos (
@@ -54,7 +56,7 @@ drop policy if exists "leitura publica das builds" on public.builds;
 create policy "leitura publica das builds" on public.builds for select to anon, authenticated using (true);
 drop policy if exists "leitura publica dos eventos" on public.eventos;
 create policy "leitura publica dos eventos" on public.eventos for select to anon, authenticated using (true);
-grant select (id, nome, descricao, campeao, modo, marcadores, caixas, patch, versao, autor, criado_em, atualizado_em, visualizacoes, copias)
+grant select (id, nome, descricao, campeao, modo, marcadores, caixas, patch, versao, autor, criado_em, atualizado_em, visualizacoes, copias, layout)
   on public.builds to anon, authenticated;
 grant select on public.eventos to anon, authenticated;
 
@@ -62,7 +64,7 @@ drop view if exists public.builds_publicas;
 create view public.builds_publicas with (security_invoker = true) as
 select
   b.id, b.nome, b.descricao, b.campeao, b.modo, b.marcadores, b.caixas, b.patch, b.versao, b.autor,
-  b.criado_em, b.atualizado_em, b.visualizacoes, b.copias,
+  b.criado_em, b.atualizado_em, b.visualizacoes, b.copias, b.layout,
   coalesce((select count(*) from public.eventos e where e.build_id = b.id and e.quando > now() - interval '1 day'), 0)::int  as pop_dia,
   coalesce((select count(*) from public.eventos e where e.build_id = b.id and e.quando > now() - interval '7 days'), 0)::int as pop_semana
 from public.builds b;
@@ -73,9 +75,10 @@ grant select on public.builds_publicas to anon, authenticated;
 -- Publicar (nova) ou atualizar (com o segredo). Regras do Leo: itens,
 -- nome, descrição e 3 marcadores; senão, erro.
 -- ---------------------------------------------------------------------
+drop function if exists public.publicar_build(text, text, jsonb, text, jsonb, jsonb, text, text, text, text);
 create or replace function public.publicar_build(
   p_nome text, p_descricao text, p_campeao jsonb, p_modo text, p_marcadores jsonb, p_caixas jsonb,
-  p_patch text, p_autor text, p_segredo text, p_id text default null
+  p_patch text, p_autor text, p_segredo text, p_id text default null, p_layout text default 'tabuleiro'
 ) returns jsonb
 language plpgsql security definer set search_path = public, extensions as $$
 declare
@@ -95,14 +98,14 @@ begin
       v_id := lower(substr(encode(gen_random_bytes(6), 'hex'), 1, 6));
       exit when not exists (select 1 from public.builds where id = v_id);
     end loop;
-    insert into public.builds (id, nome, descricao, campeao, modo, marcadores, caixas, patch, autor, segredo_hash)
-    values (v_id, trim(p_nome), trim(p_descricao), p_campeao, coalesce(p_modo, ''), p_marcadores, p_caixas, p_patch, coalesce(p_autor, ''), v_hash);
+    insert into public.builds (id, nome, descricao, campeao, modo, marcadores, caixas, patch, autor, segredo_hash, layout)
+    values (v_id, trim(p_nome), trim(p_descricao), p_campeao, coalesce(p_modo, ''), p_marcadores, p_caixas, p_patch, coalesce(p_autor, ''), v_hash, coalesce(p_layout, 'tabuleiro'));
     v_versao := 1;
   else
     update public.builds
        set nome = trim(p_nome), descricao = trim(p_descricao), campeao = p_campeao, modo = coalesce(p_modo, ''),
            marcadores = p_marcadores, caixas = p_caixas, patch = p_patch, autor = coalesce(p_autor, ''),
-           versao = versao + 1, atualizado_em = now()
+           layout = coalesce(p_layout, 'tabuleiro'), versao = versao + 1, atualizado_em = now()
      where id = p_id and segredo_hash = v_hash
      returning id, versao into v_id, v_versao;
     if v_id is null then raise exception 'Build não encontrada ou o segredo não confere.'; end if;
@@ -129,6 +132,6 @@ begin
   else update public.builds set copias = copias + 1 where id = p_id; end if;
 end $$;
 
-grant execute on function public.publicar_build(text, text, jsonb, text, jsonb, jsonb, text, text, text, text) to anon, authenticated;
+grant execute on function public.publicar_build(text, text, jsonb, text, jsonb, jsonb, text, text, text, text, text) to anon, authenticated;
 grant execute on function public.apagar_build(text, text) to anon, authenticated;
 grant execute on function public.registrar_evento(text, text) to anon, authenticated;

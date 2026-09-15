@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fase 9 — amostra dos layouts de build</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=IM+Fell+English+SC&family=IM+Fell+English:ital@0;1&family=Alegreya:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+/* Paleta e tipografia da forja (docs/direcao_de_arte.md). Nada aqui é dado de item:
+   nomes, preços, tiers e ícones vêm de data/catalog.js; a build é a "Ornn - Sup -"
+   publicada pelo Leo (cd4f04), copiada do servidor sem retoque. */
+:root{
+  --ferro-1:#1a1614; --ferro-2:#100d0b; --ferro-borda:#3a2f28;
+  --placa-1:#2a2420; --placa-2:#1a1512; --placa-borda:#443a32; --molde-1:#2b2521; --molde-2:#15110f;
+  --brasa:#ff7a1e; --brasa-clara:#ffd27a; --brasa-glow:rgba(255,120,30,.55);
+  --numero:#ffb257; --titulo:#e9b36a; --texto:#d8cbb6; --suave:#8f8074; --tracejado:#3a3029; --latao:#c9973f;
+  --ad:#c8641e; --ap:#7b4fb5; --vit:#4d8b3a; --cera:#8d2c22; --cond:#9fb4e8;
+  --titulos:'IM Fell English SC','IM Fell English',Georgia,serif; --texto-f:'Alegreya',Georgia,serif; --gravado:'Cinzel',Georgia,serif;
+}
+*{box-sizing:border-box}
+body{margin:0;background:linear-gradient(180deg,var(--ferro-1),var(--ferro-2)) fixed;color:var(--texto);font-family:var(--texto-f);font-size:15px;line-height:1.5}
+.wrap{max-width:1360px;margin:0 auto;padding:28px 24px 60px}
+h1{font-family:var(--titulos);font-weight:400;font-size:34px;color:var(--titulo);margin:0 0 4px;letter-spacing:.02em}
+.sub{font-family:var(--texto-f);font-style:italic;color:var(--suave);margin:0 0 26px}
+.sub b{color:var(--texto);font-style:normal}
+h2{font-family:var(--titulos);font-weight:400;font-size:26px;color:var(--titulo);margin:38px 0 4px}
+h2 .n{font-family:var(--gravado);font-size:11px;letter-spacing:.2em;color:var(--brasa-clara);margin-right:10px;vertical-align:3px}
+.lede{font-style:italic;color:var(--suave);margin:0 0 14px;max-width:80ch}
+.placa{background:linear-gradient(180deg,var(--placa-1),var(--placa-2));border:1px solid var(--placa-borda);border-radius:3px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.05),inset 0 0 40px rgba(0,0,0,.45),0 6px 14px rgba(0,0,0,.55);padding:16px}
+
+/* ---- card de item (comum aos quatro) ---- */
+.card{width:92px;background:linear-gradient(180deg,var(--molde-1),var(--molde-2));border:1px solid var(--ferro-borda);border-radius:4px;position:relative;
+  box-shadow:inset 0 3px 8px rgba(0,0,0,.9);text-align:center;padding:6px 4px 6px;flex-shrink:0}
+.card img{width:48px;height:48px;border-radius:3px;border:1px solid var(--latao);display:block;margin:0 auto;box-shadow:0 0 6px rgba(0,0,0,.7)}
+.card .nm{font-family:var(--texto-f);font-size:11px;line-height:1.15;color:var(--texto);margin-top:5px;height:26px;overflow:hidden}
+.card .cost{position:absolute;top:3px;right:4px;font-family:var(--gravado);font-size:8.5px;color:var(--numero);background:rgba(0,0,0,.7);padding:1px 4px;border-radius:2px}
+.card .tier{position:absolute;top:3px;left:4px;font-family:var(--gravado);font-size:7.5px;letter-spacing:.06em;color:#c9b9a2;background:rgba(0,0,0,.6);padding:1px 4px;border-radius:2px;text-transform:uppercase}
+.card.std{border-color:var(--latao);box-shadow:inset 0 3px 8px rgba(0,0,0,.9),0 0 0 1px var(--latao),0 0 12px rgba(201,151,63,.35)}
+.card.std::after{content:"padrão";position:absolute;bottom:-9px;left:50%;transform:translateX(-50%);font-family:var(--gravado);font-size:7.5px;letter-spacing:.14em;text-transform:uppercase;color:#2a1a0a;background:var(--latao);padding:1px 6px;border-radius:2px}
+.card.ad img{border-color:var(--ad)} .card.ap img{border-color:var(--ap)} .card.vit img{border-color:var(--vit)}
+
+/* ---- 1. tabuleiro ---- */
+.board{display:flex;flex-direction:column;gap:14px}
+.brow{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-start}
+.box{background:linear-gradient(180deg,var(--placa-1),var(--placa-2));border:1px solid var(--placa-borda);border-radius:3px;padding:10px;display:inline-flex;flex-direction:column;gap:9px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 4px 10px rgba(0,0,0,.5);position:relative}
+.box.prio{border-top:3px solid var(--latao)} .box.opt{border-color:#3b4a6b;border-width:2px} .box.cond{border-color:rgba(159,180,232,.55);border-style:dashed}
+.bh{display:flex;align-items:center;gap:8px;font-family:var(--titulos);font-size:17px;color:var(--titulo);line-height:1}
+.teto{font-family:var(--gravado);font-size:9.5px;letter-spacing:.08em;color:#2a1a0a;background:linear-gradient(180deg,#e7c46f,#b8863b);padding:2px 7px;border-radius:2px}
+.tag{font-family:var(--gravado);font-size:8px;letter-spacing:.14em;text-transform:uppercase;padding:2px 6px;border-radius:2px}
+.tag.prio{background:var(--latao);color:#2a1a0a}.tag.opt{background:#3b4a6b;color:#dbe4ff}.tag.cond{background:var(--cera);color:#f3d9c2}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:flex-start;padding-bottom:10px}
+.stack{display:flex;flex-direction:column;gap:14px;padding-bottom:10px}
+.legend{font-style:italic;font-size:12.5px;color:var(--cond);max-width:24ch}
+.escolha{font-family:var(--gravado);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--suave)}
+
+/* ---- 2. núcleo + bandeja ---- */
+.nb{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:16px}
+.nucleo .row{padding-bottom:0}
+.bandeja{border:2px dashed #3b4a6b;border-radius:3px;padding:12px;display:flex;flex-direction:column;gap:10px;background:rgba(0,0,0,.18)}
+.bandeja .bh{font-size:15px}
+.slotline{display:flex;gap:10px;align-items:center}
+.slotline .k{font-family:var(--gravado);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--cond);width:70px;flex-shrink:0}
+.slotline .row{padding:0}
+.ou{font-family:var(--gravado);font-size:8px;color:var(--suave);align-self:center}
+
+/* ---- 3. trilha por fases ---- */
+.rail{display:flex;overflow-x:auto;padding:10px 0 12px;gap:0}
+.station{flex:0 0 auto;min-width:0;padding:0 12px;position:relative}
+.station .card{width:72px} .station .card img{width:40px;height:40px} .station .card .nm{font-size:10px;height:24px}
+.station .stack{gap:12px}
+.axis{position:relative;height:22px;display:flex;align-items:center}
+.axis::before{content:"";position:absolute;left:-14px;right:-14px;top:9px;height:2px;background:var(--tracejado)}
+.station:first-child .axis::before{left:5px} .station:last-child .axis::before{right:calc(100% - 11px)}
+.dot{position:relative;z-index:2;width:11px;height:11px;border-radius:50%;background:var(--brasa);box-shadow:0 0 0 3px var(--placa-2),0 0 10px var(--brasa-glow)}
+.station.tray .dot{background:var(--cond);box-shadow:0 0 0 3px var(--placa-2)}
+.when{font-family:var(--gravado);font-size:9.5px;letter-spacing:.06em;color:var(--numero);margin-left:8px;white-space:nowrap;background:var(--placa-2);padding-right:4px}
+.station.tray .when{color:var(--cond)}
+.phase{font-family:var(--titulos);font-size:17px;color:var(--titulo);margin:8px 0 10px;white-space:nowrap}
+.station.tray .phase{color:#dbe4ff}
+.slotbox{border:1px solid var(--ferro-borda);background:rgba(0,0,0,.25);padding:8px;border-radius:3px}
+.station.tray .slotbox{border-color:rgba(159,180,232,.4)}
+.pico{margin-top:12px;border-left:2px solid var(--brasa);padding:2px 0 2px 9px;font-size:12px;color:var(--texto);line-height:1.4;max-width:180px}
+.pico b{display:block;font-family:var(--gravado);font-size:8.5px;letter-spacing:.14em;color:var(--brasa-clara);margin-bottom:2px}
+
+/* ---- 4. grade categoria × custo ---- */
+table.grid{border-collapse:separate;border-spacing:6px;width:100%}
+table.grid th{font-family:var(--gravado);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--titulo);padding:8px 6px;text-align:left}
+table.grid th.ad{color:var(--ad)} table.grid th.ap{color:var(--ap)} table.grid th.vit{color:var(--vit)}
+table.grid td{vertical-align:top;background:rgba(0,0,0,.25);border:1px solid var(--tracejado);border-radius:3px;padding:8px;min-width:140px}
+table.grid td.faixa{background:transparent;border:none;font-family:var(--gravado);font-size:9.5px;letter-spacing:.12em;color:var(--suave);white-space:nowrap;padding-top:14px;min-width:0}
+table.grid .row{padding:0}
+.gtag{position:absolute;bottom:-1px;left:-1px;right:-1px;font-family:var(--gravado);font-size:7px;letter-spacing:.1em;text-transform:uppercase;color:#2a1a0a;background:var(--latao);border-radius:0 0 4px 4px;padding:1px 0}
+.gtag.opt{background:#3b4a6b;color:#dbe4ff}
+.foot{margin-top:40px;color:var(--suave);font-style:italic;font-size:13px;border-top:1px dashed var(--tracejado);padding-top:14px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>Fase 9 — a mesma build em quatro layouts</h1>
+<p class="sub" id="sub">Build <b>Ornn - Sup -</b> (publicada, cd4f04) · itens, preços, tiers e ícones do <b>catalog.js</b> · <span id="patch"></span></p>
+
+<h2><span class="n">1</span>Tabuleiro — o estilo do Leo</h2>
+<p class="lede">Caixas com cabeçalho de fase e teto de ouro; leitura da esquerda para a direita é a ordem de compra; as caixas "N° item" viram pilhas <em>Escolha 1</em>, com o de cima como padrão; OPCIONAL na moldura; a descrição da caixa vira a legenda de condição.</p>
+<div class="placa"><div class="board" id="tabuleiro"></div></div>
+
+<h2><span class="n">2</span>Núcleo + bandeja situacional</h2>
+<p class="lede">Prioridade e Comum viram o núcleo travado, na ordem; as caixas Opcionais formam a bandeja, cada linha com o slot que ela resolve. Trocar é substituição, não compra extra.</p>
+<div class="placa"><div class="nb" id="nucleo"></div></div>
+
+<h2><span class="n">3</span>Trilha por fases</h2>
+<p class="lede">Uma estação por caixa, na ordem, com o ouro acumulado até ali como marco; a eficiência de ouro da caixa (análise de custo do catálogo) vale como "pico". As opcionais entram como estações de bandeja.</p>
+<div class="placa"><div class="rail" id="trilha"></div></div>
+
+<h2><span class="n">4</span>Grade categoria × custo</h2>
+<p class="lede">Colunas por núcleo do item (classe do catálogo), linhas por faixa de preço. A posição já diz poder e momento; a etiqueta em cada card diz de que caixa ele veio.</p>
+<div class="placa"><table class="grid" id="grade"></table></div>
+
+<p class="foot">Amostra da Fase 9, T2. Nenhum número foi digitado: preços, tiers e classes vêm do catalog.js; os tetos são a soma dos preços da caixa; a eficiência é a do catálogo. A build é a "Ornn - Sup -" tal como está no servidor.</p>
+</div>
+
+<script src="../../data/catalog.js"></script>
+<script>
+// Build do Leo, copiada do servidor (builds_publicas, id cd4f04) — só slugs e nomes das caixas.
+const BUILD = {"nome":"Ornn - Sup -","campeao":{"id":"Ornn","key":"516","name":"Ornn"},"modo":"Summoner's Rift","caixas":[
+ {"name":"Core","kind":"prioridade","items":["plated-steelcaps","sunfire-aegis","oracle-lens","imperial-mandate"]},
+ {"name":"Inicio","kind":"comum","items":["world-atlas","health-potion","stealth-ward","boots","null-magic-mantle","cloth-armor","ruby-crystal"]},
+ {"name":"4° item","kind":"opcional","items":["frozen-heart","abyssal-mask","kaenic-rookern"]},
+ {"name":"5° item","kind":"opcional","items":["force-of-nature","knight-s-vow","winter-s-approach"]},
+ {"name":"6° item","kind":"opcional","items":["warmog-s-armor","knight-s-vow","jak-sho-the-protean"]}]};
+
+const byId = {}; CATALOG.items.forEach(it => byId[it.slug] = it);
+document.getElementById("patch").textContent = "catálogo " + CATALOG.meta.patch;
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const fmtG = n => Math.round(n).toLocaleString("pt-BR") + "g";
+const cls = it => ({ "AD": "ad", "AP": "ap", "Vitalidade": "vit" }[it.itemClass && it.itemClass.core] || "");
+const tierCurto = t => (t || "").replace("Lendário (Evolução)", "Lend. evol.").replace("Épico (Evolução)", "Épico evol.");
+function card(slug, opts = {}) {
+  const it = byId[slug]; if (!it) return "";
+  return `<div class="card ${cls(it)}${opts.std ? " std" : ""}"><span class="tier">${esc(tierCurto(it.tier))}</span><span class="cost">${fmtG(it.priceGold || 0)}</span><img src="${it.iconUrl}" alt="" loading="lazy"><div class="nm">${esc(it.namePt)}</div>${opts.tag ? `<span class="gtag${opts.tagOpt ? " opt" : ""}">${esc(opts.tag)}</span>` : ""}</div>`;
+}
+const teto = c => c.items.reduce((s, id) => s + (byId[id] ? byId[id].priceGold || 0 : 0), 0);
+const efic = c => { let g = 0, p = 0; c.items.forEach(id => { const it = byId[id]; if (!it) return; const gv = it.costAnalysis && it.costAnalysis.goldValueTotal; if (typeof gv === "number" && it.priceGold) { g += gv; p += it.priceGold; } }); return p ? g / p * 100 : null; };
+const fmtEff = e => e === null ? "sem análise" : e.toLocaleString("pt-BR", { maximumFractionDigits: 1 }) + "%";
+const KIND = { prioridade: "Prioridade", comum: "Comum", opcional: "Opcional" };
+
+// 1. Tabuleiro: caixas comuns/prioridade em linha; opcionais viram pilhas "Escolha 1"
+(() => {
+  const fixas = BUILD.caixas.filter(c => c.kind !== "opcional");
+  const pilhas = BUILD.caixas.filter(c => c.kind === "opcional");
+  const box = (c, pilha) => `<div class="box ${c.kind === "prioridade" ? "prio" : ""}${pilha ? " opt" : ""}">
+    <div class="bh">${esc(c.name)} <span class="teto">${fmtG(pilha ? (byId[c.items[0]] ? byId[c.items[0]].priceGold : 0) : teto(c))}</span>${c.kind === "prioridade" ? `<span class="tag prio">Prioridade</span>` : ""}${pilha ? `<span class="tag opt">Opcional</span>` : ""}</div>
+    ${pilha ? `<div class="escolha">Escolha 1 · o de cima é o padrão</div><div class="stack">${c.items.map((id, i) => card(id, { std: i === 0 })).join("")}</div>`
+            : `<div class="row">${c.items.map(id => card(id)).join("")}</div>`}
+    ${c.desc ? `<div class="legend">▶ ${esc(c.desc)}</div>` : ""}
+  </div>`;
+  document.getElementById("tabuleiro").innerHTML = `<div class="brow">${fixas.map(c => box(c, false)).join("")}</div><div class="brow">${pilhas.map(c => box(c, true)).join("")}</div>`;
+})();
+
+// 2. Núcleo + bandeja
+(() => {
+  const nucleo = BUILD.caixas.filter(c => c.kind !== "opcional");
+  const bandeja = BUILD.caixas.filter(c => c.kind === "opcional");
+  document.getElementById("nucleo").innerHTML = `
+    <div class="nucleo">${nucleo.map(c => `<div class="box ${c.kind === "prioridade" ? "prio" : ""}" style="display:flex;margin-bottom:12px"><div class="bh">${esc(c.name)} <span class="teto">${fmtG(teto(c))}</span></div><div class="row">${c.items.map(id => card(id)).join("")}</div></div>`).join("")}</div>
+    <div class="bandeja"><div class="bh">Bandeja situacional <span class="tag opt">escolha por condição</span></div>
+      ${bandeja.map(c => `<div class="slotline"><span class="k">${esc(c.name)}</span><div class="row">${c.items.map((id, i) => card(id, { std: i === 0 })).join(`<span class="ou">ou</span>`)}</div></div>`).join("")}
+      <div class="legend">Cada linha é um slot: o padrão à esquerda, as trocas ao lado. Legenda de condição = descrição da caixa.</div>
+    </div>`;
+})();
+
+// 3. Trilha por fases
+(() => {
+  let acumulado = 0;
+  const ordem = BUILD.caixas.slice().sort((a, b) => (a.kind === "opcional") - (b.kind === "opcional"));
+  document.getElementById("trilha").innerHTML = ordem.map(c => {
+    const tray = c.kind === "opcional";
+    if (!tray) acumulado += teto(c);
+    const e = efic(c);
+    return `<div class="station${tray ? " tray" : ""}"><div class="axis"><span class="dot"></span><span class="when">${tray ? "quando precisar · " + fmtG(byId[c.items[0]] ? byId[c.items[0]].priceGold : 0) : "até " + fmtG(acumulado)}</span></div>
+      <div class="phase">${esc(c.name)}</div>
+      <div class="slotbox">${tray ? `<div class="escolha">Escolha 1</div><div class="stack">${c.items.map((id, i) => card(id, { std: i === 0 })).join("")}</div>` : `<div class="row" style="padding:0;flex-wrap:nowrap">${c.items.map(id => card(id)).join("")}</div>`}</div>
+      <div class="pico"><b>Pico</b>Eficiência de ouro ${fmtEff(e)}${c.kind === "prioridade" ? " · fecha o núcleo" : ""}</div></div>`;
+  }).join("");
+})();
+
+// 4. Grade categoria × custo
+(() => {
+  const cols = [["AD", "ad"], ["AP", "ap"], ["Vitalidade", "vit"], ["Outros", ""]];
+  const faixas = [["até 500g", 0, 500], ["501 – 1.500g", 501, 1500], ["1.501 – 2.500g", 1501, 2500], ["acima de 2.500g", 2501, Infinity]];
+  const entradas = [];
+  BUILD.caixas.forEach(c => c.items.forEach(id => { if (byId[id]) entradas.push({ id, caixa: c.name, opt: c.kind === "opcional" }); }));
+  const colDe = it => { const core = it.itemClass && it.itemClass.core; if (core === "AD e AP") return "AD"; return ["AD", "AP", "Vitalidade"].includes(core) ? core : "Outros"; };
+  const vistos = new Set();
+  const cel = (col, f) => entradas.filter(e => { const it = byId[e.id]; const p = it.priceGold || 0; return colDe(it) === col && p >= f[1] && p <= f[2]; })
+    .filter(e => { const k = e.id + "|" + e.caixa; if (vistos.has(k)) return false; vistos.add(k); return true; })
+    .map(e => card(e.id, { tag: e.caixa, tagOpt: e.opt })).join("");
+  document.getElementById("grade").innerHTML = `<tr><th></th>${cols.map(([n, c]) => `<th class="${c}">${n}</th>`).join("")}</tr>` +
+    faixas.map(f => `<tr><td class="faixa">${f[0]}</td>${cols.map(([n]) => `<td><div class="row">${cel(n, f)}</div></td>`).join("")}</tr>`).join("");
+})();
+</script>
+</body>
+</html>

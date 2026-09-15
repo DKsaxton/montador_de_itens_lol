@@ -33,6 +33,9 @@ window.SERVIDOR = {
 Salve e recarregue o Montador. A aba **Públicas** liga sozinha quando os dois campos estão preenchidos.
 Sem eles (ou sem internet) a página continua funcionando com as builds locais.
 
+## Quando o SQL muda
+Algumas fases acrescentam coisas ao banco (a Fase 9 acrescentou a coluna `layout` e o parâmetro `p_layout`). Basta colar o `supabase.sql` inteiro de novo e clicar em Run: tudo nele pode rodar por cima. Enquanto o SQL novo não roda, o Montador publica sem o campo novo, sem erro.
+
 ## Aviso do verificador de segurança
 O Supabase tem um verificador (Security Advisor). O SQL já segue o que ele pede: a view lê com a permissão de quem consulta (`security_invoker`), e o público só enxerga as colunas públicas — o hash do segredo nunca sai.
 

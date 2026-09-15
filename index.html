@@ -3488,6 +3488,94 @@ body.editando .save-wrap { display: inline-flex; }
 .mode-warning.temp[hidden] { display: none; }
 .mode-warning.temp .revisao-box .k { color: #9fb4e8; }
 .mode-warning.temp.chamar { animation: chamar-editar 1.1s ease-out 2; }
+
+/* ---- Fase 9, T3: caixa "Escolha 1", marco, e as leituras alternativas ---- */
+.build-cat.escolha { --cat-color: #6f86b8; }
+.build-cat.escolha .cat-kind { background: linear-gradient(180deg, #3b4a6b, #24304a); border-color: #6f86b8; color: #dbe4ff; }
+.build-cat.escolha .cat-body { flex-direction: column; align-items: flex-start; flex-wrap: nowrap; gap: 14px; }
+.build-cat.escolha .item-tile:first-child { box-shadow: inset 0 3px 8px rgba(0,0,0,.9), 0 0 0 2px #c9973f, 0 0 14px rgba(201,151,63,.45); }
+.padrao-badge { position: absolute; top: 46px; left: 50%; transform: translateX(-50%); font-family: var(--loja-gravado); font-size: 7.5px; letter-spacing: .14em; text-transform: uppercase; color: #2a1a0a; background: #c9973f; padding: 1px 6px; border-radius: 2px; z-index: 2; white-space: nowrap; }
+.cat-marco { display: block; width: calc(100% - 20px); margin: 0 10px 4px; padding: 3px 6px; background: rgba(0,0,0,.28); border: 1px solid transparent; border-bottom: 1px dashed var(--forja-tracejado); color: var(--forja-numero); font-family: var(--loja-gravado); font-size: 10px; letter-spacing: .08em; }
+.cat-marco::placeholder { color: #6a5d52; font-family: var(--loja-texto); font-style: italic; letter-spacing: 0; font-size: 11.5px; }
+.cat-marco:focus { outline: none; border-color: var(--forja-brasa); }
+body:not(.editando) .cat-marco { display: none; }
+body.editando .cat-marco-badge { display: none; }   /* em edição o marco já aparece no campo abaixo */
+.cat-marco-badge { font-family: var(--loja-gravado); font-size: 9px; letter-spacing: .08em; color: #2a1a0a; background: linear-gradient(180deg, #e7c46f, #b8863b); padding: 2px 7px; border-radius: 2px; margin-left: 6px; white-space: nowrap; }
+.layout-select { min-width: 190px; }
+
+.lay-wrap { grid-column: 1 / -1; width: 100%; }
+.lc { width: 86px; background: linear-gradient(180deg, var(--forja-molde-1), var(--forja-molde-2)); border: 1px solid var(--forja-ferro-borda); border-radius: 4px; position: relative; box-shadow: inset 0 3px 8px rgba(0,0,0,.9); text-align: center; padding: 6px 4px 6px; flex-shrink: 0; }
+.lc .item-art, .lc .abbr { width: 46px; height: 46px; border-radius: 3px; border: 1px solid #c9973f; display: block; margin: 0 auto; box-shadow: 0 0 6px rgba(0,0,0,.7); }
+.lc .abbr { display: flex; align-items: center; justify-content: center; font-family: var(--loja-titulos); color: var(--forja-brasa-clara); }
+.lc.ad .item-art { border-color: #c8641e; } .lc.ap .item-art { border-color: #7b4fb5; } .lc.vit .item-art { border-color: #4d8b3a; }
+.lc .lc-nm { font-family: var(--loja-texto); font-size: 10.5px; line-height: 1.15; color: var(--forja-texto); margin-top: 5px; height: 25px; overflow: hidden; }
+.lc .lc-cost { position: absolute; top: 3px; right: 4px; font-family: var(--loja-gravado); font-size: 8px; color: var(--forja-numero); background: rgba(0,0,0,.7); padding: 1px 4px; border-radius: 2px; }
+.lc .lc-tier { position: absolute; top: 3px; left: 4px; font-family: var(--loja-gravado); font-size: 7px; letter-spacing: .06em; color: #c9b9a2; background: rgba(0,0,0,.6); padding: 1px 4px; border-radius: 2px; text-transform: uppercase; }
+.lc.std { border-color: #c9973f; box-shadow: inset 0 3px 8px rgba(0,0,0,.9), 0 0 0 1px #c9973f, 0 0 12px rgba(201,151,63,.35); }
+.lc.std::after { content: "padrão"; position: absolute; bottom: -9px; left: 50%; transform: translateX(-50%); font-family: var(--loja-gravado); font-size: 7.5px; letter-spacing: .14em; text-transform: uppercase; color: #2a1a0a; background: #c9973f; padding: 1px 6px; border-radius: 2px; }
+.lc .lc-tag { position: absolute; bottom: -1px; left: -1px; right: -1px; font-family: var(--loja-gravado); font-size: 7px; letter-spacing: .1em; text-transform: uppercase; color: #2a1a0a; background: #c9973f; border-radius: 0 0 4px 4px; padding: 1px 0; white-space: nowrap; overflow: hidden; }
+.lc .lc-tag.opcional, .lc .lc-tag.escolha { background: #3b4a6b; color: #dbe4ff; } .lc .lc-tag.comum { background: #5a4d42; color: #e2d6c2; }
+.lay-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: flex-start; }
+.lay-row.nowrap { flex-wrap: nowrap; }
+.lay-stack { display: flex; flex-direction: column; gap: 14px; }
+.lay-box { background: linear-gradient(180deg, var(--forja-placa-1), var(--forja-placa-2)); border: 1px solid var(--forja-placa-borda); border-radius: 3px; padding: 10px; display: flex; flex-direction: column; gap: 9px; box-shadow: inset 0 1px 0 rgba(255,255,255,.05), 0 4px 10px rgba(0,0,0,.5); margin-bottom: 12px; }
+.lay-box.prioridade { border-top: 3px solid #c9973f; }
+.lay-bh { display: flex; align-items: center; gap: 8px; font-family: var(--loja-titulos); font-size: 17px; color: var(--forja-titulo); line-height: 1; flex-wrap: wrap; }
+.lay-teto { font-family: var(--loja-gravado); font-size: 9.5px; letter-spacing: .08em; color: #2a1a0a; background: linear-gradient(180deg, #e7c46f, #b8863b); padding: 2px 7px; border-radius: 2px; }
+.lay-tag { font-family: var(--loja-gravado); font-size: 8px; letter-spacing: .14em; text-transform: uppercase; padding: 2px 6px; border-radius: 2px; }
+.lay-tag.prio { background: #c9973f; color: #2a1a0a; } .lay-tag.opt { background: #3b4a6b; color: #dbe4ff; }
+.lay-legend { font-family: var(--loja-texto); font-style: italic; font-size: 12.5px; color: #9fb4e8; max-width: 40ch; }
+.lay-escolha { font-family: var(--loja-gravado); font-size: 9px; letter-spacing: .16em; text-transform: uppercase; color: var(--forja-texto-suave); margin-bottom: 8px; }
+.lay-vazio { font-family: var(--loja-texto); font-style: italic; color: var(--forja-texto-suave); padding: 10px; }
+.lay-nb { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 16px; }
+@media (max-width: 980px) { .lay-nb { grid-template-columns: 1fr; } }
+.lay-bandeja { border: 2px dashed #3b4a6b; border-radius: 3px; padding: 12px; display: flex; flex-direction: column; gap: 10px; background: rgba(0,0,0,.18); }
+.lay-bandeja .lay-bh { font-size: 15px; }
+.lay-slotline { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.lay-slotline .k { font-family: var(--loja-gravado); font-size: 9px; letter-spacing: .14em; text-transform: uppercase; color: #9fb4e8; width: 80px; flex-shrink: 0; }
+.lay-ou { font-family: var(--loja-gravado); font-size: 8px; color: var(--forja-texto-suave); align-self: center; }
+.lay-rail { display: flex; overflow-x: auto; padding: 10px 0 12px; }
+.lay-hint { font-family: var(--loja-texto); font-style: italic; font-size: 11.5px; color: var(--forja-texto-suave); text-align: right; }
+.lay-station { flex: 0 0 auto; min-width: 0; padding: 0 12px; position: relative; }
+.lay-station .lc { width: 72px; } .lay-station .lc .item-art, .lay-station .lc .abbr { width: 40px; height: 40px; } .lay-station .lc .lc-nm { font-size: 10px; height: 24px; }
+.lay-station .lay-stack { gap: 12px; }
+.lay-axis { position: relative; height: 22px; display: flex; align-items: center; }
+.lay-axis::before { content: ""; position: absolute; left: -12px; right: -12px; top: 9px; height: 2px; background: var(--forja-tracejado); }
+.lay-station:first-child .lay-axis::before { left: 5px; } .lay-station:last-child .lay-axis::before { right: calc(100% - 11px); }
+.lay-dot { position: relative; z-index: 2; width: 11px; height: 11px; border-radius: 50%; background: var(--forja-brasa); box-shadow: 0 0 0 3px var(--forja-placa-2), 0 0 10px var(--forja-brasa-glow); }
+.lay-station.tray .lay-dot { background: #9fb4e8; box-shadow: 0 0 0 3px var(--forja-placa-2); }
+.lay-when { position: relative; z-index: 2; font-family: var(--loja-gravado); font-size: 9.5px; letter-spacing: .06em; color: var(--forja-numero); margin-left: 8px; white-space: nowrap; background: var(--forja-ferro-2); padding: 0 4px; border-radius: 2px; }
+.lay-station.tray .lay-when { color: #9fb4e8; }
+.lay-phase { font-family: var(--loja-titulos); font-size: 17px; color: var(--forja-titulo); margin: 8px 0 10px; white-space: nowrap; }
+.lay-station.tray .lay-phase { color: #dbe4ff; }
+.lay-slotbox { border: 1px solid var(--forja-ferro-borda); background: rgba(0,0,0,.25); padding: 8px; border-radius: 3px; }
+.lay-station.tray .lay-slotbox, .lay-station.escolha .lay-slotbox { border-color: rgba(159,180,232,.4); }
+.lay-pico { margin-top: 12px; border-left: 2px solid var(--forja-brasa); padding: 2px 0 2px 9px; font-family: var(--loja-texto); font-size: 12px; color: var(--forja-texto); line-height: 1.4; max-width: 180px; }
+.lay-pico b { display: block; font-family: var(--loja-gravado); font-size: 8.5px; letter-spacing: .14em; color: var(--forja-brasa-clara); margin-bottom: 2px; }
+table.lay-grid { border-collapse: separate; border-spacing: 6px; width: 100%; }
+table.lay-grid th { font-family: var(--loja-gravado); font-size: 10px; letter-spacing: .18em; text-transform: uppercase; color: var(--forja-titulo); padding: 8px 6px; text-align: left; }
+table.lay-grid th.ad { color: #c8641e; } table.lay-grid th.ap { color: #7b4fb5; } table.lay-grid th.vit { color: #4d8b3a; }
+table.lay-grid td { vertical-align: top; background: rgba(0,0,0,.25); border: 1px solid var(--forja-tracejado); border-radius: 3px; padding: 8px; min-width: 120px; }
+table.lay-grid td.faixa { background: transparent; border: none; font-family: var(--loja-gravado); font-size: 9.5px; letter-spacing: .12em; color: var(--forja-texto-suave); white-space: nowrap; padding-top: 14px; min-width: 0; }
+
+/* ---- Fase 9, T4: grade de encaixes (colunas × linhas) no tabuleiro ---- */
+.span-general { display: none !important; }
+/* largura exatamente a das colunas, sem folga (Leo, 15/09/2026); em caixa estreita o cabeçalho quebra em linhas */
+.build-cat { width: calc(var(--cols, 3) * 91px + 15px); min-width: 0; max-width: 100%; flex: 0 0 auto; position: relative; }
+.build-cat .cat-head { flex-wrap: wrap; row-gap: 5px; }
+.build-cat .cat-name { flex: 1 1 60px; min-width: 60px; }
+.build-cat .cat-kind, .build-cat .cat-marco-badge { white-space: nowrap; }
+.build-cat .cat-stats .cs-head { flex-wrap: wrap; }
+.build-cat .cat-total { max-width: calc(100% - 20px); }
+.build-cat .cs-list span { white-space: normal; }   /* em caixa de 1 coluna o atributo quebra em vez de cortar */
+.build-cat .cat-body { display: grid; grid-template-columns: repeat(var(--cols, 3), minmax(0, 84px)); grid-auto-rows: minmax(96px, auto); gap: 7px; align-content: start; justify-content: start; }
+.build-cat.escolha .cat-body { grid-template-columns: minmax(0, 84px); }
+.build-cat .item-tile { width: 84px; max-width: 100%; }
+.slot-vazio { width: 84px; max-width: 100%; min-height: 96px; border: 1px dashed var(--forja-tracejado); border-radius: 6px; background: rgba(0,0,0,.18); box-shadow: inset 0 2px 6px rgba(0,0,0,.5); }
+.slot-vazio.dica { display: flex; align-items: center; justify-content: center; text-align: center; font-family: var(--loja-texto); font-style: italic; font-size: 10.5px; line-height: 1.3; color: var(--forja-texto-suave); padding: 6px; }
+body:not(.editando) .slot-vazio { opacity: .35; }
+.build-cat.resizing::after { content: attr(data-grade); position: absolute; right: 12px; bottom: 12px; font-family: var(--loja-gravado); font-size: 11px; letter-spacing: .12em; color: #2a1a0a; background: var(--forja-brasa-clara); padding: 2px 8px; border-radius: 2px; z-index: 5; width: auto; height: auto; box-shadow: 0 2px 6px rgba(0,0,0,.6); }
+.cat-resize { cursor: nwse-resize; }
 </style>
 </head>
 <body>
@@ -3698,6 +3786,8 @@ body.editando .save-wrap { display: inline-flex; }
         <p id="champ-note" class="champ-note" hidden></p>
       </div>
     </div>
+    <span class="library-label">Layout</span>
+    <select id="build-layout" class="build-select layout-select" title="Como esta build é lida (o Tabuleiro é a forja; os outros são leituras, sem edição)"></select>
     <button id="new-build" class="btn">Nova build</button>
     <button id="dup-build" class="btn ghost">Duplicar</button>
     <button id="del-build" class="btn ghost">Excluir</button>
@@ -4143,9 +4233,24 @@ const build = {
 
 // Três estados, alternados clicando no rótulo do cabeçalho da categoria.
 // Toda categoria nasce Comum; Prioridade e Opcional são marcações opcionais.
-const KINDS = ["comum", "prioridade", "opcional"];
-const KIND_LABEL = { comum: "Comum", prioridade: "Prioridade", opcional: "Opcional" };
-const SPANS = [4, 3, 2, 1];           // denominador: ¼, ⅓, ½, largura inteira
+// Tipos de caixa. "Escolha 1" (Leo, 15/09/2026, gramática do tabuleiro): pilha vertical de
+// alternativas para o MESMO slot — o de cima é o padrão e só ele conta nos totais.
+const KINDS = ["comum", "prioridade", "opcional", "escolha"];
+const KIND_LABEL = { comum: "Comum", prioridade: "Prioridade", opcional: "Opcional", escolha: "Escolha 1" };
+// Layouts de leitura da build (Fase 9): o tabuleiro do Leo é o padrão e é a própria forja.
+const LAYOUTS = { tabuleiro: "Tabuleiro", nucleo: "Núcleo + bandeja", trilha: "Trilha por fases", grade: "Grade categoria × custo" };
+function layoutValido(l) { return LAYOUTS[l] ? l : "tabuleiro"; }
+// Itens que contam para totais/atributos/eficiência: numa "Escolha 1", só o padrão (o primeiro).
+function itensContados(cat) { return cat.kind === "escolha" ? cat.items.slice(0, 1) : cat.items; }
+const SPANS = [4, 3, 2, 1];           // denominador: ¼, ⅓, ½, largura inteira (formato antigo; ainda lido)
+// Grade de encaixes (Leo, 15/09/2026): a caixa do tabuleiro tem `cols` colunas e `rows`
+// linhas de encaixe; puxar o canto muda as duas. Os itens preenchem na ordem de leitura
+// e o que sobra na última linha aparece como encaixe vazio. "Escolha 1" tem 1 coluna.
+const SPAN_COLS = { 1: 12, 2: 6, 3: 4, 4: 3 };   // tradução das larguras antigas em colunas
+const MAX_COLS = 12, MAX_ROWS = 30;
+const SLOT_W = 84, SLOT_H = 96, SLOT_GAP = 7;
+function catCols(cat) { if (cat.kind === "escolha") return 1; return Math.max(1, Math.min(MAX_COLS, Number(cat.cols) || SPAN_COLS[cat.span] || 3)); }
+function catRows(cat) { const cols = catCols(cat); return Math.max(1, Number(cat.rows) || 0, Math.ceil(cat.items.length / cols)); }
 const SPAN_LABEL = { 4: "¼", 3: "⅓", 2: "½", 1: "1/1" };
 
 const STORAGE_KEY = "lol-builds-v3";
@@ -4271,7 +4376,7 @@ function newBuildId() {
 }
 
 function snapshotActive() {
-  return { id: build.id, name: build.name, cats: comNomes(build.cats), patch: build.patch || CATALOG.meta.patch, revisao: build.revisao || null, temp: !!build.temp, pubOrigem: build.pubOrigem || null, seq: build.seq, mode: build.mode, masterwork: !!build.masterwork, champion: build.champion || null, markers: normMarkers(build.markers), desc: build.desc || "", fav: !!build.fav, updatedAt: build.updatedAt || 0, pubId: build.pubId || null, pubVersao: build.pubVersao || 0, pubEm: build.pubEm || 0, pubPatch: build.pubPatch || "" };
+  return { id: build.id, name: build.name, cats: comNomes(build.cats), patch: build.patch || CATALOG.meta.patch, revisao: build.revisao || null, temp: !!build.temp, pubOrigem: build.pubOrigem || null, layout: layoutValido(build.layout), seq: build.seq, mode: build.mode, masterwork: !!build.masterwork, champion: build.champion || null, markers: normMarkers(build.markers), desc: build.desc || "", fav: !!build.fav, updatedAt: build.updatedAt || 0, pubId: build.pubId || null, pubVersao: build.pubVersao || 0, pubEm: build.pubEm || 0, pubPatch: build.pubPatch || "" };
 }
 
 // Em modo Editar as alterações ficam em rascunho (Leo, 14/09/2026): saveBuild() só
@@ -4364,6 +4469,9 @@ function normalizeCats(cats, removidos) {
     ...c,
     kind: c.kind === "obrigatoria" ? "prioridade" : (KINDS.includes(c.kind) ? c.kind : "comum"),
     span: SPANS.includes(c.span) ? c.span : 2,
+    // Sem colunas gravadas (build antiga ou vinda do servidor): tantas quanto os itens, no máximo o que a largura antiga comportava
+    cols: Math.max(1, Math.min(MAX_COLS, Number(c.cols) || Math.min((c.items || []).length || 3, SPAN_COLS[SPANS.includes(c.span) ? c.span : 2] || 3))),
+    rows: Math.max(0, Math.min(MAX_ROWS, Number(c.rows) || 0)),
     // Chave antiga (HTML anterior) é traduzida para o slug atual; item que
     // não existe mais no catálogo sai da build (e vai para `removidos`).
     items: (c.items || [])
@@ -4413,6 +4521,7 @@ function loadBuild() {
           pubId: b.pubId || null, pubVersao: Number(b.pubVersao) || 0, pubEm: Number(b.pubEm) || 0, pubPatch: b.pubPatch || "",
           patch: revisao ? CATALOG.meta.patch : patchGravado,   // a partir daqui a build vive no catálogo atual; a revisão fica registrada
           revisao,
+          layout: layoutValido(b.layout),
           cats,
         }); });
         library.activeId = d.activeId && library.builds.some(b => b.id === d.activeId)
@@ -4462,6 +4571,7 @@ function activateBuild(id, skipSave) {
   build.revisao = b.revisao || null;
   build.temp = !!b.temp;
   build.pubOrigem = b.pubOrigem || null;
+  build.layout = layoutValido(b.layout);
   build.selectedCatId = null;
   library.activeId = b.id;
   if (!skipSave) { gravarBuild(); renderBuildAll(); }
@@ -4481,6 +4591,7 @@ function createNewBuild(name, cats, mode, champion, markers) {
     updatedAt: Date.now(),
     patch: CATALOG.meta.patch,
     revisao: null,
+    layout: "tabuleiro",
     cats: cats || [],
   };
   library.builds.push(b);
@@ -4517,6 +4628,7 @@ function addCategory() {
     desc: "",
     kind: "comum",
     span: build.defaultSpan,
+    cols: 3, rows: 1,
     items: [],
   });
   build.selectedCatId = build.cats[build.cats.length - 1].id;
@@ -4634,6 +4746,9 @@ function moveItem(fromCatId, fromIndex, toCatId, toIndex) {
 //   CAMPEÃO: Jinx                 (opcional; nome do Data Dragon em pt-BR)
 //   MARCADORES: AD | Habilidade Q | Gume do Infinito   (opcional; até 3)
 //   DESCRIÇÃO: texto numa linha ("/" separa parágrafos)   (opcional)
+//   LAYOUT: Trilha por fases        (opcional; Tabuleiro é o padrão)
+//   = ~4min · 900g                  (opcional, dentro da caixa: marco / teto)
+//   [ESCOLHA 1] 4° item | 1/3       (caixa em pilha: o primeiro item é o padrão)
 //   MESTRE FORJADOR: Gume do Infinito   (opcional: o item forjado; "sim" só liga o interruptor)
 //
 //   [PRIORIDADE] Núcleo | ½
@@ -4655,6 +4770,7 @@ function buildToText() {
   if (build.mode) lines.push(`MODO: ${build.mode}`);
   if (build.champion) lines.push(`CAMPEÃO: ${build.champion.name}`);
   if (build.desc) lines.push(`DESCRIÇÃO: ${build.desc.replace(/\s*\n\s*/g, " / ")}`);
+  if (build.layout && build.layout !== "tabuleiro") lines.push(`LAYOUT: ${LAYOUTS[build.layout]}`);
   const marks = normMarkers(build.markers);
   if (marks.length) lines.push(`MARCADORES: ${marks.map(m => m.t === "hab" ? `Habilidade ${m.letter}` : markerLabel(m, null)).join(" | ")}`);
   if (build.masterwork) {
@@ -4663,8 +4779,9 @@ function buildToText() {
   }
   build.cats.forEach(cat => {
     lines.push("");
-    lines.push(`[${KIND_LABEL[cat.kind].toUpperCase()}] ${cat.name} | ${SPAN_TEXT[cat.span]}`);
+    lines.push(`[${KIND_LABEL[cat.kind].toUpperCase()}] ${cat.name} | ${catCols(cat)}×${catRows(cat)}`);
     if (cat.desc) lines.push(`# ${cat.desc}`);
+    if (cat.marco) lines.push(`= ${cat.marco}`);
     cat.items.forEach(e => {
       const item = byId[e.itemId];
       if (!item) return;
@@ -4695,7 +4812,7 @@ function buildToItemSet() {
     if (!counts.size) return;
     // Nome do bloco = nome da categoria; Prioridade/Opcional vão como sufixo, do jeito
     // que o Leo pediu (14/09/2026): "Core - PRIORIDADE", "4° item - Opcional".
-    const type = cat.kind === "comum" ? cat.name : `${cat.name} - ${cat.kind === "prioridade" ? "PRIORIDADE" : "Opcional"}`;
+    const type = cat.kind === "comum" ? cat.name : `${cat.name} - ${cat.kind === "prioridade" ? "PRIORIDADE" : cat.kind === "escolha" ? "Escolha 1" : "Opcional"}`;
     blocks.push({ items: [...counts].map(([id, count]) => ({ id, count })), type });
   });
   // Exatamente as chaves que o cliente grava (conferido com um Arsenal.json exportado do cliente, 14/09/2026).
@@ -4729,8 +4846,8 @@ function itemSetToBuild(obj) {
   obj.blocks.forEach((b, i) => {
     let name = typeof b.type === "string" && b.type.trim() ? b.type.trim() : `Bloco ${i + 1}`;
     let kind = "comum";
-    const m = name.match(/^(.*?)\s*[-–·]\s*(Prioridade|Opcional)$/i);   // "- PRIORIDADE", "- Opcional" (ou o "·" antigo)
-    if (m) { name = m[1].trim() || name; kind = m[2].toLowerCase() === "prioridade" ? "prioridade" : "opcional"; }
+    const m = name.match(/^(.*?)\s*[-–·]\s*(Prioridade|Opcional|Escolha 1)$/i);   // "- PRIORIDADE", "- Opcional", "- Escolha 1"
+    if (m) { name = m[1].trim() || name; const k = m[2].toLowerCase(); kind = k === "prioridade" ? "prioridade" : k.startsWith("escolha") ? "escolha" : "opcional"; }
     const items = [];
     (Array.isArray(b.items) ? b.items : []).forEach(x => {
       const id = String(x && x.id);
@@ -4770,7 +4887,7 @@ function buildParaLink(b) {
     v: 1, n: d.name, m: d.mode || "", d: d.desc || "",
     c: d.champ ? { k: d.champ.key, i: d.champ.id, n: d.champ.name } : null,
     k: d.markers,
-    cats: d.cats.map(c => ({ n: c.name, d: c.desc || "", k: c.kind, s: c.span, i: c.items.map(e => e.note ? [e.itemId, e.note, e.mf ? 1 : 0] : (e.mf ? [e.itemId, "", 1] : [e.itemId])) })),
+    cats: d.cats.map(c => ({ n: c.name, d: c.desc || "", m: c.marco || "", k: c.kind, s: c.span, w: catCols(c), h: catRows(c), i: c.items.map(e => e.note ? [e.itemId, e.note, e.mf ? 1 : 0] : (e.mf ? [e.itemId, "", 1] : [e.itemId])) })),
   };
   const base = location.href.split("#")[0];
   return base + "#b=" + b64urlEncode(JSON.stringify(compacto));
@@ -4783,8 +4900,8 @@ function linkParaBuild(hash) {
   if (!o || !Array.isArray(o.cats)) return null;
   const id = "l-" + hashCurto(m[1]);
   const cats = o.cats.map((c, i) => ({
-    id: "cat-" + (i + 1), name: String(c.n || `Caixa ${i + 1}`), desc: String(c.d || ""),
-    kind: KINDS.includes(c.k) ? c.k : "comum", span: SPANS.includes(c.s) ? c.s : (build.defaultSpan || 2),
+    id: "cat-" + (i + 1), name: String(c.n || `Caixa ${i + 1}`), desc: String(c.d || ""), marco: String(c.m || ""),
+    kind: KINDS.includes(c.k) ? c.k : "comum", span: SPANS.includes(c.s) ? c.s : (build.defaultSpan || 2), cols: c.w, rows: c.h,
     items: (Array.isArray(c.i) ? c.i : []).map(x => Array.isArray(x) ? { itemId: x[0], note: String(x[1] || ""), ...(x[2] ? { mf: true } : {}) } : { itemId: x, note: "" }),
   }));
   return {
@@ -4854,7 +4971,7 @@ function mostrarPub(titulo, texto, estado) {
 function fecharPub() { document.getElementById("pub-dialog").hidden = true; }
 
 function caixasParaServidor(cats) {
-  return cats.map(c => ({ name: c.name, desc: c.desc || "", kind: c.kind, span: c.span, items: c.items.map(e => ({ itemId: e.itemId, nome: byId[e.itemId] ? byId[e.itemId].namePt : (e.nome || e.itemId), note: e.note || "", ...(e.mf ? { mf: true } : {}) })) }));
+  return cats.map(c => ({ name: c.name, desc: c.desc || "", marco: c.marco || "", kind: c.kind, span: c.span, cols: catCols(c), rows: catRows(c), items: c.items.map(e => ({ itemId: e.itemId, nome: byId[e.itemId] ? byId[e.itemId].namePt : (e.nome || e.itemId), note: e.note || "", ...(e.mf ? { mf: true } : {}) })) }));
 }
 
 async function publicarBuild(id) {
@@ -4867,14 +4984,22 @@ async function publicarBuild(id) {
   mostrarPub("Publicando a build", "Aguarde");
   const params = {
     p_nome: d.name, p_descricao: d.desc, p_campeao: d.champ, p_modo: d.mode, p_marcadores: d.markers,
-    p_caixas: caixasParaServidor(d.cats), p_patch: CATALOG.meta.patch, p_autor: "", p_segredo: Servidor.segredo(), p_id: d.pubId || null,
+    p_caixas: caixasParaServidor(d.cats), p_patch: CATALOG.meta.patch, p_autor: "", p_segredo: Servidor.segredo(), p_id: d.pubId || null, p_layout: layoutValido(d.layout),
   };
   try {
     let r;
-    try { r = await Servidor.rpc("publicar_build", params); }
+    const publicar = async (ps) => {
+      try { return await Servidor.rpc("publicar_build", ps); }
+      catch (e) {
+        // Servidor ainda sem a coluna layout (SQL da Fase 9 não rodado): manda sem ela.
+        if (/p_layout|Could not find the function/i.test(e.message)) { const { p_layout, ...semLayout } = ps; return await Servidor.rpc("publicar_build", semLayout); }
+        throw e;
+      }
+    };
+    try { r = await publicar(params); }
     catch (e) {
       // Publicada por outro navegador (ou apagada no servidor): vira uma publicação nova.
-      if (d.pubId && /não encontrada|segredo/i.test(e.message)) r = await Servidor.rpc("publicar_build", { ...params, p_id: null });
+      if (d.pubId && /não encontrada|segredo/i.test(e.message)) r = await publicar({ ...params, p_id: null });
       else throw e;
     }
     const alvo = b.id === build.id ? build : b;
@@ -4975,7 +5100,7 @@ function getItemNameIndex() {
 
 function textToBuild(text) {
   const index = getItemNameIndex();
-  const result = { name: null, mode: "", masterwork: false, forgedId: null, championName: null, markers: [], desc: "", cats: [], unknown: [], ignored: 0 };
+  const result = { name: null, mode: "", masterwork: false, forgedId: null, championName: null, markers: [], desc: "", layout: "tabuleiro", cats: [], unknown: [], ignored: 0 };
   let current = null;
 
   text.split("\n").forEach(rawLine => {
@@ -4993,6 +5118,8 @@ function textToBuild(text) {
       return;
     }
 
+    const mLay = line.match(/^LAYOUT\s*:\s*(.+)$/i);
+    if (mLay) { const k = Object.keys(LAYOUTS).find(k => norm(LAYOUTS[k]) === norm(mLay[1])); if (k) result.layout = k; return; }
     const mDesc = line.match(/^DESCRI[ÇC][ÃA]O\s*:\s*(.+)$/i);
     if (mDesc) { result.desc = mDesc[1].trim().replace(/\s*\/\s*/g, "\n"); return; }
     const mMarks = line.match(/^MARCADORES\s*:\s*(.+)$/i);
@@ -5021,20 +5148,26 @@ function textToBuild(text) {
       const kind = KINDS.find(k => norm(KIND_LABEL[k]) === kindRaw)
         || (/^obrigat/.test(kindRaw) ? "prioridade" : "comum");
       let rest = mCat[2].trim();
-      let span = 2;
+      let span = 2, cols = 0, rows = 0;
       const mSpan = rest.match(/\|\s*([^|]+)$/);
       if (mSpan) {
         const key = mSpan[1].trim();
-        if (TEXT_SPAN[key]) span = TEXT_SPAN[key];
+        const mGrade = key.match(/^(\d+)\s*[x×X]\s*(\d+)$/);
+        if (mGrade) { cols = Number(mGrade[1]); rows = Number(mGrade[2]); }
+        else if (TEXT_SPAN[key]) span = TEXT_SPAN[key];
         rest = rest.slice(0, mSpan.index).trim();
       }
-      current = { id: "cat-" + Date.now() + "-" + result.cats.length, name: rest || "Sem nome", desc: "", kind, span, items: [] };
+      current = { id: "cat-" + Date.now() + "-" + result.cats.length, name: rest || "Sem nome", desc: "", kind, span, cols: cols || SPAN_COLS[span] || 3, rows, items: [] };
       result.cats.push(current);
       return;
     }
 
     if (line.startsWith("#")) {
       if (current) current.desc = line.replace(/^#\s*/, "").trim();
+      return;
+    }
+    if (line.startsWith("=")) {
+      if (current) current.marco = line.replace(/^=\s*/, "").trim();
       return;
     }
 
@@ -5069,7 +5202,7 @@ function itemAbbr(item) {
 }
 
 function catTotal(cat) {
-  return cat.items.reduce((s, e) => {
+  return itensContados(cat).reduce((s, e) => {
     const it = byId[e.itemId];
     return s + (it ? (effectivePrice(it) || 0) : 0);
   }, 0);
@@ -5187,7 +5320,7 @@ function renderBuildTotals() {
   const box = document.getElementById("build-totals");
   if (!box) return;
   const all = [];
-  build.cats.forEach(c => c.items.forEach(e => all.push(e)));
+  build.cats.forEach(c => itensContados(c).forEach(e => all.push(e)));
   if (!all.length) { box.className = "build-totals"; box.innerHTML = ""; return; }
   const totals = sumAttributes(all);
   const eff = goldEfficiency(all);
@@ -5311,6 +5444,12 @@ function pastaCliente() {
 // Seletor próprio (um <select> nativo não mostra imagem; Leo, 14/09/2026: "tem muito
 // campeão que só é reconhecido pelo ícone"): botão com retrato + nome, lista com
 // busca, retrato de cada campeão do Data Dragon.
+function renderLayoutSelect() {
+  const sel = document.getElementById("build-layout");
+  if (!sel) return;
+  if (!sel.options.length) Object.keys(LAYOUTS).forEach(k => { const o = document.createElement("option"); o.value = k; o.textContent = LAYOUTS[k]; sel.appendChild(o); });
+  sel.value = layoutValido(build.layout);
+}
 function renderChampSelect() {
   const list = document.getElementById("champ-list");
   const label = document.getElementById("build-champ-label");
@@ -5416,6 +5555,7 @@ function initMarkers() {
 }
 
 function renderBuildSummary() {
+  renderLayoutSelect();
   renderChampSelect();
   renderMarkSlots();
   refletirSalvar();
@@ -5430,7 +5570,7 @@ function renderBuildSummary() {
   const descInput = document.getElementById("build-desc");
   if (descInput && document.activeElement !== descInput) descInput.value = build.desc || "";
   // Total geral sem as caixas Opcionais (Leo, 13/09/2026: opcional não conta).
-  const total = buildTotal("comum") + buildTotal("prioridade");
+  const total = buildTotal("comum") + buildTotal("prioridade") + buildTotal("escolha");
   const prio = buildTotal("prioridade");
   const count = build.cats.reduce((s, c) => s + c.items.length, 0);
   document.getElementById("build-summary").innerHTML =
@@ -5439,9 +5579,66 @@ function renderBuildSummary() {
      <span title="Soma das caixas Comum e Prioridade; as Opcionais ficam de fora">Total (sem opcionais): <b>${fmtG(total)}</b></span>`;
 }
 
+// Card de item das leituras alternativas (Fase 9): ícone, preço efetivo, tier, nome;
+// observação no title; "padrão" no primeiro de uma Escolha 1.
+function layoutCard(entry, cat, opts = {}) {
+  const it = byId[entry.itemId]; if (!it) return "";
+  const core = it.itemClass && it.itemClass.core;
+  const cls = { "AD": "ad", "AP": "ap", "Vitalidade": "vit" }[core] || "";
+  const tier = (it.tier || "").replace("Lendário (Evolução)", "Lend. evol.").replace("Épico (Evolução)", "Épico evol.");
+  return `<div class="lc ${cls}${opts.std ? " std" : ""}" title="${esc(it.namePt)}${entry.note ? " — " + esc(entry.note) : ""}">
+    <span class="lc-tier">${esc(tier)}</span><span class="lc-cost">${fmtG(effectivePrice(it) || 0)}</span>
+    ${iconInner(it)}<div class="lc-nm">${esc(it.namePt)}</div>${opts.tag ? `<span class="lc-tag${opts.tagCls ? " " + opts.tagCls : ""}">${esc(opts.tag)}</span>` : ""}</div>`;
+}
+function tetoDaCaixa(cat) { return cat.marco || fmtG(catTotal(cat)); }
+function renderLayoutAlternativo(canvas) {
+  const lay = layoutValido(build.layout);
+  const fixas = build.cats.filter(c => c.kind === "comum" || c.kind === "prioridade");
+  const pilhas = build.cats.filter(c => c.kind === "escolha");
+  const opcionais = build.cats.filter(c => c.kind === "opcional");
+  const cardsRow = (c) => c.items.map(e => layoutCard(e, c)).join("");
+  const pilha = (c) => `<div class="lay-stack">${c.items.map((e, i) => layoutCard(e, c, { std: i === 0 })).join("")}</div>`;
+  const legenda = (c) => c.desc ? `<div class="lay-legend">▶ ${esc(c.desc)}</div>` : "";
+  let html = "";
+  if (lay === "nucleo") {
+    html = `<div class="lay-nb">
+      <div class="lay-nucleo">${fixas.map(c => `<div class="lay-box ${c.kind}"><div class="lay-bh">${esc(c.name)} <span class="lay-teto">${esc(tetoDaCaixa(c))}</span>${c.kind === "prioridade" ? `<span class="lay-tag prio">Prioridade</span>` : ""}</div><div class="lay-row">${cardsRow(c)}</div>${legenda(c)}</div>`).join("") || `<div class="lay-vazio">Sem caixas Comum ou Prioridade.</div>`}</div>
+      <div class="lay-bandeja"><div class="lay-bh">Bandeja situacional <span class="lay-tag opt">escolha por condição</span></div>
+        ${pilhas.concat(opcionais).map(c => `<div class="lay-slotline"><span class="k">${esc(c.name)}</span><div class="lay-row">${c.items.map((e, i) => layoutCard(e, c, { std: c.kind === "escolha" && i === 0 })).join(c.kind === "escolha" ? `<span class="lay-ou">ou</span>` : "")}</div>${legenda(c)}</div>`).join("") || `<div class="lay-vazio">Sem caixas Opcional ou Escolha 1.</div>`}
+      </div></div>`;
+  } else if (lay === "trilha") {
+    let acumulado = 0;
+    const ordem = build.cats.slice().sort((a, b) => (a.kind === "opcional") - (b.kind === "opcional"));
+    html = `<div class="lay-rail">${ordem.map(c => {
+      const tray = c.kind === "opcional";
+      if (!tray) acumulado += catTotal(c);
+      const eff = goldEfficiency(itensContados(c));
+      return `<div class="lay-station${tray ? " tray" : ""}${c.kind === "escolha" ? " escolha" : ""}"><div class="lay-axis"><span class="lay-dot"></span><span class="lay-when">${c.marco ? esc(c.marco) : (tray ? "quando precisar" : "até " + fmtG(acumulado))}</span></div>
+        <div class="lay-phase">${esc(c.name)}</div>
+        <div class="lay-slotbox">${c.kind === "escolha" ? `<div class="lay-escolha">Escolha 1</div>${pilha(c)}` : `<div class="lay-row nowrap">${cardsRow(c)}</div>`}</div>
+        ${legenda(c)}<div class="lay-pico"><b>Pico</b>${eff.pct === null ? "sem análise de custo" : "Eficiência de ouro " + fmtEff(eff.pct)}${c.kind === "prioridade" ? " · fecha o núcleo" : ""}</div></div>`;
+    }).join("")}</div><div class="lay-hint">rola para o lado →</div>`;
+  } else if (lay === "grade") {
+    const cols = [["AD", "ad"], ["AP", "ap"], ["Vitalidade", "vit"], ["Outros", ""]];
+    const faixas = [["até 500g", 0, 500], ["501 – 1.500g", 501, 1500], ["1.501 – 2.500g", 1501, 2500], ["acima de 2.500g", 2501, Infinity]];
+    const entradas = [];
+    build.cats.forEach(c => c.items.forEach((e, i) => { if (byId[e.itemId]) entradas.push({ e, c, std: c.kind === "escolha" && i === 0 }); }));
+    const colDe = it => { const core = it.itemClass && it.itemClass.core; if (core === "AD e AP") return "AD"; return ["AD", "AP", "Vitalidade"].includes(core) ? core : "Outros"; };
+    const vistos = new Set();
+    const cel = (col, f) => entradas.filter(x => { const it = byId[x.e.itemId]; const p = effectivePrice(it) || 0; return colDe(it) === col && p >= f[1] && p <= f[2]; })
+      .filter(x => { const k = x.e.itemId + "|" + x.c.id; if (vistos.has(k)) return false; vistos.add(k); return true; })
+      .map(x => layoutCard(x.e, x.c, { tag: x.c.name, tagCls: x.c.kind, std: x.std })).join("");
+    html = `<table class="lay-grid"><tr><th></th>${cols.map(([n, c]) => `<th class="${c}">${n}</th>`).join("")}</tr>` +
+      faixas.map(f => `<tr><td class="faixa">${f[0]}</td>${cols.map(([n]) => `<td><div class="lay-row">${cel(n, f)}</div></td>`).join("")}</tr>`).join("") + `</table>`;
+  }
+  canvas.innerHTML = `<div class="lay-wrap">${html}</div>`;
+}
+
 function renderCategories() {
   const canvas = document.getElementById("build-canvas");
   canvas.innerHTML = "";
+  // Leituras alternativas (Fase 9): só em visualização; editar é sempre no tabuleiro.
+  if (!build.editing && layoutValido(build.layout) !== "tabuleiro" && build.cats.length) { renderLayoutAlternativo(canvas); return; }
 
   if (!build.cats.length) {
     canvas.innerHTML = `
@@ -5455,9 +5652,10 @@ function renderCategories() {
 
   build.cats.forEach(cat => {
     const el = document.createElement("section");
-    el.className = `build-cat ${cat.kind} span-${cat.span}` +
+    el.className = `build-cat ${cat.kind}` +
       (build.selectedCatId === cat.id ? " selected" : "");
     el.dataset.catId = cat.id;
+    el.style.setProperty("--cols", catCols(cat));
 
     el.innerHTML = `
       <header class="cat-head" draggable="true" title="Arraste para reordenar a categoria">
@@ -5466,26 +5664,26 @@ function renderCategories() {
           <circle cx="15" cy="12" r="1"/><circle cx="9" cy="18" r="1"/><circle cx="15" cy="18" r="1"/>
         </svg>
         <input class="cat-name" value="${esc(cat.name)}" spellcheck="false">
-        <button class="cat-btn cat-kind" title="Clique para alternar: Comum → Prioridade → Opcional">${KIND_LABEL[cat.kind]}</button>
+        <button class="cat-btn cat-kind" title="Clique para alternar: Comum → Prioridade → Opcional → Escolha 1">${KIND_LABEL[cat.kind]}</button>
+        ${cat.marco ? `<span class="cat-marco-badge" title="Marco / teto desta caixa">${esc(cat.marco)}</span>` : ""}
         <button class="cat-btn cat-del" title="Remover categoria">✕</button>
       </header>
       <input class="cat-desc" value="${esc(cat.desc || "")}" placeholder="Descrição — quando comprar, contra quem..." spellcheck="false">
+      <input class="cat-marco" value="${esc(cat.marco || "")}" placeholder="Marco / teto — ex.: ~4min · 900g (opcional; sem ele vale a soma)" spellcheck="false">
       <div class="cat-body"></div>
       <div class="cat-stats"></div>
       <div class="cat-total" title="${cat.items.length} ${cat.items.length === 1 ? "item" : "itens"} nesta categoria">${fmtG(catTotal(cat))}</div>
       <div class="cat-resize" title="Arraste para redimensionar (encaixa em ¼ · ⅓ · ½ · 1/1)"></div>`;
 
     const body = el.querySelector(".cat-body");
-    if (!cat.items.length) {
-      body.innerHTML = `<div class="cat-empty">Selecione e clique num item da lista</div>`;
-    } else {
+    {
       cat.items.forEach((entry, index) => {
         const item = byId[entry.itemId];
         if (!item) return;
         const tile = document.createElement("div");
         const offMode = build.mode && !itemAvailableIn(item, build.mode);
         // O modo (compacto x nomeado) é decidido depois, medindo a largura real.
-        tile.className = "item-tile compact" + (entry.note ? " has-note" : "") + (offMode ? " off-mode" : "") + (mfApplies(item, entry) ? " mf" : "") + (build.masterwork && mfEligible(item) ? " mf-elegivel" : "") + (state.applyApex && hasApex(item) ? " apex" : "");
+        tile.className = "item-tile named" + (entry.note ? " has-note" : "") + (offMode ? " off-mode" : "") + (mfApplies(item, entry) ? " mf" : "") + (build.masterwork && mfEligible(item) ? " mf-elegivel" : "") + (state.applyApex && hasApex(item) ? " apex" : "");
         if (offMode) tile.title = `${item.namePt} não existe em ${build.mode}`;
         tile.draggable = build.editing;
         tile.style.setProperty("--tier-color", TIER_CSS[item.tier] || "");
@@ -5504,17 +5702,26 @@ function renderCategories() {
           <span class="mf-badge" title="${build.masterwork && mfEligible(item) ? (entry.mf ? "Forjado pelo Mestre Forjador" : "Elegível ao Mestre Forjador") : ""}">MF</span>
           <span class="apex-badge">ÁPICE</span>
           <span class="tile-name">${esc(item.namePt)}</span>
+          ${cat.kind === "escolha" && index === 0 ? `<span class="padrao-badge" title="O de cima é o padrão; os de baixo são trocas para o mesmo slot">padrão</span>` : ""}
           <span class="tier-strip"></span>`;
         body.appendChild(tile);
       });
+      // Encaixes vazios até completar a grade (o que sobra na última linha, ou a grade puxada maior)
+      const total = catCols(cat) * catRows(cat);
+      for (let i = cat.items.length; i < total; i++) {
+        const v = document.createElement("div");
+        v.className = "slot-vazio" + (i === 0 ? " dica" : "");
+        if (i === 0) v.textContent = build.editing ? "Selecione a caixa e clique num item da lista" : "Caixa vazia";
+        body.appendChild(v);
+      }
     }
     // Placa de atributos e eficiência da bancada
     const statsEl = el.querySelector(".cat-stats");
     if (cat.items.length) {
-      const totals = sumAttributes(cat.items);
-      const eff = goldEfficiency(cat.items);
+      const totals = sumAttributes(itensContados(cat));
+      const eff = goldEfficiency(itensContados(cat));
       statsEl.className = "cat-stats show";
-      statsEl.innerHTML = `<div class="cs-head"><span class="cs-title">Atributos da caixa</span>${effHtml(eff, "cs-eff")}</div>${totals.length ? statsListHtml(totals) : ""}`;
+      statsEl.innerHTML = `<div class="cs-head"><span class="cs-title">${cat.kind === "escolha" ? "Atributos do padrão (o de cima)" : "Atributos da caixa"}</span>${effHtml(eff, "cs-eff")}</div>${totals.length ? statsListHtml(totals) : ""}`;
     }
     canvas.appendChild(el);
   });
@@ -5533,6 +5740,7 @@ const TILE_GAP = 7;
 const NAMED_MIN_PER_ROW = 4;
 
 function applyTileMode() {
+  return;   // Fase 9, T4: grade de encaixes — todo molde é nomeado; a largura vem das colunas
   const need = TILE_NAMED_W * NAMED_MIN_PER_ROW + TILE_GAP * (NAMED_MIN_PER_ROW - 1);
   document.querySelectorAll(".build-cat").forEach(catEl => {
     const body = catEl.querySelector(".cat-body");
@@ -5735,6 +5943,18 @@ function nearestSpan(px, canvasWidth, gap) {
 
 function initCategoryResize() {
   const canvas = document.getElementById("build-canvas");
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  const slotVazio = () => { const v = document.createElement("div"); v.className = "slot-vazio"; return v; };
+  const previewGrade = (st) => {
+    st.catEl.style.setProperty("--cols", st.cols);
+    const cat = getCat(st.catId); if (!cat) return;
+    const n = cat.items.length;
+    const need = Math.max(st.cols * st.rows, st.cols * Math.ceil(n / st.cols)) - n;
+    const empties = st.body.querySelectorAll(".slot-vazio");
+    for (let i = empties.length - 1; i >= need; i--) empties[i].remove();
+    for (let i = empties.length; i < need; i++) st.body.appendChild(slotVazio());
+    st.catEl.dataset.grade = `${st.cols} × ${st.rows}`;
+  };
 
   canvas.addEventListener("mousedown", (e) => {
     const handle = e.target.closest(".cat-resize");
@@ -5743,36 +5963,36 @@ function initCategoryResize() {
     const cat = getCat(catEl.dataset.catId);
     if (!cat) return;
     e.preventDefault();
+    const body = catEl.querySelector(".cat-body");
+    const r = body.getBoundingClientRect();
+    const st = document.getElementById("build-canvas");
     resizeState = {
-      catId: cat.id,
-      catEl,
-      startX: e.clientX,
-      startW: catEl.getBoundingClientRect().width,
-      canvasW: canvas.clientWidth,
-      lastSpan: cat.span,
+      catId: cat.id, catEl, body,
+      left: r.left + 10, top: r.top + 10,
+      colW: SLOT_W + SLOT_GAP, rowH: SLOT_H + SLOT_GAP,
+      cols: catCols(cat), rows: catRows(cat), escolha: cat.kind === "escolha",
     };
     catEl.classList.add("resizing");
+    catEl.dataset.grade = `${resizeState.cols} × ${resizeState.rows}`;
   });
 
   window.addEventListener("mousemove", (e) => {
     if (!resizeState) return;
-    const px = resizeState.startW + (e.clientX - resizeState.startX);
-    const span = nearestSpan(px, resizeState.canvasW, 14);
-    if (span !== resizeState.lastSpan) {
-      // Prévia ao vivo: troca a classe sem re-renderizar tudo.
-      resizeState.catEl.classList.remove("span-1", "span-2", "span-3", "span-4");
-      resizeState.catEl.classList.add("span-" + span);
-      resizeState.lastSpan = span;
-      applyTileMode();
-    }
+    const st = resizeState;
+    const cols = st.escolha ? 1 : clamp(Math.round((e.clientX - st.left + st.colW / 2) / st.colW), 1, MAX_COLS);
+    const rows = clamp(Math.round((e.clientY - st.top + st.rowH / 2) / st.rowH), 1, MAX_ROWS);
+    if (cols !== st.cols || rows !== st.rows) { st.cols = cols; st.rows = rows; previewGrade(st); }
   });
 
   window.addEventListener("mouseup", () => {
     if (!resizeState) return;
-    const { catId, lastSpan, catEl } = resizeState;
+    const { catId, cols, rows, catEl } = resizeState;
     catEl.classList.remove("resizing");
+    delete catEl.dataset.grade;
     resizeState = null;
-    setCatSpan(catId, lastSpan);
+    const cat = getCat(catId);
+    if (!cat) return;
+    if (cat.cols !== cols || cat.rows !== rows) { cat.cols = cols; cat.rows = rows; saveBuild(); renderBuild(); }
   });
 }
 
@@ -5824,7 +6044,7 @@ function initCategoryUI() {
       cat.kind = KINDS[(KINDS.indexOf(cat.kind) + 1) % KINDS.length];
       renderBuild(); saveBuild(); return;
     }
-    if (e.target.closest(".cat-name") || e.target.closest(".cat-desc")) return;
+    if (e.target.closest(".cat-name") || e.target.closest(".cat-desc") || e.target.closest(".cat-marco")) return;
     // Mestre Forjador: na edição, com o interruptor ligado, clicar no ÍCONE do
     // molde forja aquele item (Leo, 13/09/2026); a placa MF é só indicador.
     const tile = e.target.closest(".item-tile");
@@ -5844,6 +6064,7 @@ function initCategoryUI() {
     if (!cat) return;
     if (e.target.classList.contains("cat-name")) cat.name = e.target.value.trim() || "Sem nome";
     if (e.target.classList.contains("cat-desc")) cat.desc = e.target.value.trim();
+    if (e.target.classList.contains("cat-marco")) { cat.marco = e.target.value.trim(); saveBuild(); renderBuild(); return; }
     saveBuild();
   });
 
@@ -6102,6 +6323,7 @@ function buildResumo(b) {
     revisao: (isActive ? build.revisao : b.revisao) || null,
     temp: !!(isActive ? build.temp : b.temp),
     pubOrigem: (isActive ? build.pubOrigem : b.pubOrigem) || null,
+    layout: layoutValido(isActive ? build.layout : b.layout),
     cats,
     n: cats.reduce((s, c) => s + c.items.length, 0),
   };
@@ -6142,7 +6364,7 @@ function toggleFavorito(id) {
 }
 function caixasDoServidor(caixas, removidos) {
   return normalizeCats((Array.isArray(caixas) ? caixas : []).map((c, i) => ({
-    id: "cat-" + (i + 1), name: String(c.name || `Caixa ${i + 1}`), desc: String(c.desc || ""), kind: c.kind, span: c.span,
+    id: "cat-" + (i + 1), name: String(c.name || `Caixa ${i + 1}`), desc: String(c.desc || ""), marco: String(c.marco || ""), kind: c.kind, span: c.span, cols: c.cols, rows: c.rows,
     items: (Array.isArray(c.items) ? c.items : []).map(e => ({ itemId: e.itemId, nome: e.nome, note: String(e.note || ""), ...(e.mf ? { mf: true } : {}) })),
   })), removidos);
 }
@@ -6156,6 +6378,7 @@ function publicaResumo(p) {
     pubEm: Date.parse(p.atualizado_em) || 0, pubPatch: p.patch || "", autor: p.autor || "",
     visualizacoes: p.visualizacoes || 0, copias: p.copias || 0, popDia: p.pop_dia || 0, popSemana: p.pop_semana || 0,
     fav: favoritosIds().includes(p.id), desatualizada: !!p.patch && p.patch !== CATALOG.meta.patch,
+    layout: layoutValido(p.layout),
   };
 }
 async function carregarPublicas(force) {
@@ -6264,7 +6487,7 @@ function abrirPublicaTemporaria(d) {
     library.builds.push({ id, name: d.name, seq: d.cats.length + 1, mode: d.mode, masterwork: false,
       champion: d.champ ? { key: String(d.champ.key), id: String(d.champ.id), name: String(d.champ.name) } : null,
       markers: d.markers, desc: d.desc, fav: false, updatedAt: Date.now(), temp: true, pubOrigem: d.pubId,
-      patch: d.pubPatch || CATALOG.meta.patch, revisao: null, cats: JSON.parse(JSON.stringify(d.cats)) });
+      patch: d.pubPatch || CATALOG.meta.patch, revisao: null, layout: layoutValido(d.layout), cats: JSON.parse(JSON.stringify(d.cats)) });
   }
   activateBuild(id);
   showBuildScreen("forja");
@@ -6284,7 +6507,7 @@ function copiarPublica(d) {
   const cats = p ? caixasDoServidor(p.caixas, removidos) : JSON.parse(JSON.stringify(d.cats));
   if (removidos.length) setTimeout(() => mostrarPub("Build copiada com itens de fora", `Publicada no catálogo ${esc(d.pubPatch)}. Estes itens não existem mais e ficaram de fora: <b>${esc(removidos.map(x => x.nome).join(", "))}</b>. O resto já vem com os atributos atuais.`, "erro"), 300);
   createNewBuild(d.name, cats, d.mode, d.champ ? { key: String(d.champ.key), id: String(d.champ.id), name: String(d.champ.name) } : null, d.markers);
-  build.desc = d.desc; gravarBuild();
+  build.desc = d.desc; build.layout = layoutValido(d.layout); gravarBuild();
   showBuildScreen("forja");
 }
 
@@ -6480,7 +6703,7 @@ function duplicateBuild(id) {
   // Cópia profunda: a duplicata não pode compartilhar itens com a original.
   const cats = JSON.parse(JSON.stringify(d.isActive ? build.cats : (b.cats || [])));
   createNewBuild(d.temp ? d.name : d.name + " (cópia)", cats, d.mode, d.champ ? { ...d.champ } : null, d.markers);
-  build.desc = d.desc || ""; gravarBuild();
+  build.desc = d.desc || ""; build.layout = layoutValido(d.layout); gravarBuild();
   if (d.temp && d.pubOrigem && Servidor.ativo()) Servidor.rpc("registrar_evento", { p_id: d.pubOrigem, p_tipo: "copia" }).catch(() => {});
 }
 
@@ -6625,6 +6848,11 @@ function initLibrary() {
   });
 
   initChampPicker();
+  document.getElementById("build-layout").addEventListener("change", (e) => {
+    build.layout = layoutValido(e.target.value);
+    saveBuild();
+    renderBuildAll();
+  });
 
   initBuildIndex();
   initMarkers();
@@ -6721,7 +6949,9 @@ function initLibrary() {
     if (!r.cats.length) { showIoMsg("Não encontrei nenhuma categoria ou item válido nesse texto.", true); return; }
 
     createNewBuild(r.name || "Build importada", r.cats, r.mode, null, r.markers);
-    if (r.desc) { build.desc = r.desc; saveBuild(); }
+    if (r.desc) { build.desc = r.desc; }
+    if (r.layout) { build.layout = r.layout; }
+    if (r.desc || r.layout) gravarBuild();
     if (r.championName) {
       const idNova = build.id;
       Campeoes.carregar().then(() => {

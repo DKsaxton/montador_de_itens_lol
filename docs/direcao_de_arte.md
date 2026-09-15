@@ -104,3 +104,10 @@ As três texturas são papel amassado quase branco; nunca usadas cruas. Aplicaç
 ## Soltar em posição (Fase 8, T7 — 14/09/2026)
 - Ao arrastar um molde sobre outro, o alvo abre um vão de 5 px para o lado e uma barra vertical de brasa com brilho marca onde a placa vai cair: à esquerda quando o ponteiro está na metade esquerda, à direita na outra metade. Sobre o vazio da bancada, sem barra: cai no fim.
 
+## Layouts de build (Fase 9, T3 — 15/09/2026)
+- **Tabuleiro** (padrão, o estilo do Leo) é a própria forja. A caixa **Escolha 1** empilha os moldes na vertical, com o primeiro em moldura de latão e o selo "padrão"; o **marco** da caixa é um badge de latão gravado ao lado do tipo.
+- **Núcleo + bandeja**, **Trilha por fases** e **Grade categoria × custo** são leituras: cards menores em ferro com moldura de latão (ou da classe: AD laranja, AP roxo, Vitalidade verde), preço e tier gravados nos cantos. A bandeja é tracejada em azul-aço; na trilha, os marcos ficam sobre um trilho de ferro com pontos de brasa (bandeja em azul); a grade tem cabeçalhos nas cores das classes e a etiqueta da caixa na base de cada card.
+
+## Grade de encaixes (Fase 9, T4 — 15/09/2026)
+- Cada caixa do tabuleiro é uma grade de encaixes de 84 × 96 px com 7 px de vão; a largura da caixa é a das colunas. Encaixe vazio: retângulo tracejado no ferro escuro, apagado em visualização. Ao puxar o canto, a caixa acende em brasa e uma etiqueta "3 × 2" em brasa clara mostra a grade.
+
