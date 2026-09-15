@@ -5919,7 +5919,32 @@ function initCategoryDrag() {
     clearDropMarks();
   });
 
+  // Arrastando uma categoria, soltar vale em qualquer ponto da bancada (Leo, 15/09/2026:
+  // "tentei e não foi" — ele soltava no vazio entre as caixas). Fora de uma caixa, a
+  // caixa mais próxima na mesma linha (ou a mais próxima de todas) é o alvo.
+  const alvoDaCategoria = (e) => {
+    const direto = e.target.closest(".build-cat");
+    if (direto && direto.dataset.catId !== dragCatId) { const r = direto.getBoundingClientRect(); return { catEl: direto, after: e.clientX > r.left + r.width / 2 }; }
+    if (direto) return null;
+    const boxes = [...canvas.querySelectorAll(".build-cat")].filter(b => b.dataset.catId !== dragCatId);
+    const linha = boxes.filter(b => { const r = b.getBoundingClientRect(); return e.clientY >= r.top - 8 && e.clientY <= r.bottom + 8; });
+    const pool = linha.length ? linha : boxes;
+    if (!pool.length) return null;
+    let best = null, bestD = Infinity;
+    pool.forEach(b => { const r = b.getBoundingClientRect(); const d = Math.hypot(e.clientX - (r.left + r.width / 2), e.clientY - (r.top + r.height / 2)); if (d < bestD) { bestD = d; best = b; } });
+    const r = best.getBoundingClientRect();
+    return { catEl: best, after: e.clientX > r.left + r.width / 2 };
+  };
+
   canvas.addEventListener("dragover", (e) => {
+    if (dragCatId) {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = "move";
+      clearDropMarks();
+      const alvo = alvoDaCategoria(e);
+      if (alvo) alvo.catEl.classList.add(alvo.after ? "drop-after" : "drop-before");
+      return;
+    }
     const catEl = e.target.closest(".build-cat");
     if (!catEl) return;
     e.preventDefault();
@@ -5948,15 +5973,19 @@ function initCategoryDrag() {
   });
 
   canvas.addEventListener("drop", (e) => {
+    if (dragCatId) {
+      e.preventDefault();
+      const alvo = alvoDaCategoria(e);
+      if (alvo) moveCategory(dragCatId, alvo.catEl.dataset.catId, alvo.after);
+      dragCatId = null; dragItemPayload = null; dropPos = null; clearDropMarks();
+      return;
+    }
     const catEl = e.target.closest(".build-cat");
     if (!catEl) return;
     e.preventDefault();
     const targetId = catEl.dataset.catId;
 
-    if (dragCatId) {
-      const r = catEl.getBoundingClientRect();
-      moveCategory(dragCatId, targetId, e.clientX > r.left + r.width / 2);
-    } else if (dragItemPayload && dragItemPayload.from === "cat") {
+    if (dragItemPayload && dragItemPayload.from === "cat") {
       const pos = dropPos && dropPos.catId === targetId ? dropPos.index : undefined;
       moveItem(dragItemPayload.catId, dragItemPayload.index, targetId, pos);
     } else if (dragItemPayload && dragItemPayload.from === "picker") {
