@@ -3482,6 +3482,12 @@ body.editando .save-wrap { display: inline-flex; }
 /* ---- Fase 8, T7: soltar em posição — barra de brasa entre os moldes ---- */
 .item-tile.ins-before { transform: translateX(5px); box-shadow: -9px 0 0 -1px var(--forja-brasa), -9px 0 14px var(--forja-brasa-glow), inset 0 3px 8px rgba(0,0,0,.9); }
 .item-tile.ins-after  { transform: translateX(-5px); box-shadow: 9px 0 0 -1px var(--forja-brasa), 9px 0 14px var(--forja-brasa-glow), inset 0 3px 8px rgba(0,0,0,.9); }
+
+/* ---- Fase 9, T1: visualização temporária de build pública ---- */
+.mode-warning.temp { display: block; border-left-color: #3b4a6b; }
+.mode-warning.temp[hidden] { display: none; }
+.mode-warning.temp .revisao-box .k { color: #9fb4e8; }
+.mode-warning.temp.chamar { animation: chamar-editar 1.1s ease-out 2; }
 </style>
 </head>
 <body>
@@ -3672,6 +3678,7 @@ body.editando .save-wrap { display: inline-flex; }
 
   <div id="mode-warning" class="mode-warning"></div>
   <div id="revisao-warning" class="mode-warning revisao" hidden></div>
+  <div id="temp-warning" class="mode-warning temp" hidden></div>
   <div id="edit-hint" class="edit-hint" aria-live="polite"></div>
   <div id="build-totals" class="build-totals"></div>
 
@@ -4264,7 +4271,7 @@ function newBuildId() {
 }
 
 function snapshotActive() {
-  return { id: build.id, name: build.name, cats: comNomes(build.cats), patch: build.patch || CATALOG.meta.patch, revisao: build.revisao || null, seq: build.seq, mode: build.mode, masterwork: !!build.masterwork, champion: build.champion || null, markers: normMarkers(build.markers), desc: build.desc || "", fav: !!build.fav, updatedAt: build.updatedAt || 0, pubId: build.pubId || null, pubVersao: build.pubVersao || 0, pubEm: build.pubEm || 0, pubPatch: build.pubPatch || "" };
+  return { id: build.id, name: build.name, cats: comNomes(build.cats), patch: build.patch || CATALOG.meta.patch, revisao: build.revisao || null, temp: !!build.temp, pubOrigem: build.pubOrigem || null, seq: build.seq, mode: build.mode, masterwork: !!build.masterwork, champion: build.champion || null, markers: normMarkers(build.markers), desc: build.desc || "", fav: !!build.fav, updatedAt: build.updatedAt || 0, pubId: build.pubId || null, pubVersao: build.pubVersao || 0, pubEm: build.pubEm || 0, pubPatch: build.pubPatch || "" };
 }
 
 // Em modo Editar as alterações ficam em rascunho (Leo, 14/09/2026): saveBuild() só
@@ -4291,7 +4298,7 @@ function gravarBuild() {
       library.builds[i] = snap;
     } else { snap.updatedAt = build.updatedAt = Date.now(); library.builds.push(snap); library.activeId = build.id; }
     localStorage.setItem(STORAGE_KEY, JSON.stringify({
-      builds: library.builds,
+      builds: library.builds.filter(b => !b.temp),   // visualizações de builds públicas morrem com a página
       activeId: build.id,
       defaultSpan: build.defaultSpan,
     }));
@@ -4453,6 +4460,8 @@ function activateBuild(id, skipSave) {
   build.pubId = b.pubId || null; build.pubVersao = Number(b.pubVersao) || 0; build.pubEm = Number(b.pubEm) || 0; build.pubPatch = b.pubPatch || "";
   build.patch = b.patch || CATALOG.meta.patch;
   build.revisao = b.revisao || null;
+  build.temp = !!b.temp;
+  build.pubOrigem = b.pubOrigem || null;
   build.selectedCatId = null;
   library.activeId = b.id;
   if (!skipSave) { gravarBuild(); renderBuildAll(); }
@@ -5283,6 +5292,10 @@ function revisaoHtml(d) {
   const lista = (r.removidos || []).map(x => `<b>${esc(x.nome)}</b>${x.caixa ? ` (${esc(x.caixa)})` : ""}`).join(", ");
   return `<div class="revisao-box"><span class="k">Catálogo mudou${r.de !== r.para ? `: ${esc(r.de)} → ${esc(r.para)}` : ""}.</span> Atributos e preços já são os atuais. ${lista ? `Saíram do catálogo e foram tirados da build: ${lista}.` : "Nenhum item saiu do catálogo."}${d.pubId ? " Confira e clique em <b>Atualizar publicação</b>: isso tira a etiqueta do site." : " O aviso some quando você salvar a build na forja."}</div>`;
 }
+function chamarEditarTemp() {
+  const el = document.getElementById("temp-warning");
+  if (el) { el.classList.remove("chamar"); void el.offsetWidth; el.classList.add("chamar"); el.scrollIntoView({ block: "nearest" }); }
+}
 function renderRevisaoWarning() {
   const el = document.getElementById("revisao-warning");
   if (!el) return;
@@ -5407,6 +5420,7 @@ function renderBuildSummary() {
   renderMarkSlots();
   refletirSalvar();
   renderRevisaoWarning();
+  renderTempWarning();
   const mfToggle = document.getElementById("mf-toggle");
   if (mfToggle) mfToggle.checked = !!build.masterwork;
   const cbT = document.getElementById("cb-toggle"); if (cbT) cbT.checked = !!state.applyCashback;
@@ -6086,6 +6100,8 @@ function buildResumo(b) {
     pubEm: (isActive ? build.pubEm : b.pubEm) || 0,
     pubPatch: (isActive ? build.pubPatch : b.pubPatch) || "",
     revisao: (isActive ? build.revisao : b.revisao) || null,
+    temp: !!(isActive ? build.temp : b.temp),
+    pubOrigem: (isActive ? build.pubOrigem : b.pubOrigem) || null,
     cats,
     n: cats.reduce((s, c) => s + c.items.length, 0),
   };
@@ -6190,6 +6206,7 @@ function etiquetaHtml(d) {
   if (d.etiqueta === "semana") out.push(`<span class="bi-etiqueta semana">Popular da semana</span>`);
   if (d.desatualizada) out.push(`<span class="bi-etiqueta desatualizada" title="Publicada no catálogo ${esc(d.pubPatch)}; o atual é ${esc(CATALOG.meta.patch)}">desatualizada</span>`);
   if (d.favoritaEmMinhas) out.push(`<span class="bi-etiqueta favorita">favorita</span>`);
+  if (!d.publica && d.temp) out.push(`<span class="bi-etiqueta publicada" title="Aberta só para ver — some ao recarregar a página">visualização</span>`);
   if (!d.publica && d.revisao) out.push(`<span class="bi-etiqueta desatualizada" title="O catálogo mudou desde a última gravação — veja o resumo">desatualizada</span>`);
   if (!d.publica && d.pubId) out.push(`<span class="bi-etiqueta publicada" title="ID ${esc(d.pubId)} · versão ${d.pubVersao}">publicada</span>`);
   if (!d.publica && d.id === build.id) out.push(`<span class="bi-etiqueta" title="Aberta na forja">na forja</span>`);
@@ -6241,6 +6258,25 @@ function renderPublicDetail(box, d) {
   // conta a visualização, uma por sessão
   if (!publicas.vistos.has(d.pubId) && Servidor.ativo()) { publicas.vistos.add(d.pubId); Servidor.rpc("registrar_evento", { p_id: d.pubId, p_tipo: "visualizacao" }).catch(() => {}); }
 }
+function abrirPublicaTemporaria(d) {
+  const id = "tmp:" + d.pubId;
+  if (!library.builds.some(b => b.id === id)) {
+    library.builds.push({ id, name: d.name, seq: d.cats.length + 1, mode: d.mode, masterwork: false,
+      champion: d.champ ? { key: String(d.champ.key), id: String(d.champ.id), name: String(d.champ.name) } : null,
+      markers: d.markers, desc: d.desc, fav: false, updatedAt: Date.now(), temp: true, pubOrigem: d.pubId,
+      patch: d.pubPatch || CATALOG.meta.patch, revisao: null, cats: JSON.parse(JSON.stringify(d.cats)) });
+  }
+  activateBuild(id);
+  showBuildScreen("forja");
+}
+function renderTempWarning() {
+  const el = document.getElementById("temp-warning");
+  if (!el) return;
+  if (!build.temp) { el.hidden = true; el.innerHTML = ""; return; }
+  el.hidden = false;
+  el.innerHTML = `<div class="revisao-box"><span class="k">Só visualização.</span> Esta é a build publicada <b>${esc(build.pubOrigem || "")}</b>, aberta para ver; ela some quando a página recarrega e não pode ser editada. Para guardar uma cópia sua: </div><button type="button" class="btn ghost mini" id="temp-copiar">Copiar e editar</button>`;
+}
+
 function copiarPublica(d) {
   if (Servidor.ativo()) Servidor.rpc("registrar_evento", { p_id: d.pubId, p_tipo: "copia" }).catch(() => {});
   const removidos = [];
@@ -6325,6 +6361,23 @@ function renderBuildDetail() {
   const vistos = new Set(); const itens = [];
   d.cats.forEach(c => { if (c.kind === "opcional") return; c.items.forEach(e => { if (byId[e.itemId] && !vistos.has(e.itemId)) { vistos.add(e.itemId); itens.push(byId[e.itemId]); } }); });
   const falta = faltaParaPublicar(d);
+  if (d.temp) {
+    const vistos2 = new Set(); const itens2 = [];
+    d.cats.forEach(c => { if (c.kind === "opcional") return; c.items.forEach(e => { if (byId[e.itemId] && !vistos2.has(e.itemId)) { vistos2.add(e.itemId); itens2.push(byId[e.itemId]); } }); });
+    box.innerHTML = `
+      <div class="bd-head">${champIconHtml(d.champ, "")}<h3>${esc(d.name)}</h3></div>
+      <div class="bd-marks">${d.markers.map(m => `<span class="bd-mark">${markerHtml(m, d.champ, renderBuildDetail)}${esc(markerLabel(m, d.champ))}</span>`).join("")}</div>
+      <div class="bd-meta">Só visualização · publicada como <b class="pub-id">${esc(d.pubOrigem || "")}</b><br>Some ao recarregar a página</div>
+      ${d.desc ? `<p class="bd-desc">${esc(d.desc)}</p>` : ""}
+      <div class="bd-label">Itens (sem os opcionais)</div>
+      <div class="bd-items">${itens2.map(it => `<img src="${it.iconUrl}" alt="" title="${esc(it.namePt)}" loading="lazy">`).join("")}</div>
+      <div class="bd-actions">
+        <button type="button" class="btn primary" data-act="edit">Abrir</button>
+        <button type="button" class="btn ghost" data-act="copy" title="Guarda uma cópia sua na biblioteca">Copiar e editar</button>
+        <button type="button" class="btn ghost" data-act="del">Fechar visualização</button>
+      </div>`;
+    return;
+  }
   const marcas = Array.from({ length: MAX_MARCADORES }, (_, i) => d.markers[i]
     ? `<span class="bd-mark">${markerHtml(d.markers[i], d.champ, renderBuildDetail)}${esc(markerLabel(d.markers[i], d.champ))}</span>`
     : `<span class="bd-mark vazio">marcador ${i + 1}</span>`).join("");
@@ -6426,8 +6479,9 @@ function duplicateBuild(id) {
   const d = buildResumo(b);
   // Cópia profunda: a duplicata não pode compartilhar itens com a original.
   const cats = JSON.parse(JSON.stringify(d.isActive ? build.cats : (b.cats || [])));
-  createNewBuild(d.name + " (cópia)", cats, d.mode, d.champ ? { ...d.champ } : null, d.markers);
+  createNewBuild(d.temp ? d.name : d.name + " (cópia)", cats, d.mode, d.champ ? { ...d.champ } : null, d.markers);
   build.desc = d.desc || ""; gravarBuild();
+  if (d.temp && d.pubOrigem && Servidor.ativo()) Servidor.rpc("registrar_evento", { p_id: d.pubOrigem, p_tipo: "copia" }).catch(() => {});
 }
 
 function initBuildIndex() {
@@ -6447,7 +6501,7 @@ function initBuildIndex() {
     renderBuildIndex();
     Som.play("catalog:tag_select");
   });
-  const abrirOuCopiar = (id) => { if (String(id).startsWith("pub:")) { const p = publicaPorId(id.slice(4)); if (p) copiarPublica(publicaResumo(p)); } else abrir(id); };
+  const abrirOuCopiar = (id) => { if (String(id).startsWith("pub:")) { const p = publicaPorId(id.slice(4)); if (p) abrirPublicaTemporaria(publicaResumo(p)); } else abrir(id); };
   rows.addEventListener("dblclick", (e) => { const row = e.target.closest(".bi-row"); if (row) abrirOuCopiar(row.dataset.id); });
   rows.addEventListener("keydown", (e) => {
     const row = e.target.closest(".bi-row");
@@ -6479,6 +6533,7 @@ function initBuildIndex() {
     }
     if (act.dataset.act === "del") {
       if (library.builds.length <= 1) return;
+      if (b.temp) { deleteBuild(b.id); biSelected = null; renderBuildIndex(); return; }
       if (window.confirm(`Excluir a build "${buildResumo(b).name}"?${b.pubId ? " Ela também sai do site." : ""} Isso não dá pra desfazer.`)) { deleteBuild(b.id); biSelected = null; renderBuildIndex(); }
     }
   });
@@ -6721,10 +6776,12 @@ function initBuildBuilder() {
     renderBuildAll();
   };
   editToggle.addEventListener("change", () => {
+    if (editToggle.checked && build.temp) { editToggle.checked = false; chamarEditarTemp(); return; }
     if (!editToggle.checked && rascunho.sujo) { editToggle.checked = true; confirmarSaida(() => applyEditing(false)); return; }
     applyEditing(editToggle.checked);
   });
   initSalvar();
+  document.getElementById("temp-warning").addEventListener("click", (e) => { if (e.target.id === "temp-copiar") { duplicateBuild(build.id); } });
   document.getElementById("pub-close").addEventListener("click", fecharPub);
   document.getElementById("pub-dialog").addEventListener("click", (e) => { if (e.target.id === "pub-dialog" && !document.getElementById("pub-foot").hidden) fecharPub(); });
   applyEditing(false);

@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gramática de formatação — builds Deadlock</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#c3ac8b;
+  --paper-2:#b59d7c;
+  --panel:#cbb693;
+  --panel-line:#8a7252;
+  --ink:#2c2216;
+  --ink-soft:#5a4832;
+  --slate:#2b2f3d;
+  --slate-2:#373c4d;
+  --slate-line:#171a24;
+  --chalk:#e8e4dc;
+  --teal:#3f9fb2;
+  --opt:#3d6fb5;
+  --cond:#d08a2e;
+  --w:#e0873c;
+  --v:#7cb342;
+  --s:#9a6fd0;
+  --lit:#ffd166;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#1d1913;
+    --paper-2:#171410;
+    --panel:#2a2419;
+    --panel-line:#5c4c33;
+    --ink:#e7dcc7;
+    --ink-soft:#b3a287;
+    --chalk:#e8e4dc;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#1d1913; --paper-2:#171410; --panel:#2a2419;
+  --panel-line:#5c4c33; --ink:#e7dcc7; --ink-soft:#b3a287;
+}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:'Barlow',system-ui,-apple-system,'Segoe UI',sans-serif;
+  font-size:16px; line-height:1.55;
+}
+.wrap{max-width:1040px; margin:0 auto; padding:40px 20px 80px}
+h1,h2,h3,.cond-h,.box-h{font-family:'Barlow Condensed','Barlow',system-ui,sans-serif; font-weight:600; letter-spacing:.01em}
+h1{font-size:clamp(34px,6vw,58px); line-height:1.02; margin:0 0 14px; font-weight:700}
+h2{font-size:clamp(24px,3.6vw,34px); line-height:1.1; margin:0 0 6px}
+h3{font-size:19px; margin:0 0 6px}
+p{margin:0 0 14px; max-width:68ch}
+.lede{font-size:18px; color:var(--ink-soft); max-width:60ch}
+section{margin-top:56px; scroll-margin-top:20px}
+.kicker{font-family:'Barlow Condensed',sans-serif; font-size:17px; color:var(--ink-soft); margin:0 0 20px; max-width:64ch}
+hr.rule{border:0; border-top:2px solid var(--panel-line); opacity:.5; margin:0}
+
+/* ---------- item card ---------- */
+.item{
+  position:relative; width:74px; min-height:74px; border-radius:5px;
+  background:linear-gradient(170deg,var(--slate-2),var(--slate));
+  border:1px solid var(--slate-line); color:var(--chalk);
+  padding:22px 4px 6px; text-align:center;
+  font-family:'Barlow Condensed',sans-serif; font-weight:600;
+  font-size:11.5px; line-height:1.12; letter-spacing:.01em;
+  display:flex; align-items:flex-end; justify-content:center;
+  box-shadow:0 2px 0 rgba(0,0,0,.28);
+}
+.item::before{content:""; position:absolute; inset:0 0 auto 0; height:16px; border-radius:4px 4px 0 0; opacity:.9}
+.item.w::before{background:linear-gradient(90deg,#8a4a18,var(--w))}
+.item.v::before{background:linear-gradient(90deg,#3f6a1c,var(--v))}
+.item.s::before{background:linear-gradient(90deg,#4f2f7a,var(--s))}
+.item .tier{
+  position:absolute; top:1px; right:4px; font-size:10px; letter-spacing:.06em;
+  color:rgba(255,255,255,.92);
+}
+.item .act{
+  position:absolute; top:19px; left:50%; transform:translateX(-50%);
+  font-size:8px; letter-spacing:.06em; background:rgba(0,0,0,.45);
+  padding:0 3px; border-radius:2px; color:#ffd9a0;
+}
+
+/* ---------- box ---------- */
+.stack{display:flex; flex-direction:column; gap:7px}
+.box{
+  background:var(--panel); border:1px solid var(--panel-line);
+  border-radius:6px; padding:8px; display:inline-flex; flex-direction:column; gap:8px;
+  box-shadow:0 2px 0 rgba(0,0,0,.18);
+}
+.box-h{display:flex; align-items:center; gap:7px; font-size:15px; color:var(--ink); line-height:1}
+.box-h .souls{
+  font-family:'Barlow',sans-serif; font-weight:600; font-size:12px;
+  color:#1d1a12; background:#e0c98f; border:1px solid #9c8450;
+  padding:1px 6px; border-radius:3px;
+}
+.tag{
+  font-family:'Barlow',sans-serif; font-weight:600; font-size:10px; letter-spacing:.08em;
+  padding:1px 5px; border-radius:3px; color:#fff;
+}
+.tag.opt{background:var(--opt)}
+.tag.cond{background:var(--cond); color:#20180a}
+.row{display:flex; gap:8px; flex-wrap:wrap; align-items:flex-start}
+.box.optional{border-color:var(--opt); border-width:2px}
+.box.conditional{border-color:var(--cond); border-width:2px}
+.legend{
+  font-size:12.5px; color:var(--ink-soft); font-style:italic; max-width:24ch;
+  align-self:center; padding-left:2px;
+}
+
+/* ---------- board + annotations ---------- */
+.board{
+  background:var(--paper-2); border:1px solid var(--panel-line); border-radius:8px;
+  padding:18px; overflow-x:auto;
+}
+.board-inner{display:flex; flex-direction:column; gap:14px; min-width:640px}
+.board-row{display:flex; gap:12px; align-items:flex-start; flex-wrap:wrap}
+.pin{
+  position:absolute; z-index:3; width:19px; height:19px; border-radius:50%;
+  background:var(--ink); color:var(--paper); border:2px solid var(--paper);
+  font-family:'Barlow',sans-serif; font-weight:600; font-size:11px;
+  display:grid; place-items:center; cursor:pointer; padding:0;
+}
+.anchor{position:relative; align-self:flex-start; display:inline-flex}
+.pin.tl{top:-10px; left:-10px}
+.pin.tr{top:-10px; right:-10px}
+.pin.br{bottom:-10px; right:-10px}
+.pin.bl{bottom:-10px; left:-10px}
+.is-lit{outline:3px solid var(--lit); outline-offset:2px; border-radius:6px}
+.pin.is-on{background:var(--lit); color:#241a06}
+
+.keys{list-style:none; margin:18px 0 0; padding:0; display:grid; gap:8px;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.keys li{margin:0}
+.keys button{
+  width:100%; text-align:left; display:flex; gap:10px; align-items:flex-start;
+  background:transparent; border:1px solid transparent; border-radius:6px;
+  padding:8px 10px; color:inherit; font:inherit; cursor:pointer;
+}
+.keys button:hover,.keys button:focus-visible{background:var(--panel); border-color:var(--panel-line)}
+.keys button[aria-pressed="true"]{background:var(--panel); border-color:var(--lit)}
+.keys .n{
+  flex:0 0 auto; width:19px; height:19px; border-radius:50%; background:var(--ink);
+  color:var(--paper); font-size:11px; font-weight:600; display:grid; place-items:center; margin-top:2px;
+}
+.keys button[aria-pressed="true"] .n{background:var(--lit); color:#241a06}
+.keys b{display:block; font-family:'Barlow Condensed',sans-serif; font-size:16px; font-weight:600}
+.keys span.d{font-size:13.5px; color:var(--ink-soft); line-height:1.4}
+
+/* ---------- generic layout helpers ---------- */
+.cols{display:grid; gap:20px; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); margin-top:20px}
+.card{background:var(--panel); border:1px solid var(--panel-line); border-radius:7px; padding:16px 18px}
+.card p{font-size:14.5px; margin:0; color:var(--ink-soft)}
+.card p+p{margin-top:10px}
+.axis{height:44px; margin:2px 0 12px; display:block; width:100%}
+
+table{border-collapse:collapse; width:100%; font-size:14.5px; margin-top:18px}
+.tablewrap{overflow-x:auto}
+th,td{text-align:left; padding:9px 12px; border-bottom:1px solid var(--panel-line); vertical-align:top}
+th{font-family:'Barlow Condensed',sans-serif; font-weight:600; font-size:16px; border-bottom-width:2px}
+tbody tr:nth-child(odd){background:color-mix(in srgb,var(--panel) 55%,transparent)}
+td code{
+  font-family:'Barlow Condensed',sans-serif; font-weight:600; font-size:15px;
+  background:var(--paper-2); border:1px solid var(--panel-line); border-radius:3px; padding:0 5px;
+}
+.ok{color:#3f7a1e; font-weight:600}
+.no{color:#a33c1e; font-weight:600}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .ok{color:#9fd36a} :root:not([data-theme="light"]) .no{color:#e8886a}}
+
+.compare{display:grid; gap:18px; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); margin-top:20px}
+.compare h3{display:flex; align-items:center; gap:8px}
+.verdict{font-family:'Barlow',sans-serif; font-size:11px; font-weight:600; letter-spacing:.06em;
+  padding:2px 7px; border-radius:3px; color:#fff}
+.verdict.bad{background:#a33c1e}
+.verdict.good{background:#3f7a1e}
+
+ol.steps{counter-reset:s; list-style:none; padding:0; margin:20px 0 0; display:grid; gap:10px}
+ol.steps li{counter-increment:s; display:flex; gap:12px; align-items:flex-start; font-size:15px}
+ol.steps li::before{
+  content:counter(s); flex:0 0 auto; width:22px; height:22px; border-radius:4px;
+  background:var(--ink); color:var(--paper); font-family:'Barlow Condensed',sans-serif;
+  font-weight:600; font-size:14px; display:grid; place-items:center; margin-top:1px;
+}
+.tierbadge{display:inline-block; font-family:'Barlow Condensed',sans-serif; font-weight:700;
+  font-size:13px; background:var(--ink); color:var(--paper); border-radius:3px; padding:0 6px; margin-right:6px}
+footer{margin-top:60px; padding-top:18px; border-top:2px solid var(--panel-line);
+  font-size:13.5px; color:var(--ink-soft)}
+
+@media print{
+  :root{--paper:#c3ac8b}
+  body{background:var(--paper)}
+  .wrap{max-width:none; padding:0 8px 8px}
+  .board{overflow:visible}
+  .board-inner{min-width:0}
+  .pin{display:none} .screen-only{display:none !important} .print-only{display:inline !important}
+  .box,.card,.keys li,ol.steps li,.compare > div,tr{break-inside:avoid; page-break-inside:avoid}
+  section{break-before:auto}
+  h2{break-after:avoid}
+  .keys{grid-template-columns:repeat(2,1fr)}
+}
+.print-only{display:none}
+@media (prefers-reduced-motion:no-preference){.is-lit{transition:outline-color .15s ease}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>A gramática do seu<br>tabuleiro de build</h1>
+  <p class="lede">O editor nativo do Deadlock só oferece caixas com itens dentro. Você usa essas caixas como um idioma: posição diz ordem, empilhamento diz troca, moldura diz condição. Aqui está esse idioma escrito por extenso.</p>
+</header>
+
+<section id="anatomia">
+  <h2>Anatomia de um tabuleiro</h2>
+  <p class="kicker">Reconstrução do seu layout em uso. <span class="screen-only">Clique num número para destacar a peça correspondente.</span><span class="print-only">Os números remetem à legenda abaixo do tabuleiro.</span></p>
+
+  <div class="board">
+    <div class="board-inner">
+
+      <div class="board-row">
+        <div class="anchor" data-part="fase">
+          <button class="pin tl" data-key="1" aria-label="Destacar cabeçalho de fase">1</button>
+          <button class="pin tr" data-key="2" aria-label="Destacar teto de almas">2</button>
+          <div class="box" data-lit="fase">
+            <div class="box-h">Itens básicos <span class="souls">8k</span></div>
+            <div class="row">
+              <div class="item s"><span class="tier">I</span>Spirit Strike</div>
+              <div class="item w"><span class="tier">I</span>Close Quarters</div>
+              <div class="item v"><span class="tier">I</span>Melee Lifesteal</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="anchor" data-part="coluna">
+          <button class="pin tr" data-key="3" aria-label="Destacar coluna vertical">3</button>
+          <button class="pin bl" data-key="4" aria-label="Destacar etiqueta opcional">4</button>
+          <div class="box optional" data-lit="coluna">
+            <div class="box-h">Escolha 1 <span class="tag opt">OPCIONAL</span></div>
+            <div class="stack">
+              <div class="item s"><span class="tier">II</span>Spirit Shielding</div>
+              <div class="item v"><span class="tier">II</span>Weapon Shielding</div>
+              <div class="item v"><span class="tier">II</span>Reactive Barrier</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="anchor" data-part="tier">
+          <button class="pin br" data-key="5" aria-label="Destacar tier do item">5</button>
+          <div class="box" data-lit="tier">
+            <div class="box-h">Escolha 1</div>
+            <div class="stack">
+              <div class="item s"><span class="tier">II</span><span class="act">ATIVO</span>Cold Front</div>
+              <div class="item w"><span class="tier">II</span>Melee Charge</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="board-row">
+        <div class="anchor" data-part="ordem">
+          <button class="pin bl" data-key="6" aria-label="Destacar leitura horizontal">6</button>
+          <div class="box" data-lit="ordem">
+            <div class="box-h">Meio da partida <span class="souls">12600</span></div>
+            <div class="row">
+              <div class="item w"><span class="tier">III</span>Point Blank</div>
+              <div class="item v"><span class="tier">III</span>Lifestrike</div>
+            </div>
+          </div>
+        </div>
+        <div class="box">
+          <div class="box-h">Escolha 1</div>
+          <div class="stack">
+            <div class="item v"><span class="tier">III</span>Bullet Resilience</div>
+            <div class="item s"><span class="tier">III</span>Spirit Resilience</div>
+          </div>
+        </div>
+        <div class="box">
+          <div class="box-h">Minutos finais</div>
+          <div class="row">
+            <div class="item s"><span class="tier">IV</span>Transcendent Cooldown</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="board-row">
+        <div class="anchor" data-part="cond">
+          <button class="pin tl" data-key="7" aria-label="Destacar caixa condicional">7</button>
+          <div class="box conditional" data-lit="cond">
+            <div class="box-h">Cancelar Soco <span class="tag cond">OPCIONAL</span>
+              <span class="legend">▶ itens que cancelam o soco pesado</span>
+            </div>
+            <div class="row">
+              <div class="item w"><span class="tier">II</span><span class="act">ATIVO</span>Fleetfoot</div>
+              <div class="item v"><span class="tier">IV</span><span class="act">ATIVO</span>Colossus</div>
+              <div class="item v"><span class="tier">IV</span><span class="act">ATIVO</span>Vampiric Burst</div>
+              <div class="item w"><span class="tier">IV</span><span class="act">ATIVO</span>Fury Trance</div>
+              <div class="item v"><span class="tier">IV</span><span class="act">ATIVO</span>Unstoppable</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <ul class="keys">
+    <li><button data-key="1" aria-pressed="false"><span class="n">1</span><span><b>Cabeçalho de fase</b><span class="d">Diz quando comprar, e só isso. “Itens básicos”, “Meio da partida”, “Minutos finais” mapeiam direto nos boons 0–7, 7–14 e 14+.</span></span></button></li>
+    <li><button data-key="2" aria-pressed="false"><span class="n">2</span><span><b>Teto de almas</b><span class="d">O 8k e o 12600 são o orçamento daquela faixa. É o cronômetro da build visível na tela, sem depender do relógio da partida.</span></span></button></li>
+    <li><button data-key="3" aria-pressed="false"><span class="n">3</span><span><b>Coluna vertical</b><span class="d">Topo é o padrão, o resto são trocas para o mesmo slot. Máximo de três. Ninguém compra a coluna inteira.</span></span></button></li>
+    <li><button data-key="4" aria-pressed="false"><span class="n">4</span><span><b>Etiqueta OPCIONAL</b><span class="d">Vale para a caixa toda: esse slot pode não existir nessa partida. Diferente de “Escolha 1”, que obriga a escolher um.</span></span></button></li>
+    <li><button data-key="5" aria-pressed="false"><span class="n">5</span><span><b>Tier no canto</b><span class="d">I a IV amarram o custo. Trocar dentro da coluna só preserva a curva de boons se o tier bater.</span></span></button></li>
+    <li><button data-key="6" aria-pressed="false"><span class="n">6</span><span><b>Leitura horizontal</b><span class="d">Esquerda para a direita, linha por linha, é a ordem de compra. O eixo horizontal é tempo.</span></span></button></li>
+    <li><button data-key="7" aria-pressed="false"><span class="n">7</span><span><b>Caixa condicional</b><span class="d">Sai da linha do tempo e ganha legenda com o gatilho. Funciona como um armário que você abre quando a condição aparece.</span></span></button></li>
+  </ul>
+</section>
+
+<section id="eixos">
+  <h2>Três eixos, três perguntas</h2>
+  <p class="kicker">Todo o método cabe em saber que direção na tela significa o quê. O editor do jogo não ensina isso; sua formatação sim.</p>
+  <div class="cols">
+    <div class="card">
+      <svg class="axis" viewBox="0 0 220 44" role="img" aria-label="Setas apontando para a direita entre três blocos">
+        <rect x="2" y="12" width="40" height="22" rx="3" fill="var(--slate)"/>
+        <rect x="62" y="12" width="40" height="22" rx="3" fill="var(--slate)"/>
+        <rect x="122" y="12" width="40" height="22" rx="3" fill="var(--slate)"/>
+        <path d="M46 23h12M106 23h12" stroke="var(--ink)" stroke-width="2"/>
+        <path d="M58 19l6 4-6 4zM118 19l6 4-6 4z" fill="var(--ink)"/>
+      </svg>
+      <h3>Horizontal é tempo</h3>
+      <p>Cada caixa à direita é mais tarde na partida e mais cara. Responde “compro o quê agora”.</p>
+    </div>
+    <div class="card">
+      <svg class="axis" viewBox="0 0 220 44" role="img" aria-label="Três blocos empilhados com uma seta de duas pontas">
+        <rect x="88" y="1" width="44" height="12" rx="3" fill="var(--slate)"/>
+        <rect x="88" y="16" width="44" height="12" rx="3" fill="var(--slate)" opacity=".62"/>
+        <rect x="88" y="31" width="44" height="12" rx="3" fill="var(--slate)" opacity=".62"/>
+        <path d="M140 6v32" stroke="var(--ink)" stroke-width="2"/>
+        <path d="M136 10l4-6 4 6zM136 34l4 6 4-6" fill="var(--ink)"/>
+      </svg>
+      <h3>Vertical é troca</h3>
+      <p>Mesmo slot, mesmo custo, situações diferentes. Responde “o que eu coloco no lugar”.</p>
+    </div>
+    <div class="card">
+      <svg class="axis" viewBox="0 0 220 44" role="img" aria-label="Bloco destacado separado da linha principal">
+        <rect x="2" y="12" width="40" height="22" rx="3" fill="var(--slate)"/>
+        <rect x="52" y="12" width="40" height="22" rx="3" fill="var(--slate)"/>
+        <rect x="126" y="6" width="80" height="34" rx="4" fill="none" stroke="var(--cond)" stroke-width="2" stroke-dasharray="5 4"/>
+        <rect x="134" y="14" width="28" height="18" rx="3" fill="var(--slate)"/>
+        <rect x="170" y="14" width="28" height="18" rx="3" fill="var(--slate)"/>
+      </svg>
+      <h3>Fora da linha é condição</h3>
+      <p>Grupo com legenda de gatilho, sem lugar fixo no tempo. Responde “e se o inimigo fizer X”.</p>
+    </div>
+  </div>
+</section>
+
+<section id="dicionario">
+  <h2>Dicionário dos cabeçalhos</h2>
+  <p class="kicker">Você já usa quatro famílias de rótulo. Tratá-las como vocabulário fechado é o que mantém builds diferentes legíveis pela mesma pessoa.</p>
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>Rótulo</th><th>Família</th><th>O que o jogador faz</th></tr></thead>
+    <tbody>
+      <tr><td><code>Itens básicos 8k</code></td><td>Fase</td><td>Compra tudo, nesta ordem, até estourar o teto de almas.</td></tr>
+      <tr><td><code>Depois do terceiro item</code></td><td>Fase</td><td>Só começa depois do core fechado — é um marco, não um horário.</td></tr>
+      <tr><td><code>Meio da partida</code></td><td>Fase</td><td>Entra com o kit completo e o mapa aberto, por volta do boon 7.</td></tr>
+      <tr><td><code>Minutos finais</code></td><td>Fase</td><td>Power spike e counters, boon 14 em diante.</td></tr>
+      <tr><td><code>Escolha 1</code></td><td>Decisão</td><td>Leva exatamente um da pilha. O de cima é o padrão.</td></tr>
+      <tr><td><code>OPCIONAL</code></td><td>Modificador</td><td>A caixa inteira pode ser pulada nessa partida.</td></tr>
+      <tr><td><code>Cancelar Soco</code></td><td>Condição por ação</td><td>Abre o armário quando precisa daquela ação específica.</td></tr>
+      <tr><td><code>Toma muito parry?</code></td><td>Condição por sintoma</td><td>Responde a um problema que ele já está sentindo na partida.</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<section id="coluna">
+  <h2>Por que a coluna resolve e a fileira não</h2>
+  <p class="kicker">A mesma informação, nos dois formatos. O que muda é quanto o jogador gasta para chegar no mesmo lugar.</p>
+  <div class="compare">
+    <div>
+      <h3>Fileira plana <span class="verdict bad">atrasa a build</span></h3>
+      <div class="box" style="margin-top:8px">
+        <div class="box-h">Meio da partida</div>
+        <div class="row">
+          <div class="item v"><span class="tier">III</span>Bullet Resilience</div>
+          <div class="item s"><span class="tier">III</span>Spirit Resilience</div>
+          <div class="item v"><span class="tier">III</span>Lifestrike</div>
+          <div class="item w"><span class="tier">III</span>Point Blank</div>
+        </div>
+      </div>
+      <p style="margin-top:12px; font-size:14.5px; color:var(--ink-soft)">Quatro itens lado a lado parecem quatro compras. O jogador soma tudo, gasta além do core e chega no late sem o item que importava.</p>
+    </div>
+    <div>
+      <h3>Coluna vertical <span class="verdict good">preserva a curva</span></h3>
+      <div class="row" style="margin-top:8px">
+        <div class="box">
+          <div class="box-h">Meio da partida</div>
+          <div class="row">
+            <div class="item w"><span class="tier">III</span>Point Blank</div>
+            <div class="item v"><span class="tier">III</span>Lifestrike</div>
+          </div>
+        </div>
+        <div class="box optional">
+          <div class="box-h">Escolha 1 <span class="tag opt">OPCIONAL</span></div>
+          <div class="stack">
+            <div class="item v"><span class="tier">III</span>Bullet Resilience</div>
+            <div class="item s"><span class="tier">III</span>Spirit Resilience</div>
+          </div>
+        </div>
+      </div>
+      <p style="margin-top:12px; font-size:14.5px; color:var(--ink-soft)">Duas compras fixas e um slot com duas caras. Trocar T3 por T3 mantém o mesmo gasto, então o próximo boon cai no mesmo minuto seja qual for a matchup.</p>
+    </div>
+  </div>
+</section>
+
+<section id="tierlist">
+  <h2>Onde isso cai na sua tier list</h2>
+  <p class="kicker">Sua formatação junta os três layouts de tier S no mesmo tabuleiro, cada um resolvendo uma pergunta que os outros dois deixam em aberto.</p>
+  <div class="cols">
+    <div class="card">
+      <h3><span class="tierbadge">S</span>Grade categoria × custo</h3>
+      <p>Vem pronta do jogo. Os tiers I–IV e as cores de categoria já estão nos cards — você herda isso de graça e usa como trava de custo nas trocas.</p>
+    </div>
+    <div class="card">
+      <h3><span class="tierbadge">S</span>Trilha por fases</h3>
+      <p>É o que você sobrepõe à grade. Os cabeçalhos de fase mais o teto de almas transformam um cardápio em sequência.</p>
+    </div>
+    <div class="card">
+      <h3><span class="tierbadge">S</span>Núcleo + bandeja situacional</h3>
+      <p>As caixas sem etiqueta são o núcleo; “Escolha 1” e as caixas com legenda são a bandeja. A coluna vertical amarra a bandeja dentro do núcleo em vez de pendurá-la do lado.</p>
+    </div>
+  </div>
+  <p style="margin-top:20px">O detalhe que só o seu formato tem: na bandeja situacional clássica, o item condicional fica solto e o jogador tenta comprá-lo <em>além</em> do núcleo. Ao empilhar a alternativa dentro do próprio slot, a troca vira substituição obrigatória e o erro deixa de ser possível.</p>
+</section>
+
+<section id="diagnostico">
+  <h2>As três builds das prints</h2>
+  <p class="kicker">Mesmo herói, três gerações do formato. Dá para ver o método amadurecendo entre elas.</p>
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>Build</th><th>Fases</th><th>Teto de almas</th><th>Coluna vertical</th><th>Caixas condicionais</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><b>AURA + EGO</b><br><span style="color:var(--ink-soft); font-size:13px">fileiras planas</span></td>
+        <td class="ok">sim</td><td class="ok">8k</td>
+        <td class="no">nenhuma</td>
+        <td class="ok">Cancelar Soco, Toma muito parry</td>
+      </tr>
+      <tr>
+        <td><b>Contra parede e soco</b><br><span style="color:var(--ink-soft); font-size:13px">marcada desatualizada</span></td>
+        <td class="ok">sim</td><td class="ok">8k</td>
+        <td class="ok">pilhas de 2 e 3</td>
+        <td class="ok">grupos + legendas</td>
+      </tr>
+      <tr>
+        <td><b>Build da quarta print</b><br><span style="color:var(--ink-soft); font-size:13px">forma mais recente</span></td>
+        <td class="ok">sim</td><td class="ok">12600</td>
+        <td class="ok">pilhas de 2 e 3</td>
+        <td class="ok">Escolha 1 em série</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+  <p style="margin-top:18px">A build mais completa em conteúdo é a que menos usa o método: a AURA + EGO tem as quatro fases e os dois armários condicionais, mas despeja sete itens numa fileira só no meio da partida, sem dizer qual sai quando entra o situacional. É exatamente o caso que a coluna vertical existe para resolver — e é a candidata óbvia para a próxima conversão.</p>
+  <p>Também vale unificar o idioma: “Escolha 1” e “Choose 1” aparecem lado a lado, e duas caixas na terceira print estão sem cabeçalho nenhum. Caixa sem rótulo devolve a decisão para o leitor, que é o defeito do mural sem hierarquia lá na sua tier list.</p>
+</section>
+
+<section id="checklist">
+  <h2>Checklist antes de publicar uma build</h2>
+  <ol class="steps">
+    <li>Toda caixa tem cabeçalho, e o cabeçalho pertence a uma das quatro famílias do dicionário.</li>
+    <li>Cada caixa de fase carrega o teto de almas da faixa correspondente de boons.</li>
+    <li>Nenhuma pilha passa de três itens.</li>
+    <li>Dentro de cada pilha, o item de cima é o padrão e os de baixo têm tier equivalente.</li>
+    <li>Existe ao menos um item counter a partir do meio e dois nos minutos finais.</li>
+    <li>Toda caixa condicional tem legenda curta dizendo o gatilho.</li>
+    <li>A leitura da esquerda para a direita é uma ordem de compra válida do começo ao fim.</li>
+    <li>O título da build declara herói, foco e variante, sem depender do conteúdo para ser entendido.</li>
+  </ol>
+</section>
+
+<footer>
+  Os tetos de almas e os limiares de boon envelhecem a cada patch de balanceamento. Quando eles mudarem, os números nos cabeçalhos mudam junto — o resto da gramática continua valendo.
+</footer>
+
+</div>
+
+<script>
+(function(){
+  var lit = null;
+  function clear(){
+    document.querySelectorAll('.is-lit').forEach(function(e){e.classList.remove('is-lit')});
+    document.querySelectorAll('.pin.is-on').forEach(function(e){e.classList.remove('is-on')});
+    document.querySelectorAll('.keys button').forEach(function(b){b.setAttribute('aria-pressed','false')});
+  }
+  var map = {1:'fase',2:'fase',3:'coluna',4:'coluna',5:'tier',6:'ordem',7:'cond'};
+  function light(key){
+    if(lit === key){ lit = null; clear(); return; }
+    clear(); lit = key;
+    var target = document.querySelector('[data-lit="'+map[key]+'"]');
+    if(target) target.classList.add('is-lit');
+    document.querySelectorAll('.pin[data-key="'+key+'"]').forEach(function(p){p.classList.add('is-on')});
+    var btn = document.querySelector('.keys button[data-key="'+key+'"]');
+    if(btn) btn.setAttribute('aria-pressed','true');
+  }
+  document.querySelectorAll('.pin, .keys button').forEach(function(el){
+    el.addEventListener('click', function(){ light(el.getAttribute('data-key')); });
+  });
+})();
+</script>
+</body>
+</html>

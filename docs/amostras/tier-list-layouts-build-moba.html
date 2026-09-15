@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Layouts de build em MOBA — tier list</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#12141a; --panel:#1b1e26; --panel2:#171a21; --line:#2b3140;
+  --ink:#e9ecf3; --muted:#99a1b3; --dim:#6d768a;
+  --s:#ff5a5a; --a:#ff9642; --b:#f5cd3f; --c:#6ed36e; --d:#55a8e8; --f:#9d77e0;
+  --display:"Chakra Petch",ui-sans-serif,system-ui,sans-serif;
+  --body:"Barlow","Segoe UI",system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:var(--body); font-size:16px; line-height:1.55;
+}
+.wrap{max-width:1080px; margin:0 auto; padding:40px 20px 72px}
+a{color:#7fd4ff}
+
+/* ---------- cabeçalho ---------- */
+.head{border-bottom:1px solid var(--line); padding-bottom:26px; margin-bottom:34px}
+h1{
+  font-family:var(--display); font-weight:700; font-size:clamp(30px,5.4vw,50px);
+  line-height:1.04; letter-spacing:-.015em; margin:0 0 12px;
+}
+.dek{max-width:62ch; color:var(--muted); font-size:17px; margin:0}
+.criteria{display:flex; flex-wrap:wrap; gap:8px; margin-top:20px}
+.criteria li{
+  list-style:none; font-size:13.5px; color:var(--muted);
+  border:1px solid var(--line); border-radius:999px; padding:4px 12px; background:var(--panel2);
+}
+.criteria b{color:var(--ink); font-weight:600}
+
+/* ---------- tier list ---------- */
+.tier{display:grid; grid-template-columns:76px 1fr; gap:10px; margin-bottom:10px; align-items:stretch}
+.badge{
+  font-family:var(--display); font-weight:700; font-size:34px; color:#0e1015;
+  display:flex; align-items:center; justify-content:center; border-radius:8px;
+}
+.badge span{display:block; margin-top:-2px}
+.t-s .badge{background:var(--s)} .t-a .badge{background:var(--a)}
+.t-b .badge{background:var(--b)} .t-c .badge{background:var(--c)}
+.t-d .badge{background:var(--d)} .t-f .badge{background:var(--f)}
+.shelf{
+  display:grid; grid-template-columns:repeat(3,1fr); gap:10px;
+  background:var(--panel2); border:1px solid var(--line); border-radius:8px; padding:10px;
+}
+.card{
+  background:var(--panel); border:1px solid var(--line); border-radius:6px;
+  padding:10px 11px 12px; display:flex; flex-direction:column; gap:8px;
+}
+.card h3{font-family:var(--display); font-weight:600; font-size:15.5px; margin:0; line-height:1.2}
+.card p{margin:0; font-size:13.5px; color:var(--muted); line-height:1.45}
+.wf{width:100%; height:80px; display:block; border-radius:4px; background:#0f1116}
+.t-s .wf{color:var(--s)} .t-a .wf{color:var(--a)} .t-b .wf{color:var(--b)}
+.t-c .wf{color:var(--c)} .t-d .wf{color:var(--d)} .t-f .wf{color:var(--f)}
+.wf .ghost{fill:#232833} .wf .edge{stroke:#39404f; fill:none}
+.wf .hot{fill:currentColor} .wf .hotline{stroke:currentColor; fill:none}
+
+/* ---------- seções ---------- */
+h2{
+  font-family:var(--display); font-weight:700; font-size:clamp(21px,3.2vw,27px);
+  margin:54px 0 6px; letter-spacing:-.01em;
+}
+.sub{color:var(--muted); margin:0 0 22px; max-width:64ch}
+.dossier{display:grid; gap:12px}
+.entry{
+  border:1px solid var(--line); border-left:3px solid var(--rank,var(--line));
+  background:var(--panel2); border-radius:6px; padding:16px 18px;
+}
+.entry h3{font-family:var(--display); font-size:18px; margin:0 0 4px; font-weight:600}
+.entry .rank{color:var(--rank); font-weight:700; margin-right:8px}
+.entry .lead{margin:0 0 12px; color:var(--muted); max-width:70ch}
+.pc{display:grid; grid-template-columns:1fr 1fr; gap:14px}
+.pc ul{margin:0; padding-left:18px; font-size:14.5px}
+.pc li{margin-bottom:4px}
+.pc .good li::marker{color:#6ed36e}
+.pc .bad li::marker{color:#ff7a6b}
+.pc h4{font-family:var(--display); font-size:13px; font-weight:600; margin:0 0 6px; color:var(--dim)}
+.where{margin:12px 0 0; font-size:14px; color:var(--dim)}
+.where b{color:var(--muted); font-weight:600}
+
+table{width:100%; border-collapse:collapse; font-size:14.5px; margin-top:6px}
+th,td{text-align:left; padding:9px 10px; border-bottom:1px solid var(--line); vertical-align:top}
+th{font-family:var(--display); font-weight:600; font-size:13px; color:var(--dim)}
+td.rk{font-family:var(--display); font-weight:700; width:34px}
+.scroller{overflow-x:auto}
+
+.games{display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px}
+.game{background:var(--panel2); border:1px solid var(--line); border-radius:8px; padding:16px 18px}
+.game h3{font-family:var(--display); font-size:18px; margin:0 0 2px}
+.game .econ{font-size:13.5px; color:var(--dim); margin:0 0 10px}
+.game p{margin:0 0 10px; font-size:14.5px; color:var(--muted)}
+.game .pick{font-size:14.5px; color:var(--ink); border-top:1px dashed var(--line); padding-top:10px; margin:0}
+
+.reco{background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:20px 22px}
+.reco ol{margin:0; padding-left:20px}
+.reco li{margin-bottom:9px; font-size:15px}
+.reco li b{font-family:var(--display); font-weight:600}
+.reco .note{color:var(--muted); font-size:14px; margin:14px 0 0}
+
+footer{margin-top:54px; padding-top:18px; border-top:1px solid var(--line); color:var(--dim); font-size:13.5px}
+
+@media (max-width:640px){
+  .tier{grid-template-columns:52px 1fr}
+  .badge{font-size:26px}
+  .shelf{grid-template-columns:1fr 1fr; gap:8px; padding:8px}
+  .card{padding:8px}
+  .card h3{font-size:14px}
+  .card p{font-size:12.5px}
+  .pc{grid-template-columns:1fr}
+}
+@media (max-width:420px){ .shelf{grid-template-columns:1fr} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="head">
+  <h1>Layouts de build em MOBA</h1>
+  <p class="dek">Quatorze formas de apresentar uma build, ordenadas por quanto ajudam alguém a decidir o que comprar. Cada miniatura é o esqueleto do layout — dá pra reconhecer sem ler.</p>
+  <ul class="criteria">
+    <li><b>1.</b> tempo até a primeira decisão útil</li>
+    <li><b>2.</b> suporte a condicional (build muda com o inimigo)</li>
+    <li><b>3.</b> custo de manutenção por patch</li>
+    <li><b>4.</b> densidade sem virar parede</li>
+  </ul>
+</header>
+
+<!-- ============ S ============ -->
+<div class="tier t-s">
+  <div class="badge"><span>S</span></div>
+  <div class="shelf">
+
+    <article class="card">
+      <svg class="wf" viewBox="0 0 200 90" role="img" aria-label="Três itens fixos à esquerda e uma bandeja de itens opcionais à direita">
+        <rect class="hot" x="8" y="32" width="24" height="24" rx="4"/>
+        <rect class="hot" x="36" y="32" width="24" height="24" rx="4"/>
+        <rect class="hot" x="64" y="32" width="24" height="24" rx="4"/>
+        <rect x="100" y="14" width="92" height="62" rx="5" class="edge" stroke-dasharray="4 3"/>
+        <rect class="ghost" x="108" y="22" width="22" height="22" rx="3"/>
+        <rect class="ghost" x="134" y="22" width="22" height="22" rx="3"/>
+        <rect class="ghost" x="160" y="22" width="22" height="22" rx="3"/>
+        <rect class="ghost" x="108" y="48" width="22" height="22" rx="3"/>
+        <rect class="ghost" x="134" y="48" width="22" height="22" rx="3"/>
+        <rect class="ghost" x="160" y="48" width="22" height="22" rx="3"/>
+      </svg>
+      <h3>Núcleo + bandeja situacional</h3>
+      <p>Dois ou três itens travados, o resto escolhido por condição.</p>
+    </article>
+
+    <article class="card">
+      <svg class="wf" viewBox="0 0 200 90" role="img" aria-label="Trilha horizontal de compras dividida em fases com marcos">
+        <line class="edge" x1="10" y1="62" x2="190" y2="62"/>
+        <g class="hot">
+          <rect x="12" y="26" width="18" height="18" rx="3"/>
+          <rect x="56" y="26" width="18" height="18" rx="3"/>
+          <rect x="76" y="26" width="18" height="18" rx="3"/>
+          <rect x="120" y="26" width="18" height="18" rx="3"/>
+        </g>
+        <rect class="ghost" x="160" y="26" width="18" height="18" rx="3"/>
+        <path class="hotline" d="M40 35 l6 5 -6 5 M104 35 l6 5 -6 5 M146 35 l6 5 -6 5"/>
+        <g class="hotline"><path d="M21 58v8M65 58v8M129 58v8"/></g>
+        <circle class="hot" cx="21" cy="62" r="3"/><circle class="hot" cx="65" cy="62" r="3"/><circle class="hot" cx="129" cy="62" r="3"/>
+        <rect class="ghost" x="14" y="72" width="30" height="5" rx="2"/>
+        <rect class="ghost" x="58" y="72" width="30" height="5" rx="2"/>
+        <rect class="ghost" x="122" y="72" width="30" height="5" rx="2"/>
+      </svg>
+      <h3>Trilha por fases</h3>
+      <p>Início, núcleo, botas, fechamento — com os picos de força marcados.</p>
+    </article>
+
+    <article class="card">
+      <svg class="wf" viewBox="0 0 200 90" role="img" aria-label="Grade com categorias nas colunas e faixas de preço nas linhas">
+        <rect class="hot" x="14" y="8" width="50" height="8" rx="2"/>
+        <rect class="hot" x="72" y="8" width="50" height="8" rx="2"/>
+        <rect class="hot" x="130" y="8" width="50" height="8" rx="2"/>
+        <g class="ghost">
+          <rect x="14" y="22" width="50" height="13" rx="2"/><rect x="72" y="22" width="50" height="13" rx="2"/><rect x="130" y="22" width="50" height="13" rx="2"/>
+          <rect x="14" y="39" width="50" height="13" rx="2"/><rect x="72" y="39" width="50" height="13" rx="2"/><rect x="130" y="39" width="50" height="13" rx="2"/>
+          <rect x="14" y="56" width="50" height="13" rx="2"/><rect x="72" y="56" width="50" height="13" rx="2"/><rect x="130" y="56" width="50" height="13" rx="2"/>
+          <rect x="14" y="73" width="50" height="10" rx="2"/><rect x="72" y="73" width="50" height="10" rx="2"/><rect x="130" y="73" width="50" height="10" rx="2"/>
+        </g>
+      </svg>
+      <h3>Grade categoria × custo</h3>
+      <p>Colunas por tipo de item, linhas por faixa de preço. O layout nativo do Deadlock.</p>
+    </article>
+
+  </div>
+</div>
+
+<!-- ============ A ============ -->
+<div class="tier t-a">
+  <div class="badge"><span>A</span></div>
+  <div class="shelf">
+
+    <article class="card">
+      <svg class="wf" viewBox="0 0 200 90" role="img" aria-label="Árvore de decisão com ramos condicionais">
+        <rect class="hot" x="84" y="8" width="32" height="14" rx="3"/>
+        <path class="hotline" d="M100 22v10 M52 32h96 M52 32v10 M148 32v10"/>
+        <rect class="ghost" x="36" y="42" width="32" height="13" rx="3"/>
+        <rect class="ghost" x="132" y="42" width="32" height="13" rx="3"/>
+        <path class="edge" d="M52 55v8 M28 63h48 M28 63v8 M76 63v8 M148 55v8 M124 63h48 M124 63v8 M172 63v8"/>
+        <g class="ghost">
+          <rect x="16" y="71" width="24" height="11" rx="2"/><rect x="64" y="71" width="24" height="11" rx="2"/>
+          <rect x="112" y="71" width="24" height="11" rx="2"/><rect x="160" y="71" width="24" height="11" rx="2"/>
+        </g>
+      </svg>
+      <h3>Árvore de decisão</h3>
+      <p>Se o inimigo tem cura, então X. Precisa é a resposta certa; ler é trabalhoso.</p>
+    </article>
+
+    <article class="card">
+      <svg class="wf" viewBox="0 0 200 90" role="img" aria-label="Card de item com camadas de detalhe empilhadas">
+        <rect class="edge" x="34" y="14" width="120" height="58" rx="5"/>
+        <rect class="edge" x="42" y="20" width="120" height="58" rx="5"/>
+        <rect x="50" y="26" width="120" height="58" rx="5" fill="#1d212b" stroke="currentColor"/>
+        <rect class="hot" x="58" y="34" width="22" height="22" rx="3"/>
+        <rect class="ghost" x="88" y="35" width="66" height="6" rx="2"/>
+        <rect class="ghost" x="88" y="46" width="48" height="5" rx="2"/>
+        <rect class="ghost" x="58" y="64" width="96" height="5" rx="2"/>
+        <rect class="ghost" x="58" y="73" width="70" height="5" rx="2"/>
+      </svg>
+      <h3>Card em camadas</h3>
+      <p>Resumo visível, detalhe completo no hover ou numa tecla modificadora.</p>
+    </article>
+
+    <article class="card">
+      <svg class="wf" viewBox="0 0 200 90" role="img" aria-label="Matriz cruzando situações de jogo com itens">
+        <rect class="hot" x="44" y="10" width="34" height="10" rx="2"/>
+        <rect class="hot" x="82" y="10" width="34" height="10" rx="2"/>
+        <rect class="hot" x="120" y="10" width="34" height="10" rx="2"/>
+        <rect class="hot" x="158" y="10" width="26" height="10" rx="2"/>
+        <g class="ghost">
+          <rect x="10" y="26" width="30" height="12" rx="2"/><rect x="10" y="44" width="30" height="12" rx="2"/>
+          <rect x="10" y="62" width="30" height="12" rx="2"/>
+        </g>
+        <g class="edge">
+          <rect x="44" y="26" width="34" height="12" rx="2"/><rect x="82" y="26" width="34" height="12" rx="2"/><rect x="120" y="26" width="34" height="12" rx="2"/><rect x="158" y="26" width="26" height="12" rx="2"/>
+          <rect x="44" y="44" width="34" height="12" rx="2"/><rect x="82" y="44" width="34" height="12" rx="2"/><rect x="120" y="44" width="34" height="12" rx="2"/><rect x="158" y="44" width="26" height="12" rx="2"/>
+          <rect x="44" y="62" width="34" height="12" rx="2"/><rect x="82" y="62" width="34" height="12" rx="2"/><rect x="120" y="62" width="34" height="12" rx="2"/><rect x="158" y="62" width="26" height="12" rx="2"/>
+        </g>
+        <rect class="hot" x="82" y="44" width="34" height="12" rx="2" opacity=".55"/>
+        <rect class="hot" x="158" y="26" width="26" height="12" rx="2" opacity=".55"/>
+      </svg>
+      <h3>Matriz situação × item</h3>
+      <p>Linhas de contexto, colunas de item, marca no cruzamento.</p>
+    </article>
+
+  </div>
+</div>
+
+<!-- ============ B ============ -->
+<div class="tier t-b">
+  <div class="badge"><span>B</span></div>
+  <div class="shelf">
+
+    <article class="card">
+      <svg class="wf" viewBox="0 0 200 90" role="img" aria-label="Abas por variante de build com um painel abaixo">
+        <rect class="hot" x="12" y="10" width="44" height="14" rx="3"/>
+        <rect class="ghost" x="60" y="12" width="44" height="12" rx="3"/>
+        <rect class="ghost" x="108" y="12" width="44" height="12" rx="3"/>
+        <rect x="12" y="24" width="176" height="54" rx="4" fill="#1d212b" stroke="currentColor"/>
+        <g class="ghost">
+          <rect x="22" y="34" width="20" height="20" rx="3"/><rect x="46" y="34" width="20" height="20" rx="3"/>
+          <rect x="70" y="34" width="20" height="20" rx="3"/><rect x="94" y="34" width="20" height="20" rx="3"/>
+          <rect x="22" y="62" width="120" height="6" rx="2"/>
+        </g>
+      </svg>
+      <h3>Abas por variante</h3>
+      <p>Uma aba por matchup. Organiza bem, mas esconde a comparação.</p>
+    </article>
+
+    <article class="card">
+      <svg class="wf" viewBox="0 0 200 90" role="img" aria-label="Folha única com todas as informações da build empilhadas">
+        <rect x="44" y="6" width="112" height="78" rx="4" fill="#1d212b" stroke="currentColor"/>
+        <rect class="hot" x="54" y="14" width="60" height="8" rx="2"/>
+        <g class="ghost">
+          <rect x="54" y="28" width="92" height="7" rx="2"/>
+          <rect x="54" y="39" width="92" height="7" rx="2"/>
+          <rect x="54" y="50" width="70" height="7" rx="2"/>
+          <rect x="54" y="61" width="92" height="7" rx="2"/>
+          <rect x="54" y="72" width="44" height="7" rx="2"/>
+        </g>
+      </svg>
+      <h3>Folha única</h3>
+      <p>Tudo numa tela só, pronto pra print. Péssimo pra variantes.</p>
+    </article>
+
+    <article class="card">
+      <svg class="wf" viewBox="0 0 200 90" role="img" aria-label="Painel de barras com os atributos finais da build">
+        <g class="ghost">
+          <rect x="12" y="14" width="34" height="7" rx="2"/><rect x="12" y="28" width="34" height="7" rx="2"/>
+          <rect x="12" y="42" width="34" height="7" rx="2"/><rect x="12" y="56" width="34" height="7" rx="2"/>
+          <rect x="12" y="70" width="34" height="7" rx="2"/>
+        </g>
+        <g class="hot">
+          <rect x="54" y="13" width="120" height="9" rx="2"/>
+          <rect x="54" y="27" width="76" height="9" rx="2"/>
+          <rect x="54" y="41" width="104" height="9" rx="2"/>
+          <rect x="54" y="55" width="48" height="9" rx="2"/>
+          <rect x="54" y="69" width="88" height="9" rx="2"/>
+        </g>
+      </svg>
+      <h3>Painel de atributos finais</h3>
+      <p>Mostra onde a build chega e cala sobre como chegar. Ótimo como segunda camada.</p>
+    </article>
+
+  </div>
+</div>
+
+<!-- ============ C ============ -->
+<div class="tier t-c">
+  <div class="badge"><span>C</span></div>
+  <div class="shelf">
+
+    <article class="card">
+      <svg class="wf" viewBox="0 0 200 90" role="img" aria-label="Lista de builds ordenada por taxa de vitória">
+        <g>
+          <rect class="ghost" x="12" y="12" width="14" height="14" rx="2"/><rect class="ghost" x="30" y="12" width="14" height="14" rx="2"/><rect class="ghost" x="48" y="12" width="14" height="14" rx="2"/>
+          <rect class="hot" x="150" y="14" width="38" height="10" rx="2"/>
+          <rect class="ghost" x="12" y="32" width="14" height="14" rx="2"/><rect class="ghost" x="30" y="32" width="14" height="14" rx="2"/><rect class="ghost" x="48" y="32" width="14" height="14" rx="2"/>
+          <rect class="hot" x="150" y="34" width="38" height="10" rx="2" opacity=".7"/>
+          <rect class="ghost" x="12" y="52" width="14" height="14" rx="2"/><rect class="ghost" x="30" y="52" width="14" height="14" rx="2"/><rect class="ghost" x="48" y="52" width="14" height="14" rx="2"/>
+          <rect class="hot" x="150" y="54" width="38" height="10" rx="2" opacity=".5"/>
+          <rect class="ghost" x="12" y="72" width="14" height="14" rx="2"/><rect class="ghost" x="30" y="72" width="14" height="14" rx="2"/><rect class="ghost" x="48" y="72" width="14" height="14" rx="2"/>
+          <rect class="hot" x="150" y="74" width="38" height="10" rx="2" opacity=".35"/>
+        </g>
+      </svg>
+      <h3>Ranking por taxa de vitória</h3>
+      <p>Dado cru sem explicação. Envelhece bem, ensina mal.</p>
+    </article>
+
+    <article class="card">
+      <svg class="wf" viewBox="0 0 200 90" role="img" aria-label="Blocos de texto corrido explicando a build">
+        <g class="ghost">
+          <rect x="16" y="12" width="168" height="6" rx="2"/><rect x="16" y="23" width="168" height="6" rx="2"/>
+          <rect x="16" y="34" width="150" height="6" rx="2"/><rect x="16" y="45" width="168" height="6" rx="2"/>
+          <rect x="16" y="56" width="168" height="6" rx="2"/><rect x="16" y="67" width="132" height="6" rx="2"/>
+          <rect x="16" y="78" width="96" height="6" rx="2"/>
+        </g>
+        <rect class="hot" x="16" y="12" width="3" height="72" rx="1"/>
+      </svg>
+      <h3>Texto corrido</h3>
+      <p>Profundidade máxima, escaneabilidade zero. Serve de apoio, nunca de interface.</p>
+    </article>
+
+  </div>
+</div>
+
+<!-- ============ D ============ -->
+<div class="tier t-d">
+  <div class="badge"><span>D</span></div>
+  <div class="shelf">
+
+    <article class="card">
+      <svg class="wf" viewBox="0 0 200 90" role="img" aria-label="Print de tela da loja do jogo como imagem única">
+        <rect x="30" y="12" width="140" height="66" rx="4" fill="#1d212b" stroke="currentColor"/>
+        <circle class="hot" cx="58" cy="32" r="7"/>
+        <path class="hot" d="M42 70 L78 40 L104 70 Z" opacity=".55"/>
+        <path class="hot" d="M96 70 L124 48 L150 70 Z" opacity=".35"/>
+      </svg>
+      <h3>Print da loja</h3>
+      <p>Some da busca, trava no tamanho e quebra no primeiro patch.</p>
+    </article>
+
+    <article class="card">
+      <svg class="wf" viewBox="0 0 200 90" role="img" aria-label="Muitas builds idênticas sem nenhuma hierarquia visual">
+        <g class="ghost">
+          <rect x="12" y="10" width="26" height="18" rx="2"/><rect x="43" y="10" width="26" height="18" rx="2"/><rect x="74" y="10" width="26" height="18" rx="2"/><rect x="105" y="10" width="26" height="18" rx="2"/><rect x="136" y="10" width="26" height="18" rx="2"/>
+          <rect x="12" y="34" width="26" height="18" rx="2"/><rect x="43" y="34" width="26" height="18" rx="2"/><rect x="74" y="34" width="26" height="18" rx="2"/><rect x="105" y="34" width="26" height="18" rx="2"/><rect x="136" y="34" width="26" height="18" rx="2"/>
+          <rect x="12" y="58" width="26" height="18" rx="2"/><rect x="43" y="58" width="26" height="18" rx="2"/><rect x="74" y="58" width="26" height="18" rx="2"/><rect x="105" y="58" width="26" height="18" rx="2"/><rect x="136" y="58" width="26" height="18" rx="2"/>
+        </g>
+      </svg>
+      <h3>Mural sem hierarquia</h3>
+      <p>Doze builds equivalentes na mesma tela. Quem não sabe escolher continua sem saber.</p>
+    </article>
+
+  </div>
+</div>
+
+<!-- ============ F ============ -->
+<div class="tier t-f">
+  <div class="badge"><span>F</span></div>
+  <div class="shelf">
+
+    <article class="card">
+      <svg class="wf" viewBox="0 0 200 90" role="img" aria-label="Sequência única e fixa de compras, sem alternativas">
+        <g class="ghost">
+          <rect x="10" y="36" width="20" height="20" rx="3"/><rect x="40" y="36" width="20" height="20" rx="3"/>
+          <rect x="70" y="36" width="20" height="20" rx="3"/><rect x="100" y="36" width="20" height="20" rx="3"/>
+          <rect x="130" y="36" width="20" height="20" rx="3"/><rect x="160" y="36" width="20" height="20" rx="3"/>
+        </g>
+        <path class="edge" d="M32 46h6M62 46h6M92 46h6M122 46h6M152 46h6"/>
+        <path class="hotline" d="M88 20v-4a12 12 0 0 1 24 0v4"/>
+        <rect class="hot" x="84" y="20" width="32" height="12" rx="2"/>
+      </svg>
+      <h3>Ordem fixa única</h3>
+      <p>"Compre sempre isto, nesta ordem." Ignora o inimigo, que é o único motivo de existir uma build.</p>
+    </article>
+
+  </div>
+</div>
+
+<!-- ============ dossiê ============ -->
+<h2>Por que os três primeiros ganham</h2>
+<p class="sub">Os layouts de S e A resolvidos em detalhe: onde brilham, onde falham e onde você já viu cada um.</p>
+
+<div class="dossier">
+
+  <article class="entry" style="--rank:var(--s)">
+    <h3><span class="rank">S</span>Núcleo + bandeja situacional</h3>
+    <p class="lead">Dois ou três itens ficam travados como núcleo e o resto vive numa bandeja marcada por condição: contra cura, contra burst, contra tanque, quando você está atrás. É o layout que assume desde o começo que uma build se decide contra alguém.</p>
+    <div class="pc">
+      <div class="good"><h4>A favor</h4><ul>
+        <li>A decisão difícil (os slots livres) recebe o espaço maior</li>
+        <li>Cada item situacional carrega o gatilho junto, então ensina enquanto mostra</li>
+        <li>Patch novo mexe na bandeja sem reescrever o núcleo</li>
+      </ul></div>
+      <div class="bad"><h4>Contra</h4><ul>
+        <li>Se o núcleo for longo demais, vira ordem fixa disfarçada</li>
+        <li>Exige curadoria de verdade — gatilhos vagos matam o formato</li>
+      </ul></div>
+    </div>
+    <p class="where"><b>Onde se vê:</b> guias de Dota 2 no Dotabuff e nas builds in-game; a seção de itens situacionais do Mobalytics.</p>
+  </article>
+
+  <article class="entry" style="--rank:var(--s)">
+    <h3><span class="rank">S</span>Trilha por fases</h3>
+    <p class="lead">Uma linha horizontal cortada em blocos: inicial, primeira volta, núcleo 1, botas, núcleo 2, fechamento. Cada bloco marca o pico de força que aquele item destrava e, idealmente, o minuto ou o ouro esperado.</p>
+    <div class="pc">
+      <div class="good"><h4>A favor</h4><ul>
+        <li>Responde "compro o quê agora", que é a pergunta real durante a partida</li>
+        <li>Ordem e tempo aparecem no mesmo eixo, sem texto extra</li>
+        <li>Casa perfeitamente com o núcleo + bandeja: uma dá o quando, a outra dá o quê</li>
+      </ul></div>
+      <div class="bad"><h4>Contra</h4><ul>
+        <li>Sugere linearidade onde nem sempre existe</li>
+        <li>Em telas estreitas a trilha quebra e perde a leitura de sequência</li>
+      </ul></div>
+    </div>
+    <p class="where"><b>Onde se vê:</b> U.GG, OP.GG e Mobalytics no LoL; qualquer guia que use setas entre ícones.</p>
+  </article>
+
+  <article class="entry" style="--rank:var(--s)">
+    <h3><span class="rank">S</span>Grade categoria × custo</h3>
+    <p class="lead">Colunas por família de item e linhas por faixa de preço. É o formato nativo da loja do Deadlock, e funciona tão bem lá porque o próprio jogo organiza os itens exatamente assim — a interface só espelha a economia.</p>
+    <div class="pc">
+      <div class="good"><h4>A favor</h4><ul>
+        <li>Posição na grade já comunica poder e momento de compra</li>
+        <li>Comparar alternativas do mesmo preço fica trivial</li>
+        <li>Item novo entra numa célula sem redesenhar nada</li>
+      </ul></div>
+      <div class="bad"><h4>Contra</h4><ul>
+        <li>Só funciona se o jogo tiver categorias e faixas fortes de verdade</li>
+        <li>Entrega o cardápio inteiro e deixa a ordem de compra pra uma trilha por cima</li>
+      </ul></div>
+    </div>
+    <p class="where"><b>Onde se vê:</b> loja e construtor de builds do Deadlock; a aba de itens por tier do LoL.</p>
+  </article>
+
+  <article class="entry" style="--rank:var(--a)">
+    <h3><span class="rank">A</span>Árvore de decisão</h3>
+    <p class="lead">Perguntas encadeadas que terminam num item. Tecnicamente é o formato mais correto que existe — e é justamente por isso que cansa: ninguém percorre uma árvore com 40 segundos de respawn correndo.</p>
+    <div class="pc">
+      <div class="good"><h4>A favor</h4><ul>
+        <li>Explicita o raciocínio, então serve pra aprender de verdade</li>
+        <li>Converte direto em regra de código quando o guia vira ferramenta</li>
+      </ul></div>
+      <div class="bad"><h4>Contra</h4><ul>
+        <li>Lento de percorrer no meio da partida</li>
+        <li>Cresce exponencialmente e fica impossível de manter por patch</li>
+      </ul></div>
+    </div>
+    <p class="where"><b>Onde se vê:</b> guias longos de coach, threads de teoria e a lógica interna de qualquer sistema de recomendação.</p>
+  </article>
+
+  <article class="entry" style="--rank:var(--a)">
+    <h3><span class="rank">A</span>Card em camadas</h3>
+    <p class="lead">O item mostra o mínimo (ícone, preço, uma linha de efeito) e revela tudo sob demanda — hover, clique ou uma tecla modificadora. Resolve o conflito entre densidade e profundidade sem escolher um lado.</p>
+    <div class="pc">
+      <div class="good"><h4>A favor</h4><ul>
+        <li>Cabem muitos itens na tela sem perder a informação completa</li>
+        <li>Iniciante lê o resumo, veterano puxa os números</li>
+        <li>É um componente, então serve dentro de qualquer um dos layouts de S</li>
+      </ul></div>
+      <div class="bad"><h4>Contra</h4><ul>
+        <li>Detalhe preso no hover some no celular e no teclado</li>
+        <li>Se o resumo for mal escolhido, todo mundo abre tudo e a densidade some</li>
+      </ul></div>
+    </div>
+    <p class="where"><b>Onde se vê:</b> tooltip da loja do LoL; cards de item do Deadlock.</p>
+  </article>
+
+  <article class="entry" style="--rank:var(--a)">
+    <h3><span class="rank">A</span>Matriz situação × item</h3>
+    <p class="lead">Situações nas linhas, itens nas colunas, uma marca no cruzamento. Densíssima e excelente pra consulta rápida quando você já sabe o que está enfrentando.</p>
+    <div class="pc">
+      <div class="good"><h4>A favor</h4><ul>
+        <li>Mostra cobertura: dá pra ver o buraco onde nenhum item responde</li>
+        <li>Entrada por qualquer lado — pelo problema ou pelo item</li>
+      </ul></div>
+      <div class="bad"><h4>Contra</h4><ul>
+        <li>Não cabe em tela pequena sem virar rolagem horizontal</li>
+        <li>Não diz nada sobre ordem nem sobre preço</li>
+      </ul></div>
+    </div>
+    <p class="where"><b>Onde se vê:</b> planilhas de counter-item, tabelas de anti-cura e de penetração.</p>
+  </article>
+
+</div>
+
+<h2>O resto, em uma linha cada</h2>
+<div class="scroller">
+<table>
+  <thead><tr><th>Tier</th><th>Layout</th><th>O problema</th><th>Quando ainda vale</th></tr></thead>
+  <tbody>
+    <tr><td class="rk" style="color:var(--b)">B</td><td>Abas por variante</td><td>Esconde a comparação entre as variantes atrás de cliques</td><td>Quando as variantes são poucas e realmente excludentes</td></tr>
+    <tr><td class="rk" style="color:var(--b)">B</td><td>Folha única</td><td>Uma build por folha; variante vira folha nova</td><td>Material pra imprimir, postar ou fixar num canal</td></tr>
+    <tr><td class="rk" style="color:var(--b)">B</td><td>Painel de atributos finais</td><td>Entrega o destino com o percurso apagado</td><td>Como segunda camada, comparando duas builds prontas</td></tr>
+    <tr><td class="rk" style="color:var(--c)">C</td><td>Ranking por taxa de vitória</td><td>Números sem causa; o leitor copia sem entender</td><td>Pra descobrir o que está forte no patch, antes de montar o guia</td></tr>
+    <tr><td class="rk" style="color:var(--c)">C</td><td>Texto corrido</td><td>Ninguém lê parágrafo com o timer correndo</td><td>Complemento abaixo de um layout visual</td></tr>
+    <tr><td class="rk" style="color:var(--d)">D</td><td>Print da loja</td><td>Fora da busca, fora da atualização, fora da acessibilidade</td><td>Conversa de Discord e nada além disso</td></tr>
+    <tr><td class="rk" style="color:var(--d)">D</td><td>Mural sem hierarquia</td><td>Devolve a decisão inteira pro leitor</td><td>Arquivo de referência, nunca a tela principal</td></tr>
+    <tr><td class="rk" style="color:var(--f)">F</td><td>Ordem fixa única</td><td>Trata como constante a única coisa que sempre varia: o time inimigo</td><td>Tutorial de primeiros 30 minutos de jogo</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h2>O layout certo depende da economia do jogo</h2>
+<p class="sub">Os três jogos organizam dinheiro e itens de formas diferentes, então o mesmo layout rende resultados diferentes em cada um.</p>
+<div class="games">
+
+  <div class="game">
+    <h3>League of Legends</h3>
+    <p class="econ">Seis slots mais bota, itens lendários que travam picos de força bem definidos</p>
+    <p>A pergunta que domina é de sequência: qual lendário primeiro. O pico de força é o conceito central, e ele é temporal.</p>
+    <p class="pick"><b>Trilha por fases</b> como espinha, com bandeja situacional nos dois últimos slots.</p>
+  </div>
+
+  <div class="game">
+    <h3>Dota 2</h3>
+    <p class="econ">Pool enorme, consumíveis, neutros por faixa de tempo, mochila e itens que mudam de função</p>
+    <p>Quase nada é obrigatório e quase tudo é condicional. Ordem rígida engana mais do que ajuda aqui.</p>
+    <p class="pick"><b>Núcleo + bandeja situacional</b>, com a árvore de decisão como texto de apoio.</p>
+  </div>
+
+  <div class="game">
+    <h3>Deadlock</h3>
+    <p class="econ">Itens divididos por categoria e por faixa de custo em souls, com slots flexíveis</p>
+    <p>A grade já vem pronta do próprio jogo. O que falta nos guias é dizer em que ordem comprar dentro dela.</p>
+    <p class="pick"><b>Grade categoria × custo</b> com uma trilha por fases sobreposta.</p>
+  </div>
+
+</div>
+
+<h2>Se fosse pro seu montador</h2>
+<div class="reco">
+  <ol>
+    <li><b>Grade como catálogo, trilha como build.</b> A tela de catálogo já é naturalmente uma grade por tier e custo; a tela de build pede a trilha horizontal, com as caixas arrastáveis virando as fases.</li>
+    <li><b>Núcleo travado, bandeja livre.</b> As caixas de obrigatório e opcional que você já planejou são exatamente esse layout — só falta o obrigatório virar uma faixa visualmente distinta, não só um rótulo.</li>
+    <li><b>Card em camadas você já tem.</b> Resumo por padrão e dados completos no Shift é o formato A inteiro, de graça.</li>
+    <li><b>Atributos finais como segunda camada.</b> A calculadora de dano absorvido cai melhor num painel comparativo ao lado da build montada do que dentro do card do item.</li>
+    <li><b>Evite o mural.</b> Duzentos e vinte e cinco itens numa grade uniforme é o layout tier D. Ordenação e filtro são o que transformam isso em catálogo.</li>
+  </ol>
+  <p class="note">Nenhum desses layouts vive sozinho. Os guias bons empilham dois ou três: uma trilha que dá o quando, uma bandeja que dá o e se, e cards em camadas que dão o quanto.</p>
+</div>
+
+<footer>Esta lista classifica formatos de apresentação de build. A ordem segue os quatro critérios do topo da página.</footer>
+
+</div>
+</body>
+</html>
