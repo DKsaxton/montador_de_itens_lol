@@ -7088,7 +7088,8 @@ function initBuildBuilder() {
   }
 
   document.querySelectorAll(".tab-btn").forEach(btn => {
-    btn.addEventListener("click", () => confirmarSaida(() => switchTab(btn.dataset.tab)));
+    // F10-T2 (Leo, 16/09/2026): ir ao Catálogo não pergunta se salva — o rascunho continua na forja.
+    btn.addEventListener("click", () => switchTab(btn.dataset.tab));
   });
 
   document.getElementById("add-cat").addEventListener("click", () => addCategory());
@@ -8110,7 +8111,9 @@ function renderCard(item, attrSorting) {
   card.addEventListener("click", (e) => {
     playTierAnimation(card, item);
     // Sem categoria selecionada, o clique abre o pergaminho (Leo, 13/09/2026).
-    if (e.target.closest(".card-icon") || e.shiftKey || !getCat(build.selectedCatId)) { Som.play("catalog:click", { item }); openModal(item.slug); return; }
+    // No modo Ícones o card inteiro é o ícone (F10-T1, Leo, 16/09/2026): o clique marca; pergaminho só com Shift.
+    const noIcone = e.target.closest(".card-icon") && !document.body.classList.contains("icons-only");
+    if (noIcone || e.shiftKey || !getCat(build.selectedCatId)) { Som.play("catalog:click", { item }); openModal(item.slug); return; }
     // Marcar para a build toca o mesmo som de "item na build" da forja (Leo, 14/09/2026),
     // disparado em toggleItemInBuild; desmarcar toca o clique da loja.
     if (findInBuild(item.slug)) Som.play("catalog:click", { item });
