@@ -3309,6 +3309,25 @@ body.forja #som-volume { accent-color: #ff7a1e; }
 .bi-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; margin-bottom: 14px; }
 .bi-title { font-family: var(--loja-titulos); font-weight: 400; font-size: 30px; color: var(--forja-titulo); margin: 0; letter-spacing: .02em; }
 .bi-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+/* F10-T7: barra e caixas de seleção em lote */
+.bi-lote-bar {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; padding: 8px 12px 8px 0;
+  background: linear-gradient(180deg, var(--forja-placa-1), var(--forja-placa-2)); border: 1px solid var(--forja-placa-borda); border-radius: 3px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.05), 0 4px 10px rgba(0,0,0,.5), 0 0 14px rgba(255,120,30,.18);
+  animation: modal-unroll .22s ease-out;
+}
+.bi-lote-bar[hidden] { display: none; }
+.bi-lote-bar [hidden] { display: none; }   /* o hidden dos botões tem de ganhar do display do .btn */
+.bl-brasa { align-self: stretch; width: 6px; border-radius: 3px 0 0 3px; background: var(--forja-brasa); box-shadow: 0 0 10px 2px var(--forja-brasa-glow); }
+.bl-conta { font-family: var(--loja-gravado); font-size: 11.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--forja-brasa-clara); }
+.bl-sep { flex: 1; }
+.bl-msg { font-family: var(--loja-texto); font-style: italic; font-size: 12.5px; color: var(--forja-texto-suave); }
+.bi-check { display: none; width: 20px; height: 20px; border: 1.5px solid #5a4d42; border-radius: 3px; background: rgba(0,0,0,.4); position: relative; }
+.bi-rows.lote .bi-check { display: inline-block; }
+.bi-rows.lote .bi-row { grid-template-columns: 20px 44px minmax(0, 1fr) auto 36px; }
+.bi-rows.lote .bi-row.marcada { background: rgba(255,120,30,.14); }
+.bi-rows.lote .bi-row.marcada .bi-check { border-color: var(--forja-brasa); background: var(--forja-brasa); box-shadow: 0 0 8px var(--forja-brasa-glow); }
+.bi-rows.lote .bi-row.marcada .bi-check::after { content: ""; position: absolute; left: 6px; top: 2px; width: 5px; height: 10px; border: solid #1a0d05; border-width: 0 2.5px 2.5px 0; transform: rotate(42deg); }
 #bi-search {
   width: 260px; padding: 8px 12px; border-radius: 2px;
   background: rgba(0,0,0,.35); border: 1px solid #3a3029; color: var(--forja-texto);
@@ -3766,6 +3785,7 @@ body.forja .build-cat.drop-after  { transform: translateX(-5px); box-shadow: ins
       <div class="bi-actions">
         <button id="bi-new" class="btn" type="button">+ Nova build</button>
         <button id="bi-import" class="btn ghost" type="button" title="Importar uma build a partir do texto ou do Arsenal.json do cliente">Importar</button>
+        <button id="bi-lote" class="btn ghost" type="button" title="Selecionar várias builds de uma vez">Selecionar</button>
         <div class="bi-filter-wrap" id="bi-filter-wrap">
           <button id="bi-filter" class="btn ghost" type="button" aria-haspopup="true" aria-expanded="false">Filtrar por marcador</button>
           <div id="bi-filter-menu" class="champ-menu bi-filter-menu" hidden>
@@ -3788,6 +3808,19 @@ body.forja .build-cat.drop-after  { transform: translateX(-5px); box-shadow: ins
         </select>
         <button id="bi-refresh" class="btn ghost" type="button" hidden title="Buscar de novo no servidor">↻</button>
       </div>
+    </div>
+    <!-- F10-T7 (Leo, 16/09/2026): seleção em lote para copiar/excluir várias de uma vez -->
+    <div id="bi-lote-bar" class="bi-lote-bar" hidden>
+      <span class="bl-brasa" aria-hidden="true"></span>
+      <span class="bl-conta" id="bl-conta">nenhuma selecionada</span>
+      <button type="button" class="btn ghost mini" id="bl-todas">Marcar todas</button>
+      <button type="button" class="btn ghost mini" id="bl-nenhuma">Limpar</button>
+      <span class="bl-sep"></span>
+      <button type="button" class="btn mini" id="bl-copiar">Copiar como texto</button>
+      <button type="button" class="btn mini" id="bl-importar" hidden>Copiar para minhas builds</button>
+      <button type="button" class="btn ghost mini" id="bl-excluir">Excluir</button>
+      <button type="button" class="btn ghost mini" id="bl-sair" title="Sair do modo de seleção (Esc)">Concluir</button>
+      <span class="bl-msg" id="bl-msg" aria-live="polite"></span>
     </div>
     <div class="bi-body">
       <div id="bi-rows" class="bi-rows" role="listbox" aria-label="Lista de builds"></div>
@@ -6568,7 +6601,8 @@ function etiquetaHtml(d) {
 }
 function linhaHtml(d) {
   return `
-    <div class="bi-row${d.id === biSelected ? " sel" : ""}" data-id="${d.id}"${d.publica ? ` data-pub="${esc(d.pubId)}"` : ""} role="option" aria-selected="${d.id === biSelected}" tabindex="0" title="${d.publica ? "Ver o resumo" : "Abrir na forja"}">
+    <div class="bi-row${d.id === biSelected ? " sel" : ""}${biLote && biLote.has(d.id) ? " marcada" : ""}" data-id="${d.id}"${d.publica ? ` data-pub="${esc(d.pubId)}"` : ""} role="option" aria-selected="${d.id === biSelected}" tabindex="0" title="${d.publica ? "Ver o resumo" : "Abrir na forja"}">
+      <span class="bi-check" aria-hidden="true"></span>
       <span class="bi-champ">${champIconHtml(d.champ, "")}</span>
       <span class="bi-name-wrap"><span class="bi-name">${esc(d.name)}</span>${etiquetaHtml(d)}</span>
       <span class="bi-marks" title="${d.n} ${d.n === 1 ? "item" : "itens"}">${d.markers.length ? d.markers.map(m => markerHtml(m, d.champ, renderBuildIndex)).join("") : `<span class="vazio">sem marcadores</span>`}</span>
@@ -6588,6 +6622,7 @@ function renderPublicasIndex(rows) {
   if (q && !dados.length) { const f = publicas.favs.map(publicaResumo).filter(d => passaFiltro(d, q)); dados = f; }
   if (!dados.some(d => d.id === biSelected)) biSelected = dados[0] ? dados[0].id : null;
   rows.innerHTML = dados.length ? dados.map(linhaHtml).join("") : `<div class="bi-empty">${q || biFilter.marker || biFilter.champ ? "Nenhuma build publicada combina com a busca ou o filtro." : "Ainda não há builds publicadas."}</div>`;
+  atualizarBarraLote();
   renderBuildDetail();
 }
 function renderPublicDetail(box, d) {
@@ -6644,6 +6679,7 @@ function copiarPublica(d) {
 
 // Estado da tela "Builds": seleção, filtro por marcador (+ campeão) e aba.
 let biSelected = null;
+let biLote = null;   // F10-T7: null = modo normal; Set de ids = modo Selecionar
 const biFilter = { marker: null, champ: null };   // marker: {t,id|letter}; champ: {key,id,name}
 
 function fmtData(ts) {
@@ -6677,6 +6713,79 @@ function faltaParaPublicar(d) {
   return falta;
 }
 
+// ---------------- F10-T7: seleção em lote ----------------
+// "Selecionar" liga o modo: o clique na linha marca em vez de abrir o resumo.
+// Em Minhas dá para copiar o texto de várias e excluir de uma vez; em Públicas,
+// copiar várias para a biblioteca sem abrir a forja uma a uma.
+function idsDaListaVisivel() {
+  return [...document.querySelectorAll("#bi-rows .bi-row")].map(r => r.dataset.id);
+}
+function loteMsg(txt) {
+  const el = document.getElementById("bl-msg");
+  if (el) el.textContent = txt || "";
+}
+function atualizarBarraLote() {
+  const bar = document.getElementById("bi-lote-bar");
+  const rows = document.getElementById("bi-rows");
+  if (!bar || !rows) return;
+  bar.hidden = !biLote;
+  rows.classList.toggle("lote", !!biLote);
+  document.getElementById("bi-lote").classList.toggle("active", !!biLote);
+  if (!biLote) return;
+  const n = biLote.size;
+  document.getElementById("bl-conta").textContent = n ? `${n} selecionada${n === 1 ? "" : "s"}` : "nenhuma selecionada";
+  document.getElementById("bl-importar").hidden = biView !== "publicas";
+  document.getElementById("bl-excluir").hidden = biView === "publicas";
+  ["bl-copiar", "bl-importar", "bl-excluir"].forEach(id => { const b = document.getElementById(id); if (b) b.disabled = !n; });
+}
+function ligarLote(on) {
+  biLote = on ? new Set() : null;
+  loteMsg("");
+  renderBuildIndex();
+}
+function resumoPorId(id) {
+  if (String(id).startsWith("pub:")) { const p = publicaPorId(String(id).slice(4)); return p ? publicaResumo(p) : null; }
+  const b = library.builds.find(x => x.id === id);
+  return b ? buildResumo(b) : null;
+}
+// Texto de várias builds, no mesmo formato de docs/formato_de_importacao.md.
+function loteParaTexto(ids) {
+  const SEP = "\n\n" + "=".repeat(40) + "\n\n";
+  const partes = [];
+  ids.forEach(id => {
+    const d = resumoPorId(id);
+    if (!d) return;
+    const linhas = [`BUILD: ${d.name}`];
+    if (d.mode) linhas.push(`MODO: ${d.mode}`);
+    if (d.champ) linhas.push(`CAMPE\u00c3O: ${d.champ.name}`);
+    if (d.desc) linhas.push(`DESCRI\u00c7\u00c3O: ${d.desc.split("\n").map(x => x.trim()).filter(Boolean).join(" / ")}`);
+    if (d.layout && d.layout !== "tabuleiro") linhas.push(`LAYOUT: ${LAYOUTS[d.layout]}`);
+    const marks = normMarkers(d.markers);
+    if (marks.length) linhas.push(`MARCADORES: ${marks.map(m => m.t === "hab" ? `Habilidade ${m.letter}` : markerLabel(m, d.champ)).join(" | ")}`);
+    d.cats.forEach(cat => {
+      linhas.push("");
+      linhas.push(`[${KIND_LABEL[cat.kind].toUpperCase()}] ${cat.name} | ${catCols(cat)}\u00d7${catRows(cat)}`);
+      if (cat.desc) linhas.push(`# ${cat.desc}`);
+      if (cat.marco) linhas.push(`= ${cat.marco}`);
+      cat.items.forEach(e => { const it = byId[e.itemId]; if (it) linhas.push(`- ${it.namePt}${e.note ? " * " + e.note : ""}`); });
+    });
+    partes.push(linhas.join("\n"));
+  });
+  return partes.join(SEP);
+}
+// Guarda uma pública na biblioteca sem abrir a forja (usado no lote).
+function guardarPublicaNaBiblioteca(d) {
+  const p = publicaPorId(d.pubId);
+  const cats = p ? caixasDoServidor(p.caixas, []) : JSON.parse(JSON.stringify(d.cats));
+  if (Servidor.ativo()) Servidor.rpc("registrar_evento", { p_id: d.pubId, p_tipo: "copia" }).catch(() => {});
+  library.builds.push({
+    id: newBuildId(), name: d.name, seq: cats.length + 1, mode: d.mode, masterwork: false,
+    champion: d.champ ? { key: String(d.champ.key), id: String(d.champ.id), name: String(d.champ.name) } : null,
+    markers: d.markers, desc: d.desc, fav: false, updatedAt: Date.now(),
+    patch: d.pubPatch || CATALOG.meta.patch, revisao: null, layout: layoutValido(d.layout), cats,
+  });
+}
+
 function renderBuildIndex() {
   const rows = document.getElementById("bi-rows");
   if (!rows) return;
@@ -6692,12 +6801,14 @@ function renderBuildIndex() {
   if (!dados.some(d => d.id === biSelected) && favs.some(d => d.id === biSelected)) { /* seleção numa favorita: mantém */ }
   else if (!dados.some(d => d.id === biSelected)) biSelected = dados.some(d => d.id === build.id) ? build.id : (dados[0] ? dados[0].id : (favs[0] ? favs[0].id : null));
   rows.innerHTML = (dados.length ? dados.map(d => `
-    <div class="bi-row${d.id === biSelected ? " sel" : ""}" data-id="${d.id}" role="option" aria-selected="${d.id === biSelected}" tabindex="0">
+    <div class="bi-row${d.id === biSelected ? " sel" : ""}${biLote && biLote.has(d.id) ? " marcada" : ""}" data-id="${d.id}" role="option" aria-selected="${d.id === biSelected}" tabindex="0">
+      <span class="bi-check" aria-hidden="true"></span>
       <span class="bi-champ">${champIconHtml(d.champ, "")}</span>
       <span class="bi-name-wrap"><span class="bi-name">${esc(d.name)}</span>${etiquetaHtml(d)}</span>
       <span class="bi-marks" title="${d.n} ${d.n === 1 ? "item" : "itens"}">${d.markers.length ? d.markers.map(m => markerHtml(m, d.champ, renderBuildIndex)).join("") : `<span class="vazio">sem marcadores</span>`}</span>
       <button type="button" class="bi-fav${d.fav ? " on" : ""}" data-fav="${d.id}" title="${d.fav ? "Favorita — clique para tirar" : "Marcar como favorita"}">${d.fav ? "♥" : "♡"}</button>
     </div>`).join("") : (favsHtml ? "" : `<div class="bi-empty">${filtrando ? "Nenhuma build combina com a busca ou o filtro." : "Nenhuma build ainda — comece por “Nova build”."}</div>`)) + favsHtml;
+  atualizarBarraLote();
   renderBuildDetail();
 }
 
@@ -6851,6 +6962,15 @@ function initBuildIndex() {
     }
     const row = e.target.closest(".bi-row");
     if (!row) return;
+    if (biLote) {   // F10-T7: no modo Selecionar o clique marca a linha
+      const id = row.dataset.id;
+      if (biLote.has(id)) biLote.delete(id); else biLote.add(id);
+      row.classList.toggle("marcada", biLote.has(id));
+      loteMsg("");
+      atualizarBarraLote();
+      Som.play("catalog:tag_select");
+      return;
+    }
     // Só troca a seleção no lugar: redesenhar a lista aqui mataria o duplo clique
     // (o segundo clique cairia num elemento novo e o navegador não conta como dblclick).
     biSelected = row.dataset.id;
@@ -6859,10 +6979,10 @@ function initBuildIndex() {
     Som.play("catalog:tag_select");
   });
   const abrirOuCopiar = (id) => { if (String(id).startsWith("pub:")) { const p = publicaPorId(id.slice(4)); if (p) abrirPublicaTemporaria(publicaResumo(p)); } else abrir(id); };
-  rows.addEventListener("dblclick", (e) => { const row = e.target.closest(".bi-row"); if (row) abrirOuCopiar(row.dataset.id); });
+  rows.addEventListener("dblclick", (e) => { if (biLote) return; const row = e.target.closest(".bi-row"); if (row) abrirOuCopiar(row.dataset.id); });
   rows.addEventListener("keydown", (e) => {
     const row = e.target.closest(".bi-row");
-    if (row && e.key === "Enter") { e.preventDefault(); abrirOuCopiar(row.dataset.id); }
+    if (row && e.key === "Enter" && !biLote) { e.preventDefault(); abrirOuCopiar(row.dataset.id); }
   });
   document.getElementById("bi-detail").addEventListener("click", (e) => {
     const act = e.target.closest("[data-act]");
@@ -6894,6 +7014,49 @@ function initBuildIndex() {
       if (window.confirm(`Excluir a build "${buildResumo(b).name}"?${b.pubId ? " Ela também sai do site." : ""} Isso não dá pra desfazer.`)) { deleteBuild(b.id); biSelected = null; renderBuildIndex(); }
     }
   });
+  // ---- F10-T7: modo Selecionar ----
+  document.getElementById("bi-lote").addEventListener("click", () => { ligarLote(!biLote); Som.play("catalog:tag_select"); });
+  document.getElementById("bl-sair").addEventListener("click", () => ligarLote(false));
+  document.getElementById("bl-todas").addEventListener("click", () => { idsDaListaVisivel().forEach(id => biLote.add(id)); renderBuildIndex(); });
+  document.getElementById("bl-nenhuma").addEventListener("click", () => { biLote.clear(); renderBuildIndex(); });
+  document.getElementById("bl-copiar").addEventListener("click", async () => {
+    const ids = idsDaListaVisivel().filter(id => biLote.has(id));
+    const texto = loteParaTexto(ids);
+    if (!texto) { loteMsg("Nada para copiar."); return; }
+    try {
+      await navigator.clipboard.writeText(texto);
+      loteMsg(`${ids.length} build(s) copiada(s) como texto.`);
+    } catch (e) {
+      showBuildScreen("forja");
+      document.getElementById("io-panel").classList.add("show");
+      document.getElementById("toggle-io").classList.add("active");
+      const ta = document.getElementById("import-text");
+      ta.value = texto; ta.focus(); ta.select();
+      showIoMsg("Não deu pra copiar automático — o texto já está selecionado aí, use Ctrl+C.", true);
+    }
+  });
+  document.getElementById("bl-importar").addEventListener("click", () => {
+    const ids = idsDaListaVisivel().filter(id => biLote.has(id));
+    let n = 0;
+    ids.forEach(id => { const d = resumoPorId(id); if (d && d.publica) { guardarPublicaNaBiblioteca(d); n++; } });
+    if (n) { gravarBuild(); Som.play("build:save"); }
+    biLote.clear();
+    renderBuildIndex();
+    loteMsg(`${n} build(s) copiada(s) para as suas.`);
+  });
+  document.getElementById("bl-excluir").addEventListener("click", () => {
+    const ids = idsDaListaVisivel().filter(id => biLote.has(id) && !String(id).startsWith("pub:"));
+    if (!ids.length) { loteMsg("Só dá para excluir builds suas."); return; }
+    const restantes = library.builds.length - ids.length;
+    if (restantes < 1) { loteMsg("Guarde pelo menos uma build."); return; }
+    const nomes = ids.map(id => (resumoPorId(id) || {}).name).filter(Boolean);
+    if (!window.confirm(`Excluir ${ids.length} build(s)?\n\n${nomes.join("\n")}\n\nAs publicadas também saem do site. Isso não dá pra desfazer.`)) return;
+    ids.forEach(id => deleteBuild(id));
+    biLote.clear();
+    biSelected = null;
+    renderBuildIndex();
+    loteMsg(`${ids.length} build(s) excluída(s).`);
+  });
   document.getElementById("bi-search").addEventListener("input", renderBuildIndex);
   document.getElementById("bi-new").addEventListener("click", () => { createNewBuild(); showBuildScreen("forja"); });
   document.getElementById("bi-import").addEventListener("click", () => {
@@ -6913,6 +7076,7 @@ function initBuildIndex() {
     document.querySelectorAll(".bi-tab").forEach(x => x.classList.toggle("ativa", x === t));
     qtd.hidden = refresh.hidden = biView !== "publicas";
     biSelected = null; biFilter.marker = null; biFilter.champ = null; refletirFiltro();
+    if (biLote) { biLote.clear(); loteMsg(""); }
     renderBuildIndex();
     if (biView === "publicas") carregarPublicas(false);
     Som.play("catalog:tag_select");
