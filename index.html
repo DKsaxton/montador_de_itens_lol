@@ -4255,8 +4255,9 @@ const Som = (() => {
         return tocar("build_item_add");
       case "build:item_add": {
         const it = ctx.item;
-        // O som próprio de Lendário é só da forja; marcado pelo Catálogo toca o genérico (Leo, 14/09/2026).
-        const lendario = it && /^Lendário/.test(it.tier) && n && ctx.origem !== "catalogo";
+        // Catálogo e forja com os mesmos gatilhos (F10-T4, Leo, 16/09/2026): Lendário toca o som do núcleo
+        // nos dois caminhos e o lojista comenta igual. (Antes, 14/09, o Catálogo tocava sempre o genérico.)
+        const lendario = it && /^Lendário/.test(it.tier) && n;
         const ok = tocar(lendario ? "ui_build_mod_add_legendary_" + n : "build_item_add");
         // Lojista: fala rara do item (sempre) ou, se o item não tem uma, o comentário do
         // núcleo (shopkeeper_tag_open_<núcleo>), sujeito a chance/intervalo (Leo, 13/09/2026).
@@ -8342,7 +8343,7 @@ function toggleItemInBuild(slug) {
     if (!cat) return;
     cat.items.push({ itemId: slug, note: "" });
     const it = byId[slug];
-    Som.play("build:item_add", { item: it, origem: "catalogo" });   // sempre o genérico (Leo, 14/09/2026), com o lojista
+    Som.play("build:item_add", { item: it });   // mesmos sons e falas da forja (F10-T4)
     // Aviso por modo de jogo (Fase 5, T3): a build tem modo e o item não existe nele.
     if (build.mode && it && !itemAvailableIn(it, build.mode)) {
       showCatalogModeHint(`<b>${esc(it.namePt)}</b> não existe em <b>${esc(build.mode)}</b>, o modo da build "${esc(build.name)}". Foi marcado mesmo assim; na forja ele aparece apagado.`);
