@@ -22,3 +22,7 @@ Os slugs são os do `data/catalog.js` (campo `slug`, ex.: `atma-s-reckoning`, `r
 - `Som.LOJISTA.CHANCE = 1; Som.LOJISTA.INTERVALO_MIN_MS = 0;` — o lojista fala em todo acionamento (para testar).
 - `Som.verificar()` — confere que os 82 arquivos de áudio carregam (relata no console).
 - `Som.setMudo(true)` / `Som.setVolume(0.5)` — o mesmo que o sino e a régua do cabeçalho.
+
+## Nomes aceitos na importação
+
+Todos os marcadores padrão, habilidades e os 225 nomes de item (pt/en) que a linha `MARCADORES:` e as linhas `- Item` reconhecem estão em [marcadores.md](marcadores.md), gerado por `python docs/gerar_marcadores.py`.
