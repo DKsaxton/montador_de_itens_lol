@@ -6423,6 +6423,13 @@ function renderModeSelect() {
 // estado ao vivo quando é a ativa (a cópia da biblioteca só sincroniza no save).
 let buildScreen = "lista";
 
+// Itens que aparecem no resumo das listas (F10-T5, Leo, 16/09/2026): caixas opcionais ficam de fora
+// e a "Escolha 1" mostra só o padrão (o primeiro), como nos totais (itensContados).
+function itensDoResumo(cats) {
+  const out = [];
+  (cats || []).forEach(c => { if (c.kind === "opcional") return; itensContados(c).forEach(e => { if (byId[e.itemId]) out.push(byId[e.itemId]); }); });
+  return out;
+}
 function buildResumo(b) {
   const isActive = b.id === build.id;
   const cats = isActive ? build.cats : (b.cats || []);
@@ -6580,7 +6587,7 @@ function renderPublicasIndex(rows) {
 }
 function renderPublicDetail(box, d) {
   const vistos = new Set(); const itens = [];
-  d.cats.forEach(c => { if (c.kind === "opcional") return; c.items.forEach(e => { if (byId[e.itemId] && !vistos.has(e.itemId)) { vistos.add(e.itemId); itens.push(byId[e.itemId]); } }); });
+  itensDoResumo(d.cats).forEach(it => { if (!vistos.has(it.slug)) { vistos.add(it.slug); itens.push(it); } });
   const marcas = d.markers.map(m => `<span class="bd-mark">${markerHtml(m, d.champ, renderBuildDetail)}${esc(markerLabel(m, d.champ))}</span>`).join("");
   box.innerHTML = `
     <div class="bd-head">${champIconHtml(d.champ, "")}<h3>${esc(d.name)}</h3></div>
@@ -6701,11 +6708,11 @@ function renderBuildDetail() {
   const d = buildResumo(b);
   // itens do resumo: tudo menos as caixas Opcionais, sem repetir
   const vistos = new Set(); const itens = [];
-  d.cats.forEach(c => { if (c.kind === "opcional") return; c.items.forEach(e => { if (byId[e.itemId] && !vistos.has(e.itemId)) { vistos.add(e.itemId); itens.push(byId[e.itemId]); } }); });
+  itensDoResumo(d.cats).forEach(it => { if (!vistos.has(it.slug)) { vistos.add(it.slug); itens.push(it); } });
   const falta = faltaParaPublicar(d);
   if (d.temp) {
     const vistos2 = new Set(); const itens2 = [];
-    d.cats.forEach(c => { if (c.kind === "opcional") return; c.items.forEach(e => { if (byId[e.itemId] && !vistos2.has(e.itemId)) { vistos2.add(e.itemId); itens2.push(byId[e.itemId]); } }); });
+    itensDoResumo(d.cats).forEach(it => { if (!vistos2.has(it.slug)) { vistos2.add(it.slug); itens2.push(it); } });
     box.innerHTML = `
       <div class="bd-head">${champIconHtml(d.champ, "")}<h3>${esc(d.name)}</h3></div>
       <div class="bd-marks">${d.markers.map(m => `<span class="bd-mark">${markerHtml(m, d.champ, renderBuildDetail)}${esc(markerLabel(m, d.champ))}</span>`).join("")}</div>
