@@ -2458,6 +2458,23 @@ select.sort-select, .sort-attr-wrap select {
   font-family: var(--loja-texto); font-style: normal; font-size: 13px; padding: 4px 8px; max-width: 220px;
   box-shadow: inset 0 1px 3px rgba(0,0,0,.2), 0 2px 5px rgba(0,0,0,.4);
 }
+/* F10-T3: faixa de ferro na loja enquanto uma caixa da forja recebe os cliques */
+.catalog-forja-faixa {
+  display: flex; align-items: center; gap: 14px; margin: -6px 0 12px; padding: 8px 14px 8px 0;
+  background: linear-gradient(180deg, #2a2420, #1a1512); border: 1px solid #443a32; border-radius: 3px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.05), inset 0 0 30px rgba(0,0,0,.45), 0 4px 10px rgba(0,0,0,.5), 0 0 14px rgba(255,120,30,.18);
+  font-family: var(--loja-texto); font-size: 14px; color: #d8cbb6; animation: modal-unroll .25s ease-out;
+}
+.catalog-forja-faixa[hidden] { display: none; }
+.cff-brasa { align-self: stretch; width: 6px; border-radius: 3px 0 0 3px; background: #ff7a1e; box-shadow: 0 0 10px 2px rgba(255,120,30,.55), 0 0 22px rgba(255,120,30,.45); animation: cff-pulsa 1.8s ease-in-out infinite; }
+@keyframes cff-pulsa { 0%, 100% { opacity: .75; } 50% { opacity: 1; box-shadow: 0 0 14px 3px rgba(255,120,30,.7), 0 0 28px rgba(255,120,30,.5); } }
+.cff-texto { font-family: var(--loja-gravado); font-size: 11.5px; letter-spacing: .14em; text-transform: uppercase; color: #ffd27a; white-space: nowrap; }
+.cff-texto b { color: #fff; font-weight: 600; letter-spacing: .06em; text-transform: none; font-size: 14px; margin-left: 4px; }
+.cff-qtd { margin-left: 8px; color: #ffb257; font-weight: 400; letter-spacing: .04em; text-transform: none; }
+.cff-dica { font-style: italic; color: #8f8074; flex: 1; }
+.cff-soltar { background: transparent; border: 1px solid #3a3029; border-radius: 3px; color: #8f8074; font-family: var(--loja-texto); font-size: 12.5px; padding: 3px 10px; cursor: pointer; }
+.cff-soltar:hover { border-color: #ff7a1e; color: #ffd27a; box-shadow: 0 0 10px rgba(255,120,30,.55); }
+body.cat-selected .cat-target select { border-color: #ff7a1e; box-shadow: inset 0 1px 3px rgba(0,0,0,.2), 0 0 10px rgba(255,120,30,.55); }
 /* ---- Modo de exibição: cards ou só ícones (Leo, 13/09/2026) ---- */
 .grid-tools { display: inline-flex; align-items: center; gap: 16px; }
 .view-toggle { display: inline-flex; border: 1.5px solid var(--loja-tinta-suave); border-radius: 999px; overflow: hidden; background: var(--loja-papel); }
@@ -3710,6 +3727,13 @@ body.forja .build-cat.drop-after  { transform: translateX(-5px); box-shadow: ins
   <main>
     <nav id="class-tabs" class="class-tabs" aria-label="Classe do item"></nav>
     <div id="catalog-mode-hint" class="catalog-mode-hint" role="status"></div>
+    <!-- F10-T3 (Leo, 16/09/2026): a forja entra na loja — faixa de ferro dizendo para qual caixa vão os cliques -->
+    <div id="catalog-forja-faixa" class="catalog-forja-faixa" role="status" hidden>
+      <span class="cff-brasa" aria-hidden="true"></span>
+      <span class="cff-texto">Forjando em <b id="cff-nome"></b><span id="cff-qtd" class="cff-qtd"></span></span>
+      <span class="cff-dica">os itens clicados vão para esta caixa</span>
+      <button type="button" id="cff-soltar" class="cff-soltar" title="Parar de marcar nesta caixa (Esc)">soltar</button>
+    </div>
     <div class="grid-meta">
       <span id="result-count"></span>
       <span class="grid-tools">
@@ -8353,6 +8377,17 @@ function refreshCatalogCatSelect() {
     sel.appendChild(o);
   });
   sel.value = getCat(build.selectedCatId) ? build.selectedCatId : "";
+  // F10-T3: a faixa da forja acompanha a caixa escolhida
+  const faixa = document.getElementById("catalog-forja-faixa");
+  const cat = getCat(build.selectedCatId);
+  if (faixa) {
+    faixa.hidden = !cat;
+    if (cat) {
+      document.getElementById("cff-nome").textContent = cat.name || "(sem nome)";
+      const n = cat.items.length;
+      document.getElementById("cff-qtd").textContent = `· ${n} ${n === 1 ? "item" : "itens"}`;
+    }
+  }
 }
 
 // Sincroniza o Catálogo com a build ativa: classe in-build nos cards, a
@@ -8701,6 +8736,7 @@ function init() {
     build.selectedCatId = e.target.value || null;
     renderBuild();
   });
+  document.getElementById("cff-soltar").addEventListener("click", () => { build.selectedCatId = null; renderBuild(); });
 
   // Modo de exibição (cards | ícones), lembrado no navegador.
   const applyView = (view) => {
