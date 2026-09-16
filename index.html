@@ -2803,6 +2803,10 @@ header.top { transition: background .5s ease, border-color .5s ease; }
 }
 #view-build .btn.primary:hover { filter: brightness(1.1); color: #1a0d05; }
 #view-build .btn.ghost { background: transparent; border-color: #3a3029; color: var(--forja-texto-suave); }
+/* F10-T6: links para a documentação do formato, dentro do painel Exportar / importar */
+.io-link { color: var(--forja-brasa-clara); text-decoration: underline; text-underline-offset: 2px; }
+.io-link:visited { color: var(--forja-brasa-clara); }
+.io-link:hover { color: #fff; text-shadow: 0 0 8px var(--forja-brasa-glow); }
 #view-build .btn.ghost:hover { border-color: var(--forja-brasa); color: var(--forja-brasa-clara); }
 #view-build .btn:disabled, #view-build .btn:disabled:hover { border-color: #2a2420; color: #4a3f36; }
 #view-build .io-toggle.active { border-color: var(--forja-brasa); color: var(--forja-brasa-clara); }
@@ -3878,6 +3882,7 @@ body.forja .build-cat.drop-after  { transform: translateX(-5px); box-shadow: ins
       <button id="export-btn" class="btn">Copiar esta build</button>
       <button id="link-btn" class="btn ghost" type="button" title="Copia um link com a build inteira dentro">Copiar link</button>
       <p class="io-hint">Copia a build atual como texto, pra colar onde quiser. A caixa ao lado importa esse texto ou o JSON exportado pelo cliente do LoL.</p>
+      <p class="io-hint">Formato explicado em <a class="io-link" href="docs/formato_de_importacao.md" target="_blank" rel="noopener">formato_de_importacao.md</a> e os nomes válidos em <a class="io-link" href="docs/marcadores.md" target="_blank" rel="noopener">marcadores.md</a> — dá para pedir a build pronta a uma IA.</p>
     </div>
     <div class="io-col grow">
       <textarea id="import-text" rows="5" spellcheck="false" placeholder="BUILD: Jinx padrão&#10;&#10;[PRIORIDADE] Núcleo | 1/2&#10;# comprar sempre nessa ordem&#10;- Cutelo Negro&#10;- Espada Longa * segurar até os 20min"></textarea>
