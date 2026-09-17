@@ -3291,8 +3291,10 @@ body.forja #som-volume { accent-color: #ff7a1e; }
 
 /* ---- Fase 7, T2: campeão da build (Data Dragon) ---- */
 .champ-pick { display: inline-flex; align-items: center; gap: 7px; }
-.champ-icon { width: 26px; height: 26px; border-radius: 50%; border: 1px solid #c9973f; box-shadow: 0 0 6px rgba(0,0,0,.7); object-fit: cover; }
-.build-champ-art { width: 46px; height: 46px; border-radius: 50%; border: 2px solid #c9973f; box-shadow: 0 0 0 1px #3a2a12, 0 0 14px rgba(201,151,63,.45), 0 4px 10px rgba(0,0,0,.7); object-fit: cover; flex-shrink: 0; margin-right: 12px; }
+/* F10-T11: retratos de campeão quadrados — a arte do Data Dragon é quadrada e
+   o recorte redondo mostrava os cantos escuros dela. */
+.champ-icon { width: 26px; height: 26px; border-radius: 3px; border: 1px solid #c9973f; box-shadow: 0 0 6px rgba(0,0,0,.7); object-fit: cover; }
+.build-champ-art { width: 46px; height: 46px; border-radius: 4px; border: 2px solid #c9973f; box-shadow: 0 0 0 1px #3a2a12, 0 0 14px rgba(201,151,63,.45), 0 4px 10px rgba(0,0,0,.7); object-fit: cover; flex-shrink: 0; margin-right: 12px; }
 
 /* ---- Fase 7, T2: seletor de campeão com retrato (Leo: "tem muito campeão que só é reconhecido pelo ícone") ---- */
 .champ-pick { position: relative; display: inline-block; }
@@ -3322,7 +3324,7 @@ body.forja #som-volume { accent-color: #ff7a1e; }
 .champ-row:hover { background: rgba(255,120,30,.12); color: var(--forja-brasa-clara); }
 .champ-row.ativo { border-color: #c9973f; color: var(--forja-brasa-clara); }
 .champ-row[hidden] { display: none; }
-.champ-row img, .champ-row .champ-todos { width: 30px; height: 30px; border-radius: 50%; border: 1px solid #c9973f; object-fit: cover; flex-shrink: 0; box-shadow: 0 0 6px rgba(0,0,0,.7); }
+.champ-row img, .champ-row .champ-todos { width: 30px; height: 30px; border-radius: 3px; border: 1px solid #c9973f; object-fit: cover; flex-shrink: 0; box-shadow: 0 0 6px rgba(0,0,0,.7); }
 .champ-row .champ-todos { display: inline-flex; align-items: center; justify-content: center; font-family: var(--loja-gravado); font-size: 10px; color: #c9973f; background: rgba(0,0,0,.4); }
 .champ-row.todos { grid-column: 1 / -1; }
 .champ-note { margin: 0; font-family: var(--loja-texto); font-style: italic; font-size: 12.5px; color: var(--forja-texto-suave); }
@@ -3364,7 +3366,7 @@ body.forja #som-volume { accent-color: #ff7a1e; }
 .bi-row:hover { background: rgba(255,120,30,.08); }
 .bi-row:hover .bi-name, .bi-row.ativa .bi-name { color: var(--forja-brasa-clara); }
 .bi-name { font-family: var(--loja-titulos); font-size: 18px; color: var(--forja-titulo); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.bi-champ img, .bi-champ .bp-todos { width: 36px; height: 36px; border-radius: 50%; border: 1px solid #c9973f; object-fit: cover; box-shadow: 0 0 6px rgba(0,0,0,.7); }
+.bi-champ img, .bi-champ .bp-todos { width: 36px; height: 36px; border-radius: 3px; border: 1px solid #c9973f; object-fit: cover; box-shadow: 0 0 6px rgba(0,0,0,.7); }
 .bi-champ .bp-todos { display: inline-flex; align-items: center; justify-content: center; font-family: var(--loja-gravado); font-size: 11px; color: #c9973f; background: rgba(0,0,0,.4); }
 .btn.mini { padding: 3px 9px; font-size: 13px; line-height: 1.2; min-width: 0; }
 .bi-empty { padding: 34px 18px; text-align: center; font-family: var(--loja-texto); font-style: italic; color: var(--forja-texto-suave); }
@@ -3444,7 +3446,7 @@ body.forja #som-volume { accent-color: #ff7a1e; }
 .bi-filter-menu .md-label { margin: 6px 0 6px; }
 .bf-champs { display: flex; flex-wrap: wrap; gap: 6px; }
 .bf-champ { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px 3px 4px; border-radius: 20px; cursor: pointer; border: 1px solid #3a3029; background: rgba(0,0,0,.3); color: var(--forja-texto); font-family: var(--loja-texto); font-size: 13px; }
-.bf-champ img, .bf-champ .bp-todos { width: 24px; height: 24px; border-radius: 50%; border: 1px solid #c9973f; object-fit: cover; }
+.bf-champ img, .bf-champ .bp-todos { width: 24px; height: 24px; border-radius: 3px; border: 1px solid #c9973f; object-fit: cover; }
 .bf-champ .bp-todos { display: inline-flex; align-items: center; justify-content: center; font-family: var(--loja-gravado); font-size: 9px; color: #c9973f; }
 .bf-champ:hover { border-color: var(--forja-brasa); }
 .bf-champ.ativo { border-color: #c9973f; color: var(--forja-brasa-clara); box-shadow: 0 0 0 1px #c9973f; }
@@ -3487,7 +3489,7 @@ body.forja #som-volume { accent-color: #ff7a1e; }
 }
 .bi-detail .bd-empty { font-style: italic; color: var(--forja-texto-suave); }
 .bd-head { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
-.bd-head img, .bd-head .bp-todos { width: 48px; height: 48px; border-radius: 50%; border: 2px solid #c9973f; object-fit: cover; box-shadow: 0 0 10px rgba(0,0,0,.7); flex-shrink: 0; }
+.bd-head img, .bd-head .bp-todos { width: 48px; height: 48px; border-radius: 4px; border: 2px solid #c9973f; object-fit: cover; box-shadow: 0 0 10px rgba(0,0,0,.7); flex-shrink: 0; }
 .bd-head .bp-todos { display: inline-flex; align-items: center; justify-content: center; font-family: var(--loja-gravado); color: #c9973f; background: rgba(0,0,0,.4); }
 .bd-head h3 { font-family: var(--loja-titulos); font-weight: 400; font-size: 24px; color: var(--forja-titulo); margin: 0; line-height: 1.15; }
 .bd-marks { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
