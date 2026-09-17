@@ -3197,7 +3197,9 @@ body.editando .cat-kind:hover { filter: brightness(1.15); }
   box-shadow: inset 0 1px 0 rgba(255,255,255,.45), 0 2px 5px rgba(0,0,0,.6);
 }
 .som-btn svg { width: 100%; height: 100%; }
-.som-btn .som-risco { display: none; }
+.som-btn .som-alto { width: 100%; height: 100%; }
+.som-btn.mudo .som-alto { --ico: url("assets/icons/sound-off.svg"); }
+.som-btn .som-risco { display: none; }   /* resquício do ícone antigo; o alto-falante agora vem de assets/icons */
 .som-btn.mudo { filter: grayscale(.8) brightness(.8); }
 .som-btn.mudo .som-risco { display: block; }
 .som-btn.travado { opacity: .55; }
@@ -3336,6 +3338,29 @@ body.forja #som-volume { accent-color: #ff7a1e; }
 .bi-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; margin-bottom: 14px; }
 .bi-title { font-family: var(--loja-titulos); font-weight: 400; font-size: 30px; color: var(--forja-titulo); margin: 0; letter-spacing: .02em; }
 .bi-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+/* F10-T12 (Leo, 16/09/2026): pacote de ícones do Deadlock em assets/icons/.
+   São SVGs de uma cor só, então entram como máscara e pegam a cor do texto —
+   servem tanto no latão da loja quanto na brasa da forja, sem duplicar arquivo. */
+.ico {
+  display: inline-block; width: 1em; height: 1em; flex: none; vertical-align: -0.12em;
+  background-color: currentColor;
+  -webkit-mask: var(--ico) center / contain no-repeat;
+  mask: var(--ico) center / contain no-repeat;
+}
+.ico-fave-on     { --ico: url("assets/icons/fave-active.svg"); }
+.ico-fave-off    { --ico: url("assets/icons/fave-inactive.svg"); }
+.ico-som-on      { --ico: url("assets/icons/sound-on.svg"); }
+.ico-som-off     { --ico: url("assets/icons/sound-off.svg"); }
+.ico-refresh     { --ico: url("assets/icons/refresh.svg"); }
+.ico-check       { --ico: url("assets/icons/checkmark.svg"); }
+.ico-copy        { --ico: url("assets/icons/copy.svg"); }
+.ico-copy-plus   { --ico: url("assets/icons/copy-plus.svg"); }
+.ico-send        { --ico: url("assets/icons/send.svg"); }
+.ico-list        { --ico: url("assets/icons/list.svg"); }
+.ico-grid        { --ico: url("assets/icons/grid.svg"); }
+.btn .ico { margin-right: 6px; }
+.view-btn .ico { margin-right: 5px; font-size: 11px; }
+
 /* F10-T7: barra e caixas de seleção em lote */
 .bi-lote-bar {
   display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; padding: 8px 12px 8px 0;
@@ -3344,6 +3369,7 @@ body.forja #som-volume { accent-color: #ff7a1e; }
   animation: modal-unroll .22s ease-out;
 }
 .bi-lote-bar[hidden] { display: none; }
+#bi-refresh .ico { margin: 0; font-size: 15px; }
 .bi-lote-bar [hidden] { display: none; }   /* o hidden dos botões tem de ganhar do display do .btn */
 .bl-brasa { align-self: stretch; width: 6px; border-radius: 3px 0 0 3px; background: var(--forja-brasa); box-shadow: 0 0 10px 2px var(--forja-brasa-glow); }
 .bl-conta { font-family: var(--loja-gravado); font-size: 11.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--forja-brasa-clara); }
@@ -3354,7 +3380,11 @@ body.forja #som-volume { accent-color: #ff7a1e; }
 .bi-rows.lote .bi-row { grid-template-columns: 20px 44px minmax(0, 1fr) auto 36px; }
 .bi-rows.lote .bi-row.marcada { background: rgba(255,120,30,.14); }
 .bi-rows.lote .bi-row.marcada .bi-check { border-color: var(--forja-brasa); background: var(--forja-brasa); box-shadow: 0 0 8px var(--forja-brasa-glow); }
-.bi-rows.lote .bi-row.marcada .bi-check::after { content: ""; position: absolute; left: 6px; top: 2px; width: 5px; height: 10px; border: solid #1a0d05; border-width: 0 2.5px 2.5px 0; transform: rotate(42deg); }
+.bi-rows.lote .bi-row.marcada .bi-check::after {
+  content: ""; position: absolute; inset: 4px; background-color: #1a0d05;
+  -webkit-mask: url("assets/icons/checkmark.svg") center / contain no-repeat;
+  mask: url("assets/icons/checkmark.svg") center / contain no-repeat;
+}
 #bi-search {
   width: 260px; padding: 8px 12px; border-radius: 2px;
   background: rgba(0,0,0,.35); border: 1px solid #3a3029; color: var(--forja-texto);
@@ -3476,7 +3506,7 @@ body.forja #som-volume { accent-color: #ff7a1e; }
 .bi-name { font-size: 17px; }
 .bi-etiqueta { font-family: var(--loja-gravado); font-size: 8px; letter-spacing: .14em; text-transform: uppercase; padding: 2px 6px; border-radius: 2px; background: #c9973f; color: #2a1a0a; white-space: nowrap; }
 .bi-etiqueta.desatualizada { background: #8d2c22; color: #f3d9c2; }
-.bi-fav { background: transparent; border: none; cursor: pointer; color: #4a3f36; font-size: 20px; line-height: 1; padding: 4px; }
+.bi-fav { background: transparent; border: none; cursor: pointer; color: #4a3f36; font-size: 17px; line-height: 1; padding: 4px; display: inline-flex; }
 .bi-fav:hover { color: var(--forja-brasa-clara); }
 .bi-fav.on { color: #ff7a1e; text-shadow: 0 0 8px rgba(255,120,30,.7); }
 .bi-marks { justify-content: flex-end; min-width: 108px; }
@@ -3664,10 +3694,8 @@ body:not(.editando) .slot-vazio { opacity: .35; }
 
 /* ---- Fase 9, T6: alto-falante e painel de som por canal ---- */
 .som-ctl { position: relative; }
-.som-btn .som-onda, .som-btn .som-risco { transition: opacity .15s; }
-.som-btn.mudo .som-onda { opacity: 0; }
-.som-btn:not(.mudo) .som-risco { display: none; }
-.som-btn.parcial .som-onda:last-of-type { opacity: .35; }
+.som-btn .som-alto { transition: opacity .15s; }
+.som-btn.parcial .som-alto { opacity: .6; }   /* algum canal mudo: o alto-falante esmaece */
 .som-menu {
   position: absolute; right: 0; top: calc(100% + 10px); z-index: 90; width: 260px; padding: 10px 12px 8px;
   background: linear-gradient(180deg, #2a2420, #1a1512); border: 1px solid #443a32; border-top: 3px solid #b6873a; border-radius: 3px;
@@ -3722,11 +3750,7 @@ body.forja .build-cat.drop-after  { transform: translateX(-5px); box-shadow: ins
       <div class="counts"><b id="total-count">0</b> itens catalogados</div>
       <div class="som-ctl" id="som-ctl">
         <button type="button" id="som-mudo" class="som-btn" aria-label="Opções de som" aria-haspopup="true" aria-expanded="false" title="Som: clique para as opções">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M4 9.5v5h3.5L12 18.5v-13L7.5 9.5H4z" fill="currentColor" stroke="none"/>
-            <path class="som-onda" d="M15 9.2a4 4 0 0 1 0 5.6"/><path class="som-onda" d="M17.6 6.8a7.5 7.5 0 0 1 0 10.4"/>
-            <path class="som-risco" d="M15 9l6 6M21 9l-6 6"/>
-          </svg>
+          <i class="ico ico-som-on som-alto" aria-hidden="true"></i>
         </button>
         <input type="range" id="som-volume" min="0" max="100" step="5" aria-label="Volume" title="Volume geral">
         <div id="som-menu" class="som-menu" hidden>
@@ -3838,7 +3862,7 @@ body.forja .build-cat.drop-after  { transform: translateX(-5px); box-shadow: ins
         <select id="bi-qtd" class="build-select" hidden title="Quantas builds mostrar" aria-label="Quantidade">
           <option value="10">10</option><option value="20">20</option><option value="50" selected>50</option><option value="100">100</option>
         </select>
-        <button id="bi-refresh" class="btn ghost" type="button" hidden title="Buscar de novo no servidor">↻</button>
+        <button id="bi-refresh" class="btn ghost" type="button" hidden title="Buscar de novo no servidor" aria-label="Buscar de novo no servidor"><i class="ico ico-refresh" aria-hidden="true"></i></button>
       </div>
     </div>
     <!-- F10-T7 (Leo, 16/09/2026): seleção em lote para copiar/excluir várias de uma vez -->
@@ -3848,8 +3872,8 @@ body.forja .build-cat.drop-after  { transform: translateX(-5px); box-shadow: ins
       <button type="button" class="btn ghost mini" id="bl-todas">Marcar todas</button>
       <button type="button" class="btn ghost mini" id="bl-nenhuma">Limpar</button>
       <span class="bl-sep"></span>
-      <button type="button" class="btn mini" id="bl-copiar">Copiar como texto</button>
-      <button type="button" class="btn mini" id="bl-importar" hidden>Copiar para minhas builds</button>
+      <button type="button" class="btn mini" id="bl-copiar"><i class="ico ico-copy" aria-hidden="true"></i>Copiar como texto</button>
+      <button type="button" class="btn mini" id="bl-importar" hidden><i class="ico ico-copy-plus" aria-hidden="true"></i>Copiar para minhas builds</button>
       <button type="button" class="btn ghost mini" id="bl-excluir">Excluir</button>
       <button type="button" class="btn ghost mini" id="bl-sair" title="Sair do modo de seleção (Esc)">Concluir</button>
       <span class="bl-msg" id="bl-msg" aria-live="polite"></span>
@@ -3978,8 +4002,8 @@ body.forja .build-cat.drop-after  { transform: translateX(-5px); box-shadow: ins
           <span id="picker-count"></span>
           <!-- F10-T9 (Leo, 16/09/2026): só ícones cabem várias fileiras onde cabia uma -->
           <span class="view-toggle picker-view" role="group" aria-label="Modo da bandeja">
-            <button type="button" class="view-btn active" data-pview="lista" title="Ícone, nome e preço">Lista</button>
-            <button type="button" class="view-btn" data-pview="icones" title="Só os ícones — cabem mais por fileira">Ícones</button>
+            <button type="button" class="view-btn active" data-pview="lista" title="Ícone, nome e preço"><i class="ico ico-list" aria-hidden="true"></i>Lista</button>
+            <button type="button" class="view-btn" data-pview="icones" title="Só os ícones — cabem mais por fileira"><i class="ico ico-grid" aria-hidden="true"></i>Ícones</button>
           </span>
           <span id="picker-hint">selecione uma categoria</span>
         </div>
@@ -6645,7 +6669,7 @@ function linhaHtml(d) {
       <span class="bi-champ">${champIconHtml(d.champ, "")}</span>
       <span class="bi-name-wrap"><span class="bi-name">${esc(d.name)}</span>${etiquetaHtml(d)}</span>
       <span class="bi-marks" title="${d.n} ${d.n === 1 ? "item" : "itens"}">${d.markers.length ? d.markers.map(m => markerHtml(m, d.champ, renderBuildIndex)).join("") : `<span class="vazio">sem marcadores</span>`}</span>
-      <button type="button" class="bi-fav${d.fav ? " on" : ""}" data-fav="${d.id}" title="${d.fav ? "Favorita — clique para tirar" : "Marcar como favorita"}">${d.fav ? "♥" : "♡"}</button>
+      <button type="button" class="bi-fav${d.fav ? " on" : ""}" data-fav="${d.id}" title="${d.fav ? "Favorita — clique para tirar" : "Marcar como favorita"}" aria-label="${d.fav ? "Tirar dos favoritos" : "Marcar como favorita"}"><i class="ico ${d.fav ? "ico-fave-on" : "ico-fave-off"}" aria-hidden="true"></i></button>
     </div>`;
 }
 function renderPublicasIndex(rows) {
@@ -6671,7 +6695,7 @@ function renderPublicDetail(box, d) {
     numeros: `<p class="bd-stats">${d.visualizacoes} ${d.visualizacoes === 1 ? "visualização" : "visualizações"} · ${d.copias} ${d.copias === 1 ? "cópia" : "cópias"}${d.popDia ? ` · ${d.popDia} hoje` : ""}${d.popSemana ? ` · ${d.popSemana} na semana` : ""}</p>${d.autor ? `<p class="bd-autor">por ${esc(d.autor)}</p>` : ""}`,
     semDesc: "Sem descrição.",
     botoes: `
-      <button type="button" class="btn primary" data-act="copypub" title="Traz uma cópia para a sua biblioteca e abre na forja">Copiar e editar</button>
+      <button type="button" class="btn primary" data-act="copypub" title="Traz uma cópia para a sua biblioteca e abre na forja"><i class="ico ico-copy-plus" aria-hidden="true"></i>Copiar e editar</button>
       <button type="button" class="btn ghost" data-act="favpub">${d.fav ? "♥ Tirar dos favoritos" : "♡ Favoritar"}</button>
       ${minha ? `<button type="button" class="btn ghost" data-act="delpub" title="Tira esta publicação do site (a build continua na sua biblioteca)">Excluir do site</button>` : ""}`,
     nota: minha ? `<p class="bd-pub-note">Publicada por você neste navegador.</p>` : "",
@@ -6886,10 +6910,10 @@ function renderBuildDetail() {
     aviso: revisaoHtml(d),
     semDesc: "Sem descrição — escreva uma na forja (obrigatória para publicar).",
     botoes: `
-      <button type="button" class="btn ghost" data-act="copy" title="Cria uma cópia e abre na forja">Copiar e editar</button>
-      <button type="button" class="btn ghost" data-act="link" title="Copia um link com a build inteira dentro — quem abre recebe a build">Copiar link</button>
+      <button type="button" class="btn ghost" data-act="copy" title="Cria uma cópia e abre na forja"><i class="ico ico-copy-plus" aria-hidden="true"></i>Copiar e editar</button>
+      <button type="button" class="btn ghost" data-act="link" title="Copia um link com a build inteira dentro — quem abre recebe a build"><i class="ico ico-copy" aria-hidden="true"></i>Copiar link</button>
       <button type="button" class="btn primary" data-act="edit">Editar</button>
-      <button type="button" class="btn" data-act="publish"${!Servidor.ativo() || falta.length ? " disabled" : ""} title="${!Servidor.ativo() ? "Sem servidor configurado (data/servidor.js)" : falta.length ? "Falta: " + esc(falta.join(", ")) : (d.pubId ? "Envia esta versão para o site (versão " + (d.pubVersao + 1) + ")" : "Publica esta build no site")}">${d.pubId ? "Atualizar publicação" : "Publicar"}</button>
+      <button type="button" class="btn" data-act="publish"${!Servidor.ativo() || falta.length ? " disabled" : ""} title="${!Servidor.ativo() ? "Sem servidor configurado (data/servidor.js)" : falta.length ? "Falta: " + esc(falta.join(", ")) : (d.pubId ? "Envia esta versão para o site (versão " + (d.pubVersao + 1) + ")" : "Publica esta build no site")}"><i class="ico ico-send" aria-hidden="true"></i>${d.pubId ? "Atualizar publicação" : "Publicar"}</button>
       ${d.pubId ? `<button type="button" class="btn ghost" data-act="unpub" title="Tira do site e mantém a build aqui">Despublicar</button>` : ""}
       <button type="button" class="btn ghost" data-act="del"${library.builds.length <= 1 ? " disabled" : ""} title="${d.pubId ? "Apaga a build daqui e do site" : "Apaga a build da biblioteca"}">Excluir</button>`,
     nota: `
