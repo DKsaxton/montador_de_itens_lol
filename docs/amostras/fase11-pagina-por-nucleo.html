@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fase 11 — a página do catálogo por núcleo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=IM+Fell+English+SC&family=IM+Fell+English:ital@0;1&family=Alegreya:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --papel:#e5d3ad;--papel-escuro:#cdb689;--papel-borda:#a88f60;--tinta:#2c1d12;--tinta-suave:#5a4630;
+  --madeira-1:#3b2617;--madeira-2:#2a1a0f;--madeira-3:#21130a;--latao:#b6873a;--latao-claro:#d5b35a;
+  --cera:#8d2c22;--cera-texto:#f4e6c4;--titulo:#e8d3a2;--legenda:#b89a66;
+  --ad:#c8641e;--ap:#7b4fb5;--vit:#4d8b3a;
+  --titulos:'IM Fell English SC','IM Fell English',Georgia,serif;--texto:'Alegreya',Georgia,serif;--gravado:'Cinzel',Georgia,serif;
+  --sim-ad:url("../../assets/icons/nucleo-ad.svg");--sim-ap:url("../../assets/icons/nucleo-ap.svg");--sim-vit:url("../../assets/icons/nucleo-vit.svg");
+}
+*{box-sizing:border-box}
+body{margin:0;background:linear-gradient(180deg,var(--madeira-1),var(--madeira-3)) fixed;color:var(--papel);font-family:var(--texto);font-size:15px}
+.wrap{max-width:1280px;margin:0 auto;padding:26px 22px 70px}
+h1{font-family:var(--titulos);font-weight:400;font-size:31px;color:var(--titulo);margin:0 0 4px}
+.sub{font-style:italic;color:var(--legenda);margin:0 0 6px;max-width:92ch}
+.erro{font-style:italic;color:#e2a27a;margin:0 0 24px;max-width:92ch}
+h2{font-family:var(--titulos);font-weight:400;font-size:23px;color:var(--titulo);margin:38px 0 2px}
+h2 .n{font-family:var(--gravado);font-size:10px;letter-spacing:.22em;color:var(--latao-claro);margin-right:9px;vertical-align:3px}
+.lede{font-style:italic;color:var(--legenda);margin:0 0 16px;max-width:92ch}
+.legenda{font-family:var(--gravado);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--latao-claro);margin:22px 0 8px}
+
+/* abas, como já estão no app */
+.abas{display:flex;gap:8px;align-items:flex-end;padding:0 4px}
+.aba{display:flex;align-items:center;gap:10px;padding:11px 16px;border:1px solid #1a120a;border-bottom:none;border-radius:2px 2px 0 0;
+  background:var(--metal);color:var(--letra);font-family:var(--gravado);font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.18),inset 0 -10px 18px rgba(0,0,0,.45)}
+.aba i{width:19px;height:19px;background-color:var(--letra);-webkit-mask:var(--sim) center/contain no-repeat;mask:var(--sim) center/contain no-repeat;opacity:.8}
+.aba.todos{--metal:linear-gradient(180deg,#6b5535,#3d2f1c);--letra:#e6d3a8}
+.aba.ad{--metal:linear-gradient(180deg,#6e4a2c,#3a2313);--letra:#f0c49a;--sim:var(--sim-ad)}
+.aba.ap{--metal:linear-gradient(180deg,#5b4a74,#2c2440);--letra:#d9c8f2;--sim:var(--sim-ap)}
+.aba.vit{--metal:linear-gradient(180deg,#4d6640,#253620);--letra:#cfe4bf;--sim:var(--sim-vit)}
+.aba.on{padding-bottom:14px;margin-bottom:-3px;border-color:var(--cor);color:#fff;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.3),inset 0 -14px 26px color-mix(in srgb,var(--cor) 55%,transparent),0 -4px 16px color-mix(in srgb,var(--cor) 50%,transparent)}
+.aba.on i{opacity:1;background-color:#fff}
+.regua{border-bottom:3px solid var(--cor);box-shadow:0 1px 0 rgba(217,192,138,.18);margin-bottom:0}
+
+/* cards (iguais nas duas opções) */
+.grade{display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:11px;margin-bottom:6px}
+.c{background:var(--carta,var(--papel));border:1px solid var(--papel-borda);border-left:4px solid var(--cor);border-radius:2px;color:var(--tinta);padding:9px 11px;box-shadow:0 5px 12px rgba(0,0,0,.5)}
+.ct{display:flex;gap:9px;align-items:flex-start}
+.c img{width:44px;height:44px;border-radius:2px;border:1px solid var(--tinta-suave);flex:none}
+.c h4{font-family:var(--titulos);font-weight:400;font-size:14.5px;margin:0;line-height:1.15}
+.c .en{font-style:italic;font-size:11px;color:var(--tinta-suave);margin:2px 0 0}
+.c .g{margin-left:auto;font-weight:600;font-size:13px;color:var(--cera)}
+.at{list-style:none;margin:7px 0 0;padding:0;font-size:12.5px}
+.at li{padding-left:13px;position:relative;line-height:1.45}
+.at li::before{content:"—";position:absolute;left:0;color:var(--tinta-suave)}
+
+/* cabeçalho de tier */
+.gh{display:flex;align-items:center;gap:9px;margin:14px 0 8px;padding-bottom:6px;border-bottom:1px solid rgba(217,192,138,.22)}
+.gh .sim{width:17px;height:17px;background-color:var(--cor);-webkit-mask:var(--sim) center/contain no-repeat;mask:var(--sim) center/contain no-repeat;flex:none}
+.gl{font-family:var(--gravado);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--titulo)}
+.gc{font-style:italic;font-size:12px;color:var(--legenda)}
+
+/* ======== OPÇÃO A — a oficina do núcleo ======== */
+/* A página inteira vira a bancada daquele núcleo: material de fundo próprio,
+   marca d'água do símbolo, cantoneiras de latão e o papel do card no tom. */
+.ofic{position:relative;padding:18px 20px 22px;border:1px solid color-mix(in srgb,var(--cor) 40%,#3a2a18);border-top:none;overflow:hidden;background:var(--fundo)}
+.ofic::before{content:"";position:absolute;right:-40px;top:-30px;width:340px;height:340px;opacity:.07;pointer-events:none;
+  background-color:var(--cor);-webkit-mask:var(--sim) center/contain no-repeat;mask:var(--sim) center/contain no-repeat}
+.ofic .cant{position:absolute;width:26px;height:26px;border:3px solid var(--latao);opacity:.55}
+.ofic .c1{left:6px;top:6px;border-right:none;border-bottom:none}
+.ofic .c2{right:6px;top:6px;border-left:none;border-bottom:none}
+.ofic .c3{left:6px;bottom:6px;border-right:none;border-top:none}
+.ofic .c4{right:6px;bottom:6px;border-left:none;border-top:none}
+/* aço escovado para AD */
+.ofic.ad{--fundo:
+  repeating-linear-gradient(90deg,rgba(255,255,255,.028) 0 2px,transparent 2px 5px),
+  linear-gradient(180deg,#2a1d14,#1d130c)}
+/* veludo com pontos arcanos para AP */
+.ofic.ap{--fundo:
+  radial-gradient(circle at 20% 30%,rgba(190,150,255,.10) 0 2px,transparent 3px),
+  radial-gradient(circle at 70% 60%,rgba(190,150,255,.08) 0 2px,transparent 3px),
+  radial-gradient(circle at 45% 85%,rgba(190,150,255,.07) 0 1.5px,transparent 3px),
+  linear-gradient(180deg,#221a2e,#150f1d)}
+/* carvalho e musgo para Vitalidade */
+.ofic.vit{--fundo:
+  repeating-linear-gradient(103deg,rgba(0,0,0,.16) 0 7px,transparent 7px 22px),
+  linear-gradient(180deg,#22271a,#161a10)}
+.ofic.ad  .grade .c{--carta:#e9d4ab}
+.ofic.ap  .grade .c{--carta:#e2d5b9}
+.ofic.vit .grade .c{--carta:#e2d8ab}
+
+/* ======== OPÇÃO B — estandarte da guilda ======== */
+/* Mais leve: a página continua a loja de sempre, mas ganha um estandarte de
+   pano na lateral com o símbolo e o nome do núcleo gravados na vertical. */
+.est{display:grid;grid-template-columns:62px minmax(0,1fr);border:1px solid #3a2a18;border-top:none;background:linear-gradient(180deg,rgba(0,0,0,.26),rgba(0,0,0,.4))}
+.faixa{position:relative;background:linear-gradient(180deg,color-mix(in srgb,var(--cor) 72%,#1a1208),color-mix(in srgb,var(--cor) 30%,#120c06));
+  display:flex;flex-direction:column;align-items:center;gap:14px;padding:16px 0 26px;box-shadow:inset -6px 0 10px rgba(0,0,0,.45)}
+.faixa::after{content:"";position:absolute;left:0;right:0;bottom:0;height:18px;background:inherit;
+  clip-path:polygon(0 0,100% 0,100% 100%,50% 58%,0 100%)}
+.faixa i{width:30px;height:30px;background-color:#fff;-webkit-mask:var(--sim) center/contain no-repeat;mask:var(--sim) center/contain no-repeat;opacity:.95;
+  filter:drop-shadow(0 1px 2px rgba(0,0,0,.6))}
+.faixa b{font-family:var(--gravado);font-size:12px;letter-spacing:.34em;text-transform:uppercase;color:#fff;writing-mode:vertical-rl;text-shadow:0 1px 2px rgba(0,0,0,.6)}
+.est .corpo{padding:16px 18px 20px}
+.nota{font-style:italic;color:var(--legenda);font-size:13px;margin:14px 0 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>A página do catálogo com a cara do núcleo</h1>
+  <p class="sub">As abas já têm personalidade; a <b>página embaixo delas</b> continuava igual em qualquer núcleo. Aqui ela também muda. Itens, preços e atributos são os do catálogo.</p>
+  <p class="erro">Em "Todos" a loja fica exatamente como está hoje: sem material, sem estandarte, sem marca d'água.</p>
+
+  <h2><span class="n">Opção A</span>A oficina do núcleo</h2>
+  <p class="lede">A página vira a bancada daquele núcleo: <b>aço escovado</b> no AD, <b>veludo com pontos arcanos</b> no AP, <b>carvalho e musgo</b> na Vitalidade. Cantoneiras de latão nos quatro cantos, marca d'água gigante do símbolo e o papel do card puxando para o tom da oficina. Os cabeçalhos de tier levam o símbolo.</p>
+  <div class="legenda">AD</div>
+  <div class="abas"><div class="aba todos">Todos</div><div class="aba ad on" style="--cor: var(--ad)"><i></i>AD</div><div class="aba ap"><i></i>AP</div><div class="aba vit"><i></i>Vitalidade</div></div>
+<div class="regua" style="--cor: var(--ad)"></div>
+<div class="ofic ad" style="--cor: var(--ad); --sim: var(--sim-ad)">
+  <span class="cant c1"></span><span class="cant c2"></span><span class="cant c3"></span><span class="cant c4"></span>
+  
+    <div class="gh"><i class="sim"></i><span class="gl">Lendário</span><span class="gc">48 itens</span></div>
+    <div class="grade"><article class="c">
+  <div class="ct"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/6696.png" alt=""><div><h4>Arco do Axioma</h4>
+  <p class="en">Axiom Arc</p></div><span class="g">2.750g</span></div>
+  <ul class="at"><li>+55 de Dano de Ataque</li><li>+18 de Letalidade</li></ul></article>
+<article class="c">
+  <div class="ct"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/2520.png" alt=""><div><h4>Quebra-Bastião</h4>
+  <p class="en">Bastionbreaker</p></div><span class="g">3.000g</span></div>
+  <ul class="at"><li>+55 de Dano de Ataque</li><li>+22 de Letalidade</li></ul></article>
+<article class="c">
+  <div class="ct"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/3071.png" alt=""><div><h4>Cutelo Negro</h4>
+  <p class="en">Black Cleaver</p></div><span class="g">3.000g</span></div>
+  <ul class="at"><li>+45 de Dano de Ataque</li><li>+400 de Vida</li></ul></article>
+<article class="c">
+  <div class="ct"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/3153.png" alt=""><div><h4>Espada do Rei Destruído</h4>
+  <p class="en">Blade of The Ruined King</p></div><span class="g">3.200g</span></div>
+  <ul class="at"><li>+40 de Dano de Ataque</li><li>+25% de Velocidade de Ataque</li></ul></article></div>
+    <div class="gh"><i class="sim"></i><span class="gl">Épico</span><span class="gc">16 itens</span></div>
+    <div class="grade"><article class="c">
+  <div class="ct"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/3133.png" alt=""><div><h4>Martelo de Guerra de Caulfield</h4>
+  <p class="en">Caulfield&#x27;s Warhammer</p></div><span class="g">1.050g</span></div>
+  <ul class="at"><li>+20 de Dano de Ataque</li><li>+10 de Aceleração de Habilidade</li></ul></article>
+<article class="c">
+  <div class="ct"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/3123.png" alt=""><div><h4>Chamado do Carrasco</h4>
+  <p class="en">Executioner&#x27;s Calling</p></div><span class="g">800g</span></div>
+  <ul class="at"><li>+15 de Dano de Ataque</li></ul></article>
+<article class="c">
+  <div class="ct"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/3051.png" alt=""><div><h4>Machado Termestre</h4>
+  <p class="en">Hearthbound Axe</p></div><span class="g">1.200g</span></div>
+  <ul class="at"><li>+20 de Dano de Ataque</li><li>+20% de Velocidade de Ataque</li></ul></article>
+<article class="c">
+  <div class="ct"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/3155.png" alt=""><div><h4>Hexdrinker</h4>
+  <p class="en">Hexdrinker</p></div><span class="g">1.300g</span></div>
+  <ul class="at"><li>+25 de Dano de Ataque</li><li>+25 de Resistência Mágica</li></ul></article></div>
+</div>
+  <div class="legenda">Vitalidade</div>
+  <div class="abas"><div class="aba todos">Todos</div><div class="aba ad"><i></i>AD</div><div class="aba ap"><i></i>AP</div><div class="aba vit on" style="--cor: var(--vit)"><i></i>Vitalidade</div></div>
+<div class="regua" style="--cor: var(--vit)"></div>
+<div class="ofic vit" style="--cor: var(--vit); --sim: var(--sim-vit)">
+  <span class="cant c1"></span><span class="cant c2"></span><span class="cant c3"></span><span class="cant c4"></span>
+  
+    <div class="gh"><i class="sim"></i><span class="gl">Lendário</span><span class="gc">31 itens</span></div>
+    <div class="grade"><article class="c">
+  <div class="ct"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/8020.png" alt=""><div><h4>Máscara Abissal</h4>
+  <p class="en">Abyssal Mask</p></div><span class="g">2.650g</span></div>
+  <ul class="at"><li>+350 de Vida</li><li>+45 de Resistência Mágica</li></ul></article>
+<article class="c">
+  <div class="ct"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/3039.png" alt=""><div><h4>Acerto de Contas de Atma</h4>
+  <p class="en">Atma&#x27;s Reckoning</p></div><span class="g">2.900g</span></div>
+  <ul class="at"><li>+700 de Vida</li><li>+20% de Chance de Acerto Crítico</li></ul></article>
+<article class="c">
+  <div class="ct"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/2524.png" alt=""><div><h4>Bandocanos</h4>
+  <p class="en">Bandlepipes</p></div><span class="g">2.300g</span></div>
+  <ul class="at"><li>+200 de Vida</li><li>+15 de Aceleração de Habilidade</li></ul></article>
+<article class="c">
+  <div class="ct"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/3877.png" alt=""><div><h4>Canção de Sangue</h4>
+  <p class="en">Bloodsong</p></div><span class="g">400g</span></div>
+  <ul class="at"><li>+200 de Vida</li><li>+75% de Regeneração de Vida base</li></ul></article></div>
+    <div class="gh"><i class="sim"></i><span class="gl">Épico</span><span class="gc">16 itens</span></div>
+    <div class="grade"><article class="c">
+  <div class="ct"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/6660.png" alt=""><div><h4>Brasa de Bami</h4>
+  <p class="en">Bami&#x27;s Cinder</p></div><span class="g">900g</span></div>
+  <ul class="at"><li>+150 de Vida</li><li>+5 de Aceleração de Habilidade</li></ul></article>
+<article class="c">
+  <div class="ct"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/3076.png" alt=""><div><h4>Colete Espinhoso</h4>
+  <p class="en">Bramble Vest</p></div><span class="g">800g</span></div>
+  <ul class="at"><li>+30 de Armadura</li></ul></article>
+<article class="c">
+  <div class="ct"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/3803.png" alt=""><div><h4>Catalisador das Eras</h4>
+  <p class="en">Catalyst of Aeons</p></div><span class="g">1.300g</span></div>
+  <ul class="at"><li>+300 de Vida</li><li>+375 de Mana</li></ul></article>
+<article class="c">
+  <div class="ct"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/1031.png" alt=""><div><h4>Cota de Malha</h4>
+  <p class="en">Chain Vest</p></div><span class="g">800g</span></div>
+  <ul class="at"><li>+40 de Armadura</li></ul></article></div>
+</div>
+
+  <h2><span class="n">Opção B</span>Estandarte da guilda</h2>
+  <p class="lede">Mais leve. A loja continua a de sempre, mas um <b>estandarte de pano</b> desce pela lateral com o símbolo e o nome do núcleo gravados na vertical, com a ponta recortada embaixo. O fundo quase não muda; quem dá o recado é a bandeira.</p>
+  <div class="legenda">AP</div>
+  <div class="abas"><div class="aba todos">Todos</div><div class="aba ad"><i></i>AD</div><div class="aba ap on" style="--cor: var(--ap)"><i></i>AP</div><div class="aba vit"><i></i>Vitalidade</div></div>
+<div class="regua" style="--cor: var(--ap)"></div>
+<div class="est" style="--cor: var(--ap); --sim: var(--sim-ap)">
+  <div class="faixa"><i></i><b>Poder de Habilidade</b></div>
+  <div class="corpo">
+    <div class="gh"><i class="sim"></i><span class="gl">Lendário</span><span class="gc">35 itens</span></div>
+    <div class="grade"><article class="c">
+  <div class="ct"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/2522.png" alt=""><div><h4>Atualizador</h4>
+  <p class="en">Actualizer</p></div><span class="g">2.800g</span></div>
+  <ul class="at"><li>+90 de Poder de Habilidade</li><li>+300 de Mana</li></ul></article>
+<article class="c">
+  <div class="ct"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/3003.png" alt=""><div><h4>Cajado do Arcanjo</h4>
+  <p class="en">Archangel&#x27;s Staff</p></div><span class="g">2.900g</span></div>
+  <ul class="at"><li>+70 de Poder de Habilidade</li><li>+600 de Mana</li></ul></article>
+<article class="c">
+  <div class="ct"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/3504.png" alt=""><div><h4>Turíbulo Ardente</h4>
+  <p class="en">Ardent Censer</p></div><span class="g">2.200g</span></div>
+  <ul class="at"><li>+45 de Poder de Habilidade</li><li>+10% de Poder de Cura e Escudo</li></ul></article>
+<article class="c">
+  <div class="ct"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/3102.png" alt=""><div><h4>Véu da Banshee</h4>
+  <p class="en">Banshee&#x27;s Veil</p></div><span class="g">3.000g</span></div>
+  <ul class="at"><li>+105 de Poder de Habilidade</li><li>+40 de Resistência Mágica</li></ul></article></div>
+    <div class="gh"><i class="sim"></i><span class="gl">Épico</span><span class="gc">12 itens</span></div>
+    <div class="grade"><article class="c">
+  <div class="ct"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/3113.png" alt=""><div><h4>Cintilação Etérea</h4>
+  <p class="en">Aether Wisp</p></div><span class="g">900g</span></div>
+  <ul class="at"><li>+30 de Poder de Habilidade</li><li>+4% de Velocidade de Movimento</li></ul></article>
+<article class="c">
+  <div class="ct"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/4642.png" alt=""><div><h4>Espelho de Bandópolis</h4>
+  <p class="en">Bandleglass Mirror</p></div><span class="g">900g</span></div>
+  <ul class="at"><li>+20 de Poder de Habilidade</li><li>+100% de Regeneração de Mana base</li></ul></article>
+<article class="c">
+  <div class="ct"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/4630.png" alt=""><div><h4>Joia da Ruína</h4>
+  <p class="en">Blighting Jewel</p></div><span class="g">1.100g</span></div>
+  <ul class="at"><li>+25 de Poder de Habilidade</li><li>+13% de Penetração Mágica</li></ul></article>
+<article class="c">
+  <div class="ct"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/2508.png" alt=""><div><h4>Cinzas do Destino</h4>
+  <p class="en">Fated Ashes</p></div><span class="g">900g</span></div>
+  <ul class="at"><li>+30 de Poder de Habilidade</li></ul></article></div></div>
+</div>
+  <div class="legenda">AD</div>
+  <div class="abas"><div class="aba todos">Todos</div><div class="aba ad on" style="--cor: var(--ad)"><i></i>AD</div><div class="aba ap"><i></i>AP</div><div class="aba vit"><i></i>Vitalidade</div></div>
+<div class="regua" style="--cor: var(--ad)"></div>
+<div class="est" style="--cor: var(--ad); --sim: var(--sim-ad)">
+  <div class="faixa"><i></i><b>Dano de Ataque</b></div>
+  <div class="corpo">
+    <div class="gh"><i class="sim"></i><span class="gl">Lendário</span><span class="gc">48 itens</span></div>
+    <div class="grade"><article class="c">
+  <div class="ct"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/6696.png" alt=""><div><h4>Arco do Axioma</h4>
+  <p class="en">Axiom Arc</p></div><span class="g">2.750g</span></div>
+  <ul class="at"><li>+55 de Dano de Ataque</li><li>+18 de Letalidade</li></ul></article>
+<article class="c">
+  <div class="ct"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/2520.png" alt=""><div><h4>Quebra-Bastião</h4>
+  <p class="en">Bastionbreaker</p></div><span class="g">3.000g</span></div>
+  <ul class="at"><li>+55 de Dano de Ataque</li><li>+22 de Letalidade</li></ul></article>
+<article class="c">
+  <div class="ct"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/3071.png" alt=""><div><h4>Cutelo Negro</h4>
+  <p class="en">Black Cleaver</p></div><span class="g">3.000g</span></div>
+  <ul class="at"><li>+45 de Dano de Ataque</li><li>+400 de Vida</li></ul></article>
+<article class="c">
+  <div class="ct"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/3153.png" alt=""><div><h4>Espada do Rei Destruído</h4>
+  <p class="en">Blade of The Ruined King</p></div><span class="g">3.200g</span></div>
+  <ul class="at"><li>+40 de Dano de Ataque</li><li>+25% de Velocidade de Ataque</li></ul></article></div>
+    <div class="gh"><i class="sim"></i><span class="gl">Épico</span><span class="gc">16 itens</span></div>
+    <div class="grade"><article class="c">
+  <div class="ct"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/3133.png" alt=""><div><h4>Martelo de Guerra de Caulfield</h4>
+  <p class="en">Caulfield&#x27;s Warhammer</p></div><span class="g">1.050g</span></div>
+  <ul class="at"><li>+20 de Dano de Ataque</li><li>+10 de Aceleração de Habilidade</li></ul></article>
+<article class="c">
+  <div class="ct"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/3123.png" alt=""><div><h4>Chamado do Carrasco</h4>
+  <p class="en">Executioner&#x27;s Calling</p></div><span class="g">800g</span></div>
+  <ul class="at"><li>+15 de Dano de Ataque</li></ul></article>
+<article class="c">
+  <div class="ct"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/3051.png" alt=""><div><h4>Machado Termestre</h4>
+  <p class="en">Hearthbound Axe</p></div><span class="g">1.200g</span></div>
+  <ul class="at"><li>+20 de Dano de Ataque</li><li>+20% de Velocidade de Ataque</li></ul></article>
+<article class="c">
+  <div class="ct"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/3155.png" alt=""><div><h4>Hexdrinker</h4>
+  <p class="en">Hexdrinker</p></div><span class="g">1.300g</span></div>
+  <ul class="at"><li>+25 de Dano de Ataque</li><li>+25 de Resistência Mágica</li></ul></article></div></div>
+</div>
+
+  <p class="nota">As duas mantêm a leitura do card intacta. Os símbolos são os mesmos das abas, do pacote que você trouxe.</p>
+</div>
+</body>
+</html>

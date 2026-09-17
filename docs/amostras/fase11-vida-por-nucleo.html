@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fase 11 — golpes no AD, molduras no AP e na Vitalidade</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=IM+Fell+English+SC&family=IM+Fell+English:ital@0;1&family=Alegreya:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --papel:#e5d3ad;--papel-borda:#a88f60;--tinta:#2c1d12;--tinta-suave:#5a4630;
+  --madeira-1:#3b2617;--madeira-3:#21130a;--latao:#b6873a;--latao-claro:#d5b35a;--cera:#8d2c22;
+  --titulo:#e8d3a2;--legenda:#b89a66;--ad:#c8641e;--ap:#7b4fb5;--vit:#4d8b3a;
+  --titulos:'IM Fell English SC','IM Fell English',Georgia,serif;--texto:'Alegreya',Georgia,serif;--gravado:'Cinzel',Georgia,serif;
+  --sim-ad:url("../../assets/icons/nucleo-ad.svg");--sim-ap:url("../../assets/icons/nucleo-ap.svg");--sim-vit:url("../../assets/icons/nucleo-vit.svg");
+  --t-ad:235ms;--t-ap:520ms;--t-vit:549ms;
+}
+*{box-sizing:border-box}
+body{margin:0;background:linear-gradient(180deg,var(--madeira-1),var(--madeira-3)) fixed;color:var(--papel);font-family:var(--texto);font-size:15px}
+.wrap{max-width:1180px;margin:0 auto;padding:26px 22px 80px}
+h1{font-family:var(--titulos);font-weight:400;font-size:31px;color:var(--titulo);margin:0 0 4px}
+.sub{font-style:italic;color:var(--legenda);margin:0 0 4px;max-width:96ch}
+.dica{font-family:var(--gravado);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--latao-claro);margin:14px 0 10px}
+h2{font-family:var(--titulos);font-weight:400;font-size:23px;color:var(--titulo);margin:36px 0 2px;display:flex;align-items:center;gap:10px}
+h2 i{width:22px;height:22px;background-color:var(--cor);-webkit-mask:var(--sim) center/contain no-repeat;mask:var(--sim) center/contain no-repeat}
+.lede{font-style:italic;color:var(--legenda);margin:0 0 14px;max-width:96ch}
+.ficha{font-family:var(--gravado);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--latao-claro);
+  border-left:3px solid var(--cor);padding-left:9px;margin:0 0 14px;line-height:1.8}
+.palco{position:relative;padding:34px 30px;border:1px solid color-mix(in srgb,var(--cor) 38%,#3a2a18);border-radius:3px;background:var(--fundo);overflow:hidden}
+.palco::before{content:"";position:absolute;right:-30px;top:-24px;width:280px;height:280px;opacity:.06;pointer-events:none;
+  background-color:var(--cor);-webkit-mask:var(--sim) center/contain no-repeat;mask:var(--sim) center/contain no-repeat}
+.grade{display:grid;grid-template-columns:repeat(auto-fill,minmax(236px,1fr));gap:26px;position:relative;z-index:1}
+.ad-palco{--cor:var(--ad);--sim:var(--sim-ad);--fundo:repeating-linear-gradient(90deg,rgba(255,255,255,.028) 0 2px,transparent 2px 5px),linear-gradient(180deg,#2a1d14,#1d130c)}
+.ap-palco{--cor:var(--ap);--sim:var(--sim-ap);--fundo:radial-gradient(circle at 20% 30%,rgba(190,150,255,.10) 0 2px,transparent 3px),radial-gradient(circle at 70% 60%,rgba(190,150,255,.08) 0 2px,transparent 3px),linear-gradient(180deg,#221a2e,#150f1d)}
+.vit-palco{--cor:var(--vit);--sim:var(--sim-vit);--fundo:repeating-linear-gradient(103deg,rgba(0,0,0,.16) 0 7px,transparent 7px 22px),linear-gradient(180deg,#22271a,#161a10)}
+
+.c{position:relative;color:var(--tinta);padding:20px 22px;outline:none;will-change:transform;
+  transform:translateZ(0);transition:transform .16s cubic-bezier(.2,.9,.3,1)}
+.papel{position:absolute;inset:0;z-index:0;background:var(--papel);border:1px solid var(--papel-borda);
+  border-left:4px solid var(--cor);border-radius:2px;box-shadow:0 5px 12px rgba(0,0,0,.5)}
+.c:hover,.c:focus{transform:translate3d(0,-4px,0)}
+.conteudo{position:relative;z-index:6}
+.ct{display:flex;gap:10px;align-items:flex-start}
+.c img{width:46px;height:46px;border-radius:2px;border:1px solid var(--tinta-suave);flex:none}
+.c h4{font-family:var(--titulos);font-weight:400;font-size:15px;margin:0;line-height:1.15}
+.c .en2{font-style:italic;font-size:11px;color:var(--tinta-suave);margin:2px 0 0}
+.c .g{margin-left:auto;font-weight:600;font-size:13px;color:var(--cera)}
+.at{list-style:none;margin:8px 0 0;padding:0;font-size:12.5px}
+.at li{padding-left:13px;position:relative;line-height:1.45}
+.at li::before{content:"—";position:absolute;left:0;color:var(--tinta-suave)}
+.fx{position:absolute;inset:0;pointer-events:none;z-index:3}
+.fx *{will-change:transform,opacity;backface-visibility:hidden}
+
+/* ============ moldura genérica: quatro barras que se desenham ============ */
+/* Cada barra nasce do zero e cresce; só transform anda. */
+.mol{opacity:0}
+.mol .ba{position:absolute;background:var(--barra,#a98443);border-radius:1px}
+.mol .ba.t{top:var(--off,-3px);left:var(--off,-3px);right:var(--off,-3px);height:var(--esp,3px);transform:scaleX(0);transform-origin:left center}
+.mol .ba.b{bottom:var(--off,-3px);left:var(--off,-3px);right:var(--off,-3px);height:var(--esp,3px);transform:scaleX(0);transform-origin:right center}
+.mol .ba.l{left:var(--off,-3px);top:var(--off,-3px);bottom:var(--off,-3px);width:var(--esp,3px);transform:scaleY(0);transform-origin:center bottom}
+.mol .ba.r{right:var(--off,-3px);top:var(--off,-3px);bottom:var(--off,-3px);width:var(--esp,3px);transform:scaleY(0);transform-origin:center top}
+.mol .ca{position:absolute;width:var(--cw,9px);height:var(--cw,9px);background:var(--canto,#e2c98a);border-radius:var(--craio,50%);transform:scale(0)}
+.mol .ca.tl{top:var(--coff,-6px);left:var(--coff,-6px)}
+.mol .ca.tr{top:var(--coff,-6px);right:var(--coff,-6px)}
+.mol .ca.br{bottom:var(--coff,-6px);right:var(--coff,-6px)}
+.mol .ca.bl{bottom:var(--coff,-6px);left:var(--coff,-6px)}
+.mol .mk{position:absolute;font-family:var(--gravado);font-size:13px;line-height:1;opacity:0;
+  left:var(--p);transform:translateX(-50%) scale(.6)}
+.mol .mk.cima{top:-9px}
+.mol .mk.baixo{bottom:-9px}
+@keyframes mostrar-mol{to{opacity:1}}
+@keyframes crescer-x{to{transform:scaleX(1)}}
+@keyframes crescer-y{to{transform:scaleY(1)}}
+@keyframes por-canto{0%{transform:scale(0)}65%{transform:scale(1.35)}100%{transform:scale(1)}}
+@keyframes gravar{0%{opacity:0;transform:scale(.6)}60%{opacity:1;transform:scale(1.1)}100%{opacity:1;transform:scale(1)}}
+
+/* ================= AD — 235 ms, um golpe (MI) ================= */
+.lam{position:absolute;left:50%;top:50%;width:150%;height:3px;margin-left:-75%;border-radius:2px;
+  background:linear-gradient(90deg,transparent,rgba(60,26,8,.85) 22%,#fff0cf 50%,rgba(60,26,8,.85) 78%,transparent);
+  transform:rotate(0) scaleX(0);opacity:0}
+.lam.l1{transform:rotate(-28deg) scaleX(0)}
+.lam.l2{transform:rotate(24deg) scaleX(0)}
+.lam.l3{transform:rotate(-62deg) scaleX(0)}
+.lam.l4{transform:rotate(80deg) scaleX(0)}
+.anel i{position:absolute;left:34px;top:38px;width:26px;height:26px;margin:-13px 0 0 -13px;border-radius:50%;
+  border:2px solid rgba(255,190,120,.95);transform:scale(.2);opacity:0}
+.anel i:last-child{border-color:rgba(255,120,40,.7)}
+.est{position:absolute;top:50%;right:-16px;width:26px;height:6px;margin-top:-3px;border-radius:1px 3px 3px 1px;
+  background:linear-gradient(90deg,#4a3520,#e6cf9e 60%,#fff6e0);transform:translate3d(30px,0,0);opacity:0}
+.est.e2{top:30%}
+.est.e3{top:70%}
+.rebites i{position:absolute;width:7px;height:7px;border-radius:50%;
+  background:radial-gradient(circle at 35% 32%,#f0d7a8,#8a6a45 62%,#4a3520);transform:scale(0);opacity:0}
+.rebites .r1{top:5px;left:8%}.rebites .r2{top:5px;left:34%}.rebites .r3{top:5px;right:34%}.rebites .r4{top:5px;right:8%}
+.rebites .r5{bottom:5px;left:8%}.rebites .r6{bottom:5px;left:34%}.rebites .r7{bottom:5px;right:34%}.rebites .r8{bottom:5px;right:8%}
+@keyframes corte{0%{transform:rotate(var(--r)) scaleX(0);opacity:0}30%{opacity:1}60%{transform:rotate(var(--r)) scaleX(1);opacity:1}100%{transform:rotate(var(--r)) scaleX(1);opacity:0}}
+@keyframes recuo{0%{transform:translate3d(0,-4px,0)}26%{transform:translate3d(var(--rx,-7px),calc(-4px + var(--ry,2px)),0) rotate(var(--rr,-.8deg))}100%{transform:translate3d(0,-4px,0) rotate(0)}}
+@keyframes onda{0%{transform:scale(.2);opacity:0}25%{opacity:.95}100%{transform:scale(2.6);opacity:0}}
+@keyframes estocar{0%{transform:translate3d(30px,0,0);opacity:0}34%{transform:translate3d(-14px,0,0);opacity:1}100%{transform:translate3d(-42px,0,0);opacity:0}}
+@keyframes cravar{0%{transform:scale(0);opacity:0}55%{transform:scale(1.45);opacity:1}100%{transform:scale(1);opacity:1}}
+.c.ad.a1{animation:recuo var(--t-ad) cubic-bezier(.2,.9,.3,1)}
+.c.ad.a1 .lam.l1{--r:-28deg;animation:corte var(--t-ad) cubic-bezier(.1,.8,.2,1)}
+.c.ad.a2{--rx:6px;--rr:.7deg;animation:recuo var(--t-ad) cubic-bezier(.2,.9,.3,1)}
+.c.ad.a2 .lam.l2{--r:24deg;animation:corte calc(var(--t-ad) * .8) cubic-bezier(.1,.8,.2,1)}
+.c.ad.a2 .lam.l3{--r:-62deg;animation:corte calc(var(--t-ad) * .8) cubic-bezier(.1,.8,.2,1) calc(var(--t-ad) * .2)}
+.c.ad.a3{--rx:-9px;--rr:0deg;animation:recuo var(--t-ad) cubic-bezier(.2,.9,.3,1)}
+.c.ad.a3 .est.e1{animation:estocar var(--t-ad) cubic-bezier(.1,.9,.2,1)}
+.c.ad.a3 .est.e2{animation:estocar var(--t-ad) cubic-bezier(.1,.9,.2,1) 30ms}
+.c.ad.a4{--rx:0;--ry:3px;--rr:0deg;animation:recuo var(--t-ad) cubic-bezier(.2,.9,.3,1)}
+.c.ad.a4 .anel i{animation:onda var(--t-ad) cubic-bezier(.1,.7,.3,1)}
+.c.ad.a4 .anel i:last-child{animation-delay:40ms}
+.c.ad.a4 .rebites i{animation:cravar calc(var(--t-ad) * .55) cubic-bezier(.2,1.6,.4,1) forwards}
+.c.ad.a4 .rebites .r2{animation-delay:26ms}.c.ad.a4 .rebites .r3{animation-delay:52ms}
+.c.ad.a4 .rebites .r4{animation-delay:78ms}.c.ad.a4 .rebites .r5{animation-delay:26ms}
+.c.ad.a4 .rebites .r6{animation-delay:52ms}.c.ad.a4 .rebites .r7{animation-delay:78ms}
+.c.ad.a4 .rebites .r8{animation-delay:104ms}
+/* variante 5 — o corte abre o card */
+.metade{position:absolute;inset:0;z-index:7;opacity:0;pointer-events:none}
+.metade .mc{position:absolute;inset:0;padding:20px 22px;display:block;z-index:1}
+.metade.m1{clip-path:polygon(0 0,100% 0,100% 34%,0 68%)}
+.metade.m2{clip-path:polygon(0 68%,100% 34%,100% 100%,0 100%)}
+@keyframes abrir1{0%{transform:translate3d(0,0,0);opacity:1}46%{transform:translate3d(-7px,-9px,0);opacity:1}100%{transform:translate3d(0,0,0);opacity:1}}
+@keyframes abrir2{0%{transform:translate3d(0,0,0);opacity:1}46%{transform:translate3d(7px,9px,0);opacity:1}100%{transform:translate3d(0,0,0);opacity:1}}
+@keyframes sumir{0%,96%{opacity:0}100%{opacity:1}}
+.c.ad.a5 .metade{animation-duration:var(--t-ad);animation-timing-function:cubic-bezier(.15,.9,.25,1);animation-fill-mode:forwards}
+.c.ad.a5 .metade.m1{animation-name:abrir1}
+.c.ad.a5 .metade.m2{animation-name:abrir2}
+.c.ad.a5 .conteudo,.c.ad.a5 > .papel{animation:sumir var(--t-ad) linear}
+.c.ad.a5 .lam.l1{--r:-28deg;animation:corte calc(var(--t-ad) * .55) cubic-bezier(.1,.8,.2,1)}
+
+/* ============ AP — quatro MOLDURAS, 520 ms (ré · mi) ============ */
+/* Tempo 1: a moldura se desenha. Tempo 2: os ornamentos entram. */
+.m-latao{--barra:linear-gradient(180deg,#e0c078,#8a6a35);--canto:radial-gradient(circle at 35% 32%,#f7e6bd,#8a6a35);--esp:4px;--off:-4px}
+.m-runas{--barra:linear-gradient(90deg,rgba(190,150,255,.95),rgba(123,79,181,.75));--canto:#d9c2ff;--esp:2px;--off:-7px;--cw:7px}
+.m-runas .mk{color:#f2e7ff;text-shadow:0 0 8px rgba(190,150,255,.95)}
+.m-runas .mk{color:#f2e7ff}
+.m-canos{--barra:linear-gradient(180deg,#8fa88a,#3f5240);--canto:radial-gradient(circle at 35% 32%,#cfe6c4,#3f5240);--esp:7px;--off:-8px;--cw:15px;--craio:3px}
+.m-tinta{--barra:linear-gradient(90deg,rgba(40,25,60,.9),rgba(20,12,34,.95));--canto:transparent;--esp:3px;--off:-5px}
+.m-tinta .mk{width:7px;height:7px;border-radius:70% 0 70% 0;background:#a06fd6}
+.c.ap.a4 .m-tinta .mk{animation:gravar-lado calc(var(--t-ap) / 2) ease-out calc(var(--t-ap) / 2) forwards}
+.c.ap.a4 .m-tinta .m2{animation-delay:calc(var(--t-ap) / 2 + 40ms)}
+.c.ap.a4 .m-tinta .m3{animation-delay:calc(var(--t-ap) / 2 + 80ms)}
+.c.ap.a4 .m-tinta .m4{animation-delay:calc(var(--t-ap) / 2 + 120ms)}
+.m-tinta .ca{background:radial-gradient(circle at 40% 35%,#f3d7ff,#a06fd6);width:11px;height:11px;border-radius:60% 0 60% 0}
+.frasco{position:absolute;inset:auto;top:50%;width:16px;height:38px;margin-top:-19px;z-index:4;
+  border:2px solid #a98443;border-radius:3px 3px 7px 7px;background:linear-gradient(180deg,rgba(20,12,30,.55) 38%,#7b4fb5 38%);
+  transform:translate3d(0,14px,0) scale(.7);opacity:0}
+.frasco.esq{left:-13px}
+.frasco.dir{right:-13px}
+.frasco b{position:absolute;left:50%;bottom:5px;width:4px;height:4px;margin-left:-2px;border-radius:50%;background:rgba(245,235,255,.95);opacity:0}
+.vapores b{position:absolute;width:10px;height:10px;border-radius:50%;background:radial-gradient(circle,rgba(180,240,190,.8),rgba(90,160,110,0));opacity:0;transform:translate3d(0,0,0) scale(.5)}
+.vapores .v1{top:-8px;left:-8px}.vapores .v2{top:-8px;right:-8px}
+.vapores .v3{bottom:-8px;right:-8px}.vapores .v4{bottom:-8px;left:-8px}
+@keyframes erguer{0%{transform:translate3d(0,14px,0) scale(.7);opacity:0}70%{transform:translate3d(0,-2px,0) scale(1.04);opacity:1}100%{transform:translate3d(0,0,0) scale(1);opacity:1}}
+@keyframes borbulha{0%{transform:translate3d(0,0,0) scale(.6);opacity:0}25%{opacity:1}100%{transform:translate3d(2px,-22px,0) scale(1);opacity:0}}
+@keyframes escapar{0%{transform:translate3d(0,0,0) scale(.5);opacity:0}30%{opacity:.85}100%{transform:translate3d(var(--vx,-14px),-26px,0) scale(1.9);opacity:0}}
+@keyframes gravar-lado{0%{opacity:0;transform:translateX(-50%) scale(.6)}60%{opacity:1;transform:translateX(-50%) scale(1.12)}100%{opacity:1;transform:translateX(-50%) scale(1)}}
+
+.c.ap .mol{animation-duration:calc(var(--t-ap) / 2);animation-timing-function:cubic-bezier(.2,.9,.3,1);animation-fill-mode:forwards}
+.c.ap.a1 .m-latao,.c.ap.a2 .m-runas,.c.ap.a3 .m-canos,.c.ap.a4 .m-tinta{animation-name:mostrar-mol}
+.c.ap.a1 .m-latao .ba.t,.c.ap.a2 .m-runas .ba.t,.c.ap.a3 .m-canos .ba.t,.c.ap.a4 .m-tinta .ba.t,
+.c.ap.a1 .m-latao .ba.b,.c.ap.a2 .m-runas .ba.b,.c.ap.a3 .m-canos .ba.b,.c.ap.a4 .m-tinta .ba.b{
+  animation:crescer-x calc(var(--t-ap) / 2) cubic-bezier(.2,.9,.3,1) forwards}
+.c.ap.a1 .m-latao .ba.l,.c.ap.a2 .m-runas .ba.l,.c.ap.a3 .m-canos .ba.l,.c.ap.a4 .m-tinta .ba.l,
+.c.ap.a1 .m-latao .ba.r,.c.ap.a2 .m-runas .ba.r,.c.ap.a3 .m-canos .ba.r,.c.ap.a4 .m-tinta .ba.r{
+  animation:crescer-y calc(var(--t-ap) / 2) cubic-bezier(.2,.9,.3,1) 60ms forwards}
+.c.ap.a1 .m-latao .ca,.c.ap.a2 .m-runas .ca,.c.ap.a3 .m-canos .ca,.c.ap.a4 .m-tinta .ca{
+  animation:por-canto calc(var(--t-ap) / 2) cubic-bezier(.2,1.5,.4,1) calc(var(--t-ap) / 2) forwards}
+/* ornamentos do tempo 2, um por moldura */
+.c.ap.a1 .frasco{animation:erguer calc(var(--t-ap) / 2) cubic-bezier(.2,1.5,.4,1) calc(var(--t-ap) / 2) forwards}
+.c.ap.a1 .frasco.dir{animation-delay:calc(var(--t-ap) / 2 + 60ms)}
+.c.ap.a1 .frasco b{animation:borbulha 1.4s linear var(--t-ap) infinite}
+.c.ap.a1 .frasco .b2{animation-delay:calc(var(--t-ap) + 200ms)}
+.c.ap.a1 .frasco .b3{animation-delay:calc(var(--t-ap) + 480ms)}
+.c.ap.a1 .frasco .b4{animation-delay:calc(var(--t-ap) + 760ms)}
+.c.ap.a2 .m-runas .mk{animation:gravar-lado calc(var(--t-ap) / 2) ease-out calc(var(--t-ap) / 2) forwards}
+.c.ap.a2 .m-runas .m2,.c.ap.a2 .m-runas .m7{animation-delay:calc(var(--t-ap) / 2 + 26ms)}
+.c.ap.a2 .m-runas .m3,.c.ap.a2 .m-runas .m8{animation-delay:calc(var(--t-ap) / 2 + 52ms)}
+.c.ap.a2 .m-runas .m4,.c.ap.a2 .m-runas .m9{animation-delay:calc(var(--t-ap) / 2 + 78ms)}
+.c.ap.a2 .m-runas .m5,.c.ap.a2 .m-runas .m10{animation-delay:calc(var(--t-ap) / 2 + 104ms)}
+.c.ap.a3 .vapores b{animation:escapar 1.6s ease-out calc(var(--t-ap) / 2) infinite}
+.c.ap.a3 .vapores .v2{--vx:14px;animation-delay:calc(var(--t-ap) / 2 + 220ms)}
+.c.ap.a3 .vapores .v3{--vx:12px;animation-delay:calc(var(--t-ap) / 2 + 440ms)}
+.c.ap.a3 .vapores .v4{--vx:-12px;animation-delay:calc(var(--t-ap) / 2 + 660ms)}
+
+/* ============ Vitalidade — quatro MOLDURAS com gravura, 549 ms ============ */
+.tj{position:absolute;border-radius:2px;background:linear-gradient(180deg,rgba(150,240,150,.34),rgba(60,150,70,.24));
+  border:1px solid rgba(170,255,170,.55);box-shadow:inset 0 1px 0 rgba(220,255,220,.35);transform:translate3d(0,-22px,0);opacity:0}
+.tj.t1,.tj.t2,.tj.t3,.tj.t4,.tj.t5,.tj.t6,.tj.t7,.tj.t8{height:13px;width:12.5%;top:0}
+.tj.t1{left:0}.tj.t2{left:12.5%}.tj.t3{left:25%}.tj.t4{left:37.5%}
+.tj.t5{left:50%}.tj.t6{left:62.5%}.tj.t7{left:75%}.tj.t8{left:87.5%}
+.tj.t9,.tj.t10,.tj.t11,.tj.t12,.tj.t13,.tj.t14,.tj.t15,.tj.t16{height:13px;width:12.5%;bottom:0}
+.tj.t9{left:0}.tj.t10{left:12.5%}.tj.t11{left:25%}.tj.t12{left:37.5%}
+.tj.t13{left:50%}.tj.t14{left:62.5%}.tj.t15{left:75%}.tj.t16{left:87.5%}
+.tj.t17,.tj.t18{width:13px;left:0;height:34%}
+.tj.t17{top:20%}.tj.t18{top:54%}
+.tj.t19,.tj.t20{width:13px;right:0;height:34%}
+.tj.t19{top:20%}.tj.t20{top:54%}
+.escudo{display:grid;place-items:center;z-index:4}
+.escudo svg{position:absolute;inset:-7px;width:calc(100% + 14px);height:calc(100% + 14px);opacity:0;transform:scale(.94)}
+.escudo path{fill:none;stroke:#a8ea90;stroke-width:3;stroke-linejoin:round;vector-effect:non-scaling-stroke}
+.m-folhagem{--barra:linear-gradient(90deg,rgba(120,200,110,.9),rgba(60,130,70,.8));--canto:radial-gradient(circle at 40% 35%,#c6f0b4,#4d8b3a);--esp:3px;--off:-5px;--cw:10px;--craio:60% 0 60% 0}
+.m-pedra{--barra:linear-gradient(180deg,#8d9384,#4a5346);--canto:linear-gradient(180deg,#a8b09c,#4a5346);--esp:11px;--off:-11px;--cw:18px;--craio:2px}
+.folhas b{position:absolute;width:9px;height:9px;border-radius:70% 0 70% 0;background:#79c466;opacity:0;transform:scale(0) rotate(var(--rot,0deg))}
+.folhas .f1{top:-8px;left:16%}.folhas .f2{top:-8px;left:42%;--rot:40deg}.folhas .f3{top:-8px;left:70%;--rot:-30deg}
+.folhas .f4{bottom:-8px;left:22%;--rot:180deg}.folhas .f5{bottom:-8px;left:52%;--rot:150deg}.folhas .f6{bottom:-8px;left:78%;--rot:200deg}
+.folhas .f7{left:-8px;top:28%;--rot:-90deg}.folhas .f8{left:-8px;top:64%;--rot:-70deg}
+.folhas .f9{right:-8px;top:34%;--rot:90deg}.folhas .f10{right:-8px;top:70%;--rot:110deg}
+.entalhes b{position:absolute;width:4px;height:4px;background:rgba(30,38,28,.75);border-radius:1px;opacity:0;transform:scale(0) rotate(45deg)}
+.entalhes .e1{top:-8px;left:18%}.entalhes .e2{top:-8px;left:38%}.entalhes .e3{top:-8px;left:58%}.entalhes .e4{top:-8px;left:78%}
+.entalhes .e5{bottom:-8px;left:18%}.entalhes .e6{bottom:-8px;left:38%}.entalhes .e7{bottom:-8px;left:58%}.entalhes .e8{bottom:-8px;left:78%}
+.entalhes .e9{left:-8px;top:30%}.entalhes .e10{left:-8px;top:62%}
+.entalhes .e11{right:-8px;top:30%}.entalhes .e12{right:-8px;top:62%}
+@keyframes assentar{0%{transform:translate3d(0,-22px,0);opacity:0}70%{opacity:1}100%{transform:translate3d(0,0,0);opacity:1}}
+@keyframes selar{0%{transform:scale(.94);opacity:0}55%{transform:scale(1.03);opacity:1}100%{transform:scale(1);opacity:1}}
+@keyframes brotar-folha{0%{transform:scale(0) rotate(var(--rot,0deg));opacity:0}65%{transform:scale(1.25) rotate(var(--rot,0deg));opacity:1}100%{transform:scale(1) rotate(var(--rot,0deg));opacity:1}}
+@keyframes entalhar{0%{transform:scale(0) rotate(45deg);opacity:0}70%{transform:scale(1.3) rotate(45deg);opacity:1}100%{transform:scale(1) rotate(45deg);opacity:1}}
+
+/* 1 — muralha de jade (três levas de tijolo) */
+.c.vit.a1 .tj{animation:assentar calc(var(--t-vit) / 3) cubic-bezier(.25,1.5,.5,1) forwards}
+.c.vit.a1 .tj.t2,.c.vit.a1 .tj.t10,.c.vit.a1 .tj.t18{animation-delay:24ms}
+.c.vit.a1 .tj.t3,.c.vit.a1 .tj.t11,.c.vit.a1 .tj.t19{animation-delay:48ms}
+.c.vit.a1 .tj.t4,.c.vit.a1 .tj.t12,.c.vit.a1 .tj.t20{animation-delay:72ms}
+.c.vit.a1 .tj.t5,.c.vit.a1 .tj.t13{animation-delay:183ms}
+.c.vit.a1 .tj.t6,.c.vit.a1 .tj.t14{animation-delay:207ms}
+.c.vit.a1 .tj.t7,.c.vit.a1 .tj.t15{animation-delay:231ms}
+.c.vit.a1 .tj.t8,.c.vit.a1 .tj.t16{animation-delay:255ms}
+.c.vit.a1 .escudo svg{animation:selar calc(var(--t-vit) / 3) cubic-bezier(.2,1.4,.4,1) calc(var(--t-vit) * .66) forwards}
+/* 2 — só o escudo, desenhado em dois tempos e selado no terceiro */
+.c.vit.a2 .escudo svg{animation:selar calc(var(--t-vit) * .66) cubic-bezier(.2,1.2,.3,1) forwards}
+/* 3 — moldura de folhagem: a haste corre e as folhas brotam */
+.c.vit.a3 .m-folhagem{animation:mostrar-mol calc(var(--t-vit) / 3) ease-out forwards}
+.c.vit.a3 .m-folhagem .ba.t,.c.vit.a3 .m-folhagem .ba.b{animation:crescer-x calc(var(--t-vit) / 3) cubic-bezier(.2,.9,.3,1) forwards}
+.c.vit.a3 .m-folhagem .ba.l,.c.vit.a3 .m-folhagem .ba.r{animation:crescer-y calc(var(--t-vit) / 3) cubic-bezier(.2,.9,.3,1) 50ms forwards}
+.c.vit.a3 .m-folhagem .ca{animation:por-canto calc(var(--t-vit) / 3) cubic-bezier(.2,1.5,.4,1) calc(var(--t-vit) / 3) forwards}
+.c.vit.a3 .folhas b{animation:brotar-folha calc(var(--t-vit) / 3) cubic-bezier(.2,1.5,.4,1) calc(var(--t-vit) / 3) forwards}
+.c.vit.a3 .folhas .f2,.c.vit.a3 .folhas .f5,.c.vit.a3 .folhas .f8{animation-delay:calc(var(--t-vit) / 3 + 60ms)}
+.c.vit.a3 .folhas .f3,.c.vit.a3 .folhas .f6,.c.vit.a3 .folhas .f9{animation-delay:calc(var(--t-vit) * .66)}
+.c.vit.a3 .folhas .f10{animation-delay:calc(var(--t-vit) * .66 + 60ms)}
+/* 4 — moldura de pedra entalhada: a cantaria fecha e os entalhes aparecem */
+.c.vit.a4 .m-pedra{animation:mostrar-mol calc(var(--t-vit) / 3) ease-out forwards}
+.c.vit.a4 .m-pedra .ba.t,.c.vit.a4 .m-pedra .ba.b{animation:crescer-x calc(var(--t-vit) / 3) cubic-bezier(.2,.9,.3,1) forwards}
+.c.vit.a4 .m-pedra .ba.l,.c.vit.a4 .m-pedra .ba.r{animation:crescer-y calc(var(--t-vit) / 3) cubic-bezier(.2,.9,.3,1) 50ms forwards}
+.c.vit.a4 .m-pedra .ca{animation:por-canto calc(var(--t-vit) / 3) cubic-bezier(.2,1.4,.4,1) calc(var(--t-vit) / 3) forwards}
+.c.vit.a4 .entalhes b{animation:entalhar calc(var(--t-vit) / 3) cubic-bezier(.2,1.5,.4,1) calc(var(--t-vit) * .66) forwards}
+.c.vit.a4 .entalhes .e2,.c.vit.a4 .entalhes .e6,.c.vit.a4 .entalhes .e10{animation-delay:calc(var(--t-vit) * .66 + 30ms)}
+.c.vit.a4 .entalhes .e3,.c.vit.a4 .entalhes .e7,.c.vit.a4 .entalhes .e11{animation-delay:calc(var(--t-vit) * .66 + 60ms)}
+.c.vit.a4 .entalhes .e4,.c.vit.a4 .entalhes .e8,.c.vit.a4 .entalhes .e12{animation-delay:calc(var(--t-vit) * .66 + 90ms)}
+
+@media (prefers-reduced-motion: reduce){ .c,.c *{animation:none !important;transition:none !important} }
+.botao{font-family:var(--gravado);font-size:11px;letter-spacing:.16em;text-transform:uppercase;padding:8px 16px;border-radius:2px;
+  background:linear-gradient(180deg,#6b5535,#3d2f1c);color:#e6d3a8;border:1px solid #1a120a;cursor:pointer}
+.botao:hover{color:#fff}
+.botoes{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 14px}
+.botao.mini{font-size:10px;padding:6px 12px;letter-spacing:.12em}
+.botao.mini.sel{background:linear-gradient(180deg,#b6873a,#7a5c2a);color:#1a1208;border-color:#e2c98a}
+.medidor{font-family:var(--gravado);font-size:10px;letter-spacing:.12em;color:var(--latao-claro);margin-left:12px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>AD golpeia · AP e Vitalidade emolduram</h1>
+  <p class="sub">O AD ficou como você aprovou. AP e Vitalidade foram refeitos como <b>molduras</b>: quatro cada, e a da Vitalidade vem com gravura. Cada uma se desenha no tempo do som do seu núcleo.</p>
+  <p class="dica">Passe o mouse ou use os botões · <button class="botao" id="tudo" type="button">Sortear em todos</button><span class="medidor" id="fps">medindo…</span></p>
+
+  <h2 style="--cor: var(--ad); --sim: var(--sim-ad)"><i></i>AD — o golpe</h2>
+  <div class="botoes">
+    <button class="botao mini" type="button" data-var="ad:1" id="btn-ad-1">1 · diagonal</button>
+    <button class="botao mini" type="button" data-var="ad:2" id="btn-ad-2">2 · cruzado</button>
+    <button class="botao mini" type="button" data-var="ad:3" id="btn-ad-3">3 · estocada</button>
+    <button class="botao mini" type="button" data-var="ad:4" id="btn-ad-4">4 · martelada</button>
+    <button class="botao mini" type="button" data-var="ad:5" id="btn-ad-5">5 · corte que abre</button>
+  </div>
+  <p class="ficha">som: 0,235 s · um golpe seco, tom MI<br>animação: 235 ms</p>
+  <p class="lede">Sem mudanças: os cinco golpes que você aprovou.</p>
+  <div class="palco ad-palco"><div class="grade"><article class="c ad" tabindex="0">
+  <span class="papel"></span>
+  <span class="fx lams"><i class="lam l1"></i><i class="lam l2"></i><i class="lam l3"></i><i class="lam l4"></i></span><span class="fx anel"><i></i><i></i></span><span class="fx ests"><i class="est e1"></i><i class="est e2"></i><i class="est e3"></i></span><span class="fx rebites"><i class="r1"></i><i class="r2"></i><i class="r3"></i><i class="r4"></i><i class="r5"></i><i class="r6"></i><i class="r7"></i><i class="r8"></i></span>
+  <span class="metade m1" aria-hidden="true"><span class="papel"></span><span class="mc"><div class="ct"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/6696.png" alt=""><div><h4>Arco do Axioma</h4><p class="en2">Axiom Arc</p></div><span class="g">2.750g</span></div><ul class="at"><li>+55 de Dano de Ataque</li><li>+18 de Letalidade</li></ul></span></span><span class="metade m2" aria-hidden="true"><span class="papel"></span><span class="mc"><div class="ct"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/6696.png" alt=""><div><h4>Arco do Axioma</h4><p class="en2">Axiom Arc</p></div><span class="g">2.750g</span></div><ul class="at"><li>+55 de Dano de Ataque</li><li>+18 de Letalidade</li></ul></span></span>
+  <div class="conteudo"><div class="ct"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/6696.png" alt=""><div><h4>Arco do Axioma</h4><p class="en2">Axiom Arc</p></div><span class="g">2.750g</span></div><ul class="at"><li>+55 de Dano de Ataque</li><li>+18 de Letalidade</li></ul></div>
+</article>
+<article class="c ad" tabindex="0">
+  <span class="papel"></span>
+  <span class="fx lams"><i class="lam l1"></i><i class="lam l2"></i><i class="lam l3"></i><i class="lam l4"></i></span><span class="fx anel"><i></i><i></i></span><span class="fx ests"><i class="est e1"></i><i class="est e2"></i><i class="est e3"></i></span><span class="fx rebites"><i class="r1"></i><i class="r2"></i><i class="r3"></i><i class="r4"></i><i class="r5"></i><i class="r6"></i><i class="r7"></i><i class="r8"></i></span>
+  <span class="metade m1" aria-hidden="true"><span class="papel"></span><span class="mc"><div class="ct"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/2520.png" alt=""><div><h4>Quebra-Bastião</h4><p class="en2">Bastionbreaker</p></div><span class="g">3.000g</span></div><ul class="at"><li>+55 de Dano de Ataque</li><li>+22 de Letalidade</li></ul></span></span><span class="metade m2" aria-hidden="true"><span class="papel"></span><span class="mc"><div class="ct"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/2520.png" alt=""><div><h4>Quebra-Bastião</h4><p class="en2">Bastionbreaker</p></div><span class="g">3.000g</span></div><ul class="at"><li>+55 de Dano de Ataque</li><li>+22 de Letalidade</li></ul></span></span>
+  <div class="conteudo"><div class="ct"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/2520.png" alt=""><div><h4>Quebra-Bastião</h4><p class="en2">Bastionbreaker</p></div><span class="g">3.000g</span></div><ul class="at"><li>+55 de Dano de Ataque</li><li>+22 de Letalidade</li></ul></div>
+</article>
+<article class="c ad" tabindex="0">
+  <span class="papel"></span>
+  <span class="fx lams"><i class="lam l1"></i><i class="lam l2"></i><i class="lam l3"></i><i class="lam l4"></i></span><span class="fx anel"><i></i><i></i></span><span class="fx ests"><i class="est e1"></i><i class="est e2"></i><i class="est e3"></i></span><span class="fx rebites"><i class="r1"></i><i class="r2"></i><i class="r3"></i><i class="r4"></i><i class="r5"></i><i class="r6"></i><i class="r7"></i><i class="r8"></i></span>
+  <span class="metade m1" aria-hidden="true"><span class="papel"></span><span class="mc"><div class="ct"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/3071.png" alt=""><div><h4>Cutelo Negro</h4><p class="en2">Black Cleaver</p></div><span class="g">3.000g</span></div><ul class="at"><li>+45 de Dano de Ataque</li><li>+400 de Vida</li></ul></span></span><span class="metade m2" aria-hidden="true"><span class="papel"></span><span class="mc"><div class="ct"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/3071.png" alt=""><div><h4>Cutelo Negro</h4><p class="en2">Black Cleaver</p></div><span class="g">3.000g</span></div><ul class="at"><li>+45 de Dano de Ataque</li><li>+400 de Vida</li></ul></span></span>
+  <div class="conteudo"><div class="ct"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/3071.png" alt=""><div><h4>Cutelo Negro</h4><p class="en2">Black Cleaver</p></div><span class="g">3.000g</span></div><ul class="at"><li>+45 de Dano de Ataque</li><li>+400 de Vida</li></ul></div>
+</article>
+<article class="c ad" tabindex="0">
+  <span class="papel"></span>
+  <span class="fx lams"><i class="lam l1"></i><i class="lam l2"></i><i class="lam l3"></i><i class="lam l4"></i></span><span class="fx anel"><i></i><i></i></span><span class="fx ests"><i class="est e1"></i><i class="est e2"></i><i class="est e3"></i></span><span class="fx rebites"><i class="r1"></i><i class="r2"></i><i class="r3"></i><i class="r4"></i><i class="r5"></i><i class="r6"></i><i class="r7"></i><i class="r8"></i></span>
+  <span class="metade m1" aria-hidden="true"><span class="papel"></span><span class="mc"><div class="ct"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/3153.png" alt=""><div><h4>Espada do Rei Destruído</h4><p class="en2">Blade of The Ruined King</p></div><span class="g">3.200g</span></div><ul class="at"><li>+40 de Dano de Ataque</li><li>+25% de Velocidade de Ataque</li></ul></span></span><span class="metade m2" aria-hidden="true"><span class="papel"></span><span class="mc"><div class="ct"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/3153.png" alt=""><div><h4>Espada do Rei Destruído</h4><p class="en2">Blade of The Ruined King</p></div><span class="g">3.200g</span></div><ul class="at"><li>+40 de Dano de Ataque</li><li>+25% de Velocidade de Ataque</li></ul></span></span>
+  <div class="conteudo"><div class="ct"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/3153.png" alt=""><div><h4>Espada do Rei Destruído</h4><p class="en2">Blade of The Ruined King</p></div><span class="g">3.200g</span></div><ul class="at"><li>+40 de Dano de Ataque</li><li>+25% de Velocidade de Ataque</li></ul></div>
+</article></div></div>
+
+  <h2 style="--cor: var(--ap); --sim: var(--sim-ap)"><i></i>AP — quatro molduras</h2>
+  <div class="botoes">
+    <button class="botao mini" type="button" data-var="ap:1" id="btn-ap-1">1 · latão da bancada</button>
+    <button class="botao mini" type="button" data-var="ap:2" id="btn-ap-2">2 · runas gravadas</button>
+    <button class="botao mini" type="button" data-var="ap:3" id="btn-ap-3">3 · canos de Zaun</button>
+    <button class="botao mini" type="button" data-var="ap:4" id="btn-ap-4">4 · tinta de Ionia</button>
+  </div>
+  <p class="ficha">som: 0,520 s · ré e depois mi<br>animação: 260 ms para a moldura se desenhar, 260 ms para o ornamento entrar</p>
+  <p class="lede">A moldura corre pelos quatro lados no primeiro tempo e o ornamento responde no segundo: <b>latão</b> com parafusos e frascos, <b>runas</b> acendendo ao longo da borda, <b>canos</b> com juntas soltando vapor, e o <b>traço de tinta</b> com pétalas nos cantos.</p>
+  <div class="palco ap-palco"><div class="grade"><article class="c ap" tabindex="0">
+  <span class="papel"></span>
+  <span class="fx mol m-latao"><i class="ba t"></i><i class="ba r"></i><i class="ba b"></i><i class="ba l"></i><i class="ca tl"></i><i class="ca tr"></i><i class="ca br"></i><i class="ca bl"></i></span><span class="fx frasco esq"><b class="b1"></b><b class="b2"></b><b class="b3"></b><b class="b4"></b></span><span class="fx frasco dir"><b class="b1"></b><b class="b2"></b><b class="b3"></b><b class="b4"></b></span><span class="fx mol m-runas"><i class="ba t"></i><i class="ba r"></i><i class="ba b"></i><i class="ba l"></i><i class="ca tl"></i><i class="ca tr"></i><i class="ca br"></i><i class="ca bl"></i><b class="mk cima m1" style="--p:10.0%">ᚨ</b><b class="mk cima m2" style="--p:30.0%">ᛉ</b><b class="mk cima m3" style="--p:50.0%">ᚦ</b><b class="mk cima m4" style="--p:70.0%">ᚠ</b><b class="mk cima m5" style="--p:90.0%">ᛚ</b><b class="mk baixo m6" style="--p:10.0%">ᛁ</b><b class="mk baixo m7" style="--p:30.0%">ᛇ</b><b class="mk baixo m8" style="--p:50.0%">ᛚ</b><b class="mk baixo m9" style="--p:70.0%">ᚲ</b><b class="mk baixo m10" style="--p:90.0%">ᛇ</b></span><span class="fx mol m-canos"><i class="ba t"></i><i class="ba r"></i><i class="ba b"></i><i class="ba l"></i><i class="ca tl"></i><i class="ca tr"></i><i class="ca br"></i><i class="ca bl"></i></span><span class="fx vapores"><b class="v1"></b><b class="v2"></b><b class="v3"></b><b class="v4"></b></span><span class="fx mol m-tinta"><i class="ba t"></i><i class="ba r"></i><i class="ba b"></i><i class="ba l"></i><i class="ca tl"></i><i class="ca tr"></i><i class="ca br"></i><i class="ca bl"></i><b class="mk cima m1" style="--p:25.0%"></b><b class="mk cima m2" style="--p:75.0%"></b><b class="mk baixo m3" style="--p:25.0%"></b><b class="mk baixo m4" style="--p:75.0%"></b></span>
+  
+  <div class="conteudo"><div class="ct"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/2522.png" alt=""><div><h4>Atualizador</h4><p class="en2">Actualizer</p></div><span class="g">2.800g</span></div><ul class="at"><li>+90 de Poder de Habilidade</li><li>+300 de Mana</li></ul></div>
+</article>
+<article class="c ap" tabindex="0">
+  <span class="papel"></span>
+  <span class="fx mol m-latao"><i class="ba t"></i><i class="ba r"></i><i class="ba b"></i><i class="ba l"></i><i class="ca tl"></i><i class="ca tr"></i><i class="ca br"></i><i class="ca bl"></i></span><span class="fx frasco esq"><b class="b1"></b><b class="b2"></b><b class="b3"></b><b class="b4"></b></span><span class="fx frasco dir"><b class="b1"></b><b class="b2"></b><b class="b3"></b><b class="b4"></b></span><span class="fx mol m-runas"><i class="ba t"></i><i class="ba r"></i><i class="ba b"></i><i class="ba l"></i><i class="ca tl"></i><i class="ca tr"></i><i class="ca br"></i><i class="ca bl"></i><b class="mk cima m1" style="--p:10.0%">ᚲ</b><b class="mk cima m2" style="--p:30.0%">ᛃ</b><b class="mk cima m3" style="--p:50.0%">ᛗ</b><b class="mk cima m4" style="--p:70.0%">ᚲ</b><b class="mk cima m5" style="--p:90.0%">ᚺ</b><b class="mk baixo m6" style="--p:10.0%">ᚾ</b><b class="mk baixo m7" style="--p:30.0%">ᛜ</b><b class="mk baixo m8" style="--p:50.0%">ᛗ</b><b class="mk baixo m9" style="--p:70.0%">ᚦ</b><b class="mk baixo m10" style="--p:90.0%">ᛚ</b></span><span class="fx mol m-canos"><i class="ba t"></i><i class="ba r"></i><i class="ba b"></i><i class="ba l"></i><i class="ca tl"></i><i class="ca tr"></i><i class="ca br"></i><i class="ca bl"></i></span><span class="fx vapores"><b class="v1"></b><b class="v2"></b><b class="v3"></b><b class="v4"></b></span><span class="fx mol m-tinta"><i class="ba t"></i><i class="ba r"></i><i class="ba b"></i><i class="ba l"></i><i class="ca tl"></i><i class="ca tr"></i><i class="ca br"></i><i class="ca bl"></i><b class="mk cima m1" style="--p:25.0%"></b><b class="mk cima m2" style="--p:75.0%"></b><b class="mk baixo m3" style="--p:25.0%"></b><b class="mk baixo m4" style="--p:75.0%"></b></span>
+  
+  <div class="conteudo"><div class="ct"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/3003.png" alt=""><div><h4>Cajado do Arcanjo</h4><p class="en2">Archangel&#x27;s Staff</p></div><span class="g">2.900g</span></div><ul class="at"><li>+70 de Poder de Habilidade</li><li>+600 de Mana</li></ul></div>
+</article>
+<article class="c ap" tabindex="0">
+  <span class="papel"></span>
+  <span class="fx mol m-latao"><i class="ba t"></i><i class="ba r"></i><i class="ba b"></i><i class="ba l"></i><i class="ca tl"></i><i class="ca tr"></i><i class="ca br"></i><i class="ca bl"></i></span><span class="fx frasco esq"><b class="b1"></b><b class="b2"></b><b class="b3"></b><b class="b4"></b></span><span class="fx frasco dir"><b class="b1"></b><b class="b2"></b><b class="b3"></b><b class="b4"></b></span><span class="fx mol m-runas"><i class="ba t"></i><i class="ba r"></i><i class="ba b"></i><i class="ba l"></i><i class="ca tl"></i><i class="ca tr"></i><i class="ca br"></i><i class="ca bl"></i><b class="mk cima m1" style="--p:10.0%">ᛜ</b><b class="mk cima m2" style="--p:30.0%">ᛁ</b><b class="mk cima m3" style="--p:50.0%">ᚾ</b><b class="mk cima m4" style="--p:70.0%">ᚦ</b><b class="mk cima m5" style="--p:90.0%">ᚺ</b><b class="mk baixo m6" style="--p:10.0%">ᛚ</b><b class="mk baixo m7" style="--p:30.0%">ᚺ</b><b class="mk baixo m8" style="--p:50.0%">ᛈ</b><b class="mk baixo m9" style="--p:70.0%">ᛏ</b><b class="mk baixo m10" style="--p:90.0%">ᚹ</b></span><span class="fx mol m-canos"><i class="ba t"></i><i class="ba r"></i><i class="ba b"></i><i class="ba l"></i><i class="ca tl"></i><i class="ca tr"></i><i class="ca br"></i><i class="ca bl"></i></span><span class="fx vapores"><b class="v1"></b><b class="v2"></b><b class="v3"></b><b class="v4"></b></span><span class="fx mol m-tinta"><i class="ba t"></i><i class="ba r"></i><i class="ba b"></i><i class="ba l"></i><i class="ca tl"></i><i class="ca tr"></i><i class="ca br"></i><i class="ca bl"></i><b class="mk cima m1" style="--p:25.0%"></b><b class="mk cima m2" style="--p:75.0%"></b><b class="mk baixo m3" style="--p:25.0%"></b><b class="mk baixo m4" style="--p:75.0%"></b></span>
+  
+  <div class="conteudo"><div class="ct"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/3504.png" alt=""><div><h4>Turíbulo Ardente</h4><p class="en2">Ardent Censer</p></div><span class="g">2.200g</span></div><ul class="at"><li>+45 de Poder de Habilidade</li><li>+10% de Poder de Cura e Escudo</li></ul></div>
+</article>
+<article class="c ap" tabindex="0">
+  <span class="papel"></span>
+  <span class="fx mol m-latao"><i class="ba t"></i><i class="ba r"></i><i class="ba b"></i><i class="ba l"></i><i class="ca tl"></i><i class="ca tr"></i><i class="ca br"></i><i class="ca bl"></i></span><span class="fx frasco esq"><b class="b1"></b><b class="b2"></b><b class="b3"></b><b class="b4"></b></span><span class="fx frasco dir"><b class="b1"></b><b class="b2"></b><b class="b3"></b><b class="b4"></b></span><span class="fx mol m-runas"><i class="ba t"></i><i class="ba r"></i><i class="ba b"></i><i class="ba l"></i><i class="ca tl"></i><i class="ca tr"></i><i class="ca br"></i><i class="ca bl"></i><b class="mk cima m1" style="--p:10.0%">ᚲ</b><b class="mk cima m2" style="--p:30.0%">ᛞ</b><b class="mk cima m3" style="--p:50.0%">ᛁ</b><b class="mk cima m4" style="--p:70.0%">ᛃ</b><b class="mk cima m5" style="--p:90.0%">ᚹ</b><b class="mk baixo m6" style="--p:10.0%">ᛇ</b><b class="mk baixo m7" style="--p:30.0%">ᛉ</b><b class="mk baixo m8" style="--p:50.0%">ᛇ</b><b class="mk baixo m9" style="--p:70.0%">ᚲ</b><b class="mk baixo m10" style="--p:90.0%">ᛉ</b></span><span class="fx mol m-canos"><i class="ba t"></i><i class="ba r"></i><i class="ba b"></i><i class="ba l"></i><i class="ca tl"></i><i class="ca tr"></i><i class="ca br"></i><i class="ca bl"></i></span><span class="fx vapores"><b class="v1"></b><b class="v2"></b><b class="v3"></b><b class="v4"></b></span><span class="fx mol m-tinta"><i class="ba t"></i><i class="ba r"></i><i class="ba b"></i><i class="ba l"></i><i class="ca tl"></i><i class="ca tr"></i><i class="ca br"></i><i class="ca bl"></i><b class="mk cima m1" style="--p:25.0%"></b><b class="mk cima m2" style="--p:75.0%"></b><b class="mk baixo m3" style="--p:25.0%"></b><b class="mk baixo m4" style="--p:75.0%"></b></span>
+  
+  <div class="conteudo"><div class="ct"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/3102.png" alt=""><div><h4>Véu da Banshee</h4><p class="en2">Banshee&#x27;s Veil</p></div><span class="g">3.000g</span></div><ul class="at"><li>+105 de Poder de Habilidade</li><li>+40 de Resistência Mágica</li></ul></div>
+</article></div></div>
+
+  <h2 style="--cor: var(--vit); --sim: var(--sim-vit)"><i></i>Vitalidade — molduras com gravura</h2>
+  <div class="botoes">
+    <button class="botao mini" type="button" data-var="vit:1" id="btn-vit-1">1 · muralha de jade</button>
+    <button class="botao mini" type="button" data-var="vit:2" id="btn-vit-2">2 · escudo</button>
+    <button class="botao mini" type="button" data-var="vit:3" id="btn-vit-3">3 · folhagem</button>
+    <button class="botao mini" type="button" data-var="vit:4" id="btn-vit-4">4 · pedra entalhada</button>
+  </div>
+  <p class="ficha">som: 0,549 s · tumm · tumm · dó<br>animação: 549 ms em três levas de 183 ms</p>
+  <p class="lede">As placas bugadas saíram. Ficaram quatro molduras: a <b>muralha de jade</b> translúcida, o <b>escudo</b> que se fecha em volta, a <b>folhagem</b> com hastes correndo e folhas brotando, e a <b>pedra entalhada</b>, com a cantaria fechando e os entalhes surgindo na terceira batida.</p>
+  <div class="palco vit-palco"><div class="grade"><article class="c vit" tabindex="0">
+  <span class="papel"></span>
+  <span class="fx muralha"><i class="tj t1"></i><i class="tj t2"></i><i class="tj t3"></i><i class="tj t4"></i><i class="tj t5"></i><i class="tj t6"></i><i class="tj t7"></i><i class="tj t8"></i><i class="tj t9"></i><i class="tj t10"></i><i class="tj t11"></i><i class="tj t12"></i><i class="tj t13"></i><i class="tj t14"></i><i class="tj t15"></i><i class="tj t16"></i><i class="tj t17"></i><i class="tj t18"></i><i class="tj t19"></i><i class="tj t20"></i></span><span class="fx escudo"><svg viewBox="0 0 120 130" preserveAspectRatio="none" aria-hidden="true"><path d="M4 4 60 12 116 4v74c0 26-26 40-56 48C30 118 4 104 4 78z"/></svg></span><span class="fx mol m-folhagem"><i class="ba t"></i><i class="ba r"></i><i class="ba b"></i><i class="ba l"></i><i class="ca tl"></i><i class="ca tr"></i><i class="ca br"></i><i class="ca bl"></i></span><span class="fx folhas"><b class="fo f1"></b><b class="fo f2"></b><b class="fo f3"></b><b class="fo f4"></b><b class="fo f5"></b><b class="fo f6"></b><b class="fo f7"></b><b class="fo f8"></b><b class="fo f9"></b><b class="fo f10"></b></span><span class="fx mol m-pedra"><i class="ba t"></i><i class="ba r"></i><i class="ba b"></i><i class="ba l"></i><i class="ca tl"></i><i class="ca tr"></i><i class="ca br"></i><i class="ca bl"></i></span><span class="fx entalhes"><b class="en e1"></b><b class="en e2"></b><b class="en e3"></b><b class="en e4"></b><b class="en e5"></b><b class="en e6"></b><b class="en e7"></b><b class="en e8"></b><b class="en e9"></b><b class="en e10"></b><b class="en e11"></b><b class="en e12"></b></span>
+  
+  <div class="conteudo"><div class="ct"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/8020.png" alt=""><div><h4>Máscara Abissal</h4><p class="en2">Abyssal Mask</p></div><span class="g">2.650g</span></div><ul class="at"><li>+350 de Vida</li><li>+45 de Resistência Mágica</li></ul></div>
+</article>
+<article class="c vit" tabindex="0">
+  <span class="papel"></span>
+  <span class="fx muralha"><i class="tj t1"></i><i class="tj t2"></i><i class="tj t3"></i><i class="tj t4"></i><i class="tj t5"></i><i class="tj t6"></i><i class="tj t7"></i><i class="tj t8"></i><i class="tj t9"></i><i class="tj t10"></i><i class="tj t11"></i><i class="tj t12"></i><i class="tj t13"></i><i class="tj t14"></i><i class="tj t15"></i><i class="tj t16"></i><i class="tj t17"></i><i class="tj t18"></i><i class="tj t19"></i><i class="tj t20"></i></span><span class="fx escudo"><svg viewBox="0 0 120 130" preserveAspectRatio="none" aria-hidden="true"><path d="M4 4 60 12 116 4v74c0 26-26 40-56 48C30 118 4 104 4 78z"/></svg></span><span class="fx mol m-folhagem"><i class="ba t"></i><i class="ba r"></i><i class="ba b"></i><i class="ba l"></i><i class="ca tl"></i><i class="ca tr"></i><i class="ca br"></i><i class="ca bl"></i></span><span class="fx folhas"><b class="fo f1"></b><b class="fo f2"></b><b class="fo f3"></b><b class="fo f4"></b><b class="fo f5"></b><b class="fo f6"></b><b class="fo f7"></b><b class="fo f8"></b><b class="fo f9"></b><b class="fo f10"></b></span><span class="fx mol m-pedra"><i class="ba t"></i><i class="ba r"></i><i class="ba b"></i><i class="ba l"></i><i class="ca tl"></i><i class="ca tr"></i><i class="ca br"></i><i class="ca bl"></i></span><span class="fx entalhes"><b class="en e1"></b><b class="en e2"></b><b class="en e3"></b><b class="en e4"></b><b class="en e5"></b><b class="en e6"></b><b class="en e7"></b><b class="en e8"></b><b class="en e9"></b><b class="en e10"></b><b class="en e11"></b><b class="en e12"></b></span>
+  
+  <div class="conteudo"><div class="ct"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/3039.png" alt=""><div><h4>Acerto de Contas de Atma</h4><p class="en2">Atma&#x27;s Reckoning</p></div><span class="g">2.900g</span></div><ul class="at"><li>+700 de Vida</li><li>+20% de Chance de Acerto Crítico</li></ul></div>
+</article>
+<article class="c vit" tabindex="0">
+  <span class="papel"></span>
+  <span class="fx muralha"><i class="tj t1"></i><i class="tj t2"></i><i class="tj t3"></i><i class="tj t4"></i><i class="tj t5"></i><i class="tj t6"></i><i class="tj t7"></i><i class="tj t8"></i><i class="tj t9"></i><i class="tj t10"></i><i class="tj t11"></i><i class="tj t12"></i><i class="tj t13"></i><i class="tj t14"></i><i class="tj t15"></i><i class="tj t16"></i><i class="tj t17"></i><i class="tj t18"></i><i class="tj t19"></i><i class="tj t20"></i></span><span class="fx escudo"><svg viewBox="0 0 120 130" preserveAspectRatio="none" aria-hidden="true"><path d="M4 4 60 12 116 4v74c0 26-26 40-56 48C30 118 4 104 4 78z"/></svg></span><span class="fx mol m-folhagem"><i class="ba t"></i><i class="ba r"></i><i class="ba b"></i><i class="ba l"></i><i class="ca tl"></i><i class="ca tr"></i><i class="ca br"></i><i class="ca bl"></i></span><span class="fx folhas"><b class="fo f1"></b><b class="fo f2"></b><b class="fo f3"></b><b class="fo f4"></b><b class="fo f5"></b><b class="fo f6"></b><b class="fo f7"></b><b class="fo f8"></b><b class="fo f9"></b><b class="fo f10"></b></span><span class="fx mol m-pedra"><i class="ba t"></i><i class="ba r"></i><i class="ba b"></i><i class="ba l"></i><i class="ca tl"></i><i class="ca tr"></i><i class="ca br"></i><i class="ca bl"></i></span><span class="fx entalhes"><b class="en e1"></b><b class="en e2"></b><b class="en e3"></b><b class="en e4"></b><b class="en e5"></b><b class="en e6"></b><b class="en e7"></b><b class="en e8"></b><b class="en e9"></b><b class="en e10"></b><b class="en e11"></b><b class="en e12"></b></span>
+  
+  <div class="conteudo"><div class="ct"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/2524.png" alt=""><div><h4>Bandocanos</h4><p class="en2">Bandlepipes</p></div><span class="g">2.300g</span></div><ul class="at"><li>+200 de Vida</li><li>+15 de Aceleração de Habilidade</li></ul></div>
+</article>
+<article class="c vit" tabindex="0">
+  <span class="papel"></span>
+  <span class="fx muralha"><i class="tj t1"></i><i class="tj t2"></i><i class="tj t3"></i><i class="tj t4"></i><i class="tj t5"></i><i class="tj t6"></i><i class="tj t7"></i><i class="tj t8"></i><i class="tj t9"></i><i class="tj t10"></i><i class="tj t11"></i><i class="tj t12"></i><i class="tj t13"></i><i class="tj t14"></i><i class="tj t15"></i><i class="tj t16"></i><i class="tj t17"></i><i class="tj t18"></i><i class="tj t19"></i><i class="tj t20"></i></span><span class="fx escudo"><svg viewBox="0 0 120 130" preserveAspectRatio="none" aria-hidden="true"><path d="M4 4 60 12 116 4v74c0 26-26 40-56 48C30 118 4 104 4 78z"/></svg></span><span class="fx mol m-folhagem"><i class="ba t"></i><i class="ba r"></i><i class="ba b"></i><i class="ba l"></i><i class="ca tl"></i><i class="ca tr"></i><i class="ca br"></i><i class="ca bl"></i></span><span class="fx folhas"><b class="fo f1"></b><b class="fo f2"></b><b class="fo f3"></b><b class="fo f4"></b><b class="fo f5"></b><b class="fo f6"></b><b class="fo f7"></b><b class="fo f8"></b><b class="fo f9"></b><b class="fo f10"></b></span><span class="fx mol m-pedra"><i class="ba t"></i><i class="ba r"></i><i class="ba b"></i><i class="ba l"></i><i class="ca tl"></i><i class="ca tr"></i><i class="ca br"></i><i class="ca bl"></i></span><span class="fx entalhes"><b class="en e1"></b><b class="en e2"></b><b class="en e3"></b><b class="en e4"></b><b class="en e5"></b><b class="en e6"></b><b class="en e7"></b><b class="en e8"></b><b class="en e9"></b><b class="en e10"></b><b class="en e11"></b><b class="en e12"></b></span>
+  
+  <div class="conteudo"><div class="ct"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/3877.png" alt=""><div><h4>Canção de Sangue</h4><p class="en2">Bloodsong</p></div><span class="g">400g</span></div><ul class="at"><li>+200 de Vida</li><li>+75% de Regeneração de Vida base</li></ul></div>
+</article></div></div>
+
+  <p class="lede" style="margin-top:22px">Só transform e opacity animam, em qualquer variante.</p>
+</div>
+<script>
+const VARIANTES = { ad: 5, ap: 4, vit: 4 };
+function nucleoDe(c){ return c.classList.contains('ad') ? 'ad' : c.classList.contains('ap') ? 'ap' : 'vit'; }
+function limpar(c){ for (let i = 1; i <= 5; i++) c.classList.remove('a' + i); }
+function acionar(c){
+  const n = nucleoDe(c), total = VARIANTES[n];
+  let v; do { v = 1 + Math.floor(Math.random() * total); } while (total > 1 && v === Number(c.dataset.ultima));
+  c.dataset.ultima = v;
+  limpar(c); void c.offsetWidth;
+  c.classList.add('a' + v);
+}
+document.querySelectorAll('.c').forEach(c => {
+  c.addEventListener('mouseenter', () => acionar(c));
+  c.addEventListener('focus', () => acionar(c));
+  c.addEventListener('mouseleave', () => limpar(c));
+  c.addEventListener('blur', () => limpar(c));
+});
+document.getElementById('tudo').addEventListener('click', () => {
+  document.querySelectorAll('.c').forEach(c => acionar(c));
+});
+document.querySelectorAll('[data-var]').forEach(b => b.addEventListener('click', () => {
+  const [n, v] = b.dataset.var.split(':');
+  document.querySelectorAll('.c.' + n).forEach(c => { limpar(c); void c.offsetWidth; c.classList.add('a' + v); c.dataset.ultima = v; });
+  b.parentElement.querySelectorAll('[data-var]').forEach(x => x.classList.toggle('sel', x === b));
+}));
+let q = 0, t0 = performance.now();
+const alvo = document.getElementById('fps');
+function conta(t){ q++; if (t - t0 >= 1000){ alvo.textContent = q + ' FPS'; q = 0; t0 = t; } requestAnimationFrame(conta); }
+requestAnimationFrame(conta);
+</script>
+</body>
+</html>
