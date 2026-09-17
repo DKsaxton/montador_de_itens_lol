@@ -1,0 +1,2 @@
+As texturas geradas entram aqui, com os nomes de docs/prompts_texturas_regioes.md.
+Runeterra nao tem textura: e o papel neutro de sempre.
