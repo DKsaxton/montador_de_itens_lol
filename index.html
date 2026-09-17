@@ -6626,24 +6626,17 @@ function renderPublicasIndex(rows) {
   renderBuildDetail();
 }
 function renderPublicDetail(box, d) {
-  const vistos = new Set(); const itens = [];
-  itensDoResumo(d.cats).forEach(it => { if (!vistos.has(it.slug)) { vistos.add(it.slug); itens.push(it); } });
-  const marcas = d.markers.map(m => `<span class="bd-mark">${markerHtml(m, d.champ, renderBuildDetail)}${esc(markerLabel(m, d.champ))}</span>`).join("");
-  box.innerHTML = `
-    <div class="bd-head">${champIconHtml(d.champ, "")}<h3>${esc(d.name)}</h3></div>
-    <div class="bd-marks">${marcas}</div>
-    <div class="bd-meta">Versão: <b>${d.pubVersao}</b> · ID da build: <b class="pub-id">${esc(d.pubId)}</b><br>Última atualização: <b>${esc(fmtData(d.updatedAt))}</b>${d.mode ? `<br>Modo: <b>${esc(d.mode)}</b>` : ""}${d.desatualizada ? `<br><b class="pub-id">Desatualizada</b> — publicada no catálogo ${esc(d.pubPatch)}` : ""}</div>
-    <p class="bd-stats">${d.visualizacoes} ${d.visualizacoes === 1 ? "visualização" : "visualizações"} · ${d.copias} ${d.copias === 1 ? "cópia" : "cópias"}${d.popDia ? ` · ${d.popDia} hoje` : ""}${d.popSemana ? ` · ${d.popSemana} na semana` : ""}</p>
-    ${d.autor ? `<p class="bd-autor">por ${esc(d.autor)}</p>` : ""}
-    <p class="bd-desc">${esc(d.desc)}</p>
-    <div class="bd-label">Itens (sem os opcionais)</div>
-    <div class="bd-items">${itens.length ? itens.map(it => `<img src="${it.iconUrl}" alt="" title="${esc(it.namePt)}" loading="lazy">`).join("") : `<span class="bd-sem">nenhum item</span>`}</div>
-    <div class="bd-actions">
+  const minha = library.builds.some(b => b.pubId === d.pubId);
+  box.innerHTML = detalheHtml(d, {
+    meta: `Versão: <b>${d.pubVersao}</b> · ID: <b class="pub-id">${esc(d.pubId)}</b><br>Última atualização: <b>${esc(fmtData(d.updatedAt))}</b>${d.mode ? `<br>Modo: <b>${esc(d.mode)}</b>` : ""}${d.desatualizada ? `<br><b class="pub-id">Desatualizada</b> — publicada no catálogo ${esc(d.pubPatch)}` : ""}`,
+    numeros: `<p class="bd-stats">${d.visualizacoes} ${d.visualizacoes === 1 ? "visualização" : "visualizações"} · ${d.copias} ${d.copias === 1 ? "cópia" : "cópias"}${d.popDia ? ` · ${d.popDia} hoje` : ""}${d.popSemana ? ` · ${d.popSemana} na semana` : ""}</p>${d.autor ? `<p class="bd-autor">por ${esc(d.autor)}</p>` : ""}`,
+    semDesc: "Sem descrição.",
+    botoes: `
       <button type="button" class="btn primary" data-act="copypub" title="Traz uma cópia para a sua biblioteca e abre na forja">Copiar e editar</button>
       <button type="button" class="btn ghost" data-act="favpub">${d.fav ? "♥ Tirar dos favoritos" : "♡ Favoritar"}</button>
-      ${library.builds.some(b => b.pubId === d.pubId) ? `<button type="button" class="btn ghost" data-act="delpub" title="Tira esta publicação do site (a build continua na sua biblioteca)">Excluir do site</button>` : ""}
-    </div>
-    ${library.builds.some(b => b.pubId === d.pubId) ? `<p class="bd-pub-note">Publicada por você neste navegador.</p>` : ""}`;
+      ${minha ? `<button type="button" class="btn ghost" data-act="delpub" title="Tira esta publicação do site (a build continua na sua biblioteca)">Excluir do site</button>` : ""}`,
+    nota: minha ? `<p class="bd-pub-note">Publicada por você neste navegador.</p>` : "",
+  });
   // conta a visualização, uma por sessão
   if (!publicas.vistos.has(d.pubId) && Servidor.ativo()) { publicas.vistos.add(d.pubId); Servidor.rpc("registrar_evento", { p_id: d.pubId, p_tipo: "visualizacao" }).catch(() => {}); }
 }
@@ -6800,16 +6793,31 @@ function renderBuildIndex() {
   const favsHtml = favs.map(linhaHtml).join("");
   if (!dados.some(d => d.id === biSelected) && favs.some(d => d.id === biSelected)) { /* seleção numa favorita: mantém */ }
   else if (!dados.some(d => d.id === biSelected)) biSelected = dados.some(d => d.id === build.id) ? build.id : (dados[0] ? dados[0].id : (favs[0] ? favs[0].id : null));
-  rows.innerHTML = (dados.length ? dados.map(d => `
-    <div class="bi-row${d.id === biSelected ? " sel" : ""}${biLote && biLote.has(d.id) ? " marcada" : ""}" data-id="${d.id}" role="option" aria-selected="${d.id === biSelected}" tabindex="0">
-      <span class="bi-check" aria-hidden="true"></span>
-      <span class="bi-champ">${champIconHtml(d.champ, "")}</span>
-      <span class="bi-name-wrap"><span class="bi-name">${esc(d.name)}</span>${etiquetaHtml(d)}</span>
-      <span class="bi-marks" title="${d.n} ${d.n === 1 ? "item" : "itens"}">${d.markers.length ? d.markers.map(m => markerHtml(m, d.champ, renderBuildIndex)).join("") : `<span class="vazio">sem marcadores</span>`}</span>
-      <button type="button" class="bi-fav${d.fav ? " on" : ""}" data-fav="${d.id}" title="${d.fav ? "Favorita — clique para tirar" : "Marcar como favorita"}">${d.fav ? "♥" : "♡"}</button>
-    </div>`).join("") : (favsHtml ? "" : `<div class="bi-empty">${filtrando ? "Nenhuma build combina com a busca ou o filtro." : "Nenhuma build ainda — comece por “Nova build”."}</div>`)) + favsHtml;
+  rows.innerHTML = (dados.length ? dados.map(linhaHtml).join("") : (favsHtml ? "" : `<div class="bi-empty">${filtrando ? "Nenhuma build combina com a busca ou o filtro." : "Nenhuma build ainda — comece por “Nova build”."}</div>`)) + favsHtml;
   atualizarBarraLote();
   renderBuildDetail();
+}
+
+// F10-T8 (Leo, 16/09/2026: "design único para a lista de builds e a lista de publicados"):
+// as duas listas usam a mesma linha (linhaHtml) e o mesmo esqueleto de detalhe.
+// Ordem fixa: retrato + nome · 3 marcadores · ficha · números · descrição · itens · botões · nota.
+function detalheHtml(d, partes) {
+  const marcas = Array.from({ length: MAX_MARCADORES }, (_, i) => d.markers[i]
+    ? `<span class="bd-mark">${markerHtml(d.markers[i], d.champ, renderBuildDetail)}${esc(markerLabel(d.markers[i], d.champ))}</span>`
+    : `<span class="bd-mark vazio">marcador ${i + 1}</span>`).join("");
+  const vistos = new Set(); const itens = [];
+  itensDoResumo(d.cats).forEach(it => { if (!vistos.has(it.slug)) { vistos.add(it.slug); itens.push(it); } });
+  return `
+    <div class="bd-head">${champIconHtml(d.champ, "")}<h3>${esc(d.name)}</h3></div>
+    <div class="bd-marks">${marcas}</div>
+    <div class="bd-meta">${partes.meta}</div>
+    ${partes.numeros || ""}
+    ${partes.aviso || ""}
+    ${d.desc ? `<p class="bd-desc">${esc(d.desc)}</p>` : `<p class="bd-desc vazia">${esc(partes.semDesc || "Sem descrição.")}</p>`}
+    <div class="bd-label">Itens (sem os opcionais)</div>
+    <div class="bd-items">${itens.length ? itens.map(it => `<img src="${it.iconUrl}" alt="" title="${esc(it.namePt)}" loading="lazy">`).join("") : `<span class="bd-sem">nenhum item ainda</span>`}</div>
+    <div class="bd-actions">${partes.botoes}</div>
+    ${partes.nota || ""}`;
 }
 
 function renderBuildDetail() {
@@ -6822,49 +6830,34 @@ function renderBuildDetail() {
   const b = library.builds.find(x => x.id === biSelected);
   if (!b) { box.innerHTML = `<p class="bd-empty">Selecione uma build na lista para ver o resumo.</p>`; return; }
   const d = buildResumo(b);
-  // itens do resumo: tudo menos as caixas Opcionais, sem repetir
-  const vistos = new Set(); const itens = [];
-  itensDoResumo(d.cats).forEach(it => { if (!vistos.has(it.slug)) { vistos.add(it.slug); itens.push(it); } });
   const falta = faltaParaPublicar(d);
   if (d.temp) {
-    const vistos2 = new Set(); const itens2 = [];
-    itensDoResumo(d.cats).forEach(it => { if (!vistos2.has(it.slug)) { vistos2.add(it.slug); itens2.push(it); } });
-    box.innerHTML = `
-      <div class="bd-head">${champIconHtml(d.champ, "")}<h3>${esc(d.name)}</h3></div>
-      <div class="bd-marks">${d.markers.map(m => `<span class="bd-mark">${markerHtml(m, d.champ, renderBuildDetail)}${esc(markerLabel(m, d.champ))}</span>`).join("")}</div>
-      <div class="bd-meta">Só visualização · publicada como <b class="pub-id">${esc(d.pubOrigem || "")}</b><br>Some ao recarregar a página</div>
-      ${d.desc ? `<p class="bd-desc">${esc(d.desc)}</p>` : ""}
-      <div class="bd-label">Itens (sem os opcionais)</div>
-      <div class="bd-items">${itens2.map(it => `<img src="${it.iconUrl}" alt="" title="${esc(it.namePt)}" loading="lazy">`).join("")}</div>
-      <div class="bd-actions">
+    box.innerHTML = detalheHtml(d, {
+      meta: `Só visualização · publicada como <b class="pub-id">${esc(d.pubOrigem || "")}</b><br>Some ao recarregar a página`,
+      semDesc: "Sem descrição.",
+      botoes: `
         <button type="button" class="btn primary" data-act="edit">Abrir</button>
         <button type="button" class="btn ghost" data-act="copy" title="Guarda uma cópia sua na biblioteca">Copiar e editar</button>
-        <button type="button" class="btn ghost" data-act="del">Fechar visualização</button>
-      </div>`;
+        <button type="button" class="btn ghost" data-act="del">Fechar visualização</button>`,
+    });
     return;
   }
-  const marcas = Array.from({ length: MAX_MARCADORES }, (_, i) => d.markers[i]
-    ? `<span class="bd-mark">${markerHtml(d.markers[i], d.champ, renderBuildDetail)}${esc(markerLabel(d.markers[i], d.champ))}</span>`
-    : `<span class="bd-mark vazio">marcador ${i + 1}</span>`).join("");
-  box.innerHTML = `
-    <div class="bd-head">${champIconHtml(d.champ, "")}<h3>${esc(d.name)}</h3></div>
-    <div class="bd-marks">${marcas}</div>
-    <div class="bd-meta">Versão: <b>${d.pubVersao || 0}</b> · ID: ${d.pubId ? `<b class="pub-id">${esc(d.pubId)}</b>` : `<b>não publicada</b>`}<br>Última atualização: <b>${esc(fmtData(d.updatedAt))}</b>${d.pubEm ? `<br>Publicada: <b>${esc(fmtData(d.pubEm))}</b>${d.pubPatch && d.pubPatch !== CATALOG.meta.patch ? ` · <b class="pub-id">desatualizada (${esc(d.pubPatch)})</b>` : ""}` : ""}${d.mode ? `<br>Modo: <b>${esc(d.mode)}</b>` : ""}</div>
-    ${revisaoHtml(d)}
-    ${d.desc ? `<p class="bd-desc">${esc(d.desc)}</p>` : `<p class="bd-desc vazia">Sem descrição — escreva uma na forja (obrigatória para publicar).</p>`}
-    <div class="bd-label">Itens (sem os opcionais)</div>
-    <div class="bd-items">${itens.length ? itens.map(it => `<img src="${it.iconUrl}" alt="" title="${esc(it.namePt)}" loading="lazy">`).join("") : `<span class="bd-sem">nenhum item ainda</span>`}</div>
-    <div class="bd-actions">
+  box.innerHTML = detalheHtml(d, {
+    meta: `Versão: <b>${d.pubVersao || 0}</b> · ID: ${d.pubId ? `<b class="pub-id">${esc(d.pubId)}</b>` : `<b>não publicada</b>`}<br>Última atualização: <b>${esc(fmtData(d.updatedAt))}</b>${d.pubEm ? `<br>Publicada: <b>${esc(fmtData(d.pubEm))}</b>${d.pubPatch && d.pubPatch !== CATALOG.meta.patch ? ` · <b class="pub-id">desatualizada (${esc(d.pubPatch)})</b>` : ""}` : ""}${d.mode ? `<br>Modo: <b>${esc(d.mode)}</b>` : ""}`,
+    aviso: revisaoHtml(d),
+    semDesc: "Sem descrição — escreva uma na forja (obrigatória para publicar).",
+    botoes: `
       <button type="button" class="btn ghost" data-act="copy" title="Cria uma cópia e abre na forja">Copiar e editar</button>
       <button type="button" class="btn ghost" data-act="link" title="Copia um link com a build inteira dentro — quem abre recebe a build">Copiar link</button>
       <button type="button" class="btn primary" data-act="edit">Editar</button>
       <button type="button" class="btn" data-act="publish"${!Servidor.ativo() || falta.length ? " disabled" : ""} title="${!Servidor.ativo() ? "Sem servidor configurado (data/servidor.js)" : falta.length ? "Falta: " + esc(falta.join(", ")) : (d.pubId ? "Envia esta versão para o site (versão " + (d.pubVersao + 1) + ")" : "Publica esta build no site")}">${d.pubId ? "Atualizar publicação" : "Publicar"}</button>
       ${d.pubId ? `<button type="button" class="btn ghost" data-act="unpub" title="Tira do site e mantém a build aqui">Despublicar</button>` : ""}
-      <button type="button" class="btn ghost" data-act="del"${library.builds.length <= 1 ? " disabled" : ""} title="${d.pubId ? "Apaga a build daqui e do site" : "Apaga a build da biblioteca"}">Excluir</button>
-    </div>
-    <p class="bd-pub-note">${falta.length ? `Para publicar ainda falta: <b>${esc(falta.join(", "))}</b>.` : !Servidor.ativo() ? "Pronta para publicar — falta configurar o servidor." : d.pubId ? (d.updatedAt > d.pubEm ? `Há alterações depois da última publicação (versão ${d.pubVersao}).` : `Publicada na versão ${d.pubVersao}.`) : "Pronta para publicar."}</p>
-    <p id="bd-link-msg" class="bd-pub-note" hidden></p>
-    <input id="bd-link" class="bd-link" type="text" readonly hidden aria-label="Link da build">`;
+      <button type="button" class="btn ghost" data-act="del"${library.builds.length <= 1 ? " disabled" : ""} title="${d.pubId ? "Apaga a build daqui e do site" : "Apaga a build da biblioteca"}">Excluir</button>`,
+    nota: `
+      <p class="bd-pub-note">${falta.length ? `Para publicar ainda falta: <b>${esc(falta.join(", "))}</b>.` : !Servidor.ativo() ? "Pronta para publicar — falta configurar o servidor." : d.pubId ? (d.updatedAt > d.pubEm ? `Há alterações depois da última publicação (versão ${d.pubVersao}).` : `Publicada na versão ${d.pubVersao}.`) : "Pronta para publicar."}</p>
+      <p id="bd-link-msg" class="bd-pub-note" hidden></p>
+      <input id="bd-link" class="bd-link" type="text" readonly hidden aria-label="Link da build">`,
+  });
 }
 
 // ---- filtro por marcador (+ campeão): habilidades só com campeão no filtro (Leo, 14/09/2026)
