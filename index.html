@@ -2982,6 +2982,17 @@ header.top { transition: background .5s ease, border-color .5s ease; }
 .sw input:checked + i { background: #5a2a10; box-shadow: inset 0 1px 3px #000, 0 0 0 1px #8a4a1c, 0 0 10px var(--forja-brasa-glow); }
 .sw input:checked + i::after { left: 19px; background: radial-gradient(circle at 40% 40%, #ffd08a, #ff7a1e); box-shadow: 0 0 8px #ff8a2a; }
 .sw input:checked ~ span { color: var(--forja-brasa-clara); }
+/* F10-T9: bandeja da forja só com ícones. A grade se ajusta sozinha à largura
+   (auto-fill), então em tela maior cabem mais colunas sem mexer em nada. */
+.picker-view { margin: 0 6px; border-color: var(--loja-tinta-suave); background: transparent; }
+.picker-view .view-btn { font-size: 11px; padding: 2px 8px; color: var(--loja-tinta-suave); }
+.picker-view .view-btn.active { background: var(--loja-cera); color: var(--loja-cera-texto); }
+.picker.icones .picker-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(52px, 1fr)); gap: 4px; align-content: start; }
+.picker.icones .picker-row { flex-direction: column; gap: 0; padding: 0; border: 1px solid transparent; border-left: none; border-bottom: 3px solid var(--tier-color, var(--loja-tinta-suave)); border-radius: 2px; }
+.picker.icones .picker-row:hover { background: rgba(44,29,18,.12); border-color: var(--loja-tinta-suave); border-bottom-color: var(--tier-color, var(--loja-tinta-suave)); }
+.picker.icones .pk-abbr { width: 100%; aspect-ratio: 1; padding: 0; display: flex; align-items: center; justify-content: center; border-radius: 2px 2px 0 0; }
+.picker.icones .pk-abbr .item-art { width: 100%; height: 100%; }
+.picker.icones .pk-name, .picker.icones .pk-price { display: none; }
 body:not(.editando) .cat-grip,
 body:not(.editando) .cat-del,
 body:not(.editando) .cat-resize,
@@ -3944,6 +3955,11 @@ body.forja .build-cat.drop-after  { transform: translateX(-5px); box-shadow: ins
         </div>
         <div class="picker-meta">
           <span id="picker-count"></span>
+          <!-- F10-T9 (Leo, 16/09/2026): só ícones cabem várias fileiras onde cabia uma -->
+          <span class="view-toggle picker-view" role="group" aria-label="Modo da bandeja">
+            <button type="button" class="view-btn active" data-pview="lista" title="Ícone, nome e preço">Lista</button>
+            <button type="button" class="view-btn" data-pview="icones" title="Só os ícones — cabem mais por fileira">Ícones</button>
+          </span>
           <span id="picker-hint">selecione uma categoria</span>
         </div>
       </div>
@@ -5925,6 +5941,8 @@ function renderPicker() {
     row.draggable = true;
     row.dataset.itemId = item.slug;
     row.style.setProperty("--tier-color", TIER_CSS[item.tier] || "");
+    // título com o mesmo que a linha mostra: no modo Ícones é o que resta para ler
+    row.title = `${item.namePt} · ${TIER_LABEL[item.tier] || item.tier} · ${fmtG(effectivePrice(item))}`;
     row.innerHTML = `
       <span class="pk-abbr">${iconInner(item)}</span>
       <span class="pk-name">${item.namePt}<span class="pk-tier">${TIER_LABEL[item.tier] || item.tier}</span></span>
@@ -7285,6 +7303,18 @@ function initBuildBuilder() {
     // F10-T2 (Leo, 16/09/2026): ir ao Catálogo não pergunta se salva — o rascunho continua na forja.
     btn.addEventListener("click", () => switchTab(btn.dataset.tab));
   });
+
+  // F10-T9: modo da bandeja (lista | ícones), lembrado no navegador
+  const picker = document.querySelector(".picker");
+  const aplicarPickerView = (v) => {
+    picker.classList.toggle("icones", v === "icones");
+    document.querySelectorAll("[data-pview]").forEach(b => b.classList.toggle("active", b.dataset.pview === v));
+    try { localStorage.setItem("forja.bandeja", v); } catch (e) { /* sem persistência */ }
+  };
+  document.querySelectorAll("[data-pview]").forEach(b => b.addEventListener("click", () => { aplicarPickerView(b.dataset.pview); Som.play("catalog:tag_select"); }));
+  let bandeja = "lista";
+  try { bandeja = localStorage.getItem("forja.bandeja") || "lista"; } catch (e) { /* idem */ }
+  aplicarPickerView(bandeja === "icones" ? "icones" : "lista");
 
   document.getElementById("add-cat").addEventListener("click", () => addCategory());
 
