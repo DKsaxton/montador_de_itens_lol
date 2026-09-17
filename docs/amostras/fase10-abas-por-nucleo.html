@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fase 10 · T13 — identidade das abas de núcleo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=IM+Fell+English+SC&family=IM+Fell+English:ital@0;1&family=Alegreya:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --papel: #e5d3ad; --papel-escuro: #cdb689; --papel-borda: #a88f60;
+  --tinta: #2c1d12; --tinta-suave: #5a4630;
+  --madeira-1: #3b2617; --madeira-2: #2a1a0f; --madeira-3: #21130a;
+  --latao: #b6873a; --latao-claro: #d5b35a; --cera: #8d2c22; --cera-texto: #f4e6c4;
+  --titulo: #e8d3a2; --legenda: #b89a66;
+  --ad: #c8641e; --ap: #7b4fb5; --vit: #4d8b3a;
+  --titulos: 'IM Fell English SC','IM Fell English',Georgia,serif;
+  --texto: 'Alegreya',Georgia,serif; --gravado: 'Cinzel',Georgia,serif;
+  --tex1: url("../../assets/textures/shopitem_papertexture01_psd.png");
+  --tex2: url("../../assets/textures/shopitem_papertexture02_psd.png");
+  --tex3: url("../../assets/textures/shopitem_papertexture03_psd.png");
+  --sim-ad: url("../../assets/icons/nucleo-ad.svg");
+  --sim-ap: url("../../assets/icons/nucleo-ap.svg");
+  --sim-vit: url("../../assets/icons/nucleo-vit.svg");
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: linear-gradient(180deg,var(--madeira-1),var(--madeira-3)) fixed; color: var(--papel); font-family: var(--texto); font-size: 15px; }
+.wrap { max-width: 1240px; margin: 0 auto; padding: 26px 22px 70px; }
+h1 { font-family: var(--titulos); font-weight: 400; font-size: 31px; color: var(--titulo); margin: 0 0 4px; }
+.sub { font-style: italic; color: var(--legenda); margin: 0 0 8px; max-width: 90ch; }
+.erro { font-style: italic; color: #e2a27a; margin: 0 0 24px; max-width: 90ch; }
+h2 { font-family: var(--titulos); font-weight: 400; font-size: 23px; color: var(--titulo); margin: 36px 0 2px; }
+h2 .n { font-family: var(--gravado); font-size: 10px; letter-spacing: .22em; color: var(--latao-claro); margin-right: 9px; vertical-align: 3px; }
+.lede { font-style: italic; color: var(--legenda); margin: 0 0 16px; max-width: 90ch; }
+.palco { background: linear-gradient(180deg, rgba(0,0,0,.28), rgba(0,0,0,.42)); border: 1px solid #4a3520; border-radius: 3px; padding: 18px 16px 0; }
+.prateleira { min-height: 92px; border-top: 3px solid #120a04; box-shadow: 0 1px 0 rgba(217,192,138,.18); margin-top: -3px; padding: 14px 4px 18px;
+  display: flex; align-items: center; gap: 10px; font-style: italic; color: var(--legenda); font-size: 13px; }
+.simb { width: 26px; height: 26px; flex: none; background-color: currentColor; -webkit-mask: var(--sim) center/contain no-repeat; mask: var(--sim) center/contain no-repeat; }
+
+/* ================= OPÇÃO A — etiquetas da guilda ================= */
+/* Cada núcleo é uma etiqueta diferente pendurada na régua: papel próprio,
+   recorte próprio e um selo de cera com o símbolo do núcleo. */
+.a .abas { display: flex; align-items: flex-end; gap: 10px; padding: 0 4px; }
+.a .aba {
+  position: relative; display: flex; align-items: center; gap: 10px;
+  padding: 11px 18px 11px 14px; cursor: default;
+  background: var(--papel) var(--tex) center/380px; background-blend-mode: multiply;
+  border: 1px solid var(--papel-borda); border-bottom: none; color: var(--tinta);
+  font-family: var(--gravado); font-size: 12px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase;
+  box-shadow: 0 -3px 8px rgba(0,0,0,.4); filter: saturate(.8) brightness(.9);
+}
+.a .aba .selo {
+  width: 30px; height: 30px; flex: none; border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, color-mix(in srgb, var(--cor) 75%, #fff 10%), color-mix(in srgb, var(--cor) 85%, #000));
+  box-shadow: 0 1px 3px rgba(0,0,0,.6), inset 0 -2px 4px rgba(0,0,0,.35), inset 0 2px 3px rgba(255,255,255,.25);
+  display: flex; align-items: center; justify-content: center;
+}
+.a .aba .selo i { width: 17px; height: 17px; background-color: #fff2df; -webkit-mask: var(--sim) center/contain no-repeat; mask: var(--sim) center/contain no-repeat; opacity: .92; }
+.a .aba .n { font-family: var(--texto); font-style: italic; font-size: 12px; letter-spacing: 0; text-transform: none; color: var(--tinta-suave); }
+/* recorte próprio de cada etiqueta */
+.a .aba.todos { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); }
+.a .aba.ad  { clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 0 100%); }      /* canto cortado a lâmina */
+.a .aba.ap  { border-radius: 16px 16px 0 0; }                                                     /* pergaminho arredondado */
+.a .aba.vit { clip-path: polygon(10px 0, calc(100% - 10px) 0, 100% 14px, 100% 100%, 0 100%, 0 14px); } /* escudo */
+.a .aba.on { filter: none; transform: translateY(3px); padding-bottom: 14px; border-color: var(--cor); box-shadow: 0 -4px 14px color-mix(in srgb, var(--cor) 45%, transparent); }
+.a .aba.on::after { content: ""; position: absolute; left: 0; right: 0; bottom: -3px; height: 3px; background: var(--cor); }
+.a .aba.on .selo { box-shadow: 0 0 0 2px color-mix(in srgb, var(--cor) 60%, #2a1a0a), 0 0 14px color-mix(in srgb, var(--cor) 70%, transparent), inset 0 -2px 4px rgba(0,0,0,.35); }
+.a .prateleira { border-top-color: var(--cor-ativa, #120a04); }
+
+/* ================= OPÇÃO B — placas de metal ================= */
+/* Cada núcleo é uma placa de material diferente, com o símbolo gravado grande.
+   A ativa acende por dentro e joga luz na prateleira. */
+.b .abas { display: flex; align-items: flex-end; gap: 8px; padding: 0 4px; }
+.b .aba {
+  position: relative; display: flex; align-items: center; gap: 11px; padding: 12px 18px;
+  border: 1px solid #1a120a; border-bottom: none; border-radius: 2px 2px 0 0;
+  background: var(--metal); box-shadow: inset 0 1px 0 rgba(255,255,255,.18), inset 0 -10px 18px rgba(0,0,0,.45), 0 -3px 8px rgba(0,0,0,.5);
+  font-family: var(--gravado); font-size: 12px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--letra);
+  text-shadow: 0 1px 0 rgba(0,0,0,.55);
+}
+.b .aba i { width: 22px; height: 22px; flex: none; background-color: var(--letra); -webkit-mask: var(--sim) center/contain no-repeat; mask: var(--sim) center/contain no-repeat; opacity: .8; }
+.b .aba .n { font-family: var(--texto); font-style: italic; font-size: 12px; letter-spacing: 0; text-transform: none; opacity: .75; }
+.b .aba::after { content: ""; position: absolute; left: 7px; right: 7px; top: 4px; height: 1px; background: rgba(255,255,255,.14); }
+.b .aba.todos { --metal: linear-gradient(180deg, #6b5535, #3d2f1c); --letra: #e6d3a8; }
+.b .aba.ad    { --metal: linear-gradient(180deg, #6e4a2c, #3a2313); --letra: #f0c49a; }
+.b .aba.ap    { --metal: linear-gradient(180deg, #5b4a74, #2c2440); --letra: #d9c8f2; }
+.b .aba.vit   { --metal: linear-gradient(180deg, #4d6640, #253620); --letra: #cfe4bf; }
+.b .aba.on { padding-bottom: 16px; margin-bottom: -4px; border-color: var(--cor); color: #fff;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.3), inset 0 -14px 26px color-mix(in srgb, var(--cor) 55%, transparent), 0 -4px 16px color-mix(in srgb, var(--cor) 50%, transparent); }
+.b .aba.on i { opacity: 1; background-color: #fff; }
+.b .prateleira { border-top-color: var(--cor-ativa, #120a04); }
+.b .palco.on { box-shadow: inset 0 26px 40px -22px color-mix(in srgb, var(--cor) 55%, transparent); }
+
+.legenda { font-family: var(--gravado); font-size: 10px; letter-spacing: .2em; text-transform: uppercase; color: var(--latao-claro); margin: 22px 0 8px; }
+.nota { font-style: italic; color: var(--legenda); font-size: 13px; margin: 12px 0 0; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Fase 10 · tarefa 13 — identidade das abas</h1>
+  <p class="sub">Cada núcleo com cara própria: papel ou metal diferente, recorte diferente e o símbolo do núcleo (do pacote de ícones). <b>Todos</b> continua a etiqueta neutra de sempre.</p>
+  <p class="erro">A tentativa anterior mudava o fundo da loja e deixava as quatro abas iguais entre si — foi por isso que ela não tinha identidade nenhuma.</p>
+
+  <h2><span class="n">Opção A</span>Etiquetas da guilda</h2>
+  <p class="lede">Papel, dentro da loja medieval. Cada etiqueta tem uma das três texturas do projeto, um recorte próprio (canto cortado a lâmina no AD, pergaminho arredondado no AP, escudo na Vitalidade) e um selo de cera com o símbolo. A ativa desce, acende o selo e emenda na prateleira.</p>
+
+  <div class="legenda">com AD escolhido</div>
+  <div class="palco a">
+    <div class="abas">
+      <div class="aba todos" style="--tex: var(--tex1); --cor: var(--latao)"><span class="selo"><i style="--sim: none"></i></span>Todos <span class="n">225</span></div>
+      <div class="aba ad on" style="--tex: var(--tex2); --cor: var(--ad); --sim: var(--sim-ad)"><span class="selo"><i style="--sim: var(--sim-ad)"></i></span>AD <span class="n">82</span></div>
+      <div class="aba ap" style="--tex: var(--tex3); --cor: var(--ap); --sim: var(--sim-ap)"><span class="selo"><i style="--sim: var(--sim-ap)"></i></span>AP <span class="n">62</span></div>
+      <div class="aba vit" style="--tex: var(--tex1); --cor: var(--vit); --sim: var(--sim-vit)"><span class="selo"><i style="--sim: var(--sim-vit)"></i></span>Vitalidade <span class="n">82</span></div>
+    </div>
+    <div class="prateleira" style="--cor-ativa: var(--ad)"><span class="simb" style="--sim: var(--sim-ad); color: var(--ad)"></span>a prateleira do Dano de Ataque — 82 dos 225 itens</div>
+  </div>
+
+  <div class="legenda">com Vitalidade escolhida</div>
+  <div class="palco a">
+    <div class="abas">
+      <div class="aba todos" style="--tex: var(--tex1); --cor: var(--latao)"><span class="selo"><i style="--sim: none"></i></span>Todos <span class="n">225</span></div>
+      <div class="aba ad" style="--tex: var(--tex2); --cor: var(--ad); --sim: var(--sim-ad)"><span class="selo"><i style="--sim: var(--sim-ad)"></i></span>AD <span class="n">82</span></div>
+      <div class="aba ap" style="--tex: var(--tex3); --cor: var(--ap); --sim: var(--sim-ap)"><span class="selo"><i style="--sim: var(--sim-ap)"></i></span>AP <span class="n">62</span></div>
+      <div class="aba vit on" style="--tex: var(--tex1); --cor: var(--vit); --sim: var(--sim-vit)"><span class="selo"><i style="--sim: var(--sim-vit)"></i></span>Vitalidade <span class="n">82</span></div>
+    </div>
+    <div class="prateleira" style="--cor-ativa: var(--vit)"><span class="simb" style="--sim: var(--sim-vit); color: var(--vit)"></span>a prateleira da Vitalidade — 82 dos 225 itens</div>
+  </div>
+
+  <h2><span class="n">Opção B</span>Placas de metal</h2>
+  <p class="lede">Metal, puxando para a forja. Cada aba é uma placa de material próprio — latão no Todos, cobre queimado no AD, estanho arroxeado no AP, bronze esverdeado na Vitalidade — com o símbolo gravado ao lado do nome. A ativa acende por dentro e joga luz na prateleira.</p>
+
+  <div class="legenda">com AP escolhido</div>
+  <div class="palco b on" style="--cor: var(--ap)">
+    <div class="abas">
+      <div class="aba todos">Todos <span class="n">225</span></div>
+      <div class="aba ad" style="--sim: var(--sim-ad)"><i></i>AD <span class="n">82</span></div>
+      <div class="aba ap on" style="--sim: var(--sim-ap); --cor: var(--ap)"><i></i>AP <span class="n">62</span></div>
+      <div class="aba vit" style="--sim: var(--sim-vit)"><i></i>Vitalidade <span class="n">82</span></div>
+    </div>
+    <div class="prateleira" style="--cor-ativa: var(--ap)"><span class="simb" style="--sim: var(--sim-ap); color: var(--ap)"></span>a prateleira do Poder de Habilidade — 62 dos 225 itens</div>
+  </div>
+
+  <div class="legenda">com AD escolhido</div>
+  <div class="palco b on" style="--cor: var(--ad)">
+    <div class="abas">
+      <div class="aba todos">Todos <span class="n">225</span></div>
+      <div class="aba ad on" style="--sim: var(--sim-ad); --cor: var(--ad)"><i></i>AD <span class="n">82</span></div>
+      <div class="aba ap" style="--sim: var(--sim-ap)"><i></i>AP <span class="n">62</span></div>
+      <div class="aba vit" style="--sim: var(--sim-vit)"><i></i>Vitalidade <span class="n">82</span></div>
+    </div>
+    <div class="prateleira" style="--cor-ativa: var(--ad)"><span class="simb" style="--sim: var(--sim-ad); color: var(--ad)"></span>a prateleira do Dano de Ataque — 82 dos 225 itens</div>
+  </div>
+
+  <p class="nota">Os símbolos saem do pacote de ícones que você trouxe (<code>hud/core</code>). As contagens são as do app, que conta o item de núcleo duplo nos dois lados.</p>
+</div>
+</body>
+</html>

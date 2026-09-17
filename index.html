@@ -2217,48 +2217,61 @@ select.sort-select, .sort-attr-wrap select {
 .rune-marks { margin-top: 6px; }
 .card.dimmed { opacity: .45; }
 
-/* ---- T3: abas de Classe (TODOS · AD · AP · VITALIDADE), modelo Deadlock ----
-   Etiquetas de papel penduradas numa régua de madeira; a ativa é preenchida
-   com a cor da classe (TODOS = tinta). */
+/* ---- T3 + F10-T13: abas de Classe como PLACAS DE METAL (Leo, 16/09/2026,
+   Opção B da amostra docs/amostras/fase10-abas-por-nucleo.html).
+   Cada núcleo tem material, símbolo e cor próprios — latão no Todos, cobre
+   queimado no AD, estanho arroxeado no AP, bronze esverdeado na Vitalidade.
+   A ativa acende por dentro e a régua embaixo pega a cor dela. */
 .class-tabs {
   display: flex;
-  gap: 6px;
+  gap: 8px;
   align-items: flex-end;
   margin: 0 0 14px;
   padding: 0 4px;
-  border-bottom: 3px solid #120a04;
+  border-bottom: 3px solid var(--regua, #120a04);
   box-shadow: 0 1px 0 rgba(217,192,138,.18);
+  transition: border-color .18s ease;
 }
 .class-tab {
-  --tab-color: var(--loja-tinta);
+  --tab-color: var(--loja-latao);
+  --metal: linear-gradient(180deg, #6b5535, #3d2f1c);
+  --letra: #e6d3a8;
   position: relative;
   display: inline-flex;
-  align-items: baseline;
-  gap: 8px;
-  padding: 8px 16px 7px;
-  border: 1px solid var(--loja-papel-borda);
+  align-items: center;
+  gap: 11px;
+  padding: 12px 18px;
+  border: 1px solid #1a120a;
   border-bottom: none;
-  border-radius: 3px 3px 0 0;
-  background: var(--loja-papel);
-  background-image: var(--tex-pick);
-  background-size: 420px;
-  background-blend-mode: multiply;
-  color: var(--loja-tinta);
+  border-radius: 2px 2px 0 0;
+  background: var(--metal);
+  color: var(--letra);
   font-family: var(--loja-gravado);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: .18em;
   text-transform: uppercase;
+  text-shadow: 0 1px 0 rgba(0,0,0,.55);
   cursor: pointer;
-  box-shadow: 0 -2px 6px rgba(0,0,0,.35);
-  transition: transform .12s ease, background-color .12s ease, color .12s ease;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.18), inset 0 -10px 18px rgba(0,0,0,.45), 0 -3px 8px rgba(0,0,0,.5);
+  transition: padding .14s ease, margin .14s ease, box-shadow .18s ease, color .14s ease;
 }
-.class-tab::before {
+/* risco de luz na chapa */
+.class-tab::after {
   content: "";
   position: absolute;
-  left: 0; right: 0; top: 0;
-  height: 4px;
-  background: var(--tab-color);
+  left: 7px; right: 7px; top: 4px;
+  height: 1px;
+  background: rgba(255,255,255,.14);
+}
+/* símbolo do núcleo gravado na placa (assets/icons/nucleo-*.svg, do pacote do Leo) */
+.class-tab .sim {
+  width: 22px; height: 22px; flex: none;
+  background-color: var(--letra);
+  -webkit-mask: var(--sim) center / contain no-repeat;
+  mask: var(--sim) center / contain no-repeat;
+  opacity: .8;
+  transition: opacity .14s ease, background-color .14s ease;
 }
 .class-tab .n {
   font-family: var(--loja-texto);
@@ -2267,21 +2280,35 @@ select.sort-select, .sort-attr-wrap select {
   font-size: 12px;
   letter-spacing: 0;
   text-transform: none;
-  color: var(--loja-tinta-suave);
+  opacity: .75;
 }
-.class-tab:hover { transform: translateY(-2px); }
+.class-tab:hover { color: #fff; }
+.class-tab:hover .sim { opacity: 1; }
 .class-tab.active {
-  background: var(--tab-color);
-  background-image: none;
-  color: var(--loja-cera-texto);
-  border-color: transparent;
-  transform: translateY(-1px);
-  box-shadow: 0 -3px 10px rgba(0,0,0,.45), inset 0 0 0 1px rgba(255,255,255,.14);
+  padding-bottom: 16px;
+  margin-bottom: -4px;
+  border-color: var(--tab-color);
+  color: #fff;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.3),
+              inset 0 -14px 26px color-mix(in srgb, var(--tab-color) 55%, transparent),
+              0 -4px 16px color-mix(in srgb, var(--tab-color) 50%, transparent);
 }
-.class-tab.active .n { color: rgba(244,230,196,.75); }
-.class-tab[data-classe="AD"] { --tab-color: var(--loja-ad); }
-.class-tab[data-classe="AP"] { --tab-color: var(--loja-ap); }
-.class-tab[data-classe="Vitalidade"] { --tab-color: var(--loja-vit); }
+.class-tab.active .sim { opacity: 1; background-color: #fff; }
+.class-tab.active .n { opacity: .85; }
+.class-tab[data-classe="AD"]  { --tab-color: var(--loja-ad);  --metal: linear-gradient(180deg, #6e4a2c, #3a2313); --letra: #f0c49a; --sim: url("assets/icons/nucleo-ad.svg"); }
+.class-tab[data-classe="AP"]  { --tab-color: var(--loja-ap);  --metal: linear-gradient(180deg, #5b4a74, #2c2440); --letra: #d9c8f2; --sim: url("assets/icons/nucleo-ap.svg"); }
+.class-tab[data-classe="Vitalidade"] { --tab-color: var(--loja-vit); --metal: linear-gradient(180deg, #4d6640, #253620); --letra: #cfe4bf; --sim: url("assets/icons/nucleo-vit.svg"); }
+/* a régua e o topo da loja acendem com o núcleo escolhido */
+body.nucleo-ad  { --regua: var(--loja-ad); }
+body.nucleo-ap  { --regua: var(--loja-ap); }
+body.nucleo-vit { --regua: var(--loja-vit); }
+body.nucleo .grid { position: relative; }
+body.nucleo .grid::before {
+  content: "";
+  position: absolute; left: 0; right: 0; top: -42px; height: 90px;
+  pointer-events: none; z-index: 0;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--regua) 26%, transparent), transparent);
+}
 
 /* ---- T4: filtros novos — botões "Maior/Menor primeiro" do grupo Atributo ---- */
 .attr-order { display: flex; gap: 6px; margin-top: 9px; }
@@ -8169,6 +8196,7 @@ function clearAllFilters() {
   ["tiers", "regions", "archetypes", "categories", "effects", "runes", "modes", "damage", "prices", "efficiency", "stats"].forEach(k => state[k].clear());
   state.classe = "";
   document.querySelectorAll(".class-tab").forEach(b => b.classList.toggle("active", b.dataset.classe === ""));
+  if (typeof aplicarNucleo === "function") aplicarNucleo();   // F10-T13: limpar filtros apaga a régua
   state.applyCashback = false;
   state.applyApex = false;
   document.getElementById("cashback-banner").classList.remove("show");
@@ -8215,18 +8243,27 @@ function buildClassTabs() {
     btn.type = "button";
     btn.className = "class-tab" + (state.classe === t.classe ? " active" : "");
     btn.dataset.classe = t.classe;
-    setPaper(btn, randomPaper());
     const n = CATALOG.items.filter(it => itemInClass(it, t.classe)).length;
-    btn.innerHTML = `<span>${t.label}</span><span class="n">${n}</span>`;
+    // F10-T13: Todos segue sem símbolo; os núcleos levam o seu, gravado na placa
+    btn.innerHTML = `${t.classe ? `<i class="sim" aria-hidden="true"></i>` : ""}<span>${t.label}</span><span class="n">${n}</span>`;
     btn.addEventListener("click", () => {
       // Fala do lojista ao TROCAR para a aba AD/AP/Vitalidade (Leo, 13/09/2026); Todos não fala.
       if (t.classe && t.classe !== state.classe) Som.play("lojista:tag_open", { nucleo: t.classe });
       state.classe = t.classe;
       nav.querySelectorAll(".class-tab").forEach(b => b.classList.toggle("active", b.dataset.classe === t.classe));
+      aplicarNucleo();
       render();
     });
     nav.appendChild(btn);
   });
+}
+
+// F10-T13: acende a régua e a luz da loja no núcleo escolhido ("Todos" apaga tudo).
+const NUCLEO_CLASSE = { "AD": "nucleo-ad", "AP": "nucleo-ap", "Vitalidade": "nucleo-vit" };
+function aplicarNucleo() {
+  const cls = NUCLEO_CLASSE[state.classe] || "";
+  document.body.classList.toggle("nucleo", !!cls);
+  Object.values(NUCLEO_CLASSE).forEach(c => document.body.classList.toggle(c, c === cls));
 }
 
 function itemMatchesFilters(item) {
