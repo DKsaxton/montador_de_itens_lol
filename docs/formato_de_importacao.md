@@ -44,7 +44,7 @@ Vêm antes da primeira caixa, uma por linha, em qualquer ordem. Só `BUILD:` é 
 | `CAMPEÃO:` | campeão em pt-BR, como no cliente | nome do Data Dragon, ex.: `Jinx`, `K'Sante`, `Lee Sin` |
 | `MARCADORES:` | até 3, separados por ` \| ` | ver [marcadores.md](marcadores.md) |
 | `DESCRIÇÃO:` | texto da build numa linha só | ` / ` separa parágrafos |
-| `LAYOUT:` | como a build é exibida | `Tabuleiro` (padrão), `Núcleo + bandeja`, `Trilha por fases`, `Grade categoria × custo` |
+| `LAYOUT:` | como a build é exibida | `Tabuleiro` (padrão), `Núcleo + bandeja`, `Trilha por fases`, `Árvore de decisão` |
 | `MESTRE FORJADOR:` | liga o interruptor e escolhe o item forjado | nome de um item da build, ou `sim` |
 
 ## Caixas

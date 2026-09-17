@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fase 10 · T14 — layout Árvore de decisão</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=IM+Fell+English+SC&family=IM+Fell+English:ital@0;1&family=Alegreya:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ferro-1:#1a1614; --ferro-2:#100d0b; --ferro-borda:#3a2f28;
+  --placa-1:#2a2420; --placa-2:#1a1512; --placa-borda:#443a32; --molde-1:#2b2521; --molde-2:#15110f;
+  --brasa:#ff7a1e; --brasa-clara:#ffd27a; --brasa-glow:rgba(255,120,30,.55);
+  --numero:#ffb257; --titulo:#e9b36a; --texto:#d8cbb6; --suave:#8f8074; --tracejado:#3a3029; --latao:#c9973f;
+  --ad:#c8641e; --ap:#7b4fb5; --vit:#4d8b3a; --cond:#9fb4e8;
+  --titulos:'IM Fell English SC','IM Fell English',Georgia,serif;
+  --texto-f:'Alegreya',Georgia,serif; --gravado:'Cinzel',Georgia,serif;
+}
+*{box-sizing:border-box}
+body{margin:0;background:linear-gradient(180deg,var(--ferro-1),var(--ferro-2)) fixed;color:var(--texto);font-family:var(--texto-f);font-size:15px;line-height:1.5}
+.wrap{max-width:1280px;margin:0 auto;padding:26px 22px 70px}
+h1{font-family:var(--titulos);font-weight:400;font-size:31px;color:var(--titulo);margin:0 0 4px}
+.sub{font-style:italic;color:var(--suave);margin:0 0 24px;max-width:92ch}
+h2{font-family:var(--titulos);font-weight:400;font-size:23px;color:var(--titulo);margin:38px 0 2px}
+h2 .n{font-family:var(--gravado);font-size:10px;letter-spacing:.22em;color:var(--brasa-clara);margin-right:9px;vertical-align:3px}
+.lede{font-style:italic;color:var(--suave);margin:0 0 18px;max-width:92ch}
+.palco{background:linear-gradient(180deg,var(--placa-1),var(--placa-2));border:1px solid var(--placa-borda);border-radius:3px;padding:20px 22px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.05),inset 0 0 40px rgba(0,0,0,.45),0 6px 14px rgba(0,0,0,.55)}
+
+/* carta de item, comum às duas */
+.ct{width:96px;background:linear-gradient(180deg,var(--molde-1),var(--molde-2));border:1px solid var(--ferro-borda);border-radius:4px;position:relative;
+  box-shadow:inset 0 3px 8px rgba(0,0,0,.9);text-align:center;padding:6px 4px;flex-shrink:0}
+.ct img{width:44px;height:44px;border-radius:3px;border:1px solid var(--latao);display:block;margin:0 auto}
+.ct .nm{display:block;font-size:11px;line-height:1.15;margin-top:5px;height:26px;overflow:hidden}
+.ct .gg{position:absolute;top:3px;right:4px;font-family:var(--gravado);font-size:8px;color:var(--numero);background:rgba(0,0,0,.72);padding:1px 4px;border-radius:2px}
+.ct.ad img{border-color:var(--ad)} .ct.ap img{border-color:var(--ap)} .ct.vit img{border-color:var(--vit)}
+.ct.std{border-color:var(--latao);box-shadow:inset 0 3px 8px rgba(0,0,0,.9),0 0 0 1px var(--latao),0 0 12px rgba(201,151,63,.3)}
+.ct.mini{width:74px}
+.ct.mini img{width:34px;height:34px}
+.ct.mini .nm{font-size:10px;height:23px}
+.linha,.ramos{display:flex;gap:8px;flex-wrap:wrap;align-items:flex-start}
+
+/* ---------- Opção A: tronco vertical ---------- */
+.arvore{position:relative;padding-left:42px}
+.arvore::before{content:"";position:absolute;left:13px;top:8px;bottom:8px;width:3px;
+  background:linear-gradient(180deg,var(--brasa),color-mix(in srgb,var(--brasa) 35%,transparent));box-shadow:0 0 12px var(--brasa-glow)}
+.no{position:relative;margin:0 0 20px}
+.no .conteudo{background:rgba(0,0,0,.22);border:1px solid var(--ferro-borda);border-radius:3px;padding:10px 12px}
+.no .titulo{font-family:var(--titulos);font-size:17px;color:var(--titulo);margin-bottom:2px}
+.no .titulo.opt{color:var(--cond)}
+.no .pq{font-style:italic;font-size:12.5px;color:var(--suave);margin:0 0 9px;max-width:72ch}
+.no .bola{position:absolute;left:-35px;top:12px;width:13px;height:13px;border-radius:50%;background:var(--brasa);
+  box-shadow:0 0 0 4px var(--placa-2),0 0 12px var(--brasa-glow)}
+.no.decisao .losango{position:absolute;left:-40px;top:9px;width:22px;height:22px;transform:rotate(45deg);background:var(--placa-1);
+  border:2px solid var(--brasa-clara);box-shadow:0 0 0 4px var(--placa-2),0 0 14px var(--brasa-glow);display:flex;align-items:center;justify-content:center}
+.no.decisao .losango span{transform:rotate(-45deg);font-family:var(--gravado);font-size:12px;color:var(--brasa-clara)}
+.no.decisao .conteudo{border-color:color-mix(in srgb,var(--brasa) 45%,var(--ferro-borda))}
+.no.lateral{margin-left:34px}
+.no.lateral .gancho{position:absolute;left:-69px;top:20px;width:63px;height:2px;border-top:2px dashed var(--cond);opacity:.55}
+.no.lateral .conteudo{border-style:dashed;border-color:rgba(159,180,232,.45);background:rgba(20,28,48,.22)}
+.ramo{display:flex;flex-direction:column;align-items:center;gap:4px}
+.ramo .cond{font-family:var(--gravado);font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--suave)}
+.ramo.padrao .cond{color:#2a1a0a;background:var(--latao);padding:1px 7px;border-radius:2px}
+
+/* ---------- Opção B: galhos ---------- */
+.tronco{position:relative;padding-left:34px}
+.tronco::before{content:"";position:absolute;left:9px;top:0;bottom:0;width:2px;background:var(--tracejado)}
+.galho{position:relative;margin:0 0 14px;padding:10px 14px;background:rgba(0,0,0,.2);border-left:3px solid var(--ferro-borda);border-radius:0 3px 3px 0}
+.galho::before{content:"";position:absolute;left:-25px;top:22px;width:22px;height:2px;background:var(--tracejado)}
+.galho .cabeca{font-family:var(--titulos);font-size:17px;color:var(--titulo);display:flex;align-items:center;gap:10px}
+.marca{font-family:var(--gravado);font-size:8px;letter-spacing:.16em;text-transform:uppercase;padding:2px 7px;border-radius:2px;background:var(--tracejado);color:var(--texto)}
+.marca.fix{background:var(--latao);color:#2a1a0a}
+.marca.opt{background:#3b4a6b;color:#dbe4ff}
+.galho.decide{border-left-color:var(--brasa)}
+.galho.decide .marca{background:var(--brasa);color:#1a0d05}
+.galho.seco{border-left-style:dashed;border-left-color:#3b4a6b}
+.galho .pq{font-style:italic;font-size:12.5px;color:var(--suave);margin:4px 0 8px;max-width:72ch}
+.sub{list-style:none;margin:8px 0 0;padding:0 0 0 18px;display:flex;gap:10px;flex-wrap:wrap;position:relative}
+.sub::before{content:"";position:absolute;left:4px;top:6px;bottom:6px;width:2px;background:color-mix(in srgb,var(--brasa) 45%,transparent)}
+.sub li{display:flex;flex-direction:column;align-items:center;gap:4px}
+.sub .etq{font-family:var(--gravado);font-size:8.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--suave)}
+.sub li.padrao .etq{color:#2a1a0a;background:var(--latao);padding:1px 7px;border-radius:2px}
+.nota{font-style:italic;color:var(--suave);font-size:13px;margin:14px 0 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Fase 10 · tarefa 14 — Árvore de decisão</h1>
+  <p class="sub">Substitui o layout <b>Grade categoria × custo</b>. Os dados são da sua build publicada <b>K&#x27;Sante - Parede - TANK - ENGAGE - CATCH</b> (ID 0b15bb), puxada do servidor: caixas, ordem, descrições e itens são os seus. As caixas <b>Escolha 1</b> viram os nós de decisão e as <b>Opcionais</b> viram ramos condicionais.</p>
+
+  <h2><span class="n">Opção A</span>Tronco de brasa</h2>
+  <p class="lede">Um tronco aceso desce pela build. Cada caixa fixa é uma bola no tronco; cada Escolha 1 é um losango que abre as alternativas lado a lado, com o padrão selado em latão; cada Opcional pendura num ramo tracejado, afastado do tronco, com a condição no título.</p>
+  <div class="palco"><div class="arvore"><div class="no fixo">
+  <div class="bola"></div>
+  <div class="conteudo"><div class="titulo">Itens iniciais</div><p class="pq">Atlas 400 + duas Poções 100 = os 500 inteiros.</p>
+    <div class="linha"><div class="ct vit" title="Atlas Mundial"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/3865.png" alt="" loading="lazy"><span class="nm">Atlas Mundial</span><span class="gg">400g</span></div><div class="ct vit" title="Poção de Vida"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/2003.png" alt="" loading="lazy"><span class="nm">Poção de Vida</span><span class="gg">50g</span></div><div class="ct vit" title="Poção de Vida"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/2003.png" alt="" loading="lazy"><span class="nm">Poção de Vida</span><span class="gg">50g</span></div></div></div>
+</div>
+<div class="no decisao">
+  <div class="losango"><span>?</span></div>
+  <div class="conteudo"><div class="titulo">Primeira volta</div><p class="pq">A linha decide: o Cinto serve à Parede, a Cota e a Capa servem ao All Out.</p>
+    <div class="ramos"><div class="ramo padrao"><span class="cond">padrão</span><div class="ct vit std" title="Cinto do Gigante"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/1011.png" alt="" loading="lazy"><span class="nm">Cinto do Gigante</span><span class="gg">900g</span></div></div><div class="ramo"><span class="cond">ou</span><div class="ct vit" title="Cota de Malha"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/1031.png" alt="" loading="lazy"><span class="nm">Cota de Malha</span><span class="gg">800g</span></div></div><div class="ramo"><span class="cond">ou</span><div class="ct vit" title="Capa Negatron"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/1057.png" alt="" loading="lazy"><span class="nm">Capa Negatron</span><span class="gg">850g</span></div></div></div></div>
+</div>
+<div class="no fixo">
+  <div class="bola"></div>
+  <div class="conteudo"><div class="titulo">Missão de Suporte</div><p class="pq">Aqui a trilha se divide.</p>
+    <div class="linha"><div class="ct vit" title="Bússola Rúnica"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/3866.png" alt="" loading="lazy"><span class="nm">Bússola Rúnica</span><span class="gg">400g</span></div></div></div>
+</div>
+<div class="no decisao">
+  <div class="losango"><span>?</span></div>
+  <div class="conteudo"><div class="titulo">Item de suporte</div><p class="pq">A lentidão de 80% do Q dispara o Trenó e a Fonte da Vida no mesmo botão.</p>
+    <div class="ramos"><div class="ramo padrao"><span class="cond">padrão</span><div class="ct vit std" title="Trenó do Solstício"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/3876.png" alt="" loading="lazy"><span class="nm">Trenó do Solstício</span><span class="gg">400g</span></div></div><div class="ramo"><span class="cond">ou</span><div class="ct vit" title="Oposição Celestial"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/3869.png" alt="" loading="lazy"><span class="nm">Oposição Celestial</span><span class="gg">400g</span></div></div></div></div>
+</div>
+<div class="no fixo">
+  <div class="bola"></div>
+  <div class="conteudo"><div class="titulo">Botas</div>
+    <div class="linha"><div class="ct vit" title="Botas"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/1001.png" alt="" loading="lazy"><span class="nm">Botas</span><span class="gg">300g</span></div></div></div>
+</div>
+<div class="no decisao">
+  <div class="losango"><span>?</span></div>
+  <div class="conteudo"><div class="titulo">Aprimoramento</div>
+    <div class="ramos"><div class="ramo padrao"><span class="cond">padrão</span><div class="ct vit std" title="Passos de Mercúrio"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/3111.png" alt="" loading="lazy"><span class="nm">Passos de Mercúrio</span><span class="gg">1.250g</span></div></div><div class="ramo"><span class="cond">ou</span><div class="ct vit" title="Botas Galvanizadas de Aço"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/3047.png" alt="" loading="lazy"><span class="nm">Botas Galvanizadas de Aço</span><span class="gg">1.200g</span></div></div></div></div>
+</div>
+<div class="no decisao">
+  <div class="losango"><span>?</span></div>
+  <div class="conteudo"><div class="titulo">Núcleo</div><p class="pq">900 de vida: escudo do E 409, golpe extra do R +62, explosão do Pós-choque +100.</p>
+    <div class="ramos"><div class="ramo padrao"><span class="cond">padrão</span><div class="ct vit std" title="Coração de Aço"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/3084.png" alt="" loading="lazy"><span class="nm">Coração de Aço</span><span class="gg">3.000g</span></div></div><div class="ramo"><span class="cond">ou</span><div class="ct vit" title="Desespero Eterno"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/2502.png" alt="" loading="lazy"><span class="nm">Desespero Eterno</span><span class="gg">2.800g</span></div></div></div></div>
+</div>
+<div class="no lateral">
+  <div class="gancho"></div>
+  <div class="conteudo"><div class="titulo opt">se: ADC morre antes de dar dano?</div>
+    <div class="linha"><div class="ct vit" title="Medalhão dos Solari de Ferro"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/3190.png" alt="" loading="lazy"><span class="nm">Medalhão dos Solari de Ferro</span><span class="gg">2.200g</span></div><div class="ct vit" title="Juramento do Cavaleiro"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/3109.png" alt="" loading="lazy"><span class="nm">Juramento do Cavaleiro</span><span class="gg">2.300g</span></div></div></div>
+</div>
+<div class="no fixo">
+  <div class="bola"></div>
+  <div class="conteudo"><div class="titulo">Amuleto e consumíveis</div><p class="pq">Atlas 400 + duas Poções 100 = os 500 inteiros. Nada mais cabe.</p>
+    <div class="linha"><div class="ct vit" title="Sentinela Invisível"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/3340.png" alt="" loading="lazy"><span class="nm">Sentinela Invisível</span><span class="gg">0g</span></div><div class="ct vit" title="Poção de Vida"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/2003.png" alt="" loading="lazy"><span class="nm">Poção de Vida</span><span class="gg">50g</span></div><div class="ct vit" title="Poção de Vida"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/2003.png" alt="" loading="lazy"><span class="nm">Poção de Vida</span><span class="gg">50g</span></div></div></div>
+</div>
+<div class="no fixo">
+  <div class="bola"></div>
+  <div class="conteudo"><div class="titulo">Primeira Sentinela de Controle</div><p class="pq">Na moita da rota. O R precisa de parede, e você precisa saber quem está do outro lado dela.</p>
+    <div class="linha"><div class="ct vit" title="Sentinela de Controle"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/2055.png" alt="" loading="lazy"><span class="nm">Sentinela de Controle</span><span class="gg">75g</span></div></div></div>
+</div>
+<div class="no decisao">
+  <div class="losango"><span>?</span></div>
+  <div class="conteudo"><div class="titulo">Troca de amuleto</div><p class="pq">Negar a visão do arbusto é o que permite entrar de W sem ser vista a chegada.</p>
+    <div class="ramos"><div class="ramo padrao"><span class="cond">padrão</span><div class="ct vit std" title="Lente do Oráculo"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/3364.png" alt="" loading="lazy"><span class="nm">Lente do Oráculo</span><span class="gg">0g</span></div></div><div class="ramo"><span class="cond">ou</span><div class="ct vit" title="Sentinela Invisível"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/3340.png" alt="" loading="lazy"><span class="nm">Sentinela Invisível</span><span class="gg">0g</span></div></div></div></div>
+</div>
+<div class="no lateral">
+  <div class="gancho"></div>
+  <div class="conteudo"><div class="titulo opt">se: Depois da missão</div><p class="pq">Preço cai para 40g e ela sai do inventário — reponha sempre, sem pensar.</p>
+    <div class="linha"><div class="ct vit" title="Sentinela de Controle"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/2055.png" alt="" loading="lazy"><span class="nm">Sentinela de Controle</span><span class="gg">75g</span></div></div></div>
+</div></div></div>
+
+  <h2><span class="n">Opção B</span>Galhos etiquetados</h2>
+  <p class="lede">Mesma leitura, menos desenho e mais texto: o tronco é uma linha fina e cada caixa é um galho com etiqueta dizendo o que ela é — <b>sempre</b>, <b>decide</b> ou <b>se</b>. Ocupa bem menos altura, o que ajuda em build longa como esta, de doze caixas.</p>
+  <div class="palco"><div class="tronco"><div class="galho">
+  <div class="cabeca"><span class="marca fix">sempre</span>Itens iniciais</div>
+  <p class="pq">Atlas 400 + duas Poções 100 = os 500 inteiros.</p>
+  <div class="linha"><div class="ct vit mini" title="Atlas Mundial"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/3865.png" alt="" loading="lazy"><span class="nm">Atlas Mundial</span><span class="gg">400g</span></div><div class="ct vit mini" title="Poção de Vida"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/2003.png" alt="" loading="lazy"><span class="nm">Poção de Vida</span><span class="gg">50g</span></div><div class="ct vit mini" title="Poção de Vida"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/2003.png" alt="" loading="lazy"><span class="nm">Poção de Vida</span><span class="gg">50g</span></div></div>
+</div>
+<div class="galho decide">
+  <div class="cabeca"><span class="marca">decide</span>Primeira volta</div>
+  <p class="pq">A linha decide: o Cinto serve à Parede, a Cota e a Capa servem ao All Out.</p>
+  <ul class="sub"><li class="padrao"><span class="etq">segue por padrão</span><div class="ct vit std mini" title="Cinto do Gigante"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/1011.png" alt="" loading="lazy"><span class="nm">Cinto do Gigante</span><span class="gg">900g</span></div></li><li class=""><span class="etq">ou</span><div class="ct vit mini" title="Cota de Malha"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/1031.png" alt="" loading="lazy"><span class="nm">Cota de Malha</span><span class="gg">800g</span></div></li><li class=""><span class="etq">ou</span><div class="ct vit mini" title="Capa Negatron"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/1057.png" alt="" loading="lazy"><span class="nm">Capa Negatron</span><span class="gg">850g</span></div></li></ul>
+</div>
+<div class="galho">
+  <div class="cabeca"><span class="marca fix">sempre</span>Missão de Suporte</div>
+  <p class="pq">Aqui a trilha se divide.</p>
+  <div class="linha"><div class="ct vit mini" title="Bússola Rúnica"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/3866.png" alt="" loading="lazy"><span class="nm">Bússola Rúnica</span><span class="gg">400g</span></div></div>
+</div>
+<div class="galho decide">
+  <div class="cabeca"><span class="marca">decide</span>Item de suporte</div>
+  <p class="pq">A lentidão de 80% do Q dispara o Trenó e a Fonte da Vida no mesmo botão.</p>
+  <ul class="sub"><li class="padrao"><span class="etq">segue por padrão</span><div class="ct vit std mini" title="Trenó do Solstício"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/3876.png" alt="" loading="lazy"><span class="nm">Trenó do Solstício</span><span class="gg">400g</span></div></li><li class=""><span class="etq">ou</span><div class="ct vit mini" title="Oposição Celestial"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/3869.png" alt="" loading="lazy"><span class="nm">Oposição Celestial</span><span class="gg">400g</span></div></li></ul>
+</div>
+<div class="galho">
+  <div class="cabeca"><span class="marca fix">sempre</span>Botas</div>
+  
+  <div class="linha"><div class="ct vit mini" title="Botas"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/1001.png" alt="" loading="lazy"><span class="nm">Botas</span><span class="gg">300g</span></div></div>
+</div>
+<div class="galho decide">
+  <div class="cabeca"><span class="marca">decide</span>Aprimoramento</div>
+  
+  <ul class="sub"><li class="padrao"><span class="etq">segue por padrão</span><div class="ct vit std mini" title="Passos de Mercúrio"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/3111.png" alt="" loading="lazy"><span class="nm">Passos de Mercúrio</span><span class="gg">1.250g</span></div></li><li class=""><span class="etq">ou</span><div class="ct vit mini" title="Botas Galvanizadas de Aço"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/3047.png" alt="" loading="lazy"><span class="nm">Botas Galvanizadas de Aço</span><span class="gg">1.200g</span></div></li></ul>
+</div>
+<div class="galho decide">
+  <div class="cabeca"><span class="marca">decide</span>Núcleo</div>
+  <p class="pq">900 de vida: escudo do E 409, golpe extra do R +62, explosão do Pós-choque +100.</p>
+  <ul class="sub"><li class="padrao"><span class="etq">segue por padrão</span><div class="ct vit std mini" title="Coração de Aço"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/3084.png" alt="" loading="lazy"><span class="nm">Coração de Aço</span><span class="gg">3.000g</span></div></li><li class=""><span class="etq">ou</span><div class="ct vit mini" title="Desespero Eterno"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/2502.png" alt="" loading="lazy"><span class="nm">Desespero Eterno</span><span class="gg">2.800g</span></div></li></ul>
+</div>
+<div class="galho seco">
+  <div class="cabeca"><span class="marca opt">se</span>ADC morre antes de dar dano?</div>
+  
+  <div class="linha"><div class="ct vit mini" title="Medalhão dos Solari de Ferro"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/3190.png" alt="" loading="lazy"><span class="nm">Medalhão dos Solari de Ferro</span><span class="gg">2.200g</span></div><div class="ct vit mini" title="Juramento do Cavaleiro"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/3109.png" alt="" loading="lazy"><span class="nm">Juramento do Cavaleiro</span><span class="gg">2.300g</span></div></div>
+</div>
+<div class="galho">
+  <div class="cabeca"><span class="marca fix">sempre</span>Amuleto e consumíveis</div>
+  <p class="pq">Atlas 400 + duas Poções 100 = os 500 inteiros. Nada mais cabe.</p>
+  <div class="linha"><div class="ct vit mini" title="Sentinela Invisível"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/3340.png" alt="" loading="lazy"><span class="nm">Sentinela Invisível</span><span class="gg">0g</span></div><div class="ct vit mini" title="Poção de Vida"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/2003.png" alt="" loading="lazy"><span class="nm">Poção de Vida</span><span class="gg">50g</span></div><div class="ct vit mini" title="Poção de Vida"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/2003.png" alt="" loading="lazy"><span class="nm">Poção de Vida</span><span class="gg">50g</span></div></div>
+</div>
+<div class="galho">
+  <div class="cabeca"><span class="marca fix">sempre</span>Primeira Sentinela de Controle</div>
+  <p class="pq">Na moita da rota. O R precisa de parede, e você precisa saber quem está do outro lado dela.</p>
+  <div class="linha"><div class="ct vit mini" title="Sentinela de Controle"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/2055.png" alt="" loading="lazy"><span class="nm">Sentinela de Controle</span><span class="gg">75g</span></div></div>
+</div>
+<div class="galho decide">
+  <div class="cabeca"><span class="marca">decide</span>Troca de amuleto</div>
+  <p class="pq">Negar a visão do arbusto é o que permite entrar de W sem ser vista a chegada.</p>
+  <ul class="sub"><li class="padrao"><span class="etq">segue por padrão</span><div class="ct vit std mini" title="Lente do Oráculo"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/3364.png" alt="" loading="lazy"><span class="nm">Lente do Oráculo</span><span class="gg">0g</span></div></li><li class=""><span class="etq">ou</span><div class="ct vit mini" title="Sentinela Invisível"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/3340.png" alt="" loading="lazy"><span class="nm">Sentinela Invisível</span><span class="gg">0g</span></div></li></ul>
+</div>
+<div class="galho seco">
+  <div class="cabeca"><span class="marca opt">se</span>Depois da missão</div>
+  <p class="pq">Preço cai para 40g e ela sai do inventário — reponha sempre, sem pensar.</p>
+  <div class="linha"><div class="ct vit mini" title="Sentinela de Controle"><img src="https://ddragon.leagueoflegends.com/cdn/16.18.1/img/item/2055.png" alt="" loading="lazy"><span class="nm">Sentinela de Controle</span><span class="gg">75g</span></div></div>
+</div></div></div>
+
+  <p class="nota">Em ambas, o item marcado com selo é o padrão da Escolha 1 — o mesmo que já conta nos totais. Nada aqui foi digitado à mão: nomes, ícones e preços vêm do catálogo; nomes de caixa e descrições vêm da sua build.</p>
+</div>
+</body>
+</html>

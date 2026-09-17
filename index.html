@@ -3689,11 +3689,32 @@ body.editando .cat-marco-badge { display: none; }   /* em edição o marco já a
 .lay-station.tray .lay-slotbox, .lay-station.escolha .lay-slotbox { border-color: rgba(159,180,232,.4); }
 .lay-pico { margin-top: 12px; border-left: 2px solid var(--forja-brasa); padding: 2px 0 2px 9px; font-family: var(--loja-texto); font-size: 12px; color: var(--forja-texto); line-height: 1.4; max-width: 180px; }
 .lay-pico b { display: block; font-family: var(--loja-gravado); font-size: 8.5px; letter-spacing: .14em; color: var(--forja-brasa-clara); margin-bottom: 2px; }
-table.lay-grid { border-collapse: separate; border-spacing: 6px; width: 100%; }
-table.lay-grid th { font-family: var(--loja-gravado); font-size: 10px; letter-spacing: .18em; text-transform: uppercase; color: var(--forja-titulo); padding: 8px 6px; text-align: left; }
-table.lay-grid th.ad { color: #c8641e; } table.lay-grid th.ap { color: #7b4fb5; } table.lay-grid th.vit { color: #4d8b3a; }
-table.lay-grid td { vertical-align: top; background: rgba(0,0,0,.25); border: 1px solid var(--forja-tracejado); border-radius: 3px; padding: 8px; min-width: 120px; }
-table.lay-grid td.faixa { background: transparent; border: none; font-family: var(--loja-gravado); font-size: 9.5px; letter-spacing: .12em; color: var(--forja-texto-suave); white-space: nowrap; padding-top: 14px; min-width: 0; }
+/* F10-T14: Árvore de decisão (Opção A da amostra docs/amostras/fase10-arvore-de-decisao.html) */
+.arv { position: relative; padding-left: 42px; }
+.arv::before { content: ""; position: absolute; left: 13px; top: 8px; bottom: 8px; width: 3px;
+  background: linear-gradient(180deg, var(--forja-brasa), color-mix(in srgb, var(--forja-brasa) 35%, transparent));
+  box-shadow: 0 0 12px var(--forja-brasa-glow); }
+.arv-no { position: relative; margin: 0 0 20px; }
+.arv-corpo { background: rgba(0,0,0,.22); border: 1px solid var(--forja-ferro-borda); border-radius: 3px; padding: 10px 12px; }
+.arv-titulo { font-family: var(--loja-titulos); font-size: 17px; color: var(--forja-titulo); margin-bottom: 2px; }
+.arv-titulo.opt { color: #9fb4e8; }
+.arv-teto { font-family: var(--loja-gravado); font-size: 9.5px; letter-spacing: .08em; color: #2a1a0a; background: linear-gradient(180deg, #e7c46f, #b8863b); padding: 2px 7px; border-radius: 2px; margin-left: 9px; vertical-align: 2px; }
+.arv-pq { font-family: var(--loja-texto); font-style: italic; font-size: 12.5px; color: var(--forja-texto-suave); margin: 0 0 9px; max-width: 72ch; }
+.arv-bola { position: absolute; left: -35px; top: 12px; width: 13px; height: 13px; border-radius: 50%; background: var(--forja-brasa);
+  box-shadow: 0 0 0 4px var(--forja-placa-2), 0 0 12px var(--forja-brasa-glow); }
+.arv-no.decisao .arv-losango { position: absolute; left: -40px; top: 9px; width: 22px; height: 22px; transform: rotate(45deg);
+  background: var(--forja-placa-1); border: 2px solid var(--forja-brasa-clara);
+  box-shadow: 0 0 0 4px var(--forja-placa-2), 0 0 14px var(--forja-brasa-glow); display: flex; align-items: center; justify-content: center; }
+.arv-no.decisao .arv-losango span { transform: rotate(-45deg); font-family: var(--loja-gravado); font-size: 12px; color: var(--forja-brasa-clara); }
+.arv-no.decisao .arv-corpo { border-color: color-mix(in srgb, var(--forja-brasa) 45%, var(--forja-ferro-borda)); }
+.arv-no.lateral { margin-left: 34px; }
+.arv-no.lateral .arv-gancho { position: absolute; left: -69px; top: 20px; width: 63px; border-top: 2px dashed #9fb4e8; opacity: .55; }
+.arv-no.lateral .arv-corpo { border-style: dashed; border-color: rgba(159,180,232,.45); background: rgba(20,28,48,.22); }
+.arv-ramos { display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-start; }
+.arv-ramo { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.arv-cond { font-family: var(--loja-gravado); font-size: 8.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--forja-texto-suave); }
+.arv-ramo.padrao .arv-cond { color: #2a1a0a; background: var(--latao, #c9973f); padding: 1px 7px; border-radius: 2px; }
+.arv .lc.std::after { display: none; }   /* na árvore o selo do padrão fica em cima, junto com o "ou" */
 
 /* ---- Fase 9, T4: grade de encaixes (colunas × linhas) no tabuleiro ---- */
 .span-general { display: none !important; }
@@ -4454,8 +4475,10 @@ const build = {
 const KINDS = ["comum", "prioridade", "opcional", "escolha"];
 const KIND_LABEL = { comum: "Comum", prioridade: "Prioridade", opcional: "Opcional", escolha: "Escolha 1" };
 // Layouts de leitura da build (Fase 9): o tabuleiro do Leo é o padrão e é a própria forja.
-const LAYOUTS = { tabuleiro: "Tabuleiro", nucleo: "Núcleo + bandeja", trilha: "Trilha por fases", grade: "Grade categoria × custo" };
-function layoutValido(l) { return LAYOUTS[l] ? l : "tabuleiro"; }
+const LAYOUTS = { tabuleiro: "Tabuleiro", nucleo: "Núcleo + bandeja", trilha: "Trilha por fases", arvore: "Árvore de decisão" };
+// F10-T14 (Leo, 16/09/2026): a "Grade categoria × custo" saiu e virou a "Árvore de decisão";
+// build antiga (salva ou publicada) com layout "grade" passa a abrir na árvore.
+function layoutValido(l) { return l === "grade" ? "arvore" : (LAYOUTS[l] ? l : "tabuleiro"); }
 // Itens que contam para totais/atributos/eficiência: numa "Escolha 1", só o padrão (o primeiro).
 function itensContados(cat) { return cat.kind === "escolha" ? cat.items.slice(0, 1) : cat.items; }
 const SPANS = [4, 3, 2, 1];           // denominador: ¼, ⅓, ½, largura inteira (formato antigo; ainda lido)
@@ -5335,7 +5358,13 @@ function textToBuild(text) {
     }
 
     const mLay = line.match(/^LAYOUT\s*:\s*(.+)$/i);
-    if (mLay) { const k = Object.keys(LAYOUTS).find(k => norm(LAYOUTS[k]) === norm(mLay[1])); if (k) result.layout = k; return; }
+    if (mLay) {
+      const alvo = norm(mLay[1]);
+      const k = Object.keys(LAYOUTS).find(k => norm(LAYOUTS[k]) === alvo)
+        || (/grade/.test(alvo) ? "arvore" : null);   // nome antigo (F10-T14) ainda é aceito
+      if (k) result.layout = k;
+      return;
+    }
     const mDesc = line.match(/^DESCRI[ÇC][ÃA]O\s*:\s*(.+)$/i);
     if (mDesc) { result.desc = mDesc[1].trim().replace(/\s*\/\s*/g, "\n"); return; }
     const mMarks = line.match(/^MARCADORES\s*:\s*(.+)$/i);
@@ -5834,18 +5863,28 @@ function renderLayoutAlternativo(canvas) {
         <div class="lay-slotbox">${c.kind === "escolha" ? `<div class="lay-escolha">Escolha 1</div>${pilha(c)}` : `<div class="lay-row nowrap">${cardsRow(c)}</div>`}</div>
         ${legenda(c)}<div class="lay-pico"><b>Pico</b>${eff.pct === null ? "sem análise de custo" : "Eficiência de ouro " + fmtEff(eff.pct)}${c.kind === "prioridade" ? " · fecha o núcleo" : ""}</div></div>`;
     }).join("")}</div><div class="lay-hint">rola para o lado →</div>`;
-  } else if (lay === "grade") {
-    const cols = [["AD", "ad"], ["AP", "ap"], ["Vitalidade", "vit"], ["Outros", ""]];
-    const faixas = [["até 500g", 0, 500], ["501 – 1.500g", 501, 1500], ["1.501 – 2.500g", 1501, 2500], ["acima de 2.500g", 2501, Infinity]];
-    const entradas = [];
-    build.cats.forEach(c => c.items.forEach((e, i) => { if (byId[e.itemId]) entradas.push({ e, c, std: c.kind === "escolha" && i === 0 }); }));
-    const colDe = it => { const core = it.itemClass && it.itemClass.core; if (core === "AD e AP") return "AD"; return ["AD", "AP", "Vitalidade"].includes(core) ? core : "Outros"; };
-    const vistos = new Set();
-    const cel = (col, f) => entradas.filter(x => { const it = byId[x.e.itemId]; const p = effectivePrice(it) || 0; return colDe(it) === col && p >= f[1] && p <= f[2]; })
-      .filter(x => { const k = x.e.itemId + "|" + x.c.id; if (vistos.has(k)) return false; vistos.add(k); return true; })
-      .map(x => layoutCard(x.e, x.c, { tag: x.c.name, tagCls: x.c.kind, std: x.std })).join("");
-    html = `<table class="lay-grid"><tr><th></th>${cols.map(([n, c]) => `<th class="${c}">${n}</th>`).join("")}</tr>` +
-      faixas.map(f => `<tr><td class="faixa">${f[0]}</td>${cols.map(([n]) => `<td><div class="lay-row">${cel(n, f)}</div></td>`).join("")}</tr>`).join("") + `</table>`;
+  } else if (lay === "arvore") {
+    // F10-T14: a build lida como decisão. Caixa fixa é uma bola no tronco de brasa;
+    // "Escolha 1" é um losango que abre as alternativas (o padrão sai selado);
+    // "Opcional" pendura num ramo tracejado, afastado do tronco, com a condição no título.
+    const nos = build.cats.map(c => {
+      const titulo = esc(c.name || "");
+      const pq = c.desc ? `<p class="arv-pq">${esc(c.desc)}</p>` : "";
+      const teto = c.marco ? `<span class="arv-teto">${esc(c.marco)}</span>` : "";
+      if (c.kind === "escolha") {
+        const ramos = c.items.map((e, i) => `<div class="arv-ramo${i === 0 ? " padrao" : ""}">
+          <span class="arv-cond">${i === 0 ? "padrão" : "ou"}</span>${layoutCard(e, c, { std: i === 0 })}</div>`).join("");
+        return `<div class="arv-no decisao"><div class="arv-losango"><span>?</span></div>
+          <div class="arv-corpo"><div class="arv-titulo">${titulo}${teto}</div>${pq}<div class="arv-ramos">${ramos}</div></div></div>`;
+      }
+      if (c.kind === "opcional") {
+        return `<div class="arv-no lateral"><div class="arv-gancho"></div>
+          <div class="arv-corpo"><div class="arv-titulo opt">se: ${titulo}${teto}</div>${pq}<div class="lay-row">${cardsRow(c)}</div></div></div>`;
+      }
+      return `<div class="arv-no fixo"><div class="arv-bola"></div>
+        <div class="arv-corpo"><div class="arv-titulo">${titulo}${teto}</div>${pq}<div class="lay-row">${cardsRow(c)}</div></div></div>`;
+    }).join("");
+    html = `<div class="arv">${nos || `<div class="lay-vazio">Sem caixas para desenhar a árvore.</div>`}</div>`;
   }
   canvas.innerHTML = `<div class="lay-wrap">${html}</div>`;
 }
