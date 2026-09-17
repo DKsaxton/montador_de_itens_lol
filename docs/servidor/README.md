@@ -42,14 +42,35 @@ O Supabase tem um verificador (Security Advisor). O SQL já segue o que ele pede
 ## O que o SQL cria
 - `builds`: as builds publicadas (nome, descrição, campeão, modo, 3 marcadores, caixas, patch do catálogo,
   versão, autor, data de criação/atualização, contadores) e o **hash** do segredo de quem publicou.
-- `eventos`: cada visualização ou cópia com data, para o "Popular hoje / da semana".
-- `builds_publicas`: a view que a página lê (tudo menos o hash, com `pop_dia` e `pop_semana`).
+- `eventos`: cada medida com data — **impressão** (apareceu na lista), **detalhe** (abriram o resumo),
+  **engajamento** (clique, favorito) e **cópia**. O nome antigo `visualizacao` continua valendo como detalhe.
+- `builds_publicas`: a view que a página lê (tudo menos o hash), com `engajamentos` (o único número que
+  aparece na tela), `pop_dia`, `dias_no_top` e `popular_semana`.
+- `pontos_por_dia`, `top_do_dia`, `destaques_semana`: as views que fazem a conta da popularidade.
 - Funções: `publicar_build` (nova ou atualização com o segredo; valida nome, descrição, itens e 3 marcadores;
-  gera o ID curto; soma a versão), `apagar_build` (com o segredo), `registrar_evento` (visualização / cópia).
+  gera o ID curto; soma a versão), `apagar_build` (com o segredo), `registrar_evento` (as quatro medidas),
+  `peso_evento` (quanto cada medida vale) e `inicio_semana` (domingo 09:00, fuso de Brasília).
 - Ninguém escreve nas tabelas direto: RLS ligado, e a chave pública só enxerga a view e as funções.
 
+## Como a popularidade é contada (Fase 10, T15)
+Cada medida tem um peso, porque uma cópia custa muito mais ao usuário do que uma rolagem de lista:
+
+| Medida | O que é | Peso |
+|---|---|---|
+| Impressão | a build apareceu na lista (uma vez por pessoa por sessão) | 1 |
+| Detalhe | abriram o resumo da build | 3 |
+| Engajamento | qualquer ação sobre a build: clicar, favoritar | 4 |
+| Cópia | copiaram a build para a biblioteca | 8 |
+
+- **Popular hoje**: os dez com mais pontos no dia corrente. Zera à meia-noite de Brasília, sozinho — a conta
+  olha só os eventos de hoje, não as últimas 24 horas.
+- **Popular da semana**: quem ficar **três dias seguidos** no top 10 do dia ganha o selo, que vale até o
+  **domingo às 09:00**. A semana começa e termina nesse horário.
+- Na tela só aparece o número de **engajamentos**. Impressões, detalhes e cópias alimentam a conta em silêncio.
+
 ## Manutenção (futuro)
-- A única coisa que cresce é a tabela `eventos` (uma linha por visualização ou cópia). Os totais de cada build
+- A única coisa que cresce é a tabela `eventos` (uma linha por impressão, detalhe, engajamento ou cópia — com
+  a impressão entrando, ela cresce bem mais rápido que antes; a limpeza abaixo passa a valer a pena). Os totais de cada build
   ficam em `builds`, então os eventos antigos podem ir embora sem perder nada.
 - `docs/servidor/limpeza.sql` tem as duas formas: **à mão** (uma linha que apaga eventos com mais de 30 dias) e
   **automática** (um bloco que agenda a limpeza diária com o pg_cron do próprio Supabase; roda uma vez e esquece).

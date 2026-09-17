@@ -6645,7 +6645,7 @@ function showBuildScreen(tela) {
 // conta uma visualização (uma por sessão por build); "Copiar e editar" conta
 // uma cópia e traz a build para a biblioteca.
 let biView = "minhas";
-const publicas = { lista: [], favs: [], erro: null, carregando: false, carregadoEm: 0, quantidade: 50, vistos: new Set() };
+const publicas = { lista: [], favs: [], erro: null, carregando: false, carregadoEm: 0, quantidade: 50 };
 try { const q = Number(localStorage.getItem("publicas.quantidade")); if ([10, 20, 50, 100].includes(q)) publicas.quantidade = q; } catch (e) { /* padrão 50 */ }
 
 function favoritosIds() { try { return JSON.parse(localStorage.getItem("publicacao.favoritos") || "[]"); } catch (e) { return []; } }
@@ -6669,7 +6669,9 @@ function publicaResumo(p) {
     champ: p.campeao && p.campeao.key ? p.campeao : null, mode: p.modo || "", markers: normMarkers(p.marcadores), cats,
     n: cats.reduce((s, c) => s + c.items.length, 0), pubVersao: p.versao || 0, updatedAt: Date.parse(p.atualizado_em) || 0,
     pubEm: Date.parse(p.atualizado_em) || 0, pubPatch: p.patch || "", autor: p.autor || "",
-    visualizacoes: p.visualizacoes || 0, copias: p.copias || 0, popDia: p.pop_dia || 0, popSemana: p.pop_semana || 0,
+    // F10-T15: só o engajamento aparece; o resto alimenta a popularidade e fica oculto.
+    engajamentos: p.engajamentos || 0, popDia: p.pop_dia || 0,
+    popularSemana: !!p.popular_semana, diasNoTop: p.dias_no_top || 0,
     fav: favoritosIds().includes(p.id), desatualizada: !!p.patch && p.patch !== CATALOG.meta.patch,
     layout: layoutValido(p.layout),
   };
@@ -6698,9 +6700,11 @@ function publicaPorId(id) { return publicas.lista.find(p => p.id === id) || publ
 // Ordem da aba: top 10 hoje, top 10 semana (fora do top do dia), recentes.
 function publicasOrdenadas() {
   const todas = publicas.lista.map(publicaResumo);
+  // Popular hoje: os dez com mais pontos no dia corrente (zera à meia-noite, no servidor).
   const hoje = todas.filter(d => d.popDia > 0).sort((a, b) => b.popDia - a.popDia).slice(0, 10);
   const idsHoje = new Set(hoje.map(d => d.id));
-  const semana = todas.filter(d => !idsHoje.has(d.id) && d.popSemana > 0).sort((a, b) => b.popSemana - a.popSemana).slice(0, 10);
+  // Popular da semana: quem ficou três dias seguidos no top do dia (o servidor decide; vale até domingo 09:00).
+  const semana = todas.filter(d => !idsHoje.has(d.id) && d.popularSemana).sort((a, b) => b.popDia - a.popDia).slice(0, 10);
   const idsTop = new Set([...idsHoje, ...semana.map(d => d.id)]);
   const recentes = todas.filter(d => !idsTop.has(d.id)).sort((a, b) => b.updatedAt - a.updatedAt);
   hoje.forEach(d => { d.etiqueta = "hoje"; }); semana.forEach(d => { d.etiqueta = "semana"; });
@@ -6751,6 +6755,7 @@ function renderPublicasIndex(rows) {
   if (q && !dados.length) { const f = publicas.favs.map(publicaResumo).filter(d => passaFiltro(d, q)); dados = f; }
   if (!dados.some(d => d.id === biSelected)) biSelected = dados[0] ? dados[0].id : null;
   rows.innerHTML = dados.length ? dados.map(linhaHtml).join("") : `<div class="bi-empty">${q || biFilter.marker || biFilter.champ ? "Nenhuma build publicada combina com a busca ou o filtro." : "Ainda não há builds publicadas."}</div>`;
+  dados.forEach(d => registrarEvento(d.pubId, "impressao"));   // F10-T15: apareceu na lista
   atualizarBarraLote();
   renderBuildDetail();
 }
@@ -6758,7 +6763,7 @@ function renderPublicDetail(box, d) {
   const minha = library.builds.some(b => b.pubId === d.pubId);
   box.innerHTML = detalheHtml(d, {
     meta: `Versão: <b>${d.pubVersao}</b> · ID: <b class="pub-id">${esc(d.pubId)}</b><br>Última atualização: <b>${esc(fmtData(d.updatedAt))}</b>${d.mode ? `<br>Modo: <b>${esc(d.mode)}</b>` : ""}${d.desatualizada ? `<br><b class="pub-id">Desatualizada</b> — publicada no catálogo ${esc(d.pubPatch)}` : ""}`,
-    numeros: `<p class="bd-stats">${d.visualizacoes} ${d.visualizacoes === 1 ? "visualização" : "visualizações"} · ${d.copias} ${d.copias === 1 ? "cópia" : "cópias"}${d.popDia ? ` · ${d.popDia} hoje` : ""}${d.popSemana ? ` · ${d.popSemana} na semana` : ""}</p>${d.autor ? `<p class="bd-autor">por ${esc(d.autor)}</p>` : ""}`,
+    numeros: `<p class="bd-stats"><b>${d.engajamentos}</b> ${d.engajamentos === 1 ? "engajamento" : "engajamentos"}</p>${d.autor ? `<p class="bd-autor">por ${esc(d.autor)}</p>` : ""}`,
     semDesc: "Sem descrição.",
     botoes: `
       <button type="button" class="btn primary" data-act="copypub" title="Traz uma cópia para a sua biblioteca e abre na forja"><i class="ico ico-copy-plus" aria-hidden="true"></i>Copiar e editar</button>
@@ -6767,7 +6772,7 @@ function renderPublicDetail(box, d) {
     nota: minha ? `<p class="bd-pub-note">Publicada por você neste navegador.</p>` : "",
   });
   // conta a visualização, uma por sessão
-  if (!publicas.vistos.has(d.pubId) && Servidor.ativo()) { publicas.vistos.add(d.pubId); Servidor.rpc("registrar_evento", { p_id: d.pubId, p_tipo: "visualizacao" }).catch(() => {}); }
+  registrarEvento(d.pubId, "detalhe");
 }
 function abrirPublicaTemporaria(d) {
   const id = "tmp:" + d.pubId;
@@ -6789,7 +6794,7 @@ function renderTempWarning() {
 }
 
 function copiarPublica(d) {
-  if (Servidor.ativo()) Servidor.rpc("registrar_evento", { p_id: d.pubId, p_tipo: "copia" }).catch(() => {});
+  registrarEvento(d.pubId, "copia");
   const removidos = [];
   const p = publicaPorId(d.pubId);
   const cats = p ? caixasDoServidor(p.caixas, removidos) : JSON.parse(JSON.stringify(d.cats));
@@ -6797,6 +6802,17 @@ function copiarPublica(d) {
   createNewBuild(d.name, cats, d.mode, d.champ ? { key: String(d.champ.key), id: String(d.champ.id), name: String(d.champ.name) } : null, d.markers);
   build.desc = d.desc; build.layout = layoutValido(d.layout); gravarBuild();
   showBuildScreen("forja");
+}
+
+// F10-T15 (Leo, 16/09/2026): quatro medidas de popularidade. Impressão conta uma
+// vez por build por sessão (senão rolar a lista inflaria tudo); engajamento é
+// qualquer ação do usuário sobre a build; detalhe é abrir o resumo; cópia já existia.
+const eventosVistos = { impressao: new Set(), detalhe: new Set() };
+function registrarEvento(pubId, tipo) {
+  if (!pubId || !Servidor.ativo()) return;
+  const uma = eventosVistos[tipo];
+  if (uma) { if (uma.has(pubId)) return; uma.add(pubId); }
+  Servidor.rpc("registrar_evento", { p_id: pubId, p_tipo: tipo }).catch(() => { /* sem internet: a build continua */ });
 }
 
 // Estado da tela "Builds": seleção, filtro por marcador (+ campeão) e aba.
@@ -6899,7 +6915,7 @@ function loteParaTexto(ids) {
 function guardarPublicaNaBiblioteca(d) {
   const p = publicaPorId(d.pubId);
   const cats = p ? caixasDoServidor(p.caixas, []) : JSON.parse(JSON.stringify(d.cats));
-  if (Servidor.ativo()) Servidor.rpc("registrar_evento", { p_id: d.pubId, p_tipo: "copia" }).catch(() => {});
+  registrarEvento(d.pubId, "copia");
   library.builds.push({
     id: newBuildId(), name: d.name, seq: cats.length + 1, mode: d.mode, masterwork: false,
     champion: d.champ ? { key: String(d.champ.key), id: String(d.champ.id), name: String(d.champ.name) } : null,
@@ -7068,7 +7084,7 @@ function duplicateBuild(id) {
   const cats = JSON.parse(JSON.stringify(d.isActive ? build.cats : (b.cats || [])));
   createNewBuild(d.temp ? d.name : d.name + " (cópia)", cats, d.mode, d.champ ? { ...d.champ } : null, d.markers);
   build.desc = d.desc || ""; build.layout = layoutValido(d.layout); gravarBuild();
-  if (d.temp && d.pubOrigem && Servidor.ativo()) Servidor.rpc("registrar_evento", { p_id: d.pubOrigem, p_tipo: "copia" }).catch(() => {});
+  if (d.temp && d.pubOrigem) registrarEvento(d.pubOrigem, "copia");
 }
 
 function initBuildIndex() {
@@ -7076,7 +7092,7 @@ function initBuildIndex() {
   const abrir = (id) => { activateBuild(id); showBuildScreen("forja"); };
   rows.addEventListener("click", (e) => {
     const fav = e.target.closest("[data-fav]");
-    if (fav && fav.dataset.fav.startsWith("pub:")) { toggleFavorito(fav.dataset.fav.slice(4)); renderBuildIndex(); return; }
+    if (fav && fav.dataset.fav.startsWith("pub:")) { const id = fav.dataset.fav.slice(4); registrarEvento(id, "engajamento"); toggleFavorito(id); renderBuildIndex(); return; }
     if (fav) {
       const b = library.builds.find(x => x.id === fav.dataset.fav);
       if (b) { if (b.id === build.id) { build.fav = !build.fav; saveBuild(); } else { b.fav = !b.fav; saveBuild(); } renderBuildIndex(); }
@@ -7096,6 +7112,7 @@ function initBuildIndex() {
     // Só troca a seleção no lugar: redesenhar a lista aqui mataria o duplo clique
     // (o segundo clique cairia num elemento novo e o navegador não conta como dblclick).
     biSelected = row.dataset.id;
+    if (row.dataset.pub) registrarEvento(row.dataset.pub, "engajamento");   // F10-T15
     rows.querySelectorAll(".bi-row").forEach(r => { const on = r.dataset.id === biSelected; r.classList.toggle("sel", on); r.setAttribute("aria-selected", String(on)); });
     renderBuildDetail();
     Som.play("catalog:tag_select");

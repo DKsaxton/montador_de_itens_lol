@@ -40,6 +40,41 @@ create table if not exists public.eventos (
 );
 create index if not exists eventos_build_quando on public.eventos (build_id, quando desc);
 
+-- Fase 10, T15: quatro medidas em vez de duas (Leo, 16/09/2026).
+--   impressao   — a build apareceu na lista
+--   detalhe     — alguém abriu os detalhes  (era "visualizacao"; o nome antigo continua valendo)
+--   engajamento — qualquer interação: clique, favorito, filtro pela build
+--   copia       — alguém copiou a build
+alter table public.eventos drop constraint if exists eventos_tipo_check;
+alter table public.eventos add constraint eventos_tipo_check
+  check (tipo in ('impressao', 'detalhe', 'engajamento', 'copia', 'visualizacao'));
+create index if not exists eventos_quando on public.eventos (quando desc);
+
+-- Quanto cada medida vale na popularidade. Cópia pesa mais porque custa mais
+-- ao usuário; impressão pesa pouco porque acontece sozinha ao rolar a lista.
+create or replace function public.peso_evento(p_tipo text) returns int
+language sql immutable set search_path = public, extensions as $$
+  select case p_tipo
+    when 'impressao'   then 1
+    when 'detalhe'     then 3
+    when 'visualizacao' then 3   -- nome antigo de "detalhe"
+    when 'engajamento' then 4
+    when 'copia'       then 8
+    else 0 end;
+$$;
+
+-- A semana vai de domingo 09:00 a domingo 09:00 (Leo, 16/09/2026), no fuso de Brasília.
+create or replace function public.inicio_semana() returns timestamptz
+language plpgsql stable set search_path = public, extensions as $$
+declare t timestamp; d int; base timestamp;
+begin
+  t := now() at time zone 'America/Sao_Paulo';
+  d := extract(dow from t)::int;                 -- 0 = domingo
+  base := date_trunc('day', t) - make_interval(days => d) + interval '9 hours';
+  if base > t then base := base - interval '7 days'; end if;   -- domingo antes das 09:00
+  return base at time zone 'America/Sao_Paulo';
+end $$;
+
 -- Ninguém mexe nas tabelas direto: só pelas funções abaixo e pela view.
 alter table public.builds  enable row level security;
 alter table public.eventos enable row level security;
@@ -60,16 +95,57 @@ grant select (id, nome, descricao, campeao, modo, marcadores, caixas, patch, ver
   on public.builds to anon, authenticated;
 grant select on public.eventos to anon, authenticated;
 
+-- Pontos por build e por dia (fuso de Brasília), já com os pesos aplicados.
+create or replace view public.pontos_por_dia with (security_invoker = true) as
+select e.build_id,
+       ((e.quando at time zone 'America/Sao_Paulo')::date) as dia,
+       sum(public.peso_evento(e.tipo))::int as pontos
+from public.eventos e
+group by 1, 2;
+
+-- Os dez do dia, dia a dia. Serve para o "popular hoje" e para contar os
+-- três dias seguidos que promovem a build a "popular da semana".
+create or replace view public.top_do_dia with (security_invoker = true) as
+select dia, build_id, pontos,
+       row_number() over (partition by dia order by pontos desc, build_id) as posicao
+from public.pontos_por_dia;
+
+-- Quem ficou no top 10 em três dias seguidos dentro da semana corrente leva o
+-- selo "popular da semana" até o próximo domingo 09:00.
+create or replace view public.destaques_semana with (security_invoker = true) as
+with marcados as (
+  select build_id, dia
+  from public.top_do_dia
+  where posicao <= 10
+    and dia >= ((public.inicio_semana() at time zone 'America/Sao_Paulo')::date)
+), seq as (
+  select build_id, dia, (dia - (row_number() over (partition by build_id order by dia))::int) as grupo
+  from marcados
+)
+select build_id, max(n) as dias_seguidos
+from (select build_id, grupo, count(*)::int as n from seq group by 1, 2) t
+group by build_id;
+
 drop view if exists public.builds_publicas;
 create view public.builds_publicas with (security_invoker = true) as
 select
   b.id, b.nome, b.descricao, b.campeao, b.modo, b.marcadores, b.caixas, b.patch, b.versao, b.autor,
   b.criado_em, b.atualizado_em, b.visualizacoes, b.copias, b.layout,
-  coalesce((select count(*) from public.eventos e where e.build_id = b.id and e.quando > now() - interval '1 day'), 0)::int  as pop_dia,
-  coalesce((select count(*) from public.eventos e where e.build_id = b.id and e.quando > now() - interval '7 days'), 0)::int as pop_semana
+  -- o único número que aparece na tela (Leo, 16/09/2026): interações de verdade
+  coalesce((select count(*) from public.eventos e
+             where e.build_id = b.id and e.tipo = 'engajamento'), 0)::int as engajamentos,
+  -- popularidade do dia: zera à meia-noite de Brasília, com os pesos de peso_evento
+  coalesce((select sum(public.peso_evento(e.tipo))::int from public.eventos e
+             where e.build_id = b.id
+               and (e.quando at time zone 'America/Sao_Paulo')::date
+                   = ((now() at time zone 'America/Sao_Paulo')::date)), 0)::int as pop_dia,
+  -- >= 3 dias seguidos no top 10 desta semana; vale até domingo 09:00
+  coalesce((select d.dias_seguidos from public.destaques_semana d where d.build_id = b.id), 0)::int as dias_no_top,
+  coalesce((select d.dias_seguidos >= 3 from public.destaques_semana d where d.build_id = b.id), false) as popular_semana
 from public.builds b;
 
 grant select on public.builds_publicas to anon, authenticated;
+grant select on public.pontos_por_dia, public.top_do_dia, public.destaques_semana to anon, authenticated;
 
 -- ---------------------------------------------------------------------
 -- Publicar (nova) ou atualizar (com o segredo). Regras do Leo: itens,
@@ -122,16 +198,23 @@ begin
   return v_n > 0;
 end $$;
 
--- Visualização e cópia: registra o evento e soma no contador.
+-- Registra o evento e mantém os dois contadores antigos (visualizacoes e copias),
+-- que continuam existindo na tabela mas não aparecem mais na tela (F10-T15).
 create or replace function public.registrar_evento(p_id text, p_tipo text) returns void
 language plpgsql security definer set search_path = public, extensions as $$
 begin
-  if p_tipo not in ('visualizacao', 'copia') then raise exception 'Tipo inválido.'; end if;
+  if p_tipo not in ('impressao', 'detalhe', 'engajamento', 'copia', 'visualizacao') then
+    raise exception 'Tipo inválido.';
+  end if;
   insert into public.eventos (build_id, tipo) values (p_id, p_tipo);
-  if p_tipo = 'visualizacao' then update public.builds set visualizacoes = visualizacoes + 1 where id = p_id;
-  else update public.builds set copias = copias + 1 where id = p_id; end if;
+  if p_tipo in ('detalhe', 'visualizacao') then
+    update public.builds set visualizacoes = visualizacoes + 1 where id = p_id;
+  elsif p_tipo = 'copia' then
+    update public.builds set copias = copias + 1 where id = p_id;
+  end if;
 end $$;
 
 grant execute on function public.publicar_build(text, text, jsonb, text, jsonb, jsonb, text, text, text, text, text) to anon, authenticated;
 grant execute on function public.apagar_build(text, text) to anon, authenticated;
 grant execute on function public.registrar_evento(text, text) to anon, authenticated;
+grant execute on function public.peso_evento(text), public.inicio_semana() to anon, authenticated;
