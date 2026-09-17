@@ -175,6 +175,10 @@ select.sort-select {
   grid-template-columns: 260px 1fr;
   gap: 28px;
   align-items: start;
+  /* F10-T10: os raios do card (.card-burst, inset -34%) passavam da última coluna
+     e davam rolagem horizontal em qualquer tela < 1920. `clip` corta sem criar
+     caixa de rolagem, então os filtros continuam grudados no topo. */
+  overflow-x: clip;
 }
 
 /* Em telas largas o conteúdo respira: container maior, barra lateral mais
@@ -200,6 +204,16 @@ select.sort-select {
   }
   .layout { grid-template-columns: 380px 1fr; gap: 38px; }
   html, body { font-size: 16px; }
+}
+
+/* F10-T10 (Leo, 16/09/2026: "para o máximo de compatibilidade"): faixa de laptop.
+   Em 1280x720 e 1366x768 o respiro de 32 px e as colunas fixas comiam a lista. */
+@media (max-width: 1200px) {
+  .layout, .build-view, .calc-view { padding: 0 18px; }
+  .layout { grid-template-columns: 224px 1fr; gap: 18px; }
+  .build-workspace { grid-template-columns: 250px 1fr; gap: 14px; }
+  .build-bar { gap: 12px; padding: 12px 14px; }
+  .grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
 }
 
 @media (max-width: 880px) {
@@ -3442,7 +3456,7 @@ body.forja #som-volume { accent-color: #ff7a1e; }
 .bf-items .md-cell .mk { width: 34px; height: 34px; }
 .bf-items .md-cell[hidden] { display: none; }
 #bi-filter.ativo { border-color: var(--forja-brasa); color: var(--forja-brasa-clara); box-shadow: 0 0 10px var(--forja-brasa-glow); }
-.bi-body { display: grid; grid-template-columns: minmax(0, 1fr) 400px; gap: 14px; align-items: start; }
+.bi-body { display: grid; grid-template-columns: minmax(0, 1fr) minmax(320px, 400px); gap: 14px; align-items: start; }
 @media (max-width: 980px) { .bi-body { grid-template-columns: 1fr; } }
 .bi-rows {
   border-radius: 3px; overflow: hidden;
@@ -3625,7 +3639,12 @@ table.lay-grid td.faixa { background: transparent; border: none; font-family: va
 /* ---- Fase 9, T4: grade de encaixes (colunas × linhas) no tabuleiro ---- */
 .span-general { display: none !important; }
 /* largura exatamente a das colunas, sem folga (Leo, 15/09/2026); em caixa estreita o cabeçalho quebra em linhas */
-.build-cat { width: calc(var(--cols, 3) * 91px + 15px); min-width: 0; max-width: 100%; flex: 0 0 auto; position: relative; }
+.build-cat { width: calc(var(--cols, 3) * 91px + 15px); min-width: 0; max-width: 100%; flex: 0 0 auto; position: relative; container-type: inline-size; }
+/* F10-T10: em caixa de 1 ou 2 colunas o nome não cabia no corpo de 18 px e ficava
+   cortado sem aviso. A fonte encolhe com a largura da própria caixa. */
+.build-cat .cat-name { text-overflow: ellipsis; }   /* nome longo termina em reticências; o título mostra inteiro */
+@container (max-width: 290px) { .build-cat .cat-name { font-size: 15px; } .build-cat .cat-desc, .build-cat .cat-marco { font-size: 11.5px; } }
+@container (max-width: 200px) { .build-cat .cat-name { font-size: 14px; } .build-cat .cat-btn { font-size: 8px; letter-spacing: .08em; } }
 .build-cat .cat-head { flex-wrap: wrap; row-gap: 5px; }
 .build-cat .cat-name { flex: 1 1 60px; min-width: 60px; }
 .build-cat .cat-kind, .build-cat .cat-marco-badge { white-space: nowrap; }
@@ -5807,7 +5826,7 @@ function renderCategories() {
           <circle cx="9" cy="6" r="1"/><circle cx="15" cy="6" r="1"/><circle cx="9" cy="12" r="1"/>
           <circle cx="15" cy="12" r="1"/><circle cx="9" cy="18" r="1"/><circle cx="15" cy="18" r="1"/>
         </svg>
-        <input class="cat-name" value="${esc(cat.name)}" spellcheck="false">
+        <input class="cat-name" value="${esc(cat.name)}" title="${esc(cat.name)}" spellcheck="false">
         <button class="cat-btn cat-kind" title="Clique para alternar: Comum → Prioridade → Opcional → Escolha 1">${KIND_LABEL[cat.kind]}</button>
         ${cat.marco ? `<span class="cat-marco-badge" title="Marco / teto desta caixa">${esc(cat.marco)}</span>` : ""}
         <button class="cat-btn cat-del" title="Remover categoria">✕</button>
