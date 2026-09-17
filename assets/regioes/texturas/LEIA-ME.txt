@@ -1,2 +1,3 @@
 As texturas geradas entram aqui, com os nomes de docs/prompts_texturas_regioes.md.
+A extensao pode ser png ou jpg, o que o gerador devolver. Nao redimensione: eu corto.
 Runeterra nao tem textura: e o papel neutro de sempre.
