@@ -2435,12 +2435,10 @@ body.names-only .card:not(.full).regiao .card-surface { background-color: var(--
    pontos arcanos no AP, carvalho e musgo na Vitalidade — e um estandarte de
    pano desce pela lateral com o símbolo e o nome gravados na vertical.
    Em "Todos" (body sem .nucleo) tudo isto some e a loja fica como sempre. */
-.oficina {
-  position: relative;
-  display: grid;
-  grid-template-columns: 0 minmax(0, 1fr);
-  transition: grid-template-columns .25s ease;
-}
+/* Fora de um núcleo a oficina não existe: só um invólucro transparente. Ela
+   VIRA grid quando o estandarte aparece — se ficasse grid sempre, com o
+   estandarte escondido o conteúdo caía na coluna dele e nascia sem largura. */
+.oficina { position: relative; display: block; }
 .oficina-corpo { min-width: 0; }
 .estandarte, .ofic-cant { display: none; }
 
@@ -2528,7 +2526,7 @@ body.nucleo .group-head::before {
           mask: var(--nuc-sim) center/contain no-repeat;
 }
 @media (max-width: 880px) {
-  body.nucleo .oficina { grid-template-columns: 0 minmax(0, 1fr); padding: 10px 10px 14px; }
+  body.nucleo .oficina { display: block; padding: 10px 10px 14px; }
   body.nucleo .estandarte { display: none; }
   body.nucleo .oficina-corpo { padding-left: 0; }
 }
