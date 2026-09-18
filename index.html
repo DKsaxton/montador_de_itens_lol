@@ -2531,6 +2531,98 @@ body.nucleo .group-head::before {
   body.nucleo .oficina-corpo { padding-left: 0; }
 }
 
+
+/* ---------- F11-T7: a tela de Runas (Leo, 18/09/2026) ----------
+   Mesma loja: papel, tinta ferrogálica, latão. A cor de cada trilha é a que o
+   gerador leu do ícone oficial dela (data/runas.js), não uma escolha minha. */
+.runas-view { max-width: 1400px; margin: 0 auto; padding: 0 20px 60px; }
+.runas-topo { display: flex; align-items: flex-end; gap: 22px; flex-wrap: wrap; margin: 4px 0 14px; }
+.runas-titulo h2 { font-family: var(--loja-titulos); font-weight: 400; font-size: 26px; color: var(--loja-titulo); margin: 0; }
+.runas-lema { font-family: var(--loja-texto); font-style: italic; color: var(--loja-legenda); margin: 2px 0 0; min-height: 20px; }
+.runas-busca { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+.runas-busca input {
+  width: 340px; max-width: 46vw; padding: 9px 12px;
+  background: var(--loja-papel); border: 1px solid var(--loja-papel-borda); border-radius: 2px;
+  color: var(--loja-tinta); font-family: var(--loja-texto); font-size: 14px;
+}
+.runas-busca input:focus { outline: none; border-color: var(--loja-latao); box-shadow: 0 0 0 1px var(--loja-latao); }
+.runas-conta { font-family: var(--loja-gravado); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--loja-legenda); }
+
+/* placas das trilhas, no espírito das abas de núcleo */
+.runas-trilhas { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+.trilha-btn {
+  display: flex; align-items: center; gap: 9px;
+  padding: 9px 16px 9px 12px; cursor: pointer;
+  border: 1px solid #1a120a; border-bottom: 3px solid var(--cor);
+  border-radius: 2px 2px 0 0;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--cor) 26%, #3a2a1a), color-mix(in srgb, var(--cor) 10%, #1d140c));
+  color: var(--loja-titulo); font-family: var(--loja-gravado);
+  font-size: 12px; letter-spacing: .16em; text-transform: uppercase;
+  transition: transform .14s ease, filter .14s ease;
+}
+.trilha-btn:hover { filter: brightness(1.18); transform: translateY(-2px); }
+.trilha-btn.ativa {
+  background: linear-gradient(180deg, color-mix(in srgb, var(--cor) 62%, #2a1e12), color-mix(in srgb, var(--cor) 26%, #1a120a));
+  color: #fff; box-shadow: 0 0 14px color-mix(in srgb, var(--cor) 45%, transparent);
+}
+.trilha-btn img { width: 26px; height: 26px; flex: none; filter: drop-shadow(0 1px 2px rgba(0,0,0,.6)); }
+.trilha-btn .qtd { font-size: 10px; opacity: .7; letter-spacing: .1em; }
+
+/* fileira de um slot */
+.runas-slot { margin: 0 0 20px; }
+.runas-slot h3 {
+  display: flex; align-items: baseline; gap: 10px; margin: 0 0 9px; padding-bottom: 5px;
+  border-bottom: 1px solid rgba(217,192,138,.22);
+  font-family: var(--loja-gravado); font-weight: 500; font-size: 12px;
+  letter-spacing: .2em; text-transform: uppercase; color: var(--loja-titulo);
+}
+.runas-slot h3 small { font-family: var(--loja-texto); font-style: italic; font-size: 12px; letter-spacing: 0; text-transform: none; color: var(--loja-legenda); }
+.runas-grade { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 12px; }
+
+/* ficha da runa: o card da loja, com a cor da trilha na lombada */
+.runa {
+  position: relative; display: flex; gap: 11px; padding: 12px 14px 12px 15px;
+  background: var(--loja-papel); background-image: var(--tex-pick); background-size: 420px;
+  background-blend-mode: multiply;
+  border: 1px solid var(--loja-papel-borda); border-left: 4px solid var(--cor);
+  border-radius: 2px; color: var(--loja-tinta); box-shadow: 0 4px 10px rgba(0,0,0,.5);
+}
+.runa.keystone { border-left-width: 7px; }
+.runa .runa-arte {
+  width: 46px; height: 46px; flex: none; border-radius: 50%;
+  border: 2px solid color-mix(in srgb, var(--cor) 55%, var(--loja-tinta-suave));
+  background: #1b120a center/contain no-repeat;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--loja-titulos); font-size: 19px; color: var(--loja-papel);
+}
+.runa h4 { font-family: var(--loja-titulos); font-weight: 400; font-size: 15px; margin: 0 0 3px; line-height: 1.15; }
+.runa p { margin: 0; font-family: var(--loja-texto); font-size: 12.5px; line-height: 1.45; }
+.runa .chips { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 7px; }
+.runa .chip {
+  font-family: var(--loja-gravado); font-size: 9px; letter-spacing: .1em; text-transform: uppercase;
+  padding: 2px 6px; border: 1px solid var(--loja-tinta-suave); border-radius: 1px; color: var(--loja-tinta-suave);
+}
+.runa .chip.classe { border-style: dashed; }
+.runa .adapt { margin-top: 6px; font-style: italic; font-size: 11.5px; color: #6a4a2a; }
+.runa .aviso {
+  margin-top: 7px; font-size: 11.5px; font-style: italic; color: #7a3a24;
+  border-left: 2px solid #8d2c22; padding-left: 7px;
+}
+.runa .notas { margin: 7px 0 0; padding: 0; list-style: none; font-size: 11.5px; color: var(--loja-tinta-suave); }
+.runa .notas li { padding-left: 11px; position: relative; line-height: 1.4; }
+.runa .notas li::before { content: "—"; position: absolute; left: 0; }
+.runa .abrir {
+  margin-top: 6px; background: none; border: none; padding: 0; cursor: pointer;
+  font-family: var(--loja-gravado); font-size: 9.5px; letter-spacing: .12em;
+  text-transform: uppercase; color: #7a5c2a;
+}
+.runa .abrir:hover { color: var(--loja-tinta); }
+.runas-vazio { font-family: var(--loja-texto); font-style: italic; color: var(--loja-legenda); padding: 30px 0; }
+@media (max-width: 880px) {
+  .runas-busca { margin-left: 0; width: 100%; }
+  .runas-busca input { width: 100%; max-width: none; }
+}
+
 .card-sheen {
   background:
     radial-gradient(340px circle at var(--mx) var(--my),
@@ -4180,6 +4272,7 @@ body.forja .build-cat.drop-after  { transform: translateX(-5px); box-shadow: ins
     <nav class="tabs">
       <button class="tab-btn active" data-tab="catalog">Catálogo</button>
       <button class="tab-btn" data-tab="build">Builds<span class="tab-count" id="build-tab-count"></span></button>
+      <button class="tab-btn" data-tab="runas">Runas<span class="tab-count" id="runas-tab-count"></span></button>
       <button class="tab-btn" data-tab="calc">Calculadora</button>
     </nav>
     <div class="counts-wrap">
@@ -4473,6 +4566,22 @@ body.forja .build-cat.drop-after  { transform: translateX(-5px); box-shadow: ins
   <div id="calc-body"></div>
 </div>
 
+<!-- ============ ABA RUNAS (F11-T7, Leo 18/09/2026) ============ -->
+<div id="view-runas" class="runas-view hidden">
+  <div class="runas-topo">
+    <div class="runas-titulo">
+      <h2>Runas</h2>
+      <p id="runas-lema" class="runas-lema"></p>
+    </div>
+    <div class="runas-busca">
+      <input type="search" id="runas-q" placeholder="Buscar por nome, efeito, atributo ou classe…" aria-label="Buscar runa">
+      <span id="runas-conta" class="runas-conta"></span>
+    </div>
+  </div>
+  <nav id="runas-trilhas" class="runas-trilhas" aria-label="Trilha de runas"></nav>
+  <div id="runas-corpo" class="runas-corpo"></div>
+</div>
+
 <div id="overlay" class="overlay">
   <div id="modal" class="modal"></div>
 </div>
@@ -4519,6 +4628,7 @@ body.forja .build-cat.drop-after  { transform: translateX(-5px); box-shadow: ins
 
 <script src="data/catalog.js"></script>
 <script src="data/regioes.js"></script>
+<script src="data/runas.js"></script>
 <script src="data/servidor.js"></script>
 <script>
 // ============================================================
@@ -6889,11 +6999,132 @@ function initTooltip() {
 
 // ---------------- abas ----------------
 
+
+// ---------------- F11-T7: a tela de Runas ----------------
+// Tudo vem de window.RUNAS (data/runas.js, gerado do markdown do Leo). Runa sem
+// atributo não mostra a linha, runa sem ícone mostra a inicial na moldura, e a
+// substituição que aponta para runa inexistente vira aviso na ficha — é o que
+// está escrito em docs/pendencias_runas.md.
+const runasEstado = { trilha: null, busca: "", abertas: new Set() };
+
+function runasOk() { return !!(window.RUNAS && RUNAS.trilhas && RUNAS.trilhas.length); }
+
+function runasTodas() {
+  const fora = [];
+  RUNAS.trilhas.forEach(t => t.slots.forEach(s => s.runas.forEach(r => fora.push({ runa: r, trilha: t, slot: s }))));
+  return fora;
+}
+
+// Substituições que envolvem a runa, do jeito que o markdown escreveu.
+function runasSubstituicoes(nome) {
+  const iguais = (a, b) => a.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase()
+                        === b.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  return (RUNAS.substituicoes || []).filter(x => iguais(x.de, nome));
+}
+
+function runaCasa(r, q) {
+  if (!q) return true;
+  const alvo = [r.nome, r.descricao, (r.atributos || []).join(" "), (r.classes || []).join(" ")].join(" ");
+  return alvo.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase()
+    .includes(q.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase());
+}
+
+function runaHtml(r, trilha, tipo) {
+  const arte = r.iconUrl
+    ? `style="background-image:url('${r.iconUrl}')"`
+    : `title="sem ícone oficial para este nome"`;
+  const inicial = r.iconUrl ? "" : esc(r.nome.slice(0, 1));
+  const chips = (r.atributos || []).map(a => `<span class="chip">${esc(a)}</span>`).join("")
+    + (r.classes || []).map(c => `<span class="chip classe">${esc(c)}</span>`).join("");
+  const subs = runasSubstituicoes(r.nome).map(x =>
+    `<p class="aviso">Vira <b>${esc(x.para)}</b>${x.quando ? " " + esc(x.quando) : ""}.${x.vigente ? "" : " (ainda não vale no app)"}</p>`).join("");
+  const aberta = runasEstado.abertas.has(r.id);
+  const notas = (r.notas || []).length
+    ? `<button type="button" class="abrir" data-runa="${esc(r.id)}">${aberta ? "esconder as notas" : (r.notas.length + " " + (r.notas.length === 1 ? "nota técnica" : "notas técnicas"))}</button>`
+      + (aberta ? `<ul class="notas">${r.notas.map(n => `<li>${esc(n)}</li>`).join("")}</ul>` : "")
+    : "";
+  return `<article class="runa${tipo === "keystone" ? " keystone" : ""}" style="--cor:${esc(trilha.cor || "#b6873a")};--tex-pick:${paperFor(r.id)}">
+    <span class="runa-arte" ${arte}>${inicial}</span>
+    <div>
+      <h4>${esc(r.nome)}</h4>
+      <p>${esc(r.descricao)}</p>
+      ${chips ? `<div class="chips">${chips}</div>` : ""}
+      ${r.adaptativa ? `<p class="adapt">${esc(r.adaptativa)}</p>` : ""}
+      ${subs}
+      ${notas}
+    </div>
+  </article>`;
+}
+
+function renderRunas() {
+  if (!runasOk()) return;
+  const nav = document.getElementById("runas-trilhas");
+  const corpo = document.getElementById("runas-corpo");
+  const lema = document.getElementById("runas-lema");
+  const conta = document.getElementById("runas-conta");
+  const q = runasEstado.busca.trim();
+
+  nav.innerHTML = RUNAS.trilhas.map(t => {
+    const n = t.slots.reduce((a, s) => a + s.runas.filter(r => runaCasa(r, q)).length, 0);
+    return `<button type="button" class="trilha-btn${t.id === runasEstado.trilha ? " ativa" : ""}" data-trilha="${esc(t.id)}" style="--cor:${esc(t.cor || "#b6873a")}">
+      ${t.iconUrl ? `<img src="${t.iconUrl}" alt="">` : ""}${esc(t.nome)}<span class="qtd">${n}</span></button>`;
+  }).join("");
+
+  // Com busca, a lista atravessa as trilhas: procurar runa não é navegar trilha.
+  if (q) {
+    const achadas = runasTodas().filter(x => runaCasa(x.runa, q));
+    lema.textContent = "";
+    conta.textContent = achadas.length + (achadas.length === 1 ? " runa" : " runas");
+    corpo.innerHTML = achadas.length
+      ? `<div class="runas-slot"><div class="runas-grade">${achadas.map(x => runaHtml(x.runa, x.trilha, x.slot.tipo)).join("")}</div></div>`
+      : `<p class="runas-vazio">Nenhuma runa com "${esc(q)}".</p>`;
+    return;
+  }
+
+  const t = RUNAS.trilhas.find(x => x.id === runasEstado.trilha) || RUNAS.trilhas[0];
+  runasEstado.trilha = t.id;
+  lema.textContent = t.lema ? "“" + t.lema + "”" : "";
+  conta.textContent = t.slots.reduce((a, s) => a + s.runas.length, 0) + " runas nesta trilha";
+  corpo.innerHTML = t.slots.map(s => `<section class="runas-slot">
+      <h3>${esc(s.nome === "Keystone" ? "Runa de assinatura" : s.nome)}<small>${s.runas.length} ${s.runas.length === 1 ? "runa" : "runas"}</small></h3>
+      <div class="runas-grade">${s.runas.map(r => runaHtml(r, t, s.tipo)).join("")}</div>
+    </section>`).join("")
+    + (RUNAS.fragmentos || []).map(f => `<section class="runas-slot">
+      <h3>Fragmentos · ${esc(f.nome)}<small>valem para qualquer trilha</small></h3>
+      <div class="runas-grade">${f.runas.map(r => runaHtml(r, { cor: "#b6873a" }, "slot")).join("")}</div>
+    </section>`).join("");
+}
+
+function initRunas() {
+  const conta = document.getElementById("runas-tab-count");
+  if (!runasOk()) { if (conta) conta.textContent = ""; return; }
+  if (conta) conta.textContent = String(RUNAS.meta.runas);
+  runasEstado.trilha = RUNAS.trilhas[0].id;
+  const busca = document.getElementById("runas-q");
+  busca.addEventListener("input", () => { runasEstado.busca = busca.value; renderRunas(); });
+  document.getElementById("runas-trilhas").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-trilha]");
+    if (!b) return;
+    runasEstado.trilha = b.dataset.trilha;
+    if (runasEstado.busca) { runasEstado.busca = ""; busca.value = ""; }
+    renderRunas();
+    Som.play("catalog:tag_select");
+  });
+  document.getElementById("runas-corpo").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-runa]");
+    if (!b) return;
+    const id = b.dataset.runa;
+    if (runasEstado.abertas.has(id)) runasEstado.abertas.delete(id); else runasEstado.abertas.add(id);
+    renderRunas();
+  });
+}
+
 function switchTab(tab) {
   document.querySelectorAll(".tab-btn").forEach(b => b.classList.toggle("active", b.dataset.tab === tab));
   document.getElementById("view-catalog").classList.toggle("hidden", tab !== "catalog");
   document.getElementById("view-build").classList.toggle("hidden", tab !== "build");
   document.getElementById("view-calc").classList.toggle("hidden", tab !== "calc");
+  document.getElementById("view-runas").classList.toggle("hidden", tab !== "runas");
   document.getElementById("catalog-controls").classList.toggle("hidden", tab !== "catalog");
   // Sair da loja, entrar na forja (Fase 3, T1): o fundo escurece e a vista sobe.
   // Na volta, a loja desce e o papel clareia.
@@ -6901,8 +7132,9 @@ function switchTab(tab) {
   const entrandoNaForja = tab === "build" && !estavaNaForja;
   const saindoDaForja = tab !== "build" && estavaNaForja;
   document.body.classList.toggle("forja", tab === "build");
+  const telaDaVez = { calc: "view-calc", runas: "view-runas" }[tab] || "view-catalog";
   const alvo = entrandoNaForja ? document.getElementById("view-build")
-    : saindoDaForja ? document.getElementById(tab === "calc" ? "view-calc" : "view-catalog") : null;
+    : saindoDaForja ? document.getElementById(telaDaVez) : null;
   if (alvo) {
     alvo.classList.remove("entrando"); void alvo.offsetWidth; alvo.classList.add("entrando");
   }
@@ -6910,6 +7142,7 @@ function switchTab(tab) {
   if (saindoDaForja) { Som.play("build:close"); Som.play("catalog:open"); }
   if (tab === "build") { if (buildScreen === "lista") renderBuildIndex(); else renderBuildAll(); }
   if (tab === "calc" && typeof renderCalc === "function") renderCalc();
+  if (tab === "runas") renderRunas();
 }
 
 // ---------------- checagem de modo de jogo ----------------
@@ -9703,6 +9936,7 @@ function init() {
   applyView(["icons", "names"].includes(savedView) ? savedView : "cards");
   if (typeof initBuildBuilder === "function") initBuildBuilder();
   if (typeof initCalc === "function") initCalc();
+  if (typeof initRunas === "function") initRunas();
 
   // Controle de som (Fase 4, T1): sino = mudo, régua = volume; persistem.
   const somBtn = document.getElementById("som-mudo");

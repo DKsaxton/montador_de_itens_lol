@@ -276,7 +276,8 @@ window.RUNAS = {
      ]
     }
    ],
-   "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/7201_Precision.png"
+   "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/7201_Precision.png",
+   "cor": "#c0a878"
   },
   {
    "id": "dominacao",
@@ -516,7 +517,8 @@ window.RUNAS = {
      ]
     }
    ],
-   "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/7200_Domination.png"
+   "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/7200_Domination.png",
+   "cor": "#c03030"
   },
   {
    "id": "feiticaria",
@@ -760,7 +762,8 @@ window.RUNAS = {
      ]
     }
    ],
-   "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/7202_Sorcery.png"
+   "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/7202_Sorcery.png",
+   "cor": "#9090f0"
   },
   {
    "id": "determinacao",
@@ -995,7 +998,8 @@ window.RUNAS = {
      ]
     }
    ],
-   "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/7204_Resolve.png"
+   "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/7204_Resolve.png",
+   "cor": "#78a860"
   },
   {
    "id": "inspiracao",
@@ -1227,7 +1231,8 @@ window.RUNAS = {
      ]
     }
    ],
-   "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/7203_Whimsy.png"
+   "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/7203_Whimsy.png",
+   "cor": "#30a8a8"
   }
  ],
  "fragmentos": [

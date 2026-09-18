@@ -25,6 +25,8 @@ import urllib.request
 from datetime import date
 
 AQUI = os.path.dirname(os.path.abspath(__file__))
+RAIZ = os.path.dirname(AQUI)
+ICONES = os.path.join(AQUI, "_icones_trilha")
 FONTE = os.path.join(AQUI, "Runas_League_of_Legends.md")
 SAIDA = os.path.join(AQUI, "runas.js")
 CACHE = os.path.join(AQUI, "_runesReforged.json")
@@ -208,6 +210,27 @@ def mapa_de_icones(runes):
     return mapa, oficiais
 
 
+# --------------------------------------------------------------- cor da trilha
+# A cor de cada trilha é LIDA do PNG oficial dela, não escolhida no olho — o
+# mesmo caminho dos brasões das regiões (docs/gerar_brasoes.py, que também
+# decodifica PNG em Python puro, sem dependência).
+def cor_da_trilha(url, nome):
+    import importlib.util
+    cam = os.path.join(RAIZ, "docs", "gerar_brasoes.py")
+    spec = importlib.util.spec_from_file_location("brasoes", cam)
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+
+    if not os.path.isdir(ICONES):
+        os.makedirs(ICONES)
+    destino = os.path.join(ICONES, slug(nome) + ".png")
+    if not os.path.exists(destino):
+        with urllib.request.urlopen(url, timeout=30) as r:
+            io.open(destino, "wb").write(r.read())
+    cores = mod.paleta(destino, 3)
+    return cores[0][0] if cores else None
+
+
 # --------------------------------------------------------------- main
 def main():
     forcar = "--baixar" in sys.argv
@@ -240,6 +263,12 @@ def main():
         cam = icones.get(chave(t["nome"]))
         if cam:
             t["iconUrl"] = DD_IMG + cam
+            try:
+                cor = cor_da_trilha(t["iconUrl"], t["nome"])
+                if cor:
+                    t["cor"] = cor
+            except Exception as e:
+                pendencias.append("cor da trilha %s não pôde ser lida do ícone (%s)" % (t["nome"], e))
         elif icones:
             sem_icone.append("(trilha) " + t["nome"])
         for s in t["slots"]:
