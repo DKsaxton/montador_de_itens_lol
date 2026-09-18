@@ -2212,7 +2212,16 @@ body.icons-only .card:not(.full).regiao .reg-brasao { display: none; }
   transition: transform .35s cubic-bezier(.22, 1, .36, 1);
 }
 .card:hover .card-fx { transform: rotateX(var(--rx)) rotateY(var(--ry)) scale(1.06); }
-body.icons-only .card:not(.full) .card-fx, body.names-only .card:not(.full) .card-fx { display: none; }
+/* F11-T5 (Leo, 18/09/2026): nos modos Ícones e Nomes o card deixa de ser card —
+   vira ícone ou linha. Nem a reação do núcleo nem a imagem da região entram ali.
+   A imagem sai por medida, não por gosto: a força do papel foi calculada para o
+   texto do card inteiro, e numa linha o nome cai justo onde o papel já desbotou. */
+body.icons-only .card:not(.full) .card-fx,
+body.names-only .card:not(.full) .card-fx { display: none; }
+body.icons-only .card:not(.full) .reg,
+body.names-only .card:not(.full) .reg { display: none; }
+body.icons-only .card:not(.full).regiao .card-surface,
+body.names-only .card:not(.full).regiao .card-surface { background-color: var(--loja-papel); background-image: var(--tex-pick); }
 /* Na amostra o card estava sozinho no palco; aqui eles ficam lado a lado, e o
    golpe do AD precisa parar na borda, senão risca o vizinho e a barra lateral.
    A folga de 7 px deixa a lâmina sair do card sem invadir a coluna do lado. */
@@ -2418,6 +2427,111 @@ body.icons-only .card:not(.full) .card-fx, body.names-only .card:not(.full) .car
 .card.fx-vit.a4 .entalhes .e4,.card.fx-vit.a4 .entalhes .e8,.card.fx-vit.a4 .entalhes .e12{animation-delay:calc(var(--t-vit) * .66 + 90ms)}
 
 @media (prefers-reduced-motion: reduce){ .card-fx,.card-fx *{animation:none !important} }
+
+
+/* ---------- F11-T5: a oficina do núcleo e o estandarte da guilda ----------
+   Da amostra aprovada docs/amostras/fase11-pagina-por-nucleo.html. A página
+   inteira vira a bancada daquele núcleo — aço escovado no AD, veludo com
+   pontos arcanos no AP, carvalho e musgo na Vitalidade — e um estandarte de
+   pano desce pela lateral com o símbolo e o nome gravados na vertical.
+   Em "Todos" (body sem .nucleo) tudo isto some e a loja fica como sempre. */
+.oficina {
+  position: relative;
+  display: grid;
+  grid-template-columns: 0 minmax(0, 1fr);
+  transition: grid-template-columns .25s ease;
+}
+.oficina-corpo { min-width: 0; }
+.estandarte, .ofic-cant { display: none; }
+
+body.nucleo .oficina {
+  /* A faixa e as folgas são estreitas de propósito: cada pixel aqui é tirado do
+     grid, e 16 px a mais custavam uma coluna inteira de cards. */
+  grid-template-columns: 46px minmax(0, 1fr);
+  margin-top: 10px;
+  padding: 12px 12px 16px;
+  border: 1px solid color-mix(in srgb, var(--nuc-cor) 40%, #3a2a18);
+  border-radius: 2px;
+  background: var(--nuc-fundo);
+  overflow: hidden;
+}
+body.nucleo .oficina-corpo { padding: 2px 0 0 12px; }
+/* marca d'água do símbolo, grande e quase invisível */
+body.nucleo .oficina::before {
+  content: "";
+  position: absolute; right: -40px; top: -30px; width: 340px; height: 340px;
+  opacity: .07; pointer-events: none;
+  background-color: var(--nuc-cor);
+  -webkit-mask: var(--nuc-sim) center/contain no-repeat;
+          mask: var(--nuc-sim) center/contain no-repeat;
+}
+body.nucleo .ofic-cant {
+  display: block; position: absolute; width: 26px; height: 26px;
+  border: 3px solid var(--loja-latao); opacity: .55; pointer-events: none;
+}
+body.nucleo .ofic-cant.c1 { left: 6px; top: 6px; border-right: none; border-bottom: none; }
+body.nucleo .ofic-cant.c2 { right: 6px; top: 6px; border-left: none; border-bottom: none; }
+body.nucleo .ofic-cant.c3 { left: 6px; bottom: 6px; border-right: none; border-top: none; }
+body.nucleo .ofic-cant.c4 { right: 6px; bottom: 6px; border-left: none; border-top: none; }
+
+body.nucleo .estandarte {
+  display: flex; flex-direction: column; align-items: center; gap: 14px;
+  position: relative; padding: 16px 0 30px; align-self: start;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--nuc-cor) 72%, #1a1208), color-mix(in srgb, var(--nuc-cor) 30%, #120c06));
+  box-shadow: inset -6px 0 10px rgba(0,0,0,.45);
+}
+/* a ponta recortada do pano */
+body.nucleo .estandarte::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 18px;
+  background: inherit; clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 58%, 0 100%);
+}
+body.nucleo .estandarte i {
+  width: 26px; height: 26px; background-color: #fff; opacity: .95;
+  -webkit-mask: var(--nuc-sim) center/contain no-repeat;
+          mask: var(--nuc-sim) center/contain no-repeat;
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,.6));
+}
+body.nucleo .estandarte b {
+  font-family: var(--loja-gravado); font-size: 11px; letter-spacing: .3em;
+  text-transform: uppercase; color: #fff; writing-mode: vertical-rl;
+  text-shadow: 0 1px 2px rgba(0,0,0,.6);
+}
+
+/* o material de cada bancada e o tom do papel do card nela */
+body.nucleo-ad {
+  --nuc-cor: var(--loja-ad); --nuc-sim: url("assets/icons/nucleo-ad.svg");
+  --nuc-fundo: repeating-linear-gradient(90deg, rgba(255,255,255,.028) 0 2px, transparent 2px 5px),
+               linear-gradient(180deg, #2a1d14, #1d130c);
+}
+body.nucleo-ap {
+  --nuc-cor: var(--loja-ap); --nuc-sim: url("assets/icons/nucleo-ap.svg");
+  --nuc-fundo: radial-gradient(circle at 20% 30%, rgba(190,150,255,.10) 0 2px, transparent 3px),
+               radial-gradient(circle at 70% 60%, rgba(190,150,255,.08) 0 2px, transparent 3px),
+               radial-gradient(circle at 45% 85%, rgba(190,150,255,.07) 0 1.5px, transparent 3px),
+               linear-gradient(180deg, #221a2e, #150f1d);
+}
+body.nucleo-vit {
+  --nuc-cor: var(--loja-vit); --nuc-sim: url("assets/icons/nucleo-vit.svg");
+  --nuc-fundo: repeating-linear-gradient(103deg, rgba(0,0,0,.16) 0 7px, transparent 7px 22px),
+               linear-gradient(180deg, #22271a, #161a10);
+}
+/* o papel do card puxa para o tom da oficina — só nos cards sem região, que já
+   têm a imagem deles por baixo */
+body.nucleo-ad  .card:not(.regiao) .card-surface { background-color: #e9d4ab; }
+body.nucleo-ap  .card:not(.regiao) .card-surface { background-color: #e2d5b9; }
+body.nucleo-vit .card:not(.regiao) .card-surface { background-color: #e2d8ab; }
+/* o símbolo do núcleo também grava o cabeçalho de cada tier */
+body.nucleo .group-head::before {
+  content: ""; display: inline-block; width: 15px; height: 15px; margin-right: 8px;
+  vertical-align: -2px; background-color: var(--nuc-cor);
+  -webkit-mask: var(--nuc-sim) center/contain no-repeat;
+          mask: var(--nuc-sim) center/contain no-repeat;
+}
+@media (max-width: 880px) {
+  body.nucleo .oficina { grid-template-columns: 0 minmax(0, 1fr); padding: 10px 10px 14px; }
+  body.nucleo .estandarte { display: none; }
+  body.nucleo .oficina-corpo { padding-left: 0; }
+}
 
 .card-sheen {
   background:
@@ -4137,6 +4251,14 @@ body.forja .build-cat.drop-after  { transform: translateX(-5px); box-shadow: ins
       <span class="cff-dica">os itens clicados vão para esta caixa</span>
       <button type="button" id="cff-soltar" class="cff-soltar" title="Parar de marcar nesta caixa (Esc)">soltar</button>
     </div>
+    <!-- F11-T5 (Leo, 18/09/2026): a página do catálogo vira a oficina do núcleo,
+         com o estandarte da guilda descendo pela lateral. Em "Todos" nada disso
+         aparece e a loja fica como sempre foi. -->
+    <div id="oficina" class="oficina">
+      <span class="ofic-cant c1" aria-hidden="true"></span><span class="ofic-cant c2" aria-hidden="true"></span>
+      <span class="ofic-cant c3" aria-hidden="true"></span><span class="ofic-cant c4" aria-hidden="true"></span>
+      <div class="estandarte" aria-hidden="true"><i></i><b id="estandarte-nome"></b></div>
+      <div class="oficina-corpo">
     <div class="grid-meta">
       <span id="result-count"></span>
       <span class="grid-tools">
@@ -4149,6 +4271,8 @@ body.forja .build-cat.drop-after  { transform: translateX(-5px); box-shadow: ins
       </span>
     </div>
     <div id="grid" class="grid"></div>
+      </div>
+    </div>
   </main>
 </div>
 
@@ -8636,10 +8760,14 @@ function buildClassTabs() {
 
 // F10-T13: acende a régua e a luz da loja no núcleo escolhido ("Todos" apaga tudo).
 const NUCLEO_CLASSE = { "AD": "nucleo-ad", "AP": "nucleo-ap", "Vitalidade": "nucleo-vit" };
+// F11-T5: o nome gravado no estandarte é o da aba; em "Todos" ele não existe.
+const NUCLEO_ESTANDARTE = { "AD": "Dano de Ataque", "AP": "Poder de Habilidade", "Vitalidade": "Vitalidade" };
 function aplicarNucleo() {
   const cls = NUCLEO_CLASSE[state.classe] || "";
   document.body.classList.toggle("nucleo", !!cls);
   Object.values(NUCLEO_CLASSE).forEach(c => document.body.classList.toggle(c, c === cls));
+  const nome = document.getElementById("estandarte-nome");
+  if (nome) nome.textContent = NUCLEO_ESTANDARTE[state.classe] || "";
 }
 
 function itemMatchesFilters(item) {
