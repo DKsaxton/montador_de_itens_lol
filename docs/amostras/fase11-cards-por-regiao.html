@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Fase 11 — o card é a região</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600&family=IM+Fell+English+SC&family=Alegreya:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --papel:#e5d3ad;--papel-borda:#a88f60;--tinta:#2c1d12;--tinta-suave:#5a4630;
+  --madeira-1:#3b2617;--madeira-3:#21130a;--latao:#b6873a;--latao-claro:#d5b35a;
+  --titulo:#e8d3a2;--legenda:#b89a66;
+  --ad:#c8641e;--ap:#7b4fb5;--vit:#4d8b3a;
+  --titulos:'IM Fell English SC',Georgia,serif;--texto:'Alegreya',Georgia,serif;--gravado:'Cinzel',Georgia,serif;
+}
+*{box-sizing:border-box}
+body{margin:0;background:linear-gradient(180deg,var(--madeira-1),var(--madeira-3)) fixed;color:var(--papel);font-family:var(--texto);font-size:15px}
+.wrap{max-width:1320px;margin:0 auto;padding:26px 22px 90px}
+h1{font-family:var(--titulos);font-weight:400;font-size:31px;color:var(--titulo);margin:0 0 4px}
+.sub{font-style:italic;color:var(--legenda);margin:0 0 26px;max-width:92ch}
+h2{font-family:var(--titulos);font-weight:400;font-size:23px;color:var(--titulo);margin:34px 0 2px}
+.lede{font-style:italic;color:var(--legenda);margin:0 0 16px;max-width:92ch}
+.grade{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:22px}
+
+/* ---------------- anatomia comum ---------------- */
+.rc{position:relative;width:340px;height:198px;overflow:hidden;border-radius:3px;border:1px solid #2b2119;
+    box-shadow:0 6px 16px rgba(0,0,0,.55);isolation:isolate}
+.rc .fundo{position:absolute;inset:0;background-size:cover;background-position:center;z-index:0}
+.rc .barra{position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--cor);z-index:4;
+           box-shadow:0 0 10px color-mix(in srgb,var(--cor) 60%,transparent)}
+.rc .brasao{position:absolute;right:-16px;bottom:-18px;width:132px;height:132px;z-index:2;
+            background-size:contain;background-repeat:no-repeat;background-position:center}
+.rc .corpo{position:relative;z-index:5;padding:15px 18px 14px 20px;height:100%;display:flex;flex-direction:column}
+.rc .topo{display:flex;gap:11px;align-items:flex-start}
+.rc img{width:46px;height:46px;border-radius:3px;flex:none;box-shadow:0 2px 6px rgba(0,0,0,.6)}
+.rc h4{font-family:var(--titulos);font-weight:400;font-size:19px;margin:0;line-height:1.15}
+.rc .en{font-style:italic;font-size:12px;margin:1px 0 0;opacity:.72}
+.rc .rodape{margin-top:auto;display:flex;align-items:baseline;gap:10px}
+.rc .g{font-family:var(--gravado);font-size:15px;font-weight:600;white-space:nowrap}
+.rc ul{list-style:none;margin:11px 0 0;padding:0;font-size:13.5px;line-height:1.55}
+.rc .tier{font-family:var(--gravado);font-size:9.5px;letter-spacing:.15em;text-transform:uppercase;opacity:.92}
+
+/* ---------------- A: tinta sobre a região ---------------- */
+.a .escurece{position:absolute;inset:0;z-index:1}
+.a.claro .escurece{background:linear-gradient(100deg,rgba(18,12,8,.80) 0%,rgba(18,12,8,.62) 46%,rgba(18,12,8,.12) 78%,rgba(18,12,8,0) 100%)}
+.a.escuro .escurece{background:linear-gradient(100deg,rgba(238,224,192,.66) 0%,rgba(238,224,192,.44) 48%,rgba(238,224,192,.08) 80%,rgba(236,220,186,0) 100%)}
+.a.claro{color:#f0e3c6}
+.a.claro .en,.a.claro .tier{color:#d9c8a4}
+.a.claro h4{text-shadow:0 1px 3px rgba(0,0,0,.65)}
+.a.claro .brasao{opacity:.27;filter:brightness(1.35)}
+.a.escuro{color:var(--tinta)}
+.a.escuro .en,.a.escuro .tier{color:#4a3726}
+.a.escuro .brasao{opacity:.30}
+.a.claro .g{color:color-mix(in srgb,var(--cor) 55%,#f4e6c6);text-shadow:0 1px 3px rgba(0,0,0,.8)}
+.a.escuro .g{text-shadow:none;color:color-mix(in srgb,var(--cor) 78%,#2c1d12)}
+
+/* ---------------- C: degradê a partir do papel ---------------- */
+.c{color:var(--tinta)}
+.c .escurece{position:absolute;inset:0;z-index:1;opacity:var(--v1);
+  background:linear-gradient(100deg,
+    var(--tom) 0%,
+    color-mix(in srgb, var(--tom) 80%, transparent) 46%,
+    color-mix(in srgb, var(--tom) 30%, transparent) 76%,
+    transparent 100%)}
+/* O rodapé (preço e tier) cai mais embaixo e à esquerda que o corpo do texto, e
+   em Noxus e Bilgewater é justamente onde a imagem escurece. Este canto é um
+   reforço medido só daquela faixa — nas regiões claras ele praticamente não existe. */
+.c .reforco{position:absolute;inset:0;z-index:2;opacity:var(--vr);
+  background:radial-gradient(135% 88% at 0% 100%, var(--tom) 0%, transparent 62%)}
+.c h4,.c .rodape{text-shadow:0 0 7px rgba(229,211,173,.85),0 0 3px rgba(229,211,173,.9)}
+.c .en{color:#4a3726}
+.c .tier{color:#3b2a1a}
+.c .brasao{opacity:.30}
+/* Grão: o que o contraste não consegue criar. A dose é o que falta para a imagem
+   chegar ao mesmo detalhe das outras — quem já é cheia de textura não recebe nada. */
+.rc .grao{position:absolute;inset:0;z-index:3;pointer-events:none;mix-blend-mode:overlay;opacity:var(--gr);
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:160px 160px}
+.c .g{color:color-mix(in srgb,var(--cor) 60%,#2c1d12)}
+
+/* ---------------- B: talão de papel ---------------- */
+.b{color:var(--tinta)}
+.b .talao{position:absolute;left:0;top:0;bottom:0;width:76%;z-index:1;
+  background:linear-gradient(90deg,rgba(229,211,173,.97) 0%,rgba(229,211,173,.96) 72%,rgba(229,211,173,.88) 90%,rgba(229,211,173,0) 100%);
+  box-shadow:6px 0 14px rgba(0,0,0,.35)}
+.b .en,.b .tier{color:var(--tinta-suave)}
+.b .g{color:color-mix(in srgb,var(--cor) 78%,#2c1d12)}
+.b .brasao{opacity:.85;right:-6px;bottom:-8px;width:112px;height:112px;filter:drop-shadow(0 2px 6px rgba(0,0,0,.5))}
+.b ul{max-width:70%}
+.b .topo{max-width:72%}
+
+.legenda{font-family:var(--gravado);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--latao-claro);margin:0 0 8px}
+.par{display:grid;grid-template-columns:360px 360px;gap:30px;margin-bottom:24px}
+.nota{max-width:340px}
+.nota{font-style:italic;color:var(--legenda);font-size:13px;margin:8px 0 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>O card é a região</h1>
+  <p class="sub">Fundo gerado por imagem, brasão oficial da Riot por cima, barra do núcleo à esquerda. Nenhum dado digitado: item, preço e atributos vêm do <code>catalog.js</code>. Duas maneiras de escrever por cima da textura — escolha uma.</p>
+
+  <h2>A decisão</h2>
+  <p class="lede">As regiões variam de quase branco (Ionia) a quase preto (Noxus). A pergunta é como o texto sobrevive a essa variação.</p>
+  <div id="decisao"></div>
+
+  <h2>Piltover</h2>
+  <p class="lede">O degradê dela já está no mínimo. O que atrapalha é o enquadramento: o corte do centro pega justamente a chapa vazia.</p>
+  <div class="par">
+    <div><p class="legenda">corte do centro (como está)</p><div id="pilt-a"></div>
+      <p class="nota">Latão liso na maior parte, engrenagem e cristal só na beirada.</p></div>
+    <div><p class="legenda">enquadrado no canto da máquina</p><div id="pilt-b"></div>
+      <p class="nota">Mesma imagem, 138% e puxada para a direita: o favo e a engrenagem crescem e a chapa vazia encolhe.</p></div>
+  </div>
+
+  <h2>As escuras: tinta clara ou degradê de papel?</h2>
+  <p class="lede">À esquerda o que está em pé hoje: fundo escuro, tinta clara. À direita a sua ideia: o degradê sai do papel da loja e a tinta volta a ser escura em todas.</p>
+  <div id="escuras"></div>
+
+  <h2>Três itens por região</h2>
+  <p class="lede">Onde a região tem mais de uma imagem — Freljord com cinco, o Vazio com quatro, Noxus com duas — cada item cai numa delas. O sorteio é fixo por item: o mesmo item mostra sempre a mesma, senão a textura trocaria a cada redesenho da lista.</p>
+  <div class="grade" id="todas"></div>
+</div>
+
+<script src="../../data/catalog.js"></script>
+<script>
+// Tudo daqui saiu do script de compressão, medido em cada arquivo:
+// [brilho do corpo do texto, brilho do rodapé, detalhe fino].
+const MEDIDAS = {
+  "ionia": [162.8, 84.6, 17.68],
+  "freljord": [151.5, 141.1, 19.48], "freljord-avarosan": [210.2, 181.6, 7.82],
+  "freljord-garra": [123.3, 94.8, 21.92], "freljord-garra1": [162.7, 121.1, 22.49],
+  "freljord-guarda": [87.2, 60.0, 9.39],
+  "noxus": [89.5, 62.7, 21.55], "noxus2": [89.6, 42.9, 16.43],
+  "demacia": [168.5, 124.5, 15.01], "targon": [158.2, 137.3, 8.45],
+  "bilgewater": [88.8, 46.5, 20.97],
+  "void": [144.5, 92.7, 10.17], "void1": [155.4, 124.1, 21.84],
+  "void2": [163.2, 113.8, 19.86], "void3": [147.9, 95.1, 17.08],
+  "shadow-isles": [87.2, 106.0, 15.43], "piltover": [146.5, 90.8, 7.14],
+  "zaun": [87.4, 78.7, 14.08], "shurima": [134.8, 84.1, 19.37],
+  "bandle-city": [135.3, 109.7, 15.95],
+};
+// Quando a região tem mais de uma imagem, o card sorteia entre elas.
+const VARIANTES = {
+  "Ionia": ["ionia"],
+  "Freljord": ["freljord", "freljord-avarosan", "freljord-garra", "freljord-garra1", "freljord-guarda"],
+  "Noxus": ["noxus", "noxus2"],
+  "Demacia": ["demacia"], "Targon": ["targon"], "Bilgewater": ["bilgewater"],
+  "The Void": ["void", "void1", "void2", "void3"],
+  "Shadow Isles": ["shadow-isles"], "Piltover": ["piltover"], "Zaun": ["zaun"],
+  "Shurima": ["shurima"], "Bandle City": ["bandle-city"],
+};
+const ARQUIVO = Object.fromEntries(Object.entries(VARIANTES).map(([r, v]) => [r, v[0]]));
+const BRASAO = { ...ARQUIVO, "Piltover": "piltover-zaun", "Zaun": "piltover-zaun", "The Void": null };
+// Cor 1 lida do PNG do brasão oficial (docs/referencias_regioes.md).
+const PALETA = {
+  "Ionia": "#c04878", "Freljord": "#60c0f0", "Noxus": "#c04848", "Demacia": "#d8c090",
+  "Targon": "#6030d8", "Bilgewater": "#a84830", "The Void": "#7c1f7a",
+  "Shadow Isles": "#00a890", "Piltover": "#d8a848", "Zaun": "#f09060",
+  "Shurima": "#f0d830", "Bandle City": "#a8c000",
+};
+// Enquadramento próprio, para imagens que puseram todo o detalhe num canto só.
+const ENQUADRA = { "Piltover": "background-size:138%;background-position:84% 58%" };
+const COR = { "AD": "var(--ad)", "AP": "var(--ap)", "Vitalidade": "var(--vit)" };
+const esc = (t) => String(t).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+function itensDa(regiao, n) {
+  return CATALOG.items.filter(i => i.region === regiao).sort((a, b) => b.priceGold - a.priceGold).slice(0, n);
+}
+
+// Sorteio estável: o mesmo item cai sempre na mesma variante — se fosse Math.random
+// a textura trocaria a cada redesenho da lista. Entre itens diferentes, varia.
+function sorteia(lista, chave) {
+  let h = 2166136261;
+  for (let i = 0; i < chave.length; i++) { h ^= chave.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; }
+  return lista[h % lista.length];
+}
+
+function card(it, modo) {
+  if (!it) return "";
+  const regiao = it.region;
+  const nucleo = (it.itemClass || {}).core || "AD";
+  const arq = modo === "z" ? VARIANTES[regiao][0] : sorteia(VARIANTES[regiao], it.slug);
+  const [b, rod, det] = MEDIDAS[arq];
+
+  let claro = b < 110;                 // só o modo A usa tinta clara
+  if (modo !== "a") claro = false;
+
+  // O papel entra só o quanto falta para o texto ler: alvo de 150 no corpo,
+  // 172 no rodapé (linha fina e gravada). O papel da loja tem brilho 212.
+  const papel = (x, alvo) => Math.max(0, Math.min(0.78, (alvo - x) / (212 - x)));
+  const v1 = Math.max(0.10, papel(b, 150)).toFixed(3);
+  const v2 = (v1 * 0.70).toFixed(3);
+  const vr = Math.max(0, 1 - (1 - papel(rod, 172)) / (1 - v1)).toFixed(3);
+  // Grão: o que falta de detalhe para esta imagem chegar ao nível das outras.
+  const gr = Math.max(0, Math.min(0.42, (22 - det) / 22 * 0.55)).toFixed(3);
+  // O papel leva 14% da cor do brasão da região, senão as escuras viram o mesmo bege.
+  const tom = `color-mix(in srgb, #e5d3ad 86%, ${PALETA[regiao] || "#907848"})`;
+
+  const bra = BRASAO[regiao];
+  const at = (it.attributes || []).slice(0, 2).map(a => `<li>${esc(a.raw)}</li>`).join("");
+  const preco = it.priceGold.toLocaleString("pt-BR") + "g";
+  return `<article class="rc ${modo === "z" ? "c" : modo} ${claro ? "claro" : "escuro"}" style="--cor:${COR[nucleo] || "var(--ad)"};--v1:${v1};--v2:${v2};--vr:${vr};--gr:${gr};--tom:${tom}">
+    <span class="fundo" style="background-image:url('../../assets/regioes/cards/${arq}.jpg');${modo === "z" ? "" : (ENQUADRA[regiao] || "")}"></span>
+    ${modo === "b" ? '<span class="talao"></span>' : '<span class="escurece"></span><span class="reforco"></span>'}
+    ${bra ? `<span class="brasao" style="background-image:url('../../assets/regioes/${bra}.png')"></span>` : ""}
+    <span class="grao"></span>
+    <span class="barra"></span>
+    <div class="corpo">
+      <div class="topo">
+        <img src="${it.iconUrl}" alt="">
+        <div><h4>${esc(it.namePt)}</h4><p class="en">${esc(it.nameEn)}</p></div>
+      </div>
+      <ul>${at}</ul>
+      <div class="rodape"><span class="g">${preco}</span><span class="tier">${esc(it.tier)} · ${esc(nucleo)}</span></div>
+    </div>
+  </article>`;
+}
+
+const um = (r) => itensDa(r, 1)[0];
+
+document.getElementById("pilt-a").innerHTML = card(um("Piltover"), "z");
+document.getElementById("pilt-b").innerHTML = card(um("Piltover"), "c");
+
+const ESCURAS = ["Noxus", "Zaun", "Bilgewater", "Shadow Isles"];
+document.getElementById("escuras").innerHTML = ESCURAS.map(r => `
+  <div class="par">
+    <div><p class="legenda">A · tinta clara — ${esc(r)}</p>${card(um(r), "a")}</div>
+    <div><p class="legenda">C · degradê de papel — ${esc(r)}</p>${card(um(r), "c")}</div>
+  </div>`).join("");
+
+const PARES = ["Noxus", "Ionia", "Zaun", "Demacia"];
+document.getElementById("decisao").innerHTML = PARES.map(r => `
+  <div class="par">
+    <div><p class="legenda">A · tinta sobre a região — ${esc(r)}</p>${card(um(r), "a")}
+      <p class="nota">A imagem vai de ponta a ponta. Um véu na diagonal segura a leitura e some antes do brasão.</p></div>
+    <div><p class="legenda">B · talão de papel — ${esc(r)}</p>${card(um(r), "b")}
+      <p class="nota">O papel da loja volta como talão preso sobre a região, sempre com tinta escura.</p></div>
+  </div>`).join("");
+
+document.getElementById("todas").innerHTML = Object.keys(VARIANTES)
+  .flatMap(r => itensDa(r, 3)).map(it => card(it, "c")).join("");
+</script>
+</body>
+</html>

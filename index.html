@@ -2143,6 +2143,53 @@ select.sort-select, .sort-attr-wrap select {
   z-index: 0;
   background: var(--class-color, var(--loja-tinta-suave));
 }
+
+/* ---------- F11-T3: o card é a região (Leo, 18/09/2026) ----------
+   Os 62 itens com região ganham a imagem dela por baixo; os 163 de Runeterra
+   ficam no papel de sempre. Nada aqui é escolhido no olho: --v1 (força do
+   degradê), --vr (reforço do rodapé) e --gr (grão) saem do brilho e do detalhe
+   medidos em cada JPG por docs/gerar_cards_regiao.ps1.
+   Só transform e opacity animam; estas camadas são estáticas. */
+.card.regiao .card-surface { background-image: none; background-color: #cdb890; }
+.card:hover.regiao .card-surface { background-image: none; background-color: #d6c29a; }
+.card.regiao .reg { position: absolute; inset: 0; z-index: 0; pointer-events: none; border-radius: 2px; overflow: hidden; }
+.card.regiao .reg-img { position: absolute; inset: 0; background-size: cover; background-position: center; }
+.card.regiao .reg-veu {
+  position: absolute; inset: 0; opacity: var(--v1);
+  background: linear-gradient(100deg,
+    var(--tom) 0%,
+    color-mix(in srgb, var(--tom) 80%, transparent) 46%,
+    color-mix(in srgb, var(--tom) 30%, transparent) 76%,
+    transparent 100%);
+}
+/* O rodapé (preço, etiquetas) cai mais embaixo e à esquerda que o corpo do texto,
+   e em Noxus e Bilgewater é justo onde a imagem escurece. */
+.card.regiao .reg-canto {
+  position: absolute; inset: 0; opacity: var(--vr);
+  background: radial-gradient(135% 88% at 0% 100%, var(--tom) 0%, transparent 62%);
+}
+/* O preço fica no alto à direita, o único texto do card fora do alcance do degradê. */
+.card.regiao .reg-preco {
+  position: absolute; inset: 0; opacity: var(--vd);
+  background: radial-gradient(70% 62% at 100% 0%, var(--tom) 0%, transparent 70%);
+}
+/* Grão: o que o contraste não consegue criar numa chapa lisa. A dose é o que
+   falta para a imagem chegar ao detalhe das outras. */
+.card.regiao .reg-grao {
+  position: absolute; inset: 0; opacity: var(--gr); mix-blend-mode: overlay;
+  background-size: 160px 160px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.card.regiao .reg-brasao {
+  position: absolute; right: -16px; bottom: -18px; width: 132px; height: 132px; opacity: .30;
+  background-size: contain; background-repeat: no-repeat; background-position: center;
+}
+/* Halo da cor do papel: some sobre o papel e segura o texto sobre a imagem. */
+.card.regiao .card-name, .card.regiao .card-price, .card.regiao .card-attrs, .card.regiao .card-tags {
+  text-shadow: 0 0 7px rgba(229,211,173,.85), 0 0 3px rgba(229,211,173,.9);
+}
+.card.regiao .card-icon, .card.regiao .card-main, .card.regiao .card-sheen { position: relative; z-index: 2; }
+body.icons-only .card:not(.full).regiao .reg-brasao { display: none; }
 .card-sheen {
   background:
     radial-gradient(340px circle at var(--mx) var(--my),
@@ -4120,6 +4167,7 @@ body.forja .build-cat.drop-after  { transform: translateX(-5px); box-shadow: ins
 </div>
 
 <script src="data/catalog.js"></script>
+<script src="data/regioes.js"></script>
 <script src="data/servidor.js"></script>
 <script>
 // ============================================================
@@ -8505,6 +8553,69 @@ function classColor(item) {
   return CLASS_CSS[item.itemClass && item.itemClass.core] || "";
 }
 
+
+// ---------------- F11-T3: a região por baixo do card ----------------
+// Cor 1 lida do PNG do brasão oficial da Riot (docs/referencias_regioes.md). O
+// papel leva 14% dela, senão as regiões escuras viram todas o mesmo bege.
+const REG_PALETA = {
+  "Ionia": "#c04878", "Freljord": "#60c0f0", "Noxus": "#c04848", "Demacia": "#d8c090",
+  "Targon": "#6030d8", "Bilgewater": "#a84830", "The Void": "#7c1f7a",
+  "Shadow Isles": "#00a890", "Piltover": "#d8a848", "Zaun": "#f09060",
+  "Shurima": "#f0d830", "Bandle City": "#a8c000",
+};
+// Piltover e Zaun dividem o brasão publicado pela Riot; o Vazio não tem nenhum.
+const REG_BRASAO = {
+  "Ionia": "ionia", "Freljord": "freljord", "Noxus": "noxus", "Demacia": "demacia",
+  "Targon": "targon", "Bilgewater": "bilgewater", "Shadow Isles": "shadow-isles",
+  "Piltover": "piltover-zaun", "Zaun": "piltover-zaun", "Shurima": "shurima",
+  "Bandle City": "bandle-city",
+};
+// Imagens que puseram todo o detalhe num canto só pedem outro enquadramento.
+const REG_ENQUADRA = { "Piltover": "background-size:138%;background-position:84% 58%" };
+
+// Sorteio estável: o mesmo item cai sempre na mesma variante. Com Math.random a
+// textura trocaria a cada redesenho da lista — a cada filtro, a cada clique.
+function regiaoVariante(regiao, slug) {
+  const lista = (window.REGIOES && REGIOES.variantes[regiao]) || null;
+  if (!lista || !lista.length) return null;
+  let h = 2166136261;
+  for (let i = 0; i < slug.length; i++) { h ^= slug.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; }
+  return lista[h % lista.length];
+}
+
+// Aplica ao card a imagem da região e as três doses medidas. Sem região (os 163
+// itens de Runeterra) não faz nada e o card continua o de sempre.
+function vestirDeRegiao(card, item) {
+  const regiao = item.region;
+  if (!regiao || regiao === "Runeterra" || !window.REGIOES) return "";
+  const arq = regiaoVariante(regiao, item.slug);
+  const m = arq && REGIOES.medidas[arq];
+  if (!m) return "";
+  const [brilho, rodape, direita, detalhe] = m;
+  // O papel entra só o quanto falta para o texto ler: alvo de 150 de brilho no
+  // corpo e 172 no rodapé, que é linha fina. O papel da loja tem 212.
+  const papel = (x, alvo) => Math.max(0, Math.min(0.78, (alvo - x) / (212 - x)));
+  const v1 = Math.max(0.10, papel(brilho, 150));
+  const vr = Math.max(0, 1 - (1 - papel(rodape, 172)) / (1 - v1));
+  const vd = Math.max(0, 1 - (1 - papel(direita, 168)) / (1 - v1));
+  const gr = Math.max(0, Math.min(0.42, (22 - detalhe) / 22 * 0.55));
+  card.classList.add("regiao");
+  card.style.setProperty("--v1", v1.toFixed(3));
+  card.style.setProperty("--vr", vr.toFixed(3));
+  card.style.setProperty("--vd", vd.toFixed(3));
+  card.style.setProperty("--gr", gr.toFixed(3));
+  card.style.setProperty("--tom", `color-mix(in srgb, #e5d3ad 86%, ${REG_PALETA[regiao] || "#907848"})`);
+  const bra = REG_BRASAO[regiao];
+  return `<div class="reg">
+      <span class="reg-img" style="background-image:url('assets/regioes/cards/${arq}.jpg');${REG_ENQUADRA[regiao] || ""}"></span>
+      <span class="reg-veu"></span>
+      <span class="reg-canto"></span>
+      <span class="reg-preco"></span>
+      <span class="reg-grao"></span>
+      ${bra ? `<span class="reg-brasao" style="background-image:url('assets/regioes/${bra}.png')"></span>` : ""}
+    </div>`;
+}
+
 function renderCard(item, attrSorting) {
   const card = document.createElement("div");
   card.className = "card";
@@ -8542,10 +8653,12 @@ function renderCard(item, attrSorting) {
 
   if (findInBuild(item.slug)) card.classList.add("in-build");
   if (state.applyApex && hasApex(item)) card.classList.add("apex-on");
+  const regiaoHtml = vestirDeRegiao(card, item);
   card.innerHTML = `
     <div class="card-burst"></div>
     <span class="stamp">NO BUILD</span>
     <div class="card-surface">
+      ${regiaoHtml}
       <div class="card-icon">
         ${iconInner(item)}
         <span class="tier-strip"></span>

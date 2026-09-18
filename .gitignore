@@ -1,1 +1,6 @@
 .claude/
+
+# Texturas originais das regiões: 46 MB de PNG que só servem de fonte.
+# O que o site usa são os JPG cortados em assets/regioes/cards/, gerados por
+# docs/gerar_cards_regiao.ps1.
+assets/regioes/texturas/
