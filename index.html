@@ -2755,6 +2755,30 @@ body.nucleo .group-head::before {
 .pf-estado { font-family: var(--loja-gravado); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--loja-legenda); margin-right: auto; }
 .pf-estado.pronta { color: #8fd07a; }
 
+
+/* ---------- F12-T2: escolher a caixa na hora do clique ---------- */
+#escolher-caixa { z-index: 96; }
+.ec-panel { max-width: 460px; }
+.ec-sub { font-family: var(--loja-texto); font-style: italic; font-size: 13px; color: var(--forja-texto-suave, #9a8778); margin: 0 0 14px; display: flex; align-items: center; gap: 10px; }
+.ec-sub img { width: 34px; height: 34px; border-radius: 2px; border: 1px solid var(--forja-rebite, #3a3029); }
+.ec-lista { display: flex; flex-direction: column; gap: 6px; }
+.ec-caixa {
+  display: flex; align-items: center; gap: 10px; text-align: left; cursor: pointer;
+  padding: 10px 13px; border: 1px solid var(--forja-placa-borda, #3a3029); border-left: 4px solid var(--cat-color, #7a6a58);
+  border-radius: 2px; background: rgba(0,0,0,.28); color: var(--forja-texto, #e8dcc8);
+  font-family: var(--loja-texto); font-size: 14px;
+}
+.ec-caixa:hover { background: rgba(255,122,30,.14); border-color: var(--forja-brasa, #ff7a1e); }
+.ec-caixa .ec-qtd { margin-left: auto; font-family: var(--loja-gravado); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--forja-texto-suave, #9a8778); }
+.ec-caixa .ec-tipo { font-family: var(--loja-gravado); font-size: 9px; letter-spacing: .12em; text-transform: uppercase; color: var(--cat-color, #9a8778); border: 1px solid currentColor; border-radius: 1px; padding: 1px 5px; }
+.ec-caixa.comum { --cat-color: #5f7183; }
+.ec-caixa.prioridade { --cat-color: #c8aa6e; }
+.ec-caixa.opcional { --cat-color: #0ac8b9; }
+.ec-caixa.escolha { --cat-color: #b48ead; }
+.ec-nova { border-left-color: var(--forja-brasa, #ff7a1e); font-style: italic; }
+.ec-foot { display: flex; align-items: center; gap: 12px; }
+.ec-dica { font-family: var(--loja-texto); font-style: italic; font-size: 12px; color: var(--forja-texto-suave, #9a8778); margin-right: auto; }
+
 .card-sheen {
   background:
     radial-gradient(340px circle at var(--mx) var(--my),
@@ -4785,6 +4809,20 @@ body.forja .build-cat.drop-after  { transform: translateX(-5px); box-shadow: ins
       <span class="pf-estado" id="pf-estado"></span>
       <button type="button" class="btn ghost" id="pf-forja">Abrir na forja</button>
       <button type="button" class="btn primary" id="pf-publicar">Salvar e publicar</button>
+    </div>
+  </div>
+</div>
+<!-- F12-T2 (Leo, 18/09/2026): sem caixa escolhida, o clique no item pergunta
+     em vez de abrir a ficha e parecer que não funcionou. -->
+<div id="escolher-caixa" class="marker-dialog" role="dialog" aria-label="Em qual caixa" hidden>
+  <div class="md-panel ec-panel">
+    <button type="button" class="md-close" id="ec-close" aria-label="Fechar">×</button>
+    <h3 class="md-title">Em qual caixa?</h3>
+    <p class="ec-sub" id="ec-sub"></p>
+    <div class="ec-lista" id="ec-lista"></div>
+    <div class="md-foot ec-foot">
+      <span class="ec-dica">Depois disso, o próximo clique já vai direto para esta caixa.</span>
+      <button type="button" class="btn ghost" id="ec-ficha">Ver a ficha do item</button>
     </div>
   </div>
 </div>
@@ -7678,6 +7716,66 @@ function initFaltaPublicar() {
   });
 }
 
+
+// ---------------- F12-T2: em qual caixa? ----------------
+// O passo invisível (escolher a caixa antes de clicar no item) vira pergunta no
+// instante em que ele faz falta. Escolhida a caixa, a faixa "Forjando em X"
+// aparece e os próximos cliques já vão direto — a pergunta ensina e some.
+let caixaPergunta = null;
+
+function perguntarCaixa(slug) {
+  const item = byId[slug];
+  if (!item) return;
+  caixaPergunta = slug;
+  const dlg = document.getElementById("escolher-caixa");
+  document.getElementById("ec-sub").innerHTML =
+    `<img src="${item.iconUrl}" alt=""> Colocar <b>${esc(item.namePt)}</b> em…`;
+  const lista = build.cats.map(c => `<button type="button" class="ec-caixa ${esc(c.kind)}" data-cat="${esc(c.id)}">
+      <span>${esc(c.name)}</span><span class="ec-tipo">${esc(KIND_LABEL[c.kind])}</span>
+      <span class="ec-qtd">${c.items.length} ${c.items.length === 1 ? "item" : "itens"}</span>
+    </button>`).join("");
+  document.getElementById("ec-lista").innerHTML = lista
+    + `<button type="button" class="ec-caixa ec-nova" data-nova="1">${build.cats.length ? "Criar uma caixa nova e colocar aqui" : "Esta build ainda não tem caixa — criar uma e colocar aqui"}</button>`;
+  dlg.hidden = false;
+  Som.play("catalog:pergaminho");
+}
+
+function fecharPerguntarCaixa() {
+  document.getElementById("escolher-caixa").hidden = true;
+  caixaPergunta = null;
+}
+
+function initPerguntarCaixa() {
+  document.getElementById("ec-lista").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-cat], [data-nova]");
+    if (!b || !caixaPergunta) return;
+    const slug = caixaPergunta;
+    if (b.dataset.nova) {
+      // Criar caixa exige o modo Editar; ligá-lo aqui é o que o usuário quis dizer.
+      if (!build.editing) ligarEdicao(true);
+      addCategory();
+    } else {
+      build.selectedCatId = b.dataset.cat;
+    }
+    fecharPerguntarCaixa();
+    toggleItemInBuild(slug);
+    refreshCatalogCatSelect();
+    render();
+  });
+  document.getElementById("ec-ficha").addEventListener("click", () => {
+    const slug = caixaPergunta;
+    fecharPerguntarCaixa();
+    if (slug) openModal(slug);
+  });
+  document.getElementById("ec-close").addEventListener("click", fecharPerguntarCaixa);
+  document.getElementById("escolher-caixa").addEventListener("click", (e) => {
+    if (e.target.id === "escolher-caixa") fecharPerguntarCaixa();
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && !document.getElementById("escolher-caixa").hidden) { e.stopPropagation(); fecharPerguntarCaixa(); }
+  });
+}
+
 function initRunas() {
   const conta = document.getElementById("runas-tab-count");
   if (!runasOk()) { if (conta) conta.textContent = ""; return; }
@@ -8759,6 +8857,8 @@ function initBuildBuilder() {
 
   // Visualização é o padrão ao abrir; "Editar" libera a montagem.
   const editToggle = document.getElementById("edit-toggle");
+  // F12-T2: a pergunta "em qual caixa" precisa poder ligar a edição para criar
+  // uma caixa nova; sem isto ela chamaria addCategory() com o Editar desligado.
   const applyEditing = (on) => {
     build.editing = !!on;
     editToggle.checked = build.editing;
@@ -8776,6 +8876,10 @@ function initBuildBuilder() {
   document.getElementById("pub-close").addEventListener("click", fecharPub);
   document.getElementById("pub-dialog").addEventListener("click", (e) => { if (e.target.id === "pub-dialog" && !document.getElementById("pub-foot").hidden) fecharPub(); });
   applyEditing(false);
+  // F12-T2: a pergunta "em qual caixa" precisa poder ligar a edição para criar
+  // uma caixa nova; sem isto ela chamaria addCategory() com o Editar desligado,
+  // e o guarda posto na F11-T2 recusaria — com razão.
+  window.ligarEdicao = applyEditing;
 
   // Reembolso e Ápice: espelham as caixas do Catálogo (mesmo estado global).
   const cbToggle = document.getElementById("cb-toggle");
@@ -9960,7 +10064,11 @@ function renderCard(item, attrSorting) {
     // Sem categoria selecionada, o clique abre o pergaminho (Leo, 13/09/2026).
     // No modo Ícones o card inteiro é o ícone (F10-T1, Leo, 16/09/2026): o clique marca; pergaminho só com Shift.
     const noIcone = e.target.closest(".card-icon") && !document.body.classList.contains("icons-only");
-    if (noIcone || e.shiftKey || !getCat(build.selectedCatId)) { Som.play("catalog:click", { item }); openModal(item.slug); return; }
+    if (noIcone || e.shiftKey) { Som.play("catalog:click", { item }); openModal(item.slug); return; }
+    // F12-T2: sem caixa escolhida o clique PERGUNTA em qual caixa, em vez de
+    // abrir a ficha — abrir a ficha parecia "o clique não funcionou".
+    // Item já na build continua saindo com um clique, sem pergunta.
+    if (!getCat(build.selectedCatId) && !findInBuild(item.slug)) { perguntarCaixa(item.slug); return; }
     // Marcar para a build toca o mesmo som de "item na build" da forja (Leo, 14/09/2026),
     // disparado em toggleItemInBuild; desmarcar toca o clique da loja.
     if (findInBuild(item.slug)) Som.play("catalog:click", { item });
@@ -10579,6 +10687,7 @@ function init() {
   if (typeof initCalc === "function") initCalc();
   if (typeof initRunas === "function") initRunas();
   if (typeof initFaltaPublicar === "function") initFaltaPublicar();
+  if (typeof initPerguntarCaixa === "function") initPerguntarCaixa();
 
   // Controle de som (Fase 4, T1): sino = mudo, régua = volume; persistem.
   const somBtn = document.getElementById("som-mudo");
