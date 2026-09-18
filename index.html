@@ -4373,12 +4373,20 @@ body.editando .cat-marco-badge { display: none; }   /* em edição o marco já a
 /* ---- Fase 9, T4: grade de encaixes (colunas × linhas) no tabuleiro ---- */
 .span-general { display: none !important; }
 /* largura exatamente a das colunas, sem folga (Leo, 15/09/2026); em caixa estreita o cabeçalho quebra em linhas */
-.build-cat { width: calc(var(--cols, 3) * 91px + 15px); min-width: 0; max-width: 100%; flex: 0 0 auto; position: relative; container-type: inline-size; }
+/* F12-T3: caixa de uma casa só (bota, trinket, 4º/5º/6º item) tinha 106 px e o
+   cabeçalho quebrava em três andares — nome, tipo e × cada um na sua linha. O
+   piso de 197 px é a largura em que os três cabem juntos (medida, não chutada).
+   Custo assumido: sobra ar dentro da caixa de uma casa. Vale a troca: uma
+   parede de cabeçalhos de três andares era pior de ler. */
+.build-cat { width: calc(var(--cols, 3) * 91px + 15px); min-width: 197px; max-width: 100%; flex: 0 0 auto; position: relative; container-type: inline-size; }
 /* F10-T10: em caixa de 1 ou 2 colunas o nome não cabia no corpo de 18 px e ficava
    cortado sem aviso. A fonte encolhe com a largura da própria caixa. */
 .build-cat .cat-name { text-overflow: ellipsis; }   /* nome longo termina em reticências; o título mostra inteiro */
 @container (max-width: 290px) { .build-cat .cat-name { font-size: 15px; } .build-cat .cat-desc, .build-cat .cat-marco { font-size: 11.5px; } }
 @container (max-width: 200px) { .build-cat .cat-name { font-size: 14px; } .build-cat .cat-btn { font-size: 8px; letter-spacing: .08em; } }
+/* F12-T3: numa caixa de uma casa o nome cede espaço para o tipo e o × caberem
+   na mesma linha — nome espremido é melhor que cabeçalho de três andares. */
+@container (max-width: 200px) { .build-cat .cat-name { flex: 1 1 52px; min-width: 52px; } }
 .build-cat .cat-head { flex-wrap: wrap; row-gap: 5px; }
 .build-cat .cat-name { flex: 1 1 60px; min-width: 60px; }
 .build-cat .cat-kind, .build-cat .cat-marco-badge { white-space: nowrap; }
@@ -5598,6 +5606,26 @@ function activateBuild(id, skipSave) {
   if (!skipSave) { gravarBuild(); renderBuildAll(); }
 }
 
+// F12-T3 (Leo, 18/09/2026): a build nova nasce com o esqueleto de uma build de
+// LoL — nomes e ordem dele, sem item dentro. Largura e casas seguem o que cada
+// caixa costuma guardar: o Core leva três itens, as compras avulsas levam uma.
+const CAIXAS_SUGERIDAS = [
+  { name: "inicial", cols: 2, span: 3 },
+  { name: "primeira volta base", cols: 2, span: 3 },
+  { name: "bota", cols: 1, span: 4 },
+  { name: "Core", cols: 3, span: 2 },
+  { name: "triket", cols: 1, span: 4 },
+  { name: "4º item", cols: 1, span: 4 },
+  { name: "5º item", cols: 1, span: 4 },
+  { name: "6º item", cols: 1, span: 4 },
+];
+function caixasSugeridas() {
+  return CAIXAS_SUGERIDAS.map((c, i) => ({
+    id: "cat-" + Date.now() + "-" + i, name: c.name, desc: "", kind: "comum",
+    span: c.span, cols: c.cols, rows: 1, items: [],
+  }));
+}
+
 function createNewBuild(name, cats, mode, champion, markers) {
   gravarBuild();
   const b = {
@@ -5614,7 +5642,9 @@ function createNewBuild(name, cats, mode, champion, markers) {
     patch: CATALOG.meta.patch,
     revisao: null,
     layout: "tabuleiro",
-    cats: cats || [],
+    // Sem cats é build nova pelo botão: nasce com a sugestão. Importar e copiar
+    // sempre passam a lista deles, nem que seja vazia.
+    cats: cats || caixasSugeridas(),
   };
   library.builds.push(b);
   activateBuild(b.id, true);
