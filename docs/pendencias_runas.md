@@ -40,9 +40,9 @@ Pós-choque -> vira Aperto dos Mortos-Vivos em campeões sem efeito de imobiliza
 
 **Aperto dos Mortos-Vivos** não existe em nenhuma trilha do arquivo. Ele é keystone de Determinação no jogo, e é justamente por isso que Determinação está com **2 keystones em vez de 3**.
 
-## 3. Um nome escrito diferente do oficial
+## 3. ~~Um nome escrito diferente do oficial~~ — resolvido em 18/09/2026
 
-O arquivo diz **Absorvição Vital**; no Data Dragon da Riot está **Absorção Vital**. Por causa disso essa runa é a única que ficou sem ícone — eu caso os ícones pelo nome oficial e não chuto o id da Riot.
+O arquivo dizia **Absorvição Vital**; no Data Dragon da Riot está **Absorção Vital**, e por isso ela era a única runa sem ícone. Com a sua autorização eu troquei a palavra no markdown. Hoje as **67 runas e fragmentos têm arte**.
 
 ## 4. Quatro runas que a Riot tem e o arquivo não
 
@@ -57,5 +57,9 @@ Duas ressalvas honestas: o arquivo cita mudanças do patch 26.09 (o Avanço da T
 ## Como o app lida com isso enquanto não for resolvido
 
 - Runa sem `Atributos:` aparece sem a linha de atributos, não com "nenhum".
-- Runa sem ícone aparece com a inicial dentro da moldura, como o catálogo faz com item sem arte.
+- Runa sem ícone aparece com a inicial dentro da moldura, como o catálogo faz com item sem arte. (Hoje nenhuma está nesse caso.)
 - A substituição quebrada aparece na ficha da runa como aviso, com o nome que o arquivo pede.
+
+## Os fragmentos e a única tabela escrita à mão
+
+Os fragmentos não estão no `runesReforged.json`: a Riot publica a arte deles em `perk-images/StatMods/`, com nome de arquivo em inglês. A ponte nome → arquivo é a **única coisa digitada à mão no projeto**, e ela mora no `data/gerar_runas_json.py`, não no app. Cada arquivo é pedido de verdade antes de entrar; o que não responder fica sem ícone e vira pendência, em vez de virar imagem quebrada na tela.

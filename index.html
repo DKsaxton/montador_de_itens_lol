@@ -2623,6 +2623,84 @@ body.nucleo .group-head::before {
   .runas-busca input { width: 100%; max-width: none; }
 }
 
+
+/* ---------- F11-T8: montar a página de runas ---------- */
+.runas-modos { display: flex; align-items: center; gap: 6px; margin: 0 0 12px; }
+.runas-modo {
+  padding: 6px 15px; cursor: pointer; border: 1px solid #1a120a; border-radius: 2px;
+  background: linear-gradient(180deg, #3a2a1a, #1d140c); color: var(--loja-legenda);
+  font-family: var(--loja-gravado); font-size: 10.5px; letter-spacing: .16em; text-transform: uppercase;
+}
+.runas-modo:hover { color: var(--loja-titulo); }
+.runas-modo.ativo { background: linear-gradient(180deg, #6b5535, #3d2f1c); color: #f0dcae; border-color: var(--loja-latao); }
+.runas-dona { margin-left: 10px; font-family: var(--loja-texto); font-style: italic; font-size: 13px; color: var(--loja-legenda); }
+.runas-dona b { font-style: normal; color: var(--loja-titulo); }
+
+/* resumo do que já foi escolhido */
+.runas-pagina {
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+  margin: 0 0 16px; padding: 10px 14px;
+  border: 1px solid #3a2a18; border-left: 4px solid var(--loja-latao); border-radius: 2px;
+  background: linear-gradient(180deg, rgba(0,0,0,.26), rgba(0,0,0,.4));
+}
+.runas-pagina .fileira { display: flex; align-items: center; gap: 6px; }
+.runas-pagina .vaga {
+  width: 34px; height: 34px; border-radius: 50%; flex: none;
+  border: 1px dashed #6a563a; background: rgba(0,0,0,.35) center/contain no-repeat;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--loja-titulos); font-size: 15px; color: var(--loja-papel);
+}
+.runas-pagina .vaga.cheia { border: 2px solid var(--cor, var(--loja-latao)); border-style: solid; }
+.runas-pagina .vaga.assinatura { width: 42px; height: 42px; }
+.runas-pagina .rotulo { font-family: var(--loja-gravado); font-size: 9.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--loja-legenda); }
+.runas-pagina .completo { margin-left: auto; font-family: var(--loja-gravado); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--loja-legenda); }
+.runas-pagina .completo.pronta { color: #8fd07a; }
+.runas-pagina .limpar {
+  background: none; border: 1px solid #5a4630; border-radius: 2px; padding: 4px 10px; cursor: pointer;
+  font-family: var(--loja-gravado); font-size: 9.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--loja-legenda);
+}
+.runas-pagina .limpar:hover { color: #f0dcae; border-color: var(--loja-latao); }
+
+/* runa escolhível */
+.runa.escolhivel { cursor: pointer; transition: transform .14s ease, box-shadow .14s ease, filter .14s ease; }
+.runa.escolhivel:hover { transform: translateY(-2px); box-shadow: 0 8px 16px rgba(0,0,0,.6); }
+.runa.escolhida { box-shadow: 0 0 0 2px var(--cor), 0 6px 14px rgba(0,0,0,.6); }
+.runa.escolhida .runa-arte { box-shadow: 0 0 10px var(--cor); }
+.runa.apagada { filter: grayscale(.55) brightness(.82); opacity: .62; }
+.runa.bloqueada { cursor: not-allowed; filter: grayscale(.7) brightness(.7); opacity: .45; }
+.runas-regra { font-family: var(--loja-texto); font-style: italic; font-size: 12px; color: var(--loja-legenda); margin: -4px 0 9px; }
+
+
+/* ---------- F11-T8b: Ícones (padrão), Resumido e Completo ----------
+   A ficha sai sempre inteira do JS; o modo é só CSS. Assim trocar de modo não
+   recalcula nada e o estado da montagem não se perde no caminho. */
+.runas-vistas { margin-left: auto; display: flex; gap: 4px; }
+.runas-vista {
+  padding: 5px 12px; cursor: pointer; border: 1px solid #3a2a18; border-radius: 2px;
+  background: rgba(0,0,0,.3); color: var(--loja-legenda);
+  font-family: var(--loja-gravado); font-size: 9.5px; letter-spacing: .14em; text-transform: uppercase;
+}
+.runas-vista:hover { color: var(--loja-titulo); }
+.runas-vista.ativa { background: linear-gradient(180deg, #6b5535, #3d2f1c); color: #f0dcae; border-color: var(--loja-latao); }
+
+/* as notas nascem no HTML e só aparecem quando pedidas */
+.runa .notas { display: none; }
+.runa.aberta .notas { display: block; }
+
+/* Ícones: a arte e nada mais. O nome vai no title, que é o que o mouse pede. */
+.runas-view.v-icones .runas-grade { grid-template-columns: repeat(auto-fill, minmax(62px, 1fr)); gap: 8px; }
+.runas-view.v-icones .runa { padding: 7px; justify-content: center; gap: 0; }
+.runas-view.v-icones .runa > div { display: none; }
+.runas-view.v-icones .runa .runa-arte { width: 44px; height: 44px; }
+
+/* Resumido: o que o card já era — arte, nome, efeito, etiquetas e o link das notas. */
+.runas-view.v-resumido .runa .notas { display: none; }
+.runas-view.v-resumido .runa.aberta .notas { display: block; }
+
+/* Completo: tudo aberto, sem link para clicar. */
+.runas-view.v-completo .runa .notas { display: block; }
+.runas-view.v-completo .runa .abrir { display: none; }
+
 .card-sheen {
   background:
     radial-gradient(340px circle at var(--mx) var(--my),
@@ -4578,6 +4656,16 @@ body.forja .build-cat.drop-after  { transform: translateX(-5px); box-shadow: ins
       <span id="runas-conta" class="runas-conta"></span>
     </div>
   </div>
+  <div class="runas-modos" role="group" aria-label="Modo da tela de runas">
+    <button type="button" class="runas-modo ativo" data-modo="ler">Ler</button>
+    <button type="button" class="runas-modo" data-modo="montar">Montar</button>
+    <span id="runas-dona" class="runas-dona"></span>
+    <span class="runas-vistas" role="group" aria-label="Detalhe das fichas">
+      <button type="button" class="runas-vista" data-vista="icones" title="Só a arte da runa">Ícones</button>
+      <button type="button" class="runas-vista" data-vista="resumido" title="Arte, nome, efeito e etiquetas">Resumido</button>
+      <button type="button" class="runas-vista" data-vista="completo" title="Tudo, com as notas técnicas abertas">Completo</button>
+    </span>
+  </div>
   <nav id="runas-trilhas" class="runas-trilhas" aria-label="Trilha de runas"></nav>
   <div id="runas-corpo" class="runas-corpo"></div>
 </div>
@@ -5124,12 +5212,48 @@ function newBuildId() {
 }
 
 function snapshotActive() {
-  return { id: build.id, name: build.name, cats: comNomes(build.cats), patch: build.patch || CATALOG.meta.patch, revisao: build.revisao || null, temp: !!build.temp, pubOrigem: build.pubOrigem || null, layout: layoutValido(build.layout), seq: build.seq, mode: build.mode, masterwork: !!build.masterwork, champion: build.champion || null, markers: normMarkers(build.markers), desc: build.desc || "", fav: !!build.fav, updatedAt: build.updatedAt || 0, pubId: build.pubId || null, pubVersao: build.pubVersao || 0, pubEm: build.pubEm || 0, pubPatch: build.pubPatch || "" };
+  return { id: build.id, name: build.name, cats: comNomes(build.cats), patch: build.patch || CATALOG.meta.patch, revisao: build.revisao || null, temp: !!build.temp, pubOrigem: build.pubOrigem || null, layout: layoutValido(build.layout), seq: build.seq, mode: build.mode, masterwork: !!build.masterwork, champion: build.champion || null, markers: normMarkers(build.markers), desc: build.desc || "", runas: normRunas(build.runas), fav: !!build.fav, updatedAt: build.updatedAt || 0, pubId: build.pubId || null, pubVersao: build.pubVersao || 0, pubEm: build.pubEm || 0, pubPatch: build.pubPatch || "" };
 }
 
 // Em modo Editar as alterações ficam em rascunho (Leo, 14/09/2026): saveBuild() só
 // marca "não salvo"; o botão Salvar (ou Ctrl+S) grava; Descartar volta ao salvo.
 // Fora da edição (modo, campeão, marcadores, interruptores) continua gravando na hora.
+// F11-T8: a página de runas da build. Fica aqui e não no Arsenal.json — o
+// cliente do LoL não importa runas por conjunto de itens.
+function normRunas(r) {
+  const vazia = { primaria: "", assinatura: "", slots: ["", "", ""], secundaria: "", secundarios: [], fragmentos: ["", "", ""] };
+  if (!r || typeof r !== "object" || !window.RUNAS) return vazia;
+  const trilha = (id) => RUNAS.trilhas.find(t => t.id === id) || null;
+  const p = trilha(r.primaria);
+  if (!p) return vazia;
+  const daSlot = (t, i, id) => (t && t.slots[i] && t.slots[i].runas.some(x => x.id === id)) ? id : "";
+  const sec = trilha(r.secundaria);
+  const out = {
+    primaria: p.id,
+    assinatura: daSlot(p, 0, r.assinatura),
+    slots: [1, 2, 3].map(i => daSlot(p, i, (r.slots || [])[i - 1])),
+    secundaria: sec && sec.id !== p.id ? sec.id : "",
+    secundarios: [],
+    fragmentos: [0, 1, 2].map(i => {
+      const f = (RUNAS.fragmentos || [])[i];
+      const id = (r.fragmentos || [])[i];
+      return f && f.runas.some(x => x.id === id) ? id : "";
+    }),
+  };
+  if (out.secundaria) {
+    // dois, e de slots diferentes: é a regra do jogo, não enfeite
+    const vistos = new Set();
+    (r.secundarios || []).forEach(id => {
+      if (out.secundarios.length >= 2) return;
+      const i = sec.slots.findIndex((sl, k) => k > 0 && sl.runas.some(x => x.id === id));
+      if (i < 0 || vistos.has(i)) return;
+      vistos.add(i);
+      out.secundarios.push(id);
+    });
+  }
+  return out;
+}
+
 const rascunho = { sujo: false };
 function saveBuild() {
   if (build.editing) { rascunho.sujo = true; refletirSalvar(); return; }
@@ -5264,6 +5388,7 @@ function loadBuild() {
           champion: b.champion && b.champion.key && b.champion.id ? { key: String(b.champion.key), id: String(b.champion.id), name: String(b.champion.name || b.champion.id) } : null,
           markers: normMarkers(b.markers),
           desc: typeof b.desc === "string" ? b.desc : "",
+          runas: b.runas || null,   // normalizada quando a build vira ativa
           fav: !!b.fav,
           updatedAt: Number(b.updatedAt) || 0,
           pubId: b.pubId || null, pubVersao: Number(b.pubVersao) || 0, pubEm: Number(b.pubEm) || 0, pubPatch: b.pubPatch || "",
@@ -5312,6 +5437,7 @@ function activateBuild(id, skipSave) {
   build.champion = b.champion && b.champion.key ? { key: String(b.champion.key), id: String(b.champion.id), name: String(b.champion.name) } : null;
   build.markers = normMarkers(b.markers);
   build.desc = typeof b.desc === "string" ? b.desc : "";
+  build.runas = normRunas(b.runas);
   build.fav = !!b.fav;
   build.updatedAt = Number(b.updatedAt) || 0;
   build.pubId = b.pubId || null; build.pubVersao = Number(b.pubVersao) || 0; build.pubEm = Number(b.pubEm) || 0; build.pubPatch = b.pubPatch || "";
@@ -5335,6 +5461,7 @@ function createNewBuild(name, cats, mode, champion, markers) {
     champion: champion || null,
     markers: normMarkers(markers),
     desc: "",
+    runas: normRunas(null),
     fav: false,
     updatedAt: Date.now(),
     patch: CATALOG.meta.patch,
@@ -7005,7 +7132,8 @@ function initTooltip() {
 // atributo não mostra a linha, runa sem ícone mostra a inicial na moldura, e a
 // substituição que aponta para runa inexistente vira aviso na ficha — é o que
 // está escrito em docs/pendencias_runas.md.
-const runasEstado = { trilha: null, busca: "", abertas: new Set() };
+const runasEstado = { trilha: null, busca: "", abertas: new Set(), modo: "ler", vista: "icones" };
+try { const v = localStorage.getItem("runas.vista"); if (["icones", "resumido", "completo"].includes(v)) runasEstado.vista = v; } catch (e) { /* padrão: ícones */ }
 
 function runasOk() { return !!(window.RUNAS && RUNAS.trilhas && RUNAS.trilhas.length); }
 
@@ -7039,11 +7167,13 @@ function runaHtml(r, trilha, tipo) {
   const subs = runasSubstituicoes(r.nome).map(x =>
     `<p class="aviso">Vira <b>${esc(x.para)}</b>${x.quando ? " " + esc(x.quando) : ""}.${x.vigente ? "" : " (ainda não vale no app)"}</p>`).join("");
   const aberta = runasEstado.abertas.has(r.id);
+  // A lista sai sempre no HTML; quem decide se ela aparece é o modo (CSS) ou
+  // o clique no link. Trocar de modo não pode custar redesenho do dado.
   const notas = (r.notas || []).length
     ? `<button type="button" class="abrir" data-runa="${esc(r.id)}">${aberta ? "esconder as notas" : (r.notas.length + " " + (r.notas.length === 1 ? "nota técnica" : "notas técnicas"))}</button>`
-      + (aberta ? `<ul class="notas">${r.notas.map(n => `<li>${esc(n)}</li>`).join("")}</ul>` : "")
+      + `<ul class="notas">${r.notas.map(n => `<li>${esc(n)}</li>`).join("")}</ul>`
     : "";
-  return `<article class="runa${tipo === "keystone" ? " keystone" : ""}" style="--cor:${esc(trilha.cor || "#b6873a")};--tex-pick:${paperFor(r.id)}">
+  return `<article title="${esc(r.nome)}" class="runa${tipo === "keystone" ? " keystone" : ""}${aberta ? " aberta" : ""}" style="--cor:${esc(trilha.cor || "#b6873a")};--tex-pick:${paperFor(r.id)}">
     <span class="runa-arte" ${arte}>${inicial}</span>
     <div>
       <h4>${esc(r.nome)}</h4>
@@ -7059,6 +7189,15 @@ function runaHtml(r, trilha, tipo) {
 function renderRunas() {
   if (!runasOk()) return;
   const nav = document.getElementById("runas-trilhas");
+  const dona = document.getElementById("runas-dona");
+  const montando = runasEstado.modo === "montar";
+  const tela = document.getElementById("view-runas");
+  ["icones", "resumido", "completo"].forEach(v => tela.classList.toggle("v-" + v, v === runasEstado.vista));
+  document.querySelectorAll(".runas-vista").forEach(b => b.classList.toggle("ativa", b.dataset.vista === runasEstado.vista));
+  document.querySelectorAll(".runas-modo").forEach(b => b.classList.toggle("ativo", b.dataset.modo === runasEstado.modo));
+  // Montando, a placa escolhe a trilha PRIMÁRIA da página; lendo, só navega.
+  if (montando) runasEstado.trilha = paginaDaBuild().primaria || runasEstado.trilha;
+  dona.innerHTML = montando ? `da build <b>${esc(build.name || "sem nome")}</b>` : "";
   const corpo = document.getElementById("runas-corpo");
   const lema = document.getElementById("runas-lema");
   const conta = document.getElementById("runas-conta");
@@ -7069,6 +7208,17 @@ function renderRunas() {
     return `<button type="button" class="trilha-btn${t.id === runasEstado.trilha ? " ativa" : ""}" data-trilha="${esc(t.id)}" style="--cor:${esc(t.cor || "#b6873a")}">
       ${t.iconUrl ? `<img src="${t.iconUrl}" alt="">` : ""}${esc(t.nome)}<span class="qtd">${n}</span></button>`;
   }).join("");
+
+  if (montando) {
+    const p = paginaDaBuild();
+    lema.textContent = "";
+    conta.textContent = runasEscolhidas(p) + "/9 escolhidas";
+    nav.innerHTML = RUNAS.trilhas.map(t =>
+      `<button type="button" class="trilha-btn${t.id === p.primaria ? " ativa" : ""}" data-trilha="${esc(t.id)}" style="--cor:${esc(t.cor || "#b6873a")}">
+        ${t.iconUrl ? `<img src="${t.iconUrl}" alt="">` : ""}${esc(t.nome)}</button>`).join("");
+    renderMontar();
+    return;
+  }
 
   // Com busca, a lista atravessa as trilhas: procurar runa não é navegar trilha.
   if (q) {
@@ -7095,6 +7245,139 @@ function renderRunas() {
     </section>`).join("");
 }
 
+
+// ---------------- F11-T8: montar a página de runas ----------------
+// A página é da build ativa. As regras do jogo são checadas aqui, não só
+// desenhadas: assinatura + um de cada slot na primária, dois de slots
+// diferentes na secundária, um de cada fragmento.
+function paginaDaBuild() {
+  build.runas = normRunas(build.runas);
+  return build.runas;
+}
+
+function runaPorId(id) {
+  if (!id || !runasOk()) return null;
+  for (const t of RUNAS.trilhas) for (const s of t.slots) { const r = s.runas.find(x => x.id === id); if (r) return { runa: r, trilha: t }; }
+  for (const f of RUNAS.fragmentos || []) { const r = f.runas.find(x => x.id === id); if (r) return { runa: r, trilha: null }; }
+  return null;
+}
+
+function runasEscolhidas(p) {
+  return [p.assinatura, ...p.slots, ...p.secundarios, ...p.fragmentos].filter(Boolean).length;
+}
+
+function vagaHtml(id, classe) {
+  const achado = runaPorId(id);
+  const cor = achado && achado.trilha ? (achado.trilha.cor || "#b6873a") : "#b6873a";
+  const arte = achado && achado.runa.iconUrl ? `background-image:url('${achado.runa.iconUrl}');` : "";
+  const titulo = achado ? esc(achado.runa.nome) : "vaga livre";
+  // Fragmento não tem arte oficial, e uma runa (Absorvição Vital) não casou de
+  // nome com o Data Dragon: nesses a vaga leva a inicial, senão parece vazia.
+  const inicial = achado && !achado.runa.iconUrl ? esc(achado.runa.nome.slice(0, 1)) : "";
+  return `<span class="vaga ${classe}${achado ? " cheia" : ""}" style="--cor:${esc(cor)};${arte}" title="${titulo}">${inicial}</span>`;
+}
+
+function renderPagina(p) {
+  const total = runasEscolhidas(p);
+  const pronta = total === 9;
+  return `<div class="runas-pagina">
+    <span class="rotulo">Primária</span>
+    <span class="fileira">${vagaHtml(p.assinatura, "assinatura")}${p.slots.map(id => vagaHtml(id, "")).join("")}</span>
+    <span class="rotulo">Secundária</span>
+    <span class="fileira">${vagaHtml(p.secundarios[0], "")}${vagaHtml(p.secundarios[1], "")}</span>
+    <span class="rotulo">Fragmentos</span>
+    <span class="fileira">${p.fragmentos.map(id => vagaHtml(id, "")).join("")}</span>
+    <button type="button" class="limpar" data-limpar="1">Limpar</button>
+    <span class="completo${pronta ? " pronta" : ""}">${total}/9 ${pronta ? "· página pronta" : "escolhidas"}</span>
+  </div>`;
+}
+
+// Devolve o estado de uma runa na montagem: escolhida, livre ou bloqueada.
+function estadoDaRuna(p, trilha, slotIdx, runa, papel) {
+  if (papel === "primaria") {
+    const escolhida = slotIdx === 0 ? p.assinatura === runa.id : p.slots[slotIdx - 1] === runa.id;
+    return escolhida ? "escolhida" : "livre";
+  }
+  if (papel === "secundaria") {
+    if (p.secundarios.includes(runa.id)) return "escolhida";
+    if (p.secundarios.length >= 2) return "bloqueada";
+    // já usou este slot? a regra é dois de slots diferentes
+    const usados = p.secundarios.map(id => trilha.slots.findIndex(sl => sl.runas.some(x => x.id === id)));
+    return usados.includes(slotIdx) ? "bloqueada" : "livre";
+  }
+  return p.fragmentos[slotIdx] === runa.id ? "escolhida" : "livre";
+}
+
+function renderMontar() {
+  const corpo = document.getElementById("runas-corpo");
+  const p = paginaDaBuild();
+  const prim = RUNAS.trilhas.find(t => t.id === p.primaria);
+  const sec = RUNAS.trilhas.find(t => t.id === p.secundaria);
+
+  const fileira = (trilha, slot, i, papel) => `<section class="runas-slot">
+      <h3>${esc(slot.nome === "Keystone" ? "Runa de assinatura" : slot.nome)}</h3>
+      <div class="runas-grade">${slot.runas.map(r => {
+        const est = estadoDaRuna(p, trilha, i, r, papel);
+        const extra = est === "escolhida" ? " escolhida" : est === "bloqueada" ? " bloqueada" : " apagada";
+        return runaHtml(r, trilha, slot.tipo).replace('class="runa',
+          `data-escolher="${papel}:${i}:${r.id}" class="runa escolhivel${extra}`);
+      }).join("")}</div>
+    </section>`;
+
+  let html = renderPagina(p);
+  if (!prim) {
+    html += `<p class="runas-vazio">Escolha a trilha primária nas placas acima.</p>`;
+    corpo.innerHTML = html;
+    return;
+  }
+  html += prim.slots.map((sl, i) => fileira(prim, sl, i, "primaria")).join("");
+
+  html += `<section class="runas-slot"><h3>Trilha secundária<small>${sec ? esc(sec.nome) : "escolha uma placa"}</small></h3>
+    <p class="runas-regra">Duas runas, de slots diferentes — e nunca a trilha primária.</p>
+    <div class="runas-trilhas">${RUNAS.trilhas.filter(t => t.id !== prim.id).map(t =>
+      `<button type="button" class="trilha-btn${t.id === p.secundaria ? " ativa" : ""}" data-secundaria="${esc(t.id)}" style="--cor:${esc(t.cor || "#b6873a")}">
+        ${t.iconUrl ? `<img src="${t.iconUrl}" alt="">` : ""}${esc(t.nome)}</button>`).join("")}</div></section>`;
+  if (sec) html += sec.slots.map((sl, i) => i === 0 ? "" : fileira(sec, sl, i, "secundaria")).join("");
+
+  html += (RUNAS.fragmentos || []).map((f, i) => `<section class="runas-slot">
+      <h3>Fragmento · ${esc(f.nome)}</h3>
+      <div class="runas-grade">${f.runas.map(r => {
+        const est = estadoDaRuna(p, null, i, r, "fragmento");
+        return runaHtml(r, { cor: "#b6873a" }, "slot").replace('class="runa',
+          `data-escolher="fragmento:${i}:${r.id}" class="runa escolhivel${est === "escolhida" ? " escolhida" : " apagada"}`);
+      }).join("")}</div>
+    </section>`).join("");
+
+  corpo.innerHTML = html;
+}
+
+function escolherRuna(papel, i, id) {
+  const p = paginaDaBuild();
+  if (papel === "primaria") {
+    if (i === 0) p.assinatura = p.assinatura === id ? "" : id;
+    else p.slots[i - 1] = p.slots[i - 1] === id ? "" : id;
+  } else if (papel === "secundaria") {
+    const sec = RUNAS.trilhas.find(t => t.id === p.secundaria);
+    if (!sec) return;
+    const dentro = p.secundarios.indexOf(id);
+    if (dentro >= 0) { p.secundarios.splice(dentro, 1); return gravarPagina(); }
+    if (p.secundarios.length >= 2) return;
+    const usados = p.secundarios.map(x => sec.slots.findIndex(sl => sl.runas.some(y => y.id === x)));
+    if (usados.includes(i)) return;
+    p.secundarios.push(id);
+  } else {
+    p.fragmentos[i] = p.fragmentos[i] === id ? "" : id;
+  }
+  gravarPagina();
+}
+
+function gravarPagina() {
+  build.runas = normRunas(build.runas);
+  saveBuild();
+  renderRunas();
+  Som.play("catalog:tag_select");
+}
+
 function initRunas() {
   const conta = document.getElementById("runas-tab-count");
   if (!runasOk()) { if (conta) conta.textContent = ""; return; }
@@ -7102,15 +7385,55 @@ function initRunas() {
   runasEstado.trilha = RUNAS.trilhas[0].id;
   const busca = document.getElementById("runas-q");
   busca.addEventListener("input", () => { runasEstado.busca = busca.value; renderRunas(); });
+  document.querySelectorAll(".runas-vista").forEach(b => b.addEventListener("click", () => {
+    runasEstado.vista = b.dataset.vista;
+    try { localStorage.setItem("runas.vista", runasEstado.vista); } catch (e) { /* sem persistência */ }
+    renderRunas();
+    Som.play("catalog:tag_select");
+  }));
+  document.querySelectorAll(".runas-modo").forEach(b => b.addEventListener("click", () => {
+    runasEstado.modo = b.dataset.modo;
+    if (runasEstado.busca) { runasEstado.busca = ""; document.getElementById("runas-q").value = ""; }
+    renderRunas();
+    Som.play("catalog:tag_select");
+  }));
   document.getElementById("runas-trilhas").addEventListener("click", (e) => {
     const b = e.target.closest("[data-trilha]");
     if (!b) return;
+    // Montando, trocar de primária começa a página de novo: as runas da trilha
+    // velha não existem na nova.
+    if (runasEstado.modo === "montar") {
+      const p = paginaDaBuild();
+      if (p.primaria !== b.dataset.trilha) {
+        build.runas = normRunas({ primaria: b.dataset.trilha, fragmentos: p.fragmentos });
+        gravarPagina();
+      }
+      return;
+    }
     runasEstado.trilha = b.dataset.trilha;
     if (runasEstado.busca) { runasEstado.busca = ""; busca.value = ""; }
     renderRunas();
     Som.play("catalog:tag_select");
   });
   document.getElementById("runas-corpo").addEventListener("click", (e) => {
+    const escolha = e.target.closest("[data-escolher]");
+    if (escolha && !e.target.closest("[data-runa]")) {
+      const [papel, i, id] = escolha.dataset.escolher.split(":");
+      escolherRuna(papel, Number(i), id);
+      return;
+    }
+    const secB = e.target.closest("[data-secundaria]");
+    if (secB) {
+      const p = paginaDaBuild();
+      build.runas = normRunas({ ...p, secundaria: p.secundaria === secB.dataset.secundaria ? "" : secB.dataset.secundaria, secundarios: [] });
+      gravarPagina();
+      return;
+    }
+    if (e.target.closest("[data-limpar]")) {
+      build.runas = normRunas({ primaria: paginaDaBuild().primaria });
+      gravarPagina();
+      return;
+    }
     const b = e.target.closest("[data-runa]");
     if (!b) return;
     const id = b.dataset.runa;

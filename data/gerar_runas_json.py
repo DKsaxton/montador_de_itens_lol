@@ -33,6 +33,22 @@ CACHE = os.path.join(AQUI, "_runesReforged.json")
 CATALOG = os.path.join(AQUI, "catalog.js")
 DD = "https://ddragon.leagueoflegends.com/cdn/{v}/data/pt_BR/runesReforged.json"
 DD_IMG = "https://ddragon.leagueoflegends.com/cdn/img/"
+STATMODS = DD_IMG + "perk-images/StatMods/"
+
+# Os fragmentos NAO estao no runesReforged.json: a Riot publica a arte deles
+# noutro caminho, com nome de arquivo em ingles. Esta tabela e a unica ponte
+# escrita a mao no projeto, e ela fica AQUI, no gerador — o app so recebe a URL
+# que passou na conferencia. Cada arquivo e pedido de verdade antes de entrar;
+# o que responder erro fica sem icone e vira pendencia.
+FRAGMENTO_ARTE = {
+    "forca-adaptativa": "StatModsAdaptiveForceIcon.png",
+    "velocidade-de-ataque": "StatModsAttackSpeedIcon.png",
+    "aceleracao-de-habilidade": "StatModsCDRScalingIcon.png",
+    "velocidade-de-movimento": "StatModsMovementSpeedIcon.png",
+    "escalamento-de-vida": "StatModsHealthScalingIcon.png",
+    "vida": "StatModsHealthPlusIcon.png",
+    "tenacidade-e-resistencia-a-lentidao": "StatModsTenacityIcon.png",
+}
 
 
 def slug(texto):
@@ -273,9 +289,24 @@ def main():
             sem_icone.append("(trilha) " + t["nome"])
         for s in t["slots"]:
             s["runas"] = [veste(r) for r in s["runas"]]
+    # fragmentos: arte conferida arquivo por arquivo antes de entrar
+    conferidas = {}
     for f in fragmentos:
-        # fragmento não tem ícone no runesReforged; é atributo puro
-        f["runas"] = f["runas"]
+        for r in f["runas"]:
+            arquivo = FRAGMENTO_ARTE.get(r["id"])
+            if not arquivo:
+                pendencias.append("fragmento %r não está na tabela de arte do gerador" % r["nome"])
+                continue
+            if arquivo not in conferidas:
+                url = STATMODS + arquivo
+                try:
+                    with urllib.request.urlopen(url, timeout=20) as resp:
+                        conferidas[arquivo] = url if resp.status == 200 and len(resp.read()) > 100 else None
+                except Exception as e:
+                    conferidas[arquivo] = None
+                    pendencias.append("arte do fragmento %r não respondeu (%s)" % (r["nome"], e))
+            if conferidas[arquivo]:
+                r["iconUrl"] = conferidas[arquivo]
 
     # --- integridade 1: a substituição automática aponta para runa que existe? ---
     nomes = {chave(r["nome"]) for t in trilhas for s in t["slots"] for r in s["runas"]}

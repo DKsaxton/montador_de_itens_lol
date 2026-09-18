@@ -108,8 +108,8 @@ window.RUNAS = {
      "tipo": "slot",
      "runas": [
       {
-       "id": "absorvicao-vital",
-       "nome": "Absorvição Vital",
+       "id": "absorcao-vital",
+       "nome": "Absorção Vital",
        "descricao": "Abater um alvo restaura 1-23 de Vida com base no nível.",
        "atributos": [
         "Vida Máxima",
@@ -121,7 +121,8 @@ window.RUNAS = {
         "Atirador"
        ],
        "adaptativa": "",
-       "notas": []
+       "notas": [],
+       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Precision/AbsorbLife/AbsorbLife.png"
       },
       {
        "id": "triunfo",
@@ -1256,7 +1257,8 @@ window.RUNAS = {
       "Suporte"
      ],
      "adaptativa": "5.4 de Dano de Ataque ou 9 de Poder de Habilidade — nunca as duas coisas juntas.",
-     "notas": []
+     "notas": [],
+     "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/StatMods/StatModsAdaptiveForceIcon.png"
     },
     {
      "id": "velocidade-de-ataque",
@@ -1269,7 +1271,8 @@ window.RUNAS = {
       "Atirador"
      ],
      "adaptativa": "",
-     "notas": []
+     "notas": [],
+     "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/StatMods/StatModsAttackSpeedIcon.png"
     },
     {
      "id": "aceleracao-de-habilidade",
@@ -1283,7 +1286,8 @@ window.RUNAS = {
       "Lutador"
      ],
      "adaptativa": "",
-     "notas": []
+     "notas": [],
+     "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/StatMods/StatModsCDRScalingIcon.png"
     }
    ]
   },
@@ -1307,7 +1311,8 @@ window.RUNAS = {
       "Suporte"
      ],
      "adaptativa": "5.4 de Dano de Ataque ou 9 de Poder de Habilidade — nunca as duas coisas juntas.",
-     "notas": []
+     "notas": [],
+     "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/StatMods/StatModsAdaptiveForceIcon.png"
     },
     {
      "id": "velocidade-de-movimento",
@@ -1322,7 +1327,8 @@ window.RUNAS = {
       "Mago"
      ],
      "adaptativa": "",
-     "notas": []
+     "notas": [],
+     "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/StatMods/StatModsMovementSpeedIcon.png"
     },
     {
      "id": "escalamento-de-vida",
@@ -1336,7 +1342,8 @@ window.RUNAS = {
       "Lutador"
      ],
      "adaptativa": "",
-     "notas": []
+     "notas": [],
+     "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/StatMods/StatModsHealthScalingIcon.png"
     }
    ]
   },
@@ -1356,7 +1363,8 @@ window.RUNAS = {
       "Suporte"
      ],
      "adaptativa": "",
-     "notas": []
+     "notas": [],
+     "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/StatMods/StatModsHealthPlusIcon.png"
     },
     {
      "id": "tenacidade-e-resistencia-a-lentidao",
@@ -1371,7 +1379,8 @@ window.RUNAS = {
       "Atirador"
      ],
      "adaptativa": "",
-     "notas": []
+     "notas": [],
+     "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/StatMods/StatModsTenacityIcon.png"
     },
     {
      "id": "escalamento-de-vida",
@@ -1385,7 +1394,8 @@ window.RUNAS = {
       "Lutador"
      ],
      "adaptativa": "",
-     "notas": []
+     "notas": [],
+     "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/StatMods/StatModsHealthScalingIcon.png"
     }
    ]
   }

@@ -62,7 +62,7 @@ Runas Primarias{
                       - Não é consumido contra sentinelas ou plantas da selva.
             ]
             Slot 1[
-                Absorvição Vital[Abater um alvo restaura 1-23 de Vida com base no nível.]
+                Absorção Vital[Abater um alvo restaura 1-23 de Vida com base no nível.]
                     Atributos: Vida Máxima, Cura
                     Classes: Lutador, Assassino, Atirador
                 Triunfo[Eliminações restauram 5% da sua Vida perdida, 2.5% da sua Vida Máxima e concedem 20 de ouro adicional.]
