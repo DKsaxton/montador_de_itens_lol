@@ -2703,6 +2703,9 @@ body.nucleo .group-head::before {
 
 
 /* ---------- F11-T9: a página de runas na forja e na lista ---------- */
+/* O atributo hidden perde para o display da regra abaixo — o mesmo tropeço da
+   barra de seleção em lote (F10-T7). */
+.build-runas[hidden] { display: none; }
 .build-runas {
   display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
   margin: 8px 0 0; padding: 7px 11px;
@@ -2778,6 +2781,19 @@ body.nucleo .group-head::before {
 .ec-nova { border-left-color: var(--forja-brasa, #ff7a1e); font-style: italic; }
 .ec-foot { display: flex; align-items: center; gap: 12px; }
 .ec-dica { font-family: var(--loja-texto); font-style: italic; font-size: 12px; color: var(--forja-texto-suave, #9a8778); margin-right: auto; }
+
+
+/* ---------- F12-T2b: o aviso de modo leitura ---------- */
+.modo-leitura {
+  display: flex; align-items: center; gap: 11px;
+  margin: 0 0 12px; padding: 9px 14px;
+  border: 1px dashed var(--forja-placa-borda, #3a3029); border-left: 3px solid var(--forja-brasa, #ff7a1e);
+  border-radius: 2px; background: rgba(0,0,0,.24);
+  font-family: var(--loja-texto); font-size: 13.5px; color: var(--forja-texto-suave, #9a8778);
+}
+.modo-leitura b { font-style: normal; color: var(--forja-texto, #e8dcc8); }
+.modo-leitura .btn { margin-left: auto; white-space: nowrap; }
+body.editando .modo-leitura { display: none; }
 
 .card-sheen {
   background:
@@ -3687,7 +3703,9 @@ body:not(.editando) .cat-kind { pointer-events: none; }
 body:not(.editando) .item-tile { cursor: default; }
 body:not(.editando) .item-tile.has-note .item-icon { box-shadow: 0 0 10px rgba(255,140,40,.45), inset 0 0 0 2px var(--forja-brasa-clara); }
 body:not(.editando) .build-empty p { display: none; }
-body:not(.editando) .build-empty::after { content: "Ligue \"Editar\" para criar categorias e montar a build."; display: block; font-family: var(--loja-texto); font-style: italic; font-size: 13px; color: var(--forja-texto-suave); }
+/* F12-T2b: a faixa acima do tabuleiro já diz isto, e agora diz sempre — repetir
+   aqui seria a mesma frase duas vezes na mesma tela. */
+body:not(.editando) .build-empty::after { content: "Esta build ainda não tem nenhuma caixa."; display: block; font-family: var(--loja-texto); font-style: italic; font-size: 13px; color: var(--forja-texto-suave); }
 
 /* ---- Fase 3, T7: Mestre Forjador na forja — Lendário elegível ganha anel de latão e placa MF ---- */
 .item-tile.mf { box-shadow: inset 0 3px 8px rgba(0,0,0,.9), 0 0 0 2px #c9973f, 0 0 16px rgba(201,151,63,.7); }
@@ -4708,6 +4726,12 @@ body.forja .build-cat.drop-after  { transform: translateX(-5px); box-shadow: ins
       <div id="picker-list" class="picker-list"></div>
     </aside>
 
+    <!-- F12-T2b (Leo, 18/09/2026): o aviso de modo leitura mora aqui, e não
+         dentro do card vazio — que some justamente nas builds já montadas. -->
+    <div id="modo-leitura" class="modo-leitura">
+      <span><b>Modo leitura.</b> Você está vendo a build; para mexer nela, ligue o Editar.</span>
+      <button type="button" class="btn ghost" id="ml-ligar">Ligar Editar</button>
+    </div>
     <div id="build-canvas" class="build-canvas"></div>
   </div>
   </div><!-- /build-editor -->
@@ -8916,6 +8940,10 @@ function initBuildBuilder() {
     }
   });
 
+  document.getElementById("ml-ligar").addEventListener("click", () => {
+    ligarEdicao(true);
+    document.getElementById("edit-toggle").checked = true;
+  });
   document.getElementById("build-runas").addEventListener("click", (e) => {
     if (!e.target.closest("#build-runas-abrir")) return;
     runasEstado.modo = "montar";
