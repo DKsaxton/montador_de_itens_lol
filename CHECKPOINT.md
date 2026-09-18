@@ -156,7 +156,8 @@ Ordem definida pelo Leo em 18/09/2026: primeiro tudo que já estava na fila; as 
 - **T8b** Três modos de exibição a pedido do Leo (18/09/2026): **Ícones (padrão)**, **Resumido** e **Completo**, lembrados no navegador. A ficha sai sempre inteira do JS e quem esconde é o CSS, então trocar de modo no meio de uma montagem não perde nada. Montando em Ícones, a página inteira cabe numa tela.
   - Os **fragmentos ganharam arte**: eles não estão no `runesReforged.json`; a Riot publica em `perk-images/StatMods/` com nome em inglês. A tabela nome → arquivo é a única coisa digitada à mão do projeto e fica no gerador, com cada URL conferida por um pedido real antes de entrar.
   - **Absorvição Vital → Absorção Vital** corrigido no markdown do Leo, com autorização dele (18/09/2026). Era a única runa sem ícone; hoje são 67 de 67 com arte.
-- **T9** Runas opcionais na build (fora do Arsenal.json).
+- **T9** Runas na build (feito, aguardando aprovado): a página aparece onde a build aparece. Faixa na **forja**, logo abaixo do resumo, com as nove runas e um botão que leva direto ao modo Montar — escondida quando a build não tem runa e não está em edição. Mesma faixa no **detalhe da lista** (Minhas e Públicas), só quando existe. No **texto**: três linhas novas (`RUNAS:`, `RUNAS 2:`, `FRAGMENTOS:`), documentadas em `docs/formato_de_importacao.md`; ida e volta conferida, e nome errado cai na mesma lista de "não encontrei" dos itens. **Fora do JSON do cliente do LoL**, como o Leo pediu. Capturas: `fase11-t9-forja.png`, `fase11-t9-lista.png`.
+  - Em aberto, só a pedido: levar a página de runas junto na **publicação** — hoje a tabela do Supabase não tem coluna para ela.
 
 **Features futuras (Leo, 18/09/2026) — só depois que a fila acima terminar.**
 - Popup ao barrar a publicação: falta marcador → abre para inserir os 3; falta descrição → abre para escrever; faltam os dois → uma janela só com as duas coisas.

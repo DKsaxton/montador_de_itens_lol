@@ -2701,6 +2701,41 @@ body.nucleo .group-head::before {
 .runas-view.v-completo .runa .notas { display: block; }
 .runas-view.v-completo .runa .abrir { display: none; }
 
+
+/* ---------- F11-T9: a página de runas na forja e na lista ---------- */
+.build-runas {
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  margin: 8px 0 0; padding: 7px 11px;
+  border: 1px solid #3a2a18; border-left: 3px solid var(--forja-brasa, #ff7a1e); border-radius: 2px;
+  background: rgba(0,0,0,.28);
+}
+/* A bolinha é a mesma nos dois lugares: prender a regra ao seletor da forja
+   deixava a da lista sem forma nenhuma. */
+.br-rotulo {
+  font-family: var(--loja-gravado); font-size: 9.5px; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--forja-texto-suave, #9a8778);
+}
+.br-runa {
+  width: 26px; height: 26px; border-radius: 50%; flex: none;
+  border: 1px solid var(--cor, #6a563a); background: rgba(0,0,0,.4) center/contain no-repeat;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--loja-titulos); font-size: 12px; color: var(--loja-papel);
+}
+.br-runa.assinatura { width: 32px; height: 32px; border-width: 2px; }
+.br-runa.vazia { border-style: dashed; }
+.build-runas .br-abrir {
+  margin-left: auto; background: none; border: 1px solid #5a4630; border-radius: 2px;
+  padding: 4px 11px; cursor: pointer;
+  font-family: var(--loja-gravado); font-size: 9.5px; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--forja-texto-suave, #9a8778);
+}
+.build-runas .br-abrir:hover { color: #f0dcae; border-color: var(--forja-brasa, #ff7a1e); }
+/* na lista de builds a mesma faixa, no papel */
+.bd-runas { display: flex; align-items: center; gap: 5px; flex-wrap: wrap; margin: 0 0 10px; }
+.bd-runas .br-runa { width: 24px; height: 24px; }
+.bd-runas .br-rotulo { color: var(--loja-tinta-suave); }
+.bd-runas .br-runa.assinatura { width: 29px; height: 29px; }
+
 .card-sheen {
   background:
     radial-gradient(340px circle at var(--mx) var(--my),
@@ -4514,6 +4549,8 @@ body.forja .build-cat.drop-after  { transform: translateX(-5px); box-shadow: ins
       <div id="build-switch-menu" class="champ-menu build-switch-menu" hidden><div id="build-switch-list" class="bs-list" role="listbox"></div></div>
     </div>
     <div id="build-summary" class="build-summary"></div>
+    <!-- F11-T9 (Leo, 18/09/2026): a página de runas da build, na forja -->
+    <div id="build-runas" class="build-runas" hidden></div>
     <textarea id="build-desc" class="build-desc" rows="2" spellcheck="false" placeholder="Descrição da build — o que ela faz, quando usar, contra quem… (obrigatória para publicar)"></textarea>
     <div class="build-actions">
       <label class="sw" id="cb-switch" title="Preços com o desconto da runa Reembolso (cashback.netGold), como no Catálogo">
@@ -5626,6 +5663,9 @@ function moveItem(fromCatId, fromIndex, toCatId, toIndex) {
 //   = ~4min · 900g                  (opcional, dentro da caixa: marco / teto)
 //   [ESCOLHA 1] 4° item | 1/3       (caixa em pilha: o primeiro item é o padrão)
 //   MESTRE FORJADOR: Gume do Infinito   (opcional: o item forjado; "sim" só liga o interruptor)
+//   RUNAS: Precisão > Pressione o Ataque | Triunfo | Lenda: Espontaneidade | Golpe de Misericórdia
+//   RUNAS 2: Dominação > Golpe Desleal | Sexto Sentido       (secundária: duas, de slots diferentes)
+//   FRAGMENTOS: Força Adaptativa | Força Adaptativa | Vida
 //
 //   [PRIORIDADE] Núcleo | ½
 //   # comprar sempre nessa ordem
@@ -5637,6 +5677,23 @@ function moveItem(fromCatId, fromIndex, toCatId, toIndex) {
 //
 // Regras: "[TIPO] Nome | largura" abre uma categoria; "#" é a descrição
 // dela; "-" é um item, com observação opcional após " * ".
+
+// F11-T9: a página de runas em três linhas legíveis. Só sai o que existe —
+// página vazia não gera linha nenhuma.
+function linhasDeRunas(pagina) {
+  if (!runasOk()) return [];
+  const p = normRunas(pagina);
+  const nome = (id) => { const a = runaPorId(id); return a ? a.runa.nome : null; };
+  const trilha = (id) => { const t = RUNAS.trilhas.find(x => x.id === id); return t ? t.nome : null; };
+  const out = [];
+  const prim = [p.assinatura, ...p.slots].map(nome).filter(Boolean);
+  if (prim.length && trilha(p.primaria)) out.push(`RUNAS: ${trilha(p.primaria)} > ${prim.join(" | ")}`);
+  const sec = p.secundarios.map(nome).filter(Boolean);
+  if (sec.length && trilha(p.secundaria)) out.push(`RUNAS 2: ${trilha(p.secundaria)} > ${sec.join(" | ")}`);
+  const frag = p.fragmentos.map(nome).filter(Boolean);
+  if (frag.length) out.push(`FRAGMENTOS: ${frag.join(" | ")}`);
+  return out;
+}
 
 const SPAN_TEXT = { 1: "1/1", 2: "1/2", 3: "1/3", 4: "1/4" };
 const TEXT_SPAN = { "1/1": 1, "1": 1, "1/2": 2, "½": 2, "1/3": 3, "⅓": 3, "1/4": 4, "¼": 4 };
@@ -5653,6 +5710,7 @@ function buildToText() {
     const f = forgedEntry();
     lines.push(`MESTRE FORJADOR: ${f && byId[f.itemId] ? byId[f.itemId].namePt : "sim"}`);
   }
+  linhasDeRunas(build.runas).forEach(l => lines.push(l));
   build.cats.forEach(cat => {
     lines.push("");
     lines.push(`[${KIND_LABEL[cat.kind].toUpperCase()}] ${cat.name} | ${catCols(cat)}×${catRows(cat)}`);
@@ -5976,7 +6034,7 @@ function getItemNameIndex() {
 
 function textToBuild(text) {
   const index = getItemNameIndex();
-  const result = { name: null, mode: "", masterwork: false, forgedId: null, championName: null, markers: [], desc: "", layout: "tabuleiro", cats: [], unknown: [], ignored: 0 };
+  const result = { name: null, mode: "", masterwork: false, forgedId: null, championName: null, markers: [], desc: "", layout: "tabuleiro", cats: [], runas: null, unknown: [], ignored: 0 };
   let current = null;
 
   text.split("\n").forEach(rawLine => {
@@ -6000,6 +6058,43 @@ function textToBuild(text) {
       const k = Object.keys(LAYOUTS).find(k => norm(LAYOUTS[k]) === alvo)
         || (/grade/.test(alvo) ? "arvore" : null);   // nome antigo (F10-T14) ainda é aceito
       if (k) result.layout = k;
+      return;
+    }
+    // F11-T9: as três linhas da página de runas. O nome que não existir entra na
+    // mesma lista de "não encontrei" dos itens — nada some calado.
+    const mRun = line.match(/^RUNAS(\s*2)?\s*:\s*(.+)$/i);
+    if (mRun) {
+      if (!runasOk()) { result.ignored++; return; }
+      const secundaria = !!mRun[1];
+      const partes = mRun[2].split(">");
+      const nomeTrilha = partes.length > 1 ? partes[0].trim() : "";
+      const lista = (partes.length > 1 ? partes.slice(1).join(">") : partes[0]).split("|").map(x => x.trim()).filter(Boolean);
+      const t = RUNAS.trilhas.find(x => norm(x.nome) === norm(nomeTrilha));
+      if (!t) { result.unknown.push(nomeTrilha || mRun[2]); return; }
+      result.runas = result.runas || { primaria: "", assinatura: "", slots: [], secundaria: "", secundarios: [], fragmentos: [] };
+      const acha = (n) => { for (const sl of t.slots) { const r = sl.runas.find(x => norm(x.nome) === norm(n)); if (r) return r.id; } return null; };
+      if (secundaria) {
+        result.runas.secundaria = t.id;
+        lista.forEach(n => { const id = acha(n); if (id) result.runas.secundarios.push(id); else result.unknown.push(n); });
+      } else {
+        result.runas.primaria = t.id;
+        lista.forEach((n, i) => {
+          const id = acha(n);
+          if (!id) { result.unknown.push(n); return; }
+          if (i === 0) result.runas.assinatura = id; else result.runas.slots.push(id);
+        });
+      }
+      return;
+    }
+    const mFrag = line.match(/^FRAGMENTOS\s*:\s*(.+)$/i);
+    if (mFrag) {
+      if (!runasOk()) { result.ignored++; return; }
+      result.runas = result.runas || { primaria: "", assinatura: "", slots: [], secundaria: "", secundarios: [], fragmentos: [] };
+      mFrag[1].split("|").map(x => x.trim()).filter(Boolean).forEach((n, i) => {
+        const f = (RUNAS.fragmentos || [])[i];
+        const r = f && f.runas.find(x => norm(x.nome) === norm(n));
+        if (r) result.runas.fragmentos[i] = r.id; else result.unknown.push(n);
+      });
       return;
     }
     const mDesc = line.match(/^DESCRI[ÇC][ÃA]O\s*:\s*(.+)$/i);
@@ -6449,6 +6544,7 @@ function renderBuildSummary() {
   const apT = document.getElementById("apex-toggle"); if (apT) apT.checked = !!state.applyApex;
   const nameInput = document.getElementById("build-name-input");
   if (document.activeElement !== nameInput) nameInput.value = build.name;
+  renderRunasDaForja();
   const descInput = document.getElementById("build-desc");
   if (descInput && document.activeElement !== descInput) descInput.value = build.desc || "";
   // Total geral sem as caixas Opcionais (Leo, 13/09/2026: opcional não conta).
@@ -7378,6 +7474,44 @@ function gravarPagina() {
   Som.play("catalog:tag_select");
 }
 
+
+// ---------------- F11-T9: a página de runas onde a build aparece ----------------
+// Uma função só desenha a faixa, e ela serve à forja e à lista — do mesmo jeito
+// que itensDoResumo serve às três listas de build.
+function runaBolinha(id, classe) {
+  const achado = typeof runaPorId === "function" ? runaPorId(id) : null;
+  if (!achado) return `<span class="br-runa vazia ${classe}" title="vaga livre"></span>`;
+  const cor = achado.trilha ? (achado.trilha.cor || "#b6873a") : "#b6873a";
+  const arte = achado.runa.iconUrl ? `background-image:url('${achado.runa.iconUrl}');` : "";
+  const inicial = achado.runa.iconUrl ? "" : esc(achado.runa.nome.slice(0, 1));
+  return `<span class="br-runa ${classe}" style="--cor:${esc(cor)};${arte}" title="${esc(achado.runa.nome)}">${inicial}</span>`;
+}
+
+function faixaDeRunas(p) {
+  if (!p) return "";
+  return runaBolinha(p.assinatura, "assinatura")
+    + p.slots.map(id => runaBolinha(id, "")).join("")
+    + `<span class="br-rotulo">+</span>`
+    + [0, 1].map(i => runaBolinha(p.secundarios[i], "")).join("")
+    + `<span class="br-rotulo">+</span>`
+    + p.fragmentos.map(id => runaBolinha(id, "")).join("");
+}
+
+function renderRunasDaForja() {
+  const caixa = document.getElementById("build-runas");
+  if (!caixa || !runasOk()) return;
+  const p = normRunas(build.runas);
+  const escolhidas = runasEscolhidas(p);
+  // Sem nenhuma runa e fora da edição a faixa não aparece: build de itens é
+  // build de itens, e uma faixa vazia só ocuparia espaço.
+  if (!escolhidas && !build.editing) { caixa.hidden = true; return; }
+  caixa.hidden = false;
+  const trilha = RUNAS.trilhas.find(t => t.id === p.primaria);
+  caixa.innerHTML = `<span class="br-rotulo">Runas${trilha ? " · " + esc(trilha.nome) : ""}</span>`
+    + faixaDeRunas(p)
+    + `<button type="button" class="br-abrir" id="build-runas-abrir">${escolhidas ? escolhidas + "/9 · trocar" : "escolher runas"}</button>`;
+}
+
 function initRunas() {
   const conta = document.getElementById("runas-tab-count");
   if (!runasOk()) { if (conta) conta.textContent = ""; return; }
@@ -7569,6 +7703,7 @@ function buildResumo(b) {
     champ: isActive ? build.champion : (b.champion || null),
     markers: normMarkers(isActive ? build.markers : b.markers),
     desc: isActive ? (build.desc || "") : (b.desc || ""),
+    runas: isActive ? build.runas : (b.runas || null),
     fav: isActive ? !!build.fav : !!b.fav,
     updatedAt: isActive ? (build.updatedAt || 0) : (b.updatedAt || 0),
     pubId: (isActive ? build.pubId : b.pubId) || null,
@@ -7934,6 +8069,14 @@ function renderBuildIndex() {
 // as duas listas usam a mesma linha (linhaHtml) e o mesmo esqueleto de detalhe.
 // Ordem fixa: retrato + nome · 3 marcadores · ficha · números · descrição · itens · botões · nota.
 function detalheHtml(d, partes) {
+  // A página de runas só aparece quando existe — build sem runa não ganha
+  // uma faixa de vagas vazias para olhar.
+  if (partes.runas === undefined && runasOk()) {
+    const p = normRunas(d.runas);
+    partes.runas = runasEscolhidas(p)
+      ? `<div class="bd-label">Runas</div><div class="bd-runas">${faixaDeRunas(p)}</div>`
+      : "";
+  }
   const marcas = Array.from({ length: MAX_MARCADORES }, (_, i) => d.markers[i]
     ? `<span class="bd-mark">${markerHtml(d.markers[i], d.champ, renderBuildDetail)}${esc(markerLabel(d.markers[i], d.champ))}</span>`
     : `<span class="bd-mark vazio">marcador ${i + 1}</span>`).join("");
@@ -7946,6 +8089,7 @@ function detalheHtml(d, partes) {
     ${partes.numeros || ""}
     ${partes.aviso || ""}
     ${d.desc ? `<p class="bd-desc">${esc(d.desc)}</p>` : `<p class="bd-desc vazia">${esc(partes.semDesc || "Sem descrição.")}</p>`}
+    ${partes.runas || ""}
     <div class="bd-label">Itens (sem os opcionais)</div>
     <div class="bd-items">${itens.length ? itens.map(it => `<img src="${it.iconUrl}" alt="" title="${esc(it.namePt)}" loading="lazy">`).join("") : `<span class="bd-sem">nenhum item ainda</span>`}</div>
     <div class="bd-actions">${partes.botoes}</div>
@@ -8386,7 +8530,8 @@ function initLibrary() {
     createNewBuild(r.name || "Build importada", r.cats, r.mode, null, r.markers);
     if (r.desc) { build.desc = r.desc; }
     if (r.layout) { build.layout = r.layout; }
-    if (r.desc || r.layout) gravarBuild();
+    if (r.runas) { build.runas = normRunas(r.runas); renderRunasDaForja(); }
+    if (r.desc || r.layout || r.runas) gravarBuild();
     if (r.championName) {
       const idNova = build.id;
       Campeoes.carregar().then(() => {
@@ -8499,6 +8644,11 @@ function initBuildBuilder() {
     }
   });
 
+  document.getElementById("build-runas").addEventListener("click", (e) => {
+    if (!e.target.closest("#build-runas-abrir")) return;
+    runasEstado.modo = "montar";
+    switchTab("runas");
+  });
   document.getElementById("build-name-input").addEventListener("change", (e) => {
     build.name = e.target.value.trim() || "Build sem nome";
     saveBuild();
