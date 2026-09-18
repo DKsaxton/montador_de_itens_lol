@@ -4861,6 +4861,7 @@ function deleteBuild(id) {
 // Toda categoria nasce Comum; marcar como Prioridade ou Opcional se faz
 // clicando no rótulo do cabeçalho dela.
 function addCategory() {
+  if (!build.editing) return;   // F11-T2: sem o Editar ligado ninguém cria caixa
   build.cats.push({
     id: "cat-" + Date.now() + "-" + build.seq,
     name: `Categoria ${build.seq}`,
@@ -5918,13 +5919,13 @@ function renderCategories() {
           <circle cx="9" cy="6" r="1"/><circle cx="15" cy="6" r="1"/><circle cx="9" cy="12" r="1"/>
           <circle cx="15" cy="12" r="1"/><circle cx="9" cy="18" r="1"/><circle cx="15" cy="18" r="1"/>
         </svg>
-        <input class="cat-name" value="${esc(cat.name)}" title="${esc(cat.name)}" spellcheck="false">
-        <button class="cat-btn cat-kind" title="Clique para alternar: Comum → Prioridade → Opcional → Escolha 1">${KIND_LABEL[cat.kind]}</button>
+        <input class="cat-name" value="${esc(cat.name)}" title="${esc(cat.name)}" spellcheck="false"${build.editing ? "" : " readonly tabindex=\"-1\""}>
+        <button class="cat-btn cat-kind"${build.editing ? "" : " disabled tabindex=\"-1\""} title="Clique para alternar: Comum → Prioridade → Opcional → Escolha 1">${KIND_LABEL[cat.kind]}</button>
         ${cat.marco ? `<span class="cat-marco-badge" title="Marco / teto desta caixa">${esc(cat.marco)}</span>` : ""}
         <button class="cat-btn cat-del" title="Remover categoria">✕</button>
       </header>
-      <input class="cat-desc" value="${esc(cat.desc || "")}" placeholder="Descrição — quando comprar, contra quem..." spellcheck="false">
-      <input class="cat-marco" value="${esc(cat.marco || "")}" placeholder="Marco / teto — ex.: ~4min · 900g (opcional; sem ele vale a soma)" spellcheck="false">
+      <input class="cat-desc" value="${esc(cat.desc || "")}" placeholder="Descrição — quando comprar, contra quem..." spellcheck="false"${build.editing ? "" : " readonly tabindex=\"-1\""}>
+      <input class="cat-marco" value="${esc(cat.marco || "")}" placeholder="Marco / teto — ex.: ~4min · 900g (opcional; sem ele vale a soma)" spellcheck="false"${build.editing ? "" : " readonly tabindex=\"-1\""}>
       <div class="cat-body"></div>
       <div class="cat-stats"></div>
       <div class="cat-total" title="${cat.items.length} ${cat.items.length === 1 ? "item" : "itens"} nesta categoria">${fmtG(catTotal(cat))}</div>
@@ -6348,6 +6349,12 @@ function initCategoryUI() {
     if (!catEl) return;
     const cat = getCat(catEl.dataset.catId);
     if (!cat) return;
+    if (!build.editing) {   // F11-T2: o CSS não segura o teclado; o JS segura — e o campo volta ao que está gravado
+      if (e.target.classList.contains("cat-name")) e.target.value = cat.name;
+      if (e.target.classList.contains("cat-desc")) e.target.value = cat.desc || "";
+      if (e.target.classList.contains("cat-marco")) e.target.value = cat.marco || "";
+      return;
+    }
     if (e.target.classList.contains("cat-name")) cat.name = e.target.value.trim() || "Sem nome";
     if (e.target.classList.contains("cat-desc")) cat.desc = e.target.value.trim();
     if (e.target.classList.contains("cat-marco")) { cat.marco = e.target.value.trim(); saveBuild(); renderBuild(); return; }
@@ -6649,11 +6656,14 @@ const publicas = { lista: [], favs: [], erro: null, carregando: false, carregado
 try { const q = Number(localStorage.getItem("publicas.quantidade")); if ([10, 20, 50, 100].includes(q)) publicas.quantidade = q; } catch (e) { /* padrão 50 */ }
 
 function favoritosIds() { try { return JSON.parse(localStorage.getItem("publicacao.favoritos") || "[]"); } catch (e) { return []; } }
+// Devolve true quando a build ACABOU de virar favorita — só esse lado conta
+// engajamento (F11-T1: tirar dos favoritos é mudar de ideia, não engajar).
 function toggleFavorito(id) {
   const ids = favoritosIds();
   const i = ids.indexOf(id);
   if (i >= 0) ids.splice(i, 1); else ids.push(id);
   try { localStorage.setItem("publicacao.favoritos", JSON.stringify(ids)); } catch (e) { /* sem persistência */ }
+  return i < 0;
 }
 function caixasDoServidor(caixas, removidos) {
   return normalizeCats((Array.isArray(caixas) ? caixas : []).map((c, i) => ({
@@ -6804,14 +6814,36 @@ function copiarPublica(d) {
   showBuildScreen("forja");
 }
 
-// F10-T15 (Leo, 16/09/2026): quatro medidas de popularidade. Impressão conta uma
-// vez por build por sessão (senão rolar a lista inflaria tudo); engajamento é
-// qualquer ação do usuário sobre a build; detalhe é abrir o resumo; cópia já existia.
-const eventosVistos = { impressao: new Set(), detalhe: new Set() };
+// F10-T15 (Leo, 16/09/2026): quatro medidas de popularidade. Engajamento é
+// qualquer ação do usuário sobre a build; detalhe é abrir o resumo; impressão é
+// aparecer na lista; cópia já existia.
+// F11-T1 (Leo, 18/09/2026): cada medida agora conta UMA VEZ por build por
+// navegador por dia. Antes bastava favoritar, desfavoritar e favoritar de novo
+// para somar três engajamentos. O dia é o de Brasília, o mesmo em que a
+// popularidade do dia zera no servidor (view builds_publicas).
+const EVENTOS_CHAVE = "popularidade.contados";
+function diaDeBrasilia() {
+  try { return new Date().toLocaleDateString("sv-SE", { timeZone: "America/Sao_Paulo" }); }
+  catch (e) { return new Date().toISOString().slice(0, 10); }
+}
+const contados = (() => {
+  let g = null;
+  try { g = JSON.parse(localStorage.getItem(EVENTOS_CHAVE) || "null"); } catch (e) { g = null; }
+  const hoje = diaDeBrasilia();
+  return (g && g.dia === hoje && Array.isArray(g.marcas)) ? { dia: hoje, marcas: new Set(g.marcas) } : { dia: hoje, marcas: new Set() };
+})();
+function jaContouHoje(pubId, tipo) {
+  const hoje = diaDeBrasilia();
+  if (contados.dia !== hoje) { contados.dia = hoje; contados.marcas.clear(); }   // virou o dia: conta de novo
+  const marca = tipo + ":" + pubId;
+  if (contados.marcas.has(marca)) return true;
+  contados.marcas.add(marca);
+  try { localStorage.setItem(EVENTOS_CHAVE, JSON.stringify({ dia: contados.dia, marcas: [...contados.marcas] })); } catch (e) { /* sem persistência: vale a sessão */ }
+  return false;
+}
 function registrarEvento(pubId, tipo) {
   if (!pubId || !Servidor.ativo()) return;
-  const uma = eventosVistos[tipo];
-  if (uma) { if (uma.has(pubId)) return; uma.add(pubId); }
+  if (jaContouHoje(pubId, tipo)) return;
   Servidor.rpc("registrar_evento", { p_id: pubId, p_tipo: tipo }).catch(() => { /* sem internet: a build continua */ });
 }
 
@@ -7092,7 +7124,7 @@ function initBuildIndex() {
   const abrir = (id) => { activateBuild(id); showBuildScreen("forja"); };
   rows.addEventListener("click", (e) => {
     const fav = e.target.closest("[data-fav]");
-    if (fav && fav.dataset.fav.startsWith("pub:")) { const id = fav.dataset.fav.slice(4); registrarEvento(id, "engajamento"); toggleFavorito(id); renderBuildIndex(); return; }
+    if (fav && fav.dataset.fav.startsWith("pub:")) { const id = fav.dataset.fav.slice(4); if (toggleFavorito(id)) registrarEvento(id, "engajamento"); renderBuildIndex(); return; }
     if (fav) {
       const b = library.builds.find(x => x.id === fav.dataset.fav);
       if (b) { if (b.id === build.id) { build.fav = !build.fav; saveBuild(); } else { b.fav = !b.fav; saveBuild(); } renderBuildIndex(); }
@@ -7130,7 +7162,7 @@ function initBuildIndex() {
       const p = publicaPorId(biSelected.slice(4));
       if (!p) return;
       if (act.dataset.act === "copypub") copiarPublica(publicaResumo(p));
-      if (act.dataset.act === "favpub") { toggleFavorito(p.id); renderBuildIndex(); }
+      if (act.dataset.act === "favpub") { if (toggleFavorito(p.id)) registrarEvento(p.id, "engajamento"); renderBuildIndex(); }
       if (act.dataset.act === "delpub") excluirPublicacao(p.id);
       return;
     }
@@ -7222,6 +7254,17 @@ function initBuildIndex() {
   }));
   qtd.addEventListener("change", () => { publicas.quantidade = Number(qtd.value) || 50; try { localStorage.setItem("publicas.quantidade", String(publicas.quantidade)); } catch (e) {} renderBuildIndex(); });
   refresh.addEventListener("click", () => carregarPublicas(true));
+  // F11-T1: quem deixa a aba Públicas parada via número velho. De 5 em 5 minutos
+  // a lista se atualiza sozinha — só com a aba aberta e a janela à vista, para
+  // não bater no servidor em segundo plano.
+  setInterval(() => {
+    if (buildScreen !== "lista" || biView !== "publicas" || document.hidden) return;
+    carregarPublicas(true);
+  }, 5 * 60 * 1000);
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden || buildScreen !== "lista" || biView !== "publicas") return;
+    if (Date.now() - publicas.carregadoEm > 5 * 60 * 1000) carregarPublicas(true);
+  });
 
   // filtro por marcador
   const fbtn = document.getElementById("bi-filter");
@@ -7293,7 +7336,7 @@ function initLibrary() {
 
   initBuildIndex();
   initMarkers();
-  document.getElementById("build-desc").addEventListener("change", (e) => { build.desc = e.target.value.trim(); saveBuild(); renderLibrary(); });
+  document.getElementById("build-desc").addEventListener("change", (e) => { if (!build.editing) { e.target.value = build.desc || ""; return; } build.desc = e.target.value.trim(); saveBuild(); renderLibrary(); });
 
   document.getElementById("new-build").addEventListener("click", () => confirmarSaida(() => createNewBuild()));
 

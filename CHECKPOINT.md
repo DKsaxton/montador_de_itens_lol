@@ -1,5 +1,5 @@
 # Checkpoint — Montador de Itens de LoL (Capítulo 2 · Forjador)
-Última atualização: 13/09/2026 — FASE 6 CONCLUÍDA — CAPÍTULO 2 ENTREGUE (todas as fases aprovadas pelo Leo)
+Última atualização: 18/09/2026 — Fases 0–10 aprovadas e publicadas. Fase 11 em andamento (T1 e T2 aprovados; próxima é a T3, texturas de região).
 
 ## 1. Objetivo geral
 Evoluir o Montador de Itens (index.html) para a versão com identidade visual de loja medieval (Catálogo) e forja (Build), dados do Capítulo 1 (225 itens, patch 16.18.1) via data/catalog.js, sistema de áudio com lojista, e publicação no GitHub Pages — em fases aprovadas por captura de tela.
@@ -130,7 +130,10 @@ Especificação do Leo (15/09/2026, com docs/amostras de referência `gramatica-
 - T4 — Pages testado (`docs/screenshots/fase0-tarefa4-pages.png`): deploy no ar 30 s após o push; index.html, data/catalog.js, textura, áudio e .nojekyll respondem 200 em https://dksaxton.github.io/montador_de_itens_lol/; DOM do site publicado com 225 cards e contador 225 (Chrome headless — o navegador embutido não tem permissão para o domínio github.io). Do disco (file://) também 225. FASE 0 CONCLUÍDA em 13/09/2026.
 
 ## 3. Em andamento
-Fase 10 — Ajustes e pedidos de 16/09/2026 (lista na seção 4). Fase 10 concluída (T1–T15) e publicada; F9-T9 (docs/marcadores.md) idem. SQL da T15 já rodado e conferido no servidor. Próxima: Fase 11 — Runas (gerar data/runas.js do data/Runas_League_of_Legends.md, aba Runas, runas opcionais na build, fora do Arsenal.json). Arquivos do Leo ainda fora do commit até a fase das runas: `forja-de-runas.html`, `data/Runas_League_of_Legends.md`, `assets/Icon/panorama/images/Icons pack/` (pacote de ícones do Deadlock: 158 SVG, 19 PNG, 1,6 MB; os .vtex/.mks são do motor da Valve e não servem na web).
+Fase 11 — Bugs, texturas de região e runas. Aprovados em 18/09/2026: **F11-T1** engajamento conta uma vez por build/navegador/dia (relógio de Brasília, o mesmo da popularidade do dia), favoritar conta e desfavoritar não, lista pública se atualiza sozinha a cada 5 min com a aba aberta e a janela à vista; e **F11-T2** com o Editar desligado ninguém cria nem renomeia caixa (a trava era só de CSS, que não segura teclado — agora é no JS, com os campos readonly e fora do Tab). Captura: `docs/screenshots/fase11-t1-engajamento-e-edicao.png`.
+Texturas das regiões entregues pelo Leo em 18/09/2026: 20 arquivos, **45 MB** em `assets/regioes/texturas/` (fora do commit até serem cortados e comprimidos). Há variantes: `noxus2`, `void1`, `void2`, `void3`, `freljord-garra1` — dá para sortear entre elas por card.
+Arquivos do Leo ainda fora do commit até a fase das runas: `forja-de-runas.html`, `data/Runas_League_of_Legends.md`, `assets/Icon/panorama/images/Icons pack/` (pacote de ícones do Deadlock: 158 SVG, 19 PNG, 1,6 MB; os .vtex/.mks são do motor da Valve e não servem na web).
+
 Estado anterior: Fases 0–9 aprovadas e publicadas (15/09/2026); SQL da Fase 9 conferido. Pendências só a pedido: autor opcional na publicação; limpeza automática dos eventos (docs/servidor/limpeza.sql).
 
 Dúvidas do Leo em 14/09/2026, respondidas como avaliação (sem implementar):
@@ -139,6 +142,22 @@ Dúvidas do Leo em 14/09/2026, respondidas como avaliação (sem implementar):
 3. Publicar builds com ID e busca (Leo, 14/09/2026: "como que a gente vai fazer isso?"): plano proposto — Fase 8 (por último, decisão do Leo em 14/09/2026): T1 link com a build no `#hash` (sem servidor); T2 Leo cria projeto gratuito no Supabase e cola URL + chave pública em `data/servidor.js` (gitignored? não: chave pública é pública por desenho; regras de acesso no banco); T3 aba "Publicadas" na biblioteca: publicar (ID curto gerado no banco, nome customizado, modo, autor opcional), buscar por texto ou ID, abrir e copiar para a biblioteca local; editar/apagar só com o segredo guardado no navegador de quem publicou. Sem login, sem dado pessoal.
 
 ## 4. Próximos passos
+**Fase 11 — Bugs, texturas de região e runas.** Uma tarefa por vez, captura + aprovado + commit "F11-T<n>".
+Ordem definida pelo Leo em 18/09/2026: primeiro tudo que já estava na fila; as "features futuras" só depois que isso terminar.
+- **T1** ✔ aprovado 18/09/2026 — Engajamento conta uma vez por build/navegador/dia (relógio de Brasília, o mesmo da popularidade do dia); favoritar conta, desfavoritar não; lista pública se atualiza sozinha a cada 5 min com a aba aberta e a janela à vista. Captura: `docs/screenshots/fase11-t1-engajamento-e-edicao.png`.
+- **T2** ✔ aprovado 18/09/2026 — Edição desligada tranca criar e renomear caixa de verdade (a trava era só de CSS, que não segura teclado): `addCategory` e o `change` das caixas recusam, o campo volta ao valor gravado, e os campos ficam readonly e fora do Tab.
+- **T3** Texturas de região: cortar, comprimir (meta: os dezesseis abaixo de 2 MB no total, medindo antes e depois) e montar o card com o brasão oficial no canto, faixa limpa para o texto e barra do núcleo à esquerda. Sorteio entre as variantes quando houver mais de uma.
+- **T4** Aplicar ao app o que foi aprovado nas amostras da Fase 11: efeitos de hover por núcleo (`docs/amostras/fase11-vida-por-nucleo.html`) e a oficina + estandarte (`docs/amostras/fase11-pagina-por-nucleo.html`). Hoje nada disso está no index.html.
+- **T5** Runas: gerar `data/runas.js` do `data/Runas_League_of_Legends.md`, tela de Runas, runas opcionais na build (fora do Arsenal.json).
+
+**Features futuras (Leo, 18/09/2026) — só depois que a fila acima terminar.**
+- Popup ao barrar a publicação: falta marcador → abre para inserir os 3; falta descrição → abre para escrever; faltam os dois → uma janela só com as duas coisas.
+- Otimização da UI de visualização e edição de builds — outros usuários relatam que partes da forja são confusas e anti-intuitivas. Levantar o que confunde antes de mexer.
+- Sugestão de categorias ao criar a build. Nomes e ordem definidos pelo Leo, sem itens dentro: **inicial · primeira volta base · bota · Core · triket · 4º item · 5º item · 6º item**. Core nasce mais larga (três itens) e triket com uma casa só.
+- Grade de distribuição de pontos de habilidade (18 níveis, Q/W/E/R), com limitações por campeão e distribuições automáticas (ex.: o W do Azir). **Leo, 18/09/2026: isso NÃO é edição do Capítulo 1** — o Capítulo 1 é exclusivamente de itens. O dado de campeão/habilidade é um **Capítulo 1.1**, fonte à parte, e o Montador só consome.
+- Botão de acessibilidade: daltonismo, fotossensibilidade (cortar animação e brilho) e leitura mais calma.
+- Limite por IP na popularidade (proposto ao Leo em 18/09/2026, sem resposta ainda): exige Edge Function no Supabase guardando o IP de quem chama; a trava de hoje mora no navegador.
+
 **Fase 10 — Ajustes e pedidos do Leo (16/09/2026).** Uma tarefa por vez, captura + aprovado + commit "F10-T<n>". Ordem: bugs primeiro, depois os visíveis pequenos, depois os grandes.
 - **T1** Catálogo em modo Ícones: com categoria selecionada na forja, o clique no ícone insere o item (hoje abre a ficha porque a borda clicável ficou de 3 px); a ficha continua pelo Shift.
 - **T2** Ir ao Catálogo com uma categoria selecionada não pode pedir para salvar (o aviso só ao sair da build/fechar a página).
