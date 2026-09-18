@@ -82,44 +82,66 @@ def recorta(linhas, abre, fecha_col=0):
 
 RE_TRILHA = re.compile(r'^\s{8}(?P<nome>[^(\[]+?)\s*\(Lema oficial:\s*"(?P<lema>[^"]+)"\)\[\s*$')
 RE_SLOT = re.compile(r"^\s{12}(?P<nome>Keystone|Slot \d)\[\s*$")
-RE_RUNA = re.compile(r"^\s{16}(?P<nome>[^\[]+?)\[(?P<desc>.*)\]\s*$")
+RE_RUNA = re.compile(r"^\s{16}(?P<nome>[^\[]+?)\[(?P<resto>.*)$")
 RE_FRAG_SLOT = re.compile(r"^\s{4}(?P<nome>Slot \d)\[\s*$")
-RE_FRAG_RUNA = re.compile(r"^\s{8}(?P<nome>[^\[]+?)\[(?P<desc>.*)\]\s*$")
+RE_FRAG_RUNA = re.compile(r"^\s{8}(?P<nome>[^\[]+?)\[(?P<resto>.*)$")
 RE_CAMPO = re.compile(r"^\s+(?P<campo>Atributos|Classes|Força Adaptativa destrinchada[^:]*):\s*(?P<valor>.+)$")
 RE_NOTA = re.compile(r"^\s+-\s+(?P<texto>.+)$")
 
 
 def le_runas(linhas, re_runa, pendencias, onde):
-    """Lê uma sequência de runas com seus campos indentados."""
+    """Le uma sequencia de runas com seus campos indentados.
+
+    A descricao pode ocupar VARIAS linhas: ha runas cujo colchete so fecha tres
+    ou quatro linhas abaixo (Transcendencia, Tonico Triplo, Aperto dos
+    Mortos-Vivos, Tempestade Crescente). O leitor antigo exigia abrir e fechar
+    na mesma linha e descartava essas runas caladamente — e ainda grudava as
+    linhas de continuacao como "notas tecnicas" da runa anterior.
+    """
     runas, atual = [], None
-    for l in linhas:
-        m = re_runa.match(l)
+    i, n = 0, len(linhas)
+    while i < n:
+        linha = linhas[i]
+        m = re_runa.match(linha)
         if m:
+            nome = m.group("nome").strip()
+            resto = m.group("resto")
+            # junta ate os colchetes fecharem
+            partes, saldo = [resto], 1 + resto.count("[") - resto.count("]")
+            while saldo > 0 and i + 1 < n:
+                i += 1
+                partes.append(linhas[i].strip())
+                saldo += linhas[i].count("[") - linhas[i].count("]")
+            desc = " ".join(p for p in partes if p).strip()
+            if desc.endswith("]"):
+                desc = desc[:-1].strip()
+            elif saldo > 0:
+                pendencias.append("%s: o colchete de %r não fecha" % (onde, nome))
             atual = {
-                "id": slug(m.group("nome")),
-                "nome": m.group("nome").strip(),
-                "descricao": m.group("desc").strip(),
+                "id": slug(nome), "nome": nome, "descricao": desc,
                 "atributos": [], "classes": [], "adaptativa": "", "notas": [],
             }
-            if not atual["descricao"]:
-                pendencias.append("%s: %s está sem descrição" % (onde, atual["nome"]))
+            if not desc:
+                pendencias.append("%s: %s está sem descrição" % (onde, nome))
             runas.append(atual)
+            i += 1
             continue
-        if atual is None:
-            continue
-        m = RE_CAMPO.match(l)
-        if m:
-            campo, valor = m.group("campo"), m.group("valor").strip()
-            if campo == "Atributos":
-                atual["atributos"] = [x.strip() for x in valor.split(",") if x.strip()]
-            elif campo == "Classes":
-                atual["classes"] = [x.strip() for x in valor.split(",") if x.strip()]
-            else:
-                atual["adaptativa"] = valor
-            continue
-        m = RE_NOTA.match(l)
-        if m and "Notas técnicas" not in l:
-            atual["notas"].append(m.group("texto").strip())
+        if atual is not None:
+            m = RE_CAMPO.match(linha)
+            if m:
+                campo, valor = m.group("campo"), m.group("valor").strip()
+                if campo == "Atributos":
+                    atual["atributos"] = [x.strip() for x in valor.split(",") if x.strip()]
+                elif campo == "Classes":
+                    atual["classes"] = [x.strip() for x in valor.split(",") if x.strip()]
+                else:
+                    atual["adaptativa"] = valor
+                i += 1
+                continue
+            m = RE_NOTA.match(linha)
+            if m and "Notas técnicas" not in linha:
+                atual["notas"].append(m.group("texto").strip())
+        i += 1
     for r in runas:
         if not r["atributos"]:
             pendencias.append("%s: %s está sem Atributos" % (onde, r["nome"]))
@@ -317,7 +339,19 @@ def main():
                 pendencias.append("substituição \"%s -> %s\": %r não existe na lista de runas"
                                   % (sub["de"], sub["para"], sub[lado]))
 
-    # --- integridade 2: o nome bate com o oficial da Riot? ---
+    # --- integridade 2: falta alguma runa que a Riot tem? ---
+    # Esta é a checagem que teria pegado o leitor descartando as runas de
+    # descrição multilinha (18/09/2026). Antes ela era uma nota solta num doc,
+    # e eu tratei a diferença como curadoria do Leo. Agora é pendência.
+    if icones:
+        nomes_meus = {chave(r["nome"]) for t in trilhas for s2 in t["slots"] for r in s2["runas"]}
+        for ch, nome_riot in nomes_riot.items():
+            if ch in {chave(t["nome"]) for t in trilhas}:
+                continue                       # é nome de trilha, não de runa
+            if ch not in nomes_meus:
+                pendencias.append("a Riot tem %r e o arquivo não — confira se o leitor não a perdeu" % nome_riot)
+
+    # --- integridade 3: o nome bate com o oficial da Riot? ---
     # Não corrijo nada: o markdown é a fonte. Só aponto o mais parecido, que é
     # onde costuma estar o erro de digitação.
     if icones:

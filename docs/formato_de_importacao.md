@@ -49,10 +49,13 @@ Vêm antes da primeira caixa, uma por linha, em qualquer ordem. Só `BUILD:` é 
 | `RUNAS:` | trilha primária: a de assinatura primeiro, depois os três slots | `Precisão > Pressione o Ataque \| Triunfo \| Lenda: Espontaneidade \| Golpe de Misericórdia` |
 | `RUNAS 2:` | trilha secundária: duas runas, de slots diferentes | `Dominação > Golpe Desleal \| Sexto Sentido` |
 | `FRAGMENTOS:` | um de cada slot, na ordem | `Força Adaptativa \| Velocidade de Movimento \| Vida` |
+| `HABILIDADES:` | a ordem de subida, 18 níveis separados por espaço | `Q W E Q Q R Q W Q W R W W E E R E E` |
 
 As três linhas de runa são opcionais e independentes — dá para importar só os fragmentos, por exemplo. O nome antes do `>` é a trilha; depois dele, as runas separadas por ` | `. Nome de runa que não existir entra na mesma lista de "não encontrei" dos itens, e o resto da build importa normalmente. Os nomes válidos são os da aba **Runas**; a grafia segue o `data/Runas_League_of_Legends.md`.
 
-A página de runas fica na build e sai no `Copiar esta build`, mas **não entra no JSON do cliente do LoL** — o conjunto de itens do cliente importa itens, não runas.
+Na linha de habilidades, `-` marca um nível em branco. As regras do jogo são aplicadas na importação: um ponto por nível, no máximo 5 em Q/W/E e 3 no R, e o supremo só nos níveis 6, 11 e 16 — o que não couber é descartado em silêncio, porque é regra do jogo e não erro de digitação.
+
+A página de runas e a ordem de habilidades ficam na build e saem no `Copiar esta build`, mas **não entram no JSON do cliente do LoL** — o conjunto de itens do cliente importa itens, não runas.
 
 ## Caixas
 

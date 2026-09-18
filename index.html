@@ -2795,6 +2795,50 @@ body.nucleo .group-head::before {
 .modo-leitura .btn { margin-left: auto; white-space: nowrap; }
 body.editando .modo-leitura { display: none; }
 
+
+/* ---------- F12-T4: a grade de habilidades ---------- */
+.build-habs[hidden] { display: none; }
+.build-habs {
+  margin: 8px 0 0; padding: 9px 12px;
+  border: 1px solid #3a2a18; border-left: 3px solid var(--forja-brasa, #ff7a1e); border-radius: 2px;
+  background: rgba(0,0,0,.28);
+}
+.build-habs .bh-topo { display: flex; align-items: center; gap: 10px; margin-bottom: 7px; }
+.build-habs .bh-rotulo {
+  font-family: var(--loja-gravado); font-size: 9.5px; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--forja-texto-suave, #9a8778);
+}
+.build-habs .bh-aviso { font-family: var(--loja-texto); font-style: italic; font-size: 12px; color: var(--forja-texto-suave, #9a8778); }
+.build-habs .bh-limpar {
+  margin-left: auto; background: none; border: 1px solid #5a4630; border-radius: 2px;
+  padding: 3px 10px; cursor: pointer;
+  font-family: var(--loja-gravado); font-size: 9px; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--forja-texto-suave, #9a8778);
+}
+.build-habs .bh-limpar:hover { color: #f0dcae; border-color: var(--forja-brasa, #ff7a1e); }
+/* A coluna do rótulo precisa caber ícone + letra + contador (ex.: "Q 0/5"). Com
+   42 px ela transbordava e cobria a casa do nível 1 — nenhuma habilidade podia
+   ser marcada lá. */
+.bh-grade { display: grid; grid-template-columns: 78px repeat(18, minmax(0, 1fr)); gap: 3px; align-items: center; }
+.bh-niv, .bh-letra {
+  font-family: var(--loja-gravado); font-size: 9px; letter-spacing: .06em;
+  color: var(--forja-texto-suave, #9a8778); text-align: center;
+}
+.bh-letra { display: flex; align-items: center; gap: 5px; justify-content: flex-start; font-size: 11px; color: var(--forja-texto, #e8dcc8); }
+.bh-letra img { width: 20px; height: 20px; border-radius: 2px; border: 1px solid var(--forja-rebite, #3a3029); }
+.bh-letra .bh-conta { font-size: 8.5px; opacity: .7; }
+.bh-cel {
+  height: 21px; border: 1px solid #3a3029; border-radius: 2px; cursor: pointer;
+  background: rgba(0,0,0,.35); padding: 0;
+}
+.bh-cel:hover { border-color: var(--forja-brasa, #ff7a1e); }
+.bh-cel.marcada { background: var(--forja-brasa, #ff7a1e); border-color: var(--forja-brasa-clara, #ffb066); }
+.bh-cel.bloqueada { cursor: not-allowed; opacity: .28; }
+.bh-cel.bloqueada:hover { border-color: #3a3029; }
+.bh-cel.ultimate { border-style: dashed; }
+body:not(.editando) .build-habs .bh-cel { cursor: default; pointer-events: none; }
+body:not(.editando) .build-habs .bh-limpar { display: none; }
+
 .card-sheen {
   background:
     radial-gradient(340px circle at var(--mx) var(--my),
@@ -4620,6 +4664,8 @@ body.forja .build-cat.drop-after  { transform: translateX(-5px); box-shadow: ins
     <div id="build-summary" class="build-summary"></div>
     <!-- F11-T9 (Leo, 18/09/2026): a página de runas da build, na forja -->
     <div id="build-runas" class="build-runas" hidden></div>
+    <!-- F12-T4 (Leo, 18/09/2026): a ordem de subida das habilidades -->
+    <div id="build-habs" class="build-habs" hidden></div>
     <textarea id="build-desc" class="build-desc" rows="2" spellcheck="false" placeholder="Descrição da build — o que ela faz, quando usar, contra quem… (obrigatória para publicar)"></textarea>
     <div class="build-actions">
       <label class="sw" id="cb-switch" title="Preços com o desconto da runa Reembolso (cashback.netGold), como no Catálogo">
@@ -5367,7 +5413,7 @@ function newBuildId() {
 }
 
 function snapshotActive() {
-  return { id: build.id, name: build.name, cats: comNomes(build.cats), patch: build.patch || CATALOG.meta.patch, revisao: build.revisao || null, temp: !!build.temp, pubOrigem: build.pubOrigem || null, layout: layoutValido(build.layout), seq: build.seq, mode: build.mode, masterwork: !!build.masterwork, champion: build.champion || null, markers: normMarkers(build.markers), desc: build.desc || "", runas: normRunas(build.runas), fav: !!build.fav, updatedAt: build.updatedAt || 0, pubId: build.pubId || null, pubVersao: build.pubVersao || 0, pubEm: build.pubEm || 0, pubPatch: build.pubPatch || "" };
+  return { id: build.id, name: build.name, cats: comNomes(build.cats), patch: build.patch || CATALOG.meta.patch, revisao: build.revisao || null, temp: !!build.temp, pubOrigem: build.pubOrigem || null, layout: layoutValido(build.layout), seq: build.seq, mode: build.mode, masterwork: !!build.masterwork, champion: build.champion || null, markers: normMarkers(build.markers), desc: build.desc || "", runas: normRunas(build.runas), habilidades: normHabilidades(build.habilidades), fav: !!build.fav, updatedAt: build.updatedAt || 0, pubId: build.pubId || null, pubVersao: build.pubVersao || 0, pubEm: build.pubEm || 0, pubPatch: build.pubPatch || "" };
 }
 
 // Em modo Editar as alterações ficam em rascunho (Leo, 14/09/2026): saveBuild() só
@@ -5407,6 +5453,31 @@ function normRunas(r) {
     });
   }
   return out;
+}
+
+// F12-T4: a ordem de habilidades da build — 18 níveis, cada um com Q, W, E, R
+// ou vazio. As regras do jogo são conferidas aqui, não só desenhadas.
+const HAB_LETRAS = ["Q", "W", "E", "R"];
+const HAB_NIVEIS = 18;
+const HAB_MAX = { Q: 5, W: 5, E: 5, R: 3 };
+const HAB_NIVEIS_R = [6, 11, 16];
+function normHabilidades(h) {
+  const out = Array(HAB_NIVEIS).fill(null);
+  if (!Array.isArray(h)) return out;
+  const usados = { Q: 0, W: 0, E: 0, R: 0 };
+  h.slice(0, HAB_NIVEIS).forEach((L, i) => {
+    if (!HAB_LETRAS.includes(L)) return;
+    if (usados[L] >= HAB_MAX[L]) return;                       // teto de pontos
+    if (L === "R" && !HAB_NIVEIS_R.includes(i + 1)) return;    // R só nos níveis dele
+    usados[L]++;
+    out[i] = L;
+  });
+  return out;
+}
+function habPontos(h) {
+  const c = { Q: 0, W: 0, E: 0, R: 0 };
+  (h || []).forEach(L => { if (c[L] !== undefined) c[L]++; });
+  return c;
 }
 
 const rascunho = { sujo: false };
@@ -5544,6 +5615,7 @@ function loadBuild() {
           markers: normMarkers(b.markers),
           desc: typeof b.desc === "string" ? b.desc : "",
           runas: b.runas || null,   // normalizada quando a build vira ativa
+          habilidades: b.habilidades || null,
           fav: !!b.fav,
           updatedAt: Number(b.updatedAt) || 0,
           pubId: b.pubId || null, pubVersao: Number(b.pubVersao) || 0, pubEm: Number(b.pubEm) || 0, pubPatch: b.pubPatch || "",
@@ -5593,6 +5665,7 @@ function activateBuild(id, skipSave) {
   build.markers = normMarkers(b.markers);
   build.desc = typeof b.desc === "string" ? b.desc : "";
   build.runas = normRunas(b.runas);
+  build.habilidades = normHabilidades(b.habilidades);
   build.fav = !!b.fav;
   build.updatedAt = Number(b.updatedAt) || 0;
   build.pubId = b.pubId || null; build.pubVersao = Number(b.pubVersao) || 0; build.pubEm = Number(b.pubEm) || 0; build.pubPatch = b.pubPatch || "";
@@ -5637,6 +5710,7 @@ function createNewBuild(name, cats, mode, champion, markers) {
     markers: normMarkers(markers),
     desc: "",
     runas: normRunas(null),
+    habilidades: normHabilidades(null),
     fav: false,
     updatedAt: Date.now(),
     patch: CATALOG.meta.patch,
@@ -5806,6 +5880,7 @@ function moveItem(fromCatId, fromIndex, toCatId, toIndex) {
 //   RUNAS: Precisão > Pressione o Ataque | Triunfo | Lenda: Espontaneidade | Golpe de Misericórdia
 //   RUNAS 2: Dominação > Golpe Desleal | Sexto Sentido       (secundária: duas, de slots diferentes)
 //   FRAGMENTOS: Força Adaptativa | Força Adaptativa | Vida
+//   HABILIDADES: Q W E Q Q R Q W Q W R W W E E R E E   (18 níveis; "-" = nível em branco)
 //
 //   [PRIORIDADE] Núcleo | ½
 //   # comprar sempre nessa ordem
@@ -5851,6 +5926,8 @@ function buildToText() {
     lines.push(`MESTRE FORJADOR: ${f && byId[f.itemId] ? byId[f.itemId].namePt : "sim"}`);
   }
   linhasDeRunas(build.runas).forEach(l => lines.push(l));
+  const hab = normHabilidades(build.habilidades);
+  if (hab.some(Boolean)) lines.push(`HABILIDADES: ${hab.map(L => L || "-").join(" ")}`);
   build.cats.forEach(cat => {
     lines.push("");
     lines.push(`[${KIND_LABEL[cat.kind].toUpperCase()}] ${cat.name} | ${catCols(cat)}×${catRows(cat)}`);
@@ -6175,7 +6252,7 @@ function getItemNameIndex() {
 
 function textToBuild(text) {
   const index = getItemNameIndex();
-  const result = { name: null, mode: "", masterwork: false, forgedId: null, championName: null, markers: [], desc: "", layout: "tabuleiro", cats: [], runas: null, unknown: [], ignored: 0 };
+  const result = { name: null, mode: "", masterwork: false, forgedId: null, championName: null, markers: [], desc: "", layout: "tabuleiro", cats: [], runas: null, habilidades: null, unknown: [], ignored: 0 };
   let current = null;
 
   text.split("\n").forEach(rawLine => {
@@ -6225,6 +6302,14 @@ function textToBuild(text) {
           if (i === 0) result.runas.assinatura = id; else result.runas.slots.push(id);
         });
       }
+      return;
+    }
+    const mHab = line.match(/^HABILIDADES\s*:\s*(.+)$/i);
+    if (mHab) {
+      // Um símbolo por nível, separados por espaço. O que não for Q/W/E/R conta
+      // como nível em branco; a normalização depois aplica as regras do jogo.
+      result.habilidades = mHab[1].trim().split(/[\s,|]+/).slice(0, HAB_NIVEIS)
+        .map(x => HAB_LETRAS.includes(x.toUpperCase()) ? x.toUpperCase() : null);
       return;
     }
     const mFrag = line.match(/^FRAGMENTOS\s*:\s*(.+)$/i);
@@ -6692,6 +6777,8 @@ function renderBuildSummary() {
   const nameInput = document.getElementById("build-name-input");
   if (document.activeElement !== nameInput) nameInput.value = build.name;
   renderRunasDaForja();
+  renderHabilidades();
+  carregarArteHabilidades();   // desenha já com as letras e repinta com os ícones
   const descInput = document.getElementById("build-desc");
   if (descInput && document.activeElement !== descInput) descInput.value = build.desc || "";
   // Total geral sem as caixas Opcionais (Leo, 13/09/2026: opcional não conta).
@@ -7830,6 +7917,86 @@ function initPerguntarCaixa() {
   });
 }
 
+
+// ---------------- F12-T4: a grade de habilidades ----------------
+// As regras conferidas aqui são as do jogo, iguais para todo campeão: um ponto
+// por nível, teto de 5 em Q/W/E e 3 no R, e o R só nos níveis 6, 11 e 16.
+// Limitação de campeão (o W do Azir, campeões de forma) é dado que o projeto
+// ainda não tem — ver docs/proposta_capitulo_1_1.md.
+function habPodeMarcar(h, letra, nivel) {
+  if (letra === "R" && !HAB_NIVEIS_R.includes(nivel)) return false;
+  if (h[nivel - 1] === letra) return true;                    // desmarcar sempre pode
+  const pontos = habPontos(h);
+  return pontos[letra] < HAB_MAX[letra];
+}
+
+function renderHabilidades() {
+  const caixa = document.getElementById("build-habs");
+  if (!caixa) return;
+  const h = normHabilidades(build.habilidades);
+  build.habilidades = h;
+  const usados = h.filter(Boolean).length;
+  // Sem nenhum ponto e fora da edição a grade não aparece — build de itens é
+  // build de itens, como na faixa de runas.
+  if (!usados && !build.editing) { caixa.hidden = true; return; }
+  caixa.hidden = false;
+
+  const pontos = habPontos(h);
+  const cabecalho = `<span></span>` + Array.from({ length: HAB_NIVEIS }, (_, i) => `<span class="bh-niv">${i + 1}</span>`).join("");
+  const linhas = HAB_LETRAS.map(L => {
+    const arte = habArte[L] ? `<img src="${habArte[L].url}" alt="" title="${esc(habArte[L].nome)}">` : "";
+    const celulas = Array.from({ length: HAB_NIVEIS }, (_, i) => {
+      const nivel = i + 1;
+      const marcada = h[i] === L;
+      const bloqueada = !habPodeMarcar(h, L, nivel);
+      const classes = ["bh-cel", marcada ? "marcada" : "", bloqueada && !marcada ? "bloqueada" : "",
+                       L === "R" && HAB_NIVEIS_R.includes(nivel) ? "ultimate" : ""].filter(Boolean).join(" ");
+      const titulo = L === "R" && !HAB_NIVEIS_R.includes(nivel)
+        ? `O supremo só sobe nos níveis ${HAB_NIVEIS_R.join(", ")}`
+        : `${L} no nível ${nivel}`;
+      return `<button type="button" class="${classes}" data-hab="${L}" data-nivel="${nivel}" title="${esc(titulo)}"></button>`;
+    }).join("");
+    return `<span class="bh-letra">${arte}${L}<span class="bh-conta">${pontos[L]}/${HAB_MAX[L]}</span></span>${celulas}`;
+  }).join("");
+
+  caixa.innerHTML = `<div class="bh-topo">
+      <span class="bh-rotulo">Ordem de habilidades</span>
+      <span class="bh-aviso">${usados}/${HAB_NIVEIS} níveis${build.champion ? "" : " · escolha um campeão para ver os ícones"}</span>
+      <button type="button" class="bh-limpar" id="bh-limpar">Limpar</button>
+    </div>
+    <div class="bh-grade">${cabecalho}${linhas}</div>`;
+}
+
+// Arte das habilidades do campeão da build, do Data Dragon — a mesma fonte que
+// o diálogo de marcador já usa.
+const habArte = {};
+function carregarArteHabilidades() {
+  HAB_LETRAS.forEach(L => delete habArte[L]);
+  if (!build.champion) return;   // sem campeão ficam as letras, que já foram desenhadas
+  const id = build.champion.id;
+  Campeoes.habilidades(id).then(lista => {
+    if (!build.champion || build.champion.id !== id) return;
+    // Repinta só quando a arte muda de verdade. Redesenhar a grade à toa chegou
+    // a comer um clique: o botão era trocado entre o apertar e o soltar.
+    const antes = HAB_LETRAS.map(L => habArte[L] && habArte[L].url).join("|");
+    lista.forEach(sp => { habArte[sp.letter] = { url: Campeoes.spellUrl(sp.img), nome: sp.name }; });
+    if (HAB_LETRAS.map(L => habArte[L] && habArte[L].url).join("|") !== antes) renderHabilidades();
+  }).catch(() => { /* sem internet: ficam as letras */ });
+}
+
+function marcarHabilidade(letra, nivel) {
+  const h = normHabilidades(build.habilidades);
+  if (h[nivel - 1] === letra) h[nivel - 1] = null;
+  else {
+    if (!habPodeMarcar(h, letra, nivel)) return;
+    h[nivel - 1] = letra;
+  }
+  build.habilidades = normHabilidades(h);
+  saveBuild();
+  renderHabilidades();
+  Som.play("catalog:tag_select");
+}
+
 function initRunas() {
   const conta = document.getElementById("runas-tab-count");
   if (!runasOk()) { if (conta) conta.textContent = ""; return; }
@@ -8851,7 +9018,8 @@ function initLibrary() {
     if (r.desc) { build.desc = r.desc; }
     if (r.layout) { build.layout = r.layout; }
     if (r.runas) { build.runas = normRunas(r.runas); renderRunasDaForja(); }
-    if (r.desc || r.layout || r.runas) gravarBuild();
+    if (r.habilidades) { build.habilidades = normHabilidades(r.habilidades); renderHabilidades(); }
+    if (r.desc || r.layout || r.runas || r.habilidades) gravarBuild();
     if (r.championName) {
       const idNova = build.id;
       Campeoes.carregar().then(() => {
@@ -8970,6 +9138,12 @@ function initBuildBuilder() {
     }
   });
 
+  document.getElementById("build-habs").addEventListener("click", (e) => {
+    if (!build.editing) return;
+    if (e.target.id === "bh-limpar") { build.habilidades = normHabilidades(null); saveBuild(); renderHabilidades(); return; }
+    const c = e.target.closest("[data-hab]");
+    if (c) marcarHabilidade(c.dataset.hab, Number(c.dataset.nivel));
+  });
   document.getElementById("ml-ligar").addEventListener("click", () => {
     ligarEdicao(true);
     document.getElementById("edit-toggle").checked = true;

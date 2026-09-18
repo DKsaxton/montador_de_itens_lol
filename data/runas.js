@@ -4,7 +4,7 @@ window.RUNAS = {
   "gerado": "2026-09-18",
   "patch": "16.18.1",
   "trilhas": 5,
-  "runas": 58,
+  "runas": 62,
   "fragmentos": 9
  },
  "trilhas": [
@@ -678,6 +678,23 @@ window.RUNAS = {
      "tipo": "slot",
      "runas": [
       {
+       "id": "transcendencia",
+       "nome": "Transcendência",
+       "descricao": "Recebe efeitos adicionais ao atingir os seguintes níveis: - Nível 5: +5 de Aceleração de Habilidade - Nível 8: +5 de Aceleração de Habilidade - Nível 11: ao eliminar um Campeão inimigo, reduz o Tempo de Recarga restante das habilidades básicas em 20%",
+       "atributos": [
+        "Aceleração de Habilidade"
+       ],
+       "classes": [
+        "Mago",
+        "Lutador"
+       ],
+       "adaptativa": "",
+       "notas": [
+        "Só concede o bônus exatamente nos níveis 5, 8 e 11 — não é um ganho contínuo, então só é efetiva a partir do meio de jogo."
+       ],
+       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Sorcery/Transcendence/Transcendence.png"
+      },
+      {
        "id": "celeridade",
        "nome": "Celeridade",
        "descricao": "Todos os efeitos de movimentação são 7% mais eficazes em você, além de conceder 1% de Velocidade de Movimento.",
@@ -738,6 +755,28 @@ window.RUNAS = {
        "nome": "Caminhar Sobre as Águas",
        "descricao": "Recebe 10 de Velocidade de Movimento e 13-30 de Força Adaptativa (com base no nível) enquanto estiver no rio.",
        "atributos": [
+        "Velocidade de Movimento",
+        "Dano de Ataque",
+        "Poder de Habilidade"
+       ],
+       "classes": [
+        "Mago",
+        "Assassino",
+        "Tank"
+       ],
+       "adaptativa": "7.8–18.0 de Dano de Ataque ou 13–30 de Poder de Habilidade — nunca as duas coisas juntas.",
+       "notas": [
+        "O bônus de Velocidade de Movimento decai ao longo de 1s depois de sair do rio, mas o bônus de Força Adaptativa é perdido imediatamente.",
+        "Poças d'água criadas no território selvagem por efeitos de transformação em oceano também contam como \"rio\" pra ativar essa runa.",
+        "A zona de \"rio\" inclui as partes fora das brenhas no meio do mapa também, não só o rio central."
+       ],
+       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Sorcery/Waterwalking/Waterwalking.png"
+      },
+      {
+       "id": "tempestade-crescente",
+       "nome": "Tempestade Crescente",
+       "descricao": "A cada 10 minutos de jogo, recebe PdH ou DdA Adaptativo, crescendo continuamente: - 10 min: +8 PdH ou 5 DdA - 20 min: +24 PdH ou 14 DdA - 30 min: +48 PdH ou 29 DdA - 40 min: +80 PdH ou 48 DdA - 50 min: +120 PdH ou 72 DdA - 60 min: +168 PdH ou 101 DdA E assim por diante.",
+       "atributos": [
         "Dano de Ataque",
         "Poder de Habilidade"
        ],
@@ -745,20 +784,11 @@ window.RUNAS = {
         "Mago",
         "Atirador"
        ],
-       "adaptativa": "7.8–18.0 de Dano de Ataque ou 13–30 de Poder de Habilidade — nunca as duas coisas juntas.",
+       "adaptativa": "",
        "notas": [
-        "O bônus de Velocidade de Movimento decai ao longo de 1s depois de sair do rio, mas o bônus de Força Adaptativa é perdido imediatamente.",
-        "Poças d'água criadas no território selvagem por efeitos de transformação em oceano também contam como \"rio\" pra ativar essa runa.",
-        "A zona de \"rio\" inclui as partes fora das brenhas no meio do mapa também, não só o rio central.",
-        "10 min: +8 PdH ou 5 DdA",
-        "20 min: +24 PdH ou 14 DdA",
-        "30 min: +48 PdH ou 29 DdA",
-        "40 min: +80 PdH ou 48 DdA",
-        "50 min: +120 PdH ou 72 DdA",
-        "60 min: +168 PdH ou 101 DdA",
         "O intervalo de 10 minutos muda por modo de jogo: ARAM e URF a cada 6min, Swiftplay a cada 7min, Nexus Blitz a cada 4.5min."
        ],
-       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Sorcery/Waterwalking/Waterwalking.png"
+       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Sorcery/GatheringStorm/GatheringStorm.png"
       }
      ]
     }
@@ -775,6 +805,26 @@ window.RUNAS = {
      "nome": "Keystone",
      "tipo": "keystone",
      "runas": [
+      {
+       "id": "aperto-dos-mortos-vivos",
+       "nome": "Aperto dos Mortos-Vivos",
+       "descricao": "A cada 4s em combate, seu próximo ataque básico contra um Campeão irá: - Causar Dano Mágico adicional equivalente a 3.5% da sua Vida máxima - Curar você em 1.3% da sua Vida máxima - Aumentar permanentemente sua Vida em 5 Campeões de ataque à distância: o dano, a cura e a Vida permanente recebidos têm 40% de eficácia.",
+       "atributos": [
+        "Poder de Habilidade",
+        "Vida Máxima",
+        "Cura"
+       ],
+       "classes": [
+        "Tank",
+        "Lutador"
+       ],
+       "adaptativa": "",
+       "notas": [
+        "Dano do tipo \"proc\" — não aciona efeitos de feitiço, e não é afetado por modificadores de dano on-hit.",
+        "Pra campeões de ataque à distância, o dano e a cura são reduzidos pela metade, e o ganho de vida permanente também é menor."
+       ],
+       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Resolve/GraspOfTheUndying/GraspOfTheUndying.png"
+      },
       {
        "id": "pos-choque",
        "nome": "Pós-choque",
@@ -1131,6 +1181,23 @@ window.RUNAS = {
      "nome": "Slot 2",
      "tipo": "slot",
      "runas": [
+      {
+       "id": "tonico-triplo",
+       "nome": "Tônico Triplo",
+       "descricao": "Concede Elixires gratuitos conforme você sobe de nível: - Nível 3: Elixir da Avareza — +5 de Dano Verdadeiro ao atingir tropas por 60s; ao expirar, concede 40 de ouro - Nível 6: Elixir da Força — +5 de Dano de Ataque (AD) adaptável ou 9 de Poder de Habilidade (AP) adaptável por 60s - Nível 9: Elixir da Habilidade — concede 1 ponto de habilidade adicional",
+       "atributos": [
+        "Dano de Ataque",
+        "Poder de Habilidade",
+        "Ouro"
+       ],
+       "classes": [
+        "Mago",
+        "Atirador"
+       ],
+       "adaptativa": "",
+       "notas": [],
+       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Inspiration/PerfectTiming/AlchemistCabinet.png"
+      },
       {
        "id": "tonico-de-distorcao-no-tempo",
        "nome": "Tônico de Distorção no Tempo",

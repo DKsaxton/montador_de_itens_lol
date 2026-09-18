@@ -10,19 +10,21 @@ python data/gerar_runas_json.py
 
 ## O que o arquivo tem
 
-5 trilhas · 58 runas · 9 fragmentos · 14 substituições automáticas.
+5 trilhas · **62 runas** · 9 fragmentos · 14 substituições automáticas. Cinco keystones por trilha? Não: **3 ou 4 keystones e 3 runas em cada um dos três slots**, que é o desenho do jogo.
 
 | Trilha | Keystone | Slot 1 | Slot 2 | Slot 3 |
 |---|---|---|---|---|
 | Precisão | 4 | 3 | 3 | 3 |
 | Dominação | 3 | 3 | 3 | 3 |
-| Feitiçaria | 4 | 3 | 2 | 2 |
-| Determinação | 2 | 3 | 3 | 3 |
-| Inspiração | 3 | 3 | 2 | 3 |
+| Feitiçaria | 4 | 3 | 3 | 3 |
+| Determinação | 3 | 3 | 3 | 3 |
+| Inspiração | 3 | 3 | 3 | 3 |
+
+Comparando com o `runesReforged.json` em pt_BR da Riot: **62 de um lado, 62 do outro, sem diferença em nenhuma direção.**
 
 ## 1. Sete runas sem a linha `Atributos:`
 
-Todas têm descrição e `Classes:`, mas não dizem que atributo concedem. No app elas vão aparecer sem a linha de atributos — eu não deduzo do texto.
+Todas têm descrição e `Classes:`, mas não dizem que atributo concedem. No app elas aparecem sem a linha de atributos — eu não deduzo do texto.
 
 - Precisão / Slot 3: **Golpe de Misericórdia**, **Dilacerar**, **Até a Morte**
 - Determinação / Slot 1: **Golpe de Escudo**
@@ -30,29 +32,25 @@ Todas têm descrição e `Classes:`, mas não dizem que atributo concedem. No ap
 - Inspiração / Keystone: **Livro de Feitiços Deslacrado**
 - Inspiração / Slot 1: **Flashtração Hextec**
 
-Reparo que as três de Precisão são amplificadores de dano condicional, e as outras quatro não concedem atributo nenhum de fato — pode ser que a ausência esteja certa. Se for, vale escrever `Atributos: —` para a checagem parar de apontar.
+Leo confirmou em 18/09/2026 que a curadoria é manual. Se a ausência for proposital, vale escrever `Atributos: —` para a checagem parar de apontar.
 
-## 2. Uma substituição aponta para runa que não está na lista
+## 2. ~~Uma substituição aponta para runa que não está na lista~~ — era bug meu
 
-```
-Pós-choque -> vira Aperto dos Mortos-Vivos em campeões sem efeito de imobilização
-```
-
-**Aperto dos Mortos-Vivos** não existe em nenhuma trilha do arquivo. Ele é keystone de Determinação no jogo, e é justamente por isso que Determinação está com **2 keystones em vez de 3**.
+O `Pós-choque -> vira Aperto dos Mortos-Vivos` parecia apontar para runa inexistente. O Aperto dos Mortos-Vivos **sempre esteve no arquivo**; quem não o via era o meu leitor. Ver a seção abaixo.
 
 ## 3. ~~Um nome escrito diferente do oficial~~ — resolvido em 18/09/2026
 
 O arquivo dizia **Absorvição Vital**; no Data Dragon da Riot está **Absorção Vital**, e por isso ela era a única runa sem ícone. Com a sua autorização eu troquei a palavra no markdown. Hoje as **67 runas e fragmentos têm arte**.
 
-## 4. Quatro runas que a Riot tem e o arquivo não
+## 4. ~~Quatro runas que a Riot tem e o arquivo não~~ — era bug meu, corrigido em 18/09/2026
 
-Comparando com o `runesReforged.json` em pt_BR do patch 16.18.1:
+Eu relatei que faltavam **Tônico Triplo, Aperto dos Mortos-Vivos, Transcendência e Tempestade Crescente**, e cheguei a dizer que a diferença podia ser curadoria do Leo. Estava errado nas duas coisas.
 
-**Tônico Triplo · Aperto dos Mortos-Vivos · Transcendência · Tempestade Crescente**
+As quatro sempre estiveram no `Runas_League_of_Legends.md`. O que acontecia é que a descrição delas ocupa **mais de uma linha** — o colchete abre numa linha e fecha três ou quatro abaixo — e o meu leitor exigia abrir e fechar na mesma. Ele descartava a runa em silêncio e, de quebra, grudava as linhas de continuação como "notas técnicas" da runa anterior.
 
-São elas que explicam os slots com 2 runas em vez de 3 (Feitiçaria Slot 2 e 3, Inspiração Slot 2, Determinação Keystone).
+O leitor agora conta colchetes até fecharem. E a comparação com o Data Dragon, que antes era uma nota solta neste arquivo, virou **pendência do gerador**: se a Riot tiver uma runa que o arquivo não tem, isso aparece toda vez que você rodar, em vez de virar uma frase que alguém explica.
 
-Duas ressalvas honestas: o arquivo cita mudanças do patch 26.09 (o Avanço da Tempestade voltando no lugar do Ímpeto Gradual), então ele está adiante do Data Dragon em alguns pontos, e essa comparação não é prova de erro. E o Data Dragon também não é a fonte do projeto — serve só de conferência e de origem dos ícones.
+A lição, escrita para não repetir: **um leitor que ignora o que não entende mente por omissão.** Todo padrão que pode não casar precisa de uma contagem do lado de fora que confira o resultado.
 
 ## Como o app lida com isso enquanto não for resolvido
 
