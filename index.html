@@ -2190,6 +2190,235 @@ select.sort-select, .sort-attr-wrap select {
 }
 .card.regiao .card-icon, .card.regiao .card-main, .card.regiao .card-sheen { position: relative; z-index: 2; }
 body.icons-only .card:not(.full).regiao .reg-brasao { display: none; }
+
+/* ---------- F11-T4: o card reage ao mouse conforme o núcleo (Leo, 18/09/2026) ----------
+   Vem da amostra aprovada docs/amostras/fase11-vida-por-nucleo.html. AD golpeia,
+   AP emoldura, Vitalidade emoldura com gravura. Os tempos são a duração medida
+   dos próprios MP3 de hover, para o som e a imagem acabarem juntos.
+   Contrato: só transform e opacity animam, para o compositor dar conta a 120 FPS. */
+.card {
+  --t-ad: 235ms; --t-ap: 520ms; --t-vit: 549ms;
+  --papel: var(--loja-papel, #e5d3ad);
+  --tinta-suave: var(--loja-tinta-suave, #5a4630);
+  --cor: var(--class-color, var(--loja-latao, #b6873a));
+  --gravado: var(--loja-gravado, 'Cinzel', Georgia, serif);
+}
+/* Os efeitos moram fora da .card-surface, que tem overflow:hidden e cortaria a
+   moldura. Para não desalinharem, repetem a mesma inclinação dela no hover. */
+.card-fx {
+  position: absolute; inset: 0; z-index: 4; pointer-events: none;
+  transform-style: preserve-3d;
+  transform: rotateX(0deg) rotateY(0deg) scale(1);
+  transition: transform .35s cubic-bezier(.22, 1, .36, 1);
+}
+.card:hover .card-fx { transform: rotateX(var(--rx)) rotateY(var(--ry)) scale(1.06); }
+body.icons-only .card:not(.full) .card-fx, body.names-only .card:not(.full) .card-fx { display: none; }
+/* Na amostra o card estava sozinho no palco; aqui eles ficam lado a lado, e o
+   golpe do AD precisa parar na borda, senão risca o vizinho e a barra lateral.
+   A folga de 7 px deixa a lâmina sair do card sem invadir a coluna do lado. */
+.card-fx .lams, .card-fx .ests { inset: -7px; overflow: hidden; }
+
+.fx{position:absolute;inset:0;pointer-events:none;z-index:3}
+.fx *{will-change:transform,opacity;backface-visibility:hidden}
+
+/* ============ moldura genérica: quatro barras que se desenham ============ */
+/* Cada barra nasce do zero e cresce; só transform anda. */
+.mol{opacity:0}
+.mol .ba{position:absolute;background:var(--barra,#a98443);border-radius:1px}
+.mol .ba.t{top:var(--off,-3px);left:var(--off,-3px);right:var(--off,-3px);height:var(--esp,3px);transform:scaleX(0);transform-origin:left center}
+.mol .ba.b{bottom:var(--off,-3px);left:var(--off,-3px);right:var(--off,-3px);height:var(--esp,3px);transform:scaleX(0);transform-origin:right center}
+.mol .ba.l{left:var(--off,-3px);top:var(--off,-3px);bottom:var(--off,-3px);width:var(--esp,3px);transform:scaleY(0);transform-origin:center bottom}
+.mol .ba.r{right:var(--off,-3px);top:var(--off,-3px);bottom:var(--off,-3px);width:var(--esp,3px);transform:scaleY(0);transform-origin:center top}
+.mol .ca{position:absolute;width:var(--cw,9px);height:var(--cw,9px);background:var(--canto,#e2c98a);border-radius:var(--craio,50%);transform:scale(0)}
+.mol .ca.tl{top:var(--coff,-6px);left:var(--coff,-6px)}
+.mol .ca.tr{top:var(--coff,-6px);right:var(--coff,-6px)}
+.mol .ca.br{bottom:var(--coff,-6px);right:var(--coff,-6px)}
+.mol .ca.bl{bottom:var(--coff,-6px);left:var(--coff,-6px)}
+.mol .mk{position:absolute;font-family:var(--gravado);font-size:13px;line-height:1;opacity:0;
+  left:var(--p);transform:translateX(-50%) scale(.6)}
+.mol .mk.cima{top:-9px}
+.mol .mk.baixo{bottom:-9px}
+@keyframes mostrar-mol{to{opacity:1}}
+@keyframes crescer-x{to{transform:scaleX(1)}}
+@keyframes crescer-y{to{transform:scaleY(1)}}
+@keyframes por-canto{0%{transform:scale(0)}65%{transform:scale(1.35)}100%{transform:scale(1)}}
+@keyframes gravar{0%{opacity:0;transform:scale(.6)}60%{opacity:1;transform:scale(1.1)}100%{opacity:1;transform:scale(1)}}
+
+/* ================= AD — 235 ms, um golpe (MI) ================= */
+.lam{position:absolute;left:50%;top:50%;width:150%;height:3px;margin-left:-75%;border-radius:2px;
+  background:linear-gradient(90deg,transparent,rgba(60,26,8,.85) 22%,#fff0cf 50%,rgba(60,26,8,.85) 78%,transparent);
+  transform:rotate(0) scaleX(0);opacity:0}
+.lam.l1{transform:rotate(-28deg) scaleX(0)}
+.lam.l2{transform:rotate(24deg) scaleX(0)}
+.lam.l3{transform:rotate(-62deg) scaleX(0)}
+.lam.l4{transform:rotate(80deg) scaleX(0)}
+.anel i{position:absolute;left:34px;top:38px;width:26px;height:26px;margin:-13px 0 0 -13px;border-radius:50%;
+  border:2px solid rgba(255,190,120,.95);transform:scale(.2);opacity:0}
+.anel i:last-child{border-color:rgba(255,120,40,.7)}
+.est{position:absolute;top:50%;right:-16px;width:26px;height:6px;margin-top:-3px;border-radius:1px 3px 3px 1px;
+  background:linear-gradient(90deg,#4a3520,#e6cf9e 60%,#fff6e0);transform:translate3d(30px,0,0);opacity:0}
+.est.e2{top:30%}
+.est.e3{top:70%}
+.rebites i{position:absolute;width:7px;height:7px;border-radius:50%;
+  background:radial-gradient(circle at 35% 32%,#f0d7a8,#8a6a45 62%,#4a3520);transform:scale(0);opacity:0}
+.rebites .r1{top:5px;left:8%}.rebites .r2{top:5px;left:34%}.rebites .r3{top:5px;right:34%}.rebites .r4{top:5px;right:8%}
+.rebites .r5{bottom:5px;left:8%}.rebites .r6{bottom:5px;left:34%}.rebites .r7{bottom:5px;right:34%}.rebites .r8{bottom:5px;right:8%}
+@keyframes corte{0%{transform:rotate(var(--r)) scaleX(0);opacity:0}30%{opacity:1}60%{transform:rotate(var(--r)) scaleX(1);opacity:1}100%{transform:rotate(var(--r)) scaleX(1);opacity:0}}
+@keyframes recuo{0%{transform:translate3d(0,-4px,0)}26%{transform:translate3d(var(--rx,-7px),calc(-4px + var(--ry,2px)),0) rotate(var(--rr,-.8deg))}100%{transform:translate3d(0,-4px,0) rotate(0)}}
+@keyframes onda{0%{transform:scale(.2);opacity:0}25%{opacity:.95}100%{transform:scale(2.6);opacity:0}}
+@keyframes estocar{0%{transform:translate3d(30px,0,0);opacity:0}34%{transform:translate3d(-14px,0,0);opacity:1}100%{transform:translate3d(-42px,0,0);opacity:0}}
+@keyframes cravar{0%{transform:scale(0);opacity:0}55%{transform:scale(1.45);opacity:1}100%{transform:scale(1);opacity:1}}
+.card.fx-ad.a1{animation:recuo var(--t-ad) cubic-bezier(.2,.9,.3,1)}
+.card.fx-ad.a1 .lam.l1{--r:-28deg;animation:corte var(--t-ad) cubic-bezier(.1,.8,.2,1)}
+.card.fx-ad.a2{--rx:6px;--rr:.7deg;animation:recuo var(--t-ad) cubic-bezier(.2,.9,.3,1)}
+.card.fx-ad.a2 .lam.l2{--r:24deg;animation:corte calc(var(--t-ad) * .8) cubic-bezier(.1,.8,.2,1)}
+.card.fx-ad.a2 .lam.l3{--r:-62deg;animation:corte calc(var(--t-ad) * .8) cubic-bezier(.1,.8,.2,1) calc(var(--t-ad) * .2)}
+.card.fx-ad.a3{--rx:-9px;--rr:0deg;animation:recuo var(--t-ad) cubic-bezier(.2,.9,.3,1)}
+.card.fx-ad.a3 .est.e1{animation:estocar var(--t-ad) cubic-bezier(.1,.9,.2,1)}
+.card.fx-ad.a3 .est.e2{animation:estocar var(--t-ad) cubic-bezier(.1,.9,.2,1) 30ms}
+.card.fx-ad.a4{--rx:0;--ry:3px;--rr:0deg;animation:recuo var(--t-ad) cubic-bezier(.2,.9,.3,1)}
+.card.fx-ad.a4 .anel i{animation:onda var(--t-ad) cubic-bezier(.1,.7,.3,1)}
+.card.fx-ad.a4 .anel i:last-child{animation-delay:40ms}
+.card.fx-ad.a4 .rebites i{animation:cravar calc(var(--t-ad) * .55) cubic-bezier(.2,1.6,.4,1) forwards}
+.card.fx-ad.a4 .rebites .r2{animation-delay:26ms}.card.fx-ad.a4 .rebites .r3{animation-delay:52ms}
+.card.fx-ad.a4 .rebites .r4{animation-delay:78ms}.card.fx-ad.a4 .rebites .r5{animation-delay:26ms}
+.card.fx-ad.a4 .rebites .r6{animation-delay:52ms}.card.fx-ad.a4 .rebites .r7{animation-delay:78ms}
+.card.fx-ad.a4 .rebites .r8{animation-delay:104ms}
+/* variante 5 — o corte abre o card */
+.metade{position:absolute;inset:0;z-index:7;opacity:0;pointer-events:none}
+.metade .card-surface{position:absolute;inset:0;transform:none;transition:none}
+.metade.m1{clip-path:polygon(0 0,100% 0,100% 34%,0 68%)}
+.metade.m2{clip-path:polygon(0 68%,100% 34%,100% 100%,0 100%)}
+@keyframes abrir1{0%{transform:translate3d(0,0,0);opacity:1}46%{transform:translate3d(-7px,-9px,0);opacity:1}100%{transform:translate3d(0,0,0);opacity:1}}
+@keyframes abrir2{0%{transform:translate3d(0,0,0);opacity:1}46%{transform:translate3d(7px,9px,0);opacity:1}100%{transform:translate3d(0,0,0);opacity:1}}
+@keyframes sumir{0%,96%{opacity:0}100%{opacity:1}}
+.card.fx-ad.a5 .metade{animation-duration:var(--t-ad);animation-timing-function:cubic-bezier(.15,.9,.25,1);animation-fill-mode:forwards}
+.card.fx-ad.a5 .metade.m1{animation-name:abrir1}
+.card.fx-ad.a5 .metade.m2{animation-name:abrir2}
+.card.fx-ad.a5 > .card-surface{animation:sumir var(--t-ad) linear}
+.card.fx-ad.a5 .lam.l1{--r:-28deg;animation:corte calc(var(--t-ad) * .55) cubic-bezier(.1,.8,.2,1)}
+
+/* ============ AP — quatro MOLDURAS, 520 ms (ré · mi) ============ */
+/* Tempo 1: a moldura se desenha. Tempo 2: os ornamentos entram. */
+.m-latao{--barra:linear-gradient(180deg,#e0c078,#8a6a35);--canto:radial-gradient(circle at 35% 32%,#f7e6bd,#8a6a35);--esp:4px;--off:-4px}
+.m-runas{--barra:linear-gradient(90deg,rgba(190,150,255,.95),rgba(123,79,181,.75));--canto:#d9c2ff;--esp:2px;--off:-7px;--cw:7px}
+.m-runas .mk{color:#f2e7ff;text-shadow:0 0 8px rgba(190,150,255,.95)}
+.m-runas .mk{color:#f2e7ff}
+.m-canos{--barra:linear-gradient(180deg,#8fa88a,#3f5240);--canto:radial-gradient(circle at 35% 32%,#cfe6c4,#3f5240);--esp:7px;--off:-8px;--cw:15px;--craio:3px}
+.m-tinta{--barra:linear-gradient(90deg,rgba(40,25,60,.9),rgba(20,12,34,.95));--canto:transparent;--esp:3px;--off:-5px}
+.m-tinta .mk{width:7px;height:7px;border-radius:70% 0 70% 0;background:#a06fd6}
+.card.fx-ap.a4 .m-tinta .mk{animation:gravar-lado calc(var(--t-ap) / 2) ease-out calc(var(--t-ap) / 2) forwards}
+.card.fx-ap.a4 .m-tinta .m2{animation-delay:calc(var(--t-ap) / 2 + 40ms)}
+.card.fx-ap.a4 .m-tinta .m3{animation-delay:calc(var(--t-ap) / 2 + 80ms)}
+.card.fx-ap.a4 .m-tinta .m4{animation-delay:calc(var(--t-ap) / 2 + 120ms)}
+.m-tinta .ca{background:radial-gradient(circle at 40% 35%,#f3d7ff,#a06fd6);width:11px;height:11px;border-radius:60% 0 60% 0}
+.frasco{position:absolute;inset:auto;top:50%;width:16px;height:38px;margin-top:-19px;z-index:4;
+  border:2px solid #a98443;border-radius:3px 3px 7px 7px;background:linear-gradient(180deg,rgba(20,12,30,.55) 38%,#7b4fb5 38%);
+  transform:translate3d(0,14px,0) scale(.7);opacity:0}
+.frasco.esq{left:-13px}
+.frasco.dir{right:-13px}
+.frasco b{position:absolute;left:50%;bottom:5px;width:4px;height:4px;margin-left:-2px;border-radius:50%;background:rgba(245,235,255,.95);opacity:0}
+.vapores b{position:absolute;width:10px;height:10px;border-radius:50%;background:radial-gradient(circle,rgba(180,240,190,.8),rgba(90,160,110,0));opacity:0;transform:translate3d(0,0,0) scale(.5)}
+.vapores .v1{top:-8px;left:-8px}.vapores .v2{top:-8px;right:-8px}
+.vapores .v3{bottom:-8px;right:-8px}.vapores .v4{bottom:-8px;left:-8px}
+@keyframes erguer{0%{transform:translate3d(0,14px,0) scale(.7);opacity:0}70%{transform:translate3d(0,-2px,0) scale(1.04);opacity:1}100%{transform:translate3d(0,0,0) scale(1);opacity:1}}
+@keyframes borbulha{0%{transform:translate3d(0,0,0) scale(.6);opacity:0}25%{opacity:1}100%{transform:translate3d(2px,-22px,0) scale(1);opacity:0}}
+@keyframes escapar{0%{transform:translate3d(0,0,0) scale(.5);opacity:0}30%{opacity:.85}100%{transform:translate3d(var(--vx,-14px),-26px,0) scale(1.9);opacity:0}}
+@keyframes gravar-lado{0%{opacity:0;transform:translateX(-50%) scale(.6)}60%{opacity:1;transform:translateX(-50%) scale(1.12)}100%{opacity:1;transform:translateX(-50%) scale(1)}}
+
+.card.fx-ap .mol{animation-duration:calc(var(--t-ap) / 2);animation-timing-function:cubic-bezier(.2,.9,.3,1);animation-fill-mode:forwards}
+.card.fx-ap.a1 .m-latao,.card.fx-ap.a2 .m-runas,.card.fx-ap.a3 .m-canos,.card.fx-ap.a4 .m-tinta{animation-name:mostrar-mol}
+.card.fx-ap.a1 .m-latao .ba.t,.card.fx-ap.a2 .m-runas .ba.t,.card.fx-ap.a3 .m-canos .ba.t,.card.fx-ap.a4 .m-tinta .ba.t,
+.card.fx-ap.a1 .m-latao .ba.b,.card.fx-ap.a2 .m-runas .ba.b,.card.fx-ap.a3 .m-canos .ba.b,.card.fx-ap.a4 .m-tinta .ba.b{
+  animation:crescer-x calc(var(--t-ap) / 2) cubic-bezier(.2,.9,.3,1) forwards}
+.card.fx-ap.a1 .m-latao .ba.l,.card.fx-ap.a2 .m-runas .ba.l,.card.fx-ap.a3 .m-canos .ba.l,.card.fx-ap.a4 .m-tinta .ba.l,
+.card.fx-ap.a1 .m-latao .ba.r,.card.fx-ap.a2 .m-runas .ba.r,.card.fx-ap.a3 .m-canos .ba.r,.card.fx-ap.a4 .m-tinta .ba.r{
+  animation:crescer-y calc(var(--t-ap) / 2) cubic-bezier(.2,.9,.3,1) 60ms forwards}
+.card.fx-ap.a1 .m-latao .ca,.card.fx-ap.a2 .m-runas .ca,.card.fx-ap.a3 .m-canos .ca,.card.fx-ap.a4 .m-tinta .ca{
+  animation:por-canto calc(var(--t-ap) / 2) cubic-bezier(.2,1.5,.4,1) calc(var(--t-ap) / 2) forwards}
+/* ornamentos do tempo 2, um por moldura */
+.card.fx-ap.a1 .frasco{animation:erguer calc(var(--t-ap) / 2) cubic-bezier(.2,1.5,.4,1) calc(var(--t-ap) / 2) forwards}
+.card.fx-ap.a1 .frasco.dir{animation-delay:calc(var(--t-ap) / 2 + 60ms)}
+.card.fx-ap.a1 .frasco b{animation:borbulha 1.4s linear var(--t-ap) infinite}
+.card.fx-ap.a1 .frasco .b2{animation-delay:calc(var(--t-ap) + 200ms)}
+.card.fx-ap.a1 .frasco .b3{animation-delay:calc(var(--t-ap) + 480ms)}
+.card.fx-ap.a1 .frasco .b4{animation-delay:calc(var(--t-ap) + 760ms)}
+.card.fx-ap.a2 .m-runas .mk{animation:gravar-lado calc(var(--t-ap) / 2) ease-out calc(var(--t-ap) / 2) forwards}
+.card.fx-ap.a2 .m-runas .m2,.card.fx-ap.a2 .m-runas .m7{animation-delay:calc(var(--t-ap) / 2 + 26ms)}
+.card.fx-ap.a2 .m-runas .m3,.card.fx-ap.a2 .m-runas .m8{animation-delay:calc(var(--t-ap) / 2 + 52ms)}
+.card.fx-ap.a2 .m-runas .m4,.card.fx-ap.a2 .m-runas .m9{animation-delay:calc(var(--t-ap) / 2 + 78ms)}
+.card.fx-ap.a2 .m-runas .m5,.card.fx-ap.a2 .m-runas .m10{animation-delay:calc(var(--t-ap) / 2 + 104ms)}
+.card.fx-ap.a3 .vapores b{animation:escapar 1.6s ease-out calc(var(--t-ap) / 2) infinite}
+.card.fx-ap.a3 .vapores .v2{--vx:14px;animation-delay:calc(var(--t-ap) / 2 + 220ms)}
+.card.fx-ap.a3 .vapores .v3{--vx:12px;animation-delay:calc(var(--t-ap) / 2 + 440ms)}
+.card.fx-ap.a3 .vapores .v4{--vx:-12px;animation-delay:calc(var(--t-ap) / 2 + 660ms)}
+
+/* ============ Vitalidade — quatro MOLDURAS com gravura, 549 ms ============ */
+.tj{position:absolute;border-radius:2px;background:linear-gradient(180deg,rgba(150,240,150,.34),rgba(60,150,70,.24));
+  border:1px solid rgba(170,255,170,.55);box-shadow:inset 0 1px 0 rgba(220,255,220,.35);transform:translate3d(0,-22px,0);opacity:0}
+.tj.t1,.tj.t2,.tj.t3,.tj.t4,.tj.t5,.tj.t6,.tj.t7,.tj.t8{height:13px;width:12.5%;top:0}
+.tj.t1{left:0}.tj.t2{left:12.5%}.tj.t3{left:25%}.tj.t4{left:37.5%}
+.tj.t5{left:50%}.tj.t6{left:62.5%}.tj.t7{left:75%}.tj.t8{left:87.5%}
+.tj.t9,.tj.t10,.tj.t11,.tj.t12,.tj.t13,.tj.t14,.tj.t15,.tj.t16{height:13px;width:12.5%;bottom:0}
+.tj.t9{left:0}.tj.t10{left:12.5%}.tj.t11{left:25%}.tj.t12{left:37.5%}
+.tj.t13{left:50%}.tj.t14{left:62.5%}.tj.t15{left:75%}.tj.t16{left:87.5%}
+.tj.t17,.tj.t18{width:13px;left:0;height:34%}
+.tj.t17{top:20%}.tj.t18{top:54%}
+.tj.t19,.tj.t20{width:13px;right:0;height:34%}
+.tj.t19{top:20%}.tj.t20{top:54%}
+.escudo{display:grid;place-items:center;z-index:4}
+.escudo svg{position:absolute;inset:-7px;width:calc(100% + 14px);height:calc(100% + 14px);opacity:0;transform:scale(.94)}
+.escudo path{fill:none;stroke:#a8ea90;stroke-width:3;stroke-linejoin:round;vector-effect:non-scaling-stroke}
+.m-folhagem{--barra:linear-gradient(90deg,rgba(120,200,110,.9),rgba(60,130,70,.8));--canto:radial-gradient(circle at 40% 35%,#c6f0b4,#4d8b3a);--esp:3px;--off:-5px;--cw:10px;--craio:60% 0 60% 0}
+.m-pedra{--barra:linear-gradient(180deg,#8d9384,#4a5346);--canto:linear-gradient(180deg,#a8b09c,#4a5346);--esp:11px;--off:-11px;--cw:18px;--craio:2px}
+.folhas b{position:absolute;width:9px;height:9px;border-radius:70% 0 70% 0;background:#79c466;opacity:0;transform:scale(0) rotate(var(--rot,0deg))}
+.folhas .f1{top:-8px;left:16%}.folhas .f2{top:-8px;left:42%;--rot:40deg}.folhas .f3{top:-8px;left:70%;--rot:-30deg}
+.folhas .f4{bottom:-8px;left:22%;--rot:180deg}.folhas .f5{bottom:-8px;left:52%;--rot:150deg}.folhas .f6{bottom:-8px;left:78%;--rot:200deg}
+.folhas .f7{left:-8px;top:28%;--rot:-90deg}.folhas .f8{left:-8px;top:64%;--rot:-70deg}
+.folhas .f9{right:-8px;top:34%;--rot:90deg}.folhas .f10{right:-8px;top:70%;--rot:110deg}
+.entalhes b{position:absolute;width:4px;height:4px;background:rgba(30,38,28,.75);border-radius:1px;opacity:0;transform:scale(0) rotate(45deg)}
+.entalhes .e1{top:-8px;left:18%}.entalhes .e2{top:-8px;left:38%}.entalhes .e3{top:-8px;left:58%}.entalhes .e4{top:-8px;left:78%}
+.entalhes .e5{bottom:-8px;left:18%}.entalhes .e6{bottom:-8px;left:38%}.entalhes .e7{bottom:-8px;left:58%}.entalhes .e8{bottom:-8px;left:78%}
+.entalhes .e9{left:-8px;top:30%}.entalhes .e10{left:-8px;top:62%}
+.entalhes .e11{right:-8px;top:30%}.entalhes .e12{right:-8px;top:62%}
+@keyframes assentar{0%{transform:translate3d(0,-22px,0);opacity:0}70%{opacity:1}100%{transform:translate3d(0,0,0);opacity:1}}
+@keyframes selar{0%{transform:scale(.94);opacity:0}55%{transform:scale(1.03);opacity:1}100%{transform:scale(1);opacity:1}}
+@keyframes brotar-folha{0%{transform:scale(0) rotate(var(--rot,0deg));opacity:0}65%{transform:scale(1.25) rotate(var(--rot,0deg));opacity:1}100%{transform:scale(1) rotate(var(--rot,0deg));opacity:1}}
+@keyframes entalhar{0%{transform:scale(0) rotate(45deg);opacity:0}70%{transform:scale(1.3) rotate(45deg);opacity:1}100%{transform:scale(1) rotate(45deg);opacity:1}}
+
+/* 1 — muralha de jade (três levas de tijolo) */
+.card.fx-vit.a1 .tj{animation:assentar calc(var(--t-vit) / 3) cubic-bezier(.25,1.5,.5,1) forwards}
+.card.fx-vit.a1 .tj.t2,.card.fx-vit.a1 .tj.t10,.card.fx-vit.a1 .tj.t18{animation-delay:24ms}
+.card.fx-vit.a1 .tj.t3,.card.fx-vit.a1 .tj.t11,.card.fx-vit.a1 .tj.t19{animation-delay:48ms}
+.card.fx-vit.a1 .tj.t4,.card.fx-vit.a1 .tj.t12,.card.fx-vit.a1 .tj.t20{animation-delay:72ms}
+.card.fx-vit.a1 .tj.t5,.card.fx-vit.a1 .tj.t13{animation-delay:183ms}
+.card.fx-vit.a1 .tj.t6,.card.fx-vit.a1 .tj.t14{animation-delay:207ms}
+.card.fx-vit.a1 .tj.t7,.card.fx-vit.a1 .tj.t15{animation-delay:231ms}
+.card.fx-vit.a1 .tj.t8,.card.fx-vit.a1 .tj.t16{animation-delay:255ms}
+.card.fx-vit.a1 .escudo svg{animation:selar calc(var(--t-vit) / 3) cubic-bezier(.2,1.4,.4,1) calc(var(--t-vit) * .66) forwards}
+/* 2 — só o escudo, desenhado em dois tempos e selado no terceiro */
+.card.fx-vit.a2 .escudo svg{animation:selar calc(var(--t-vit) * .66) cubic-bezier(.2,1.2,.3,1) forwards}
+/* 3 — moldura de folhagem: a haste corre e as folhas brotam */
+.card.fx-vit.a3 .m-folhagem{animation:mostrar-mol calc(var(--t-vit) / 3) ease-out forwards}
+.card.fx-vit.a3 .m-folhagem .ba.t,.card.fx-vit.a3 .m-folhagem .ba.b{animation:crescer-x calc(var(--t-vit) / 3) cubic-bezier(.2,.9,.3,1) forwards}
+.card.fx-vit.a3 .m-folhagem .ba.l,.card.fx-vit.a3 .m-folhagem .ba.r{animation:crescer-y calc(var(--t-vit) / 3) cubic-bezier(.2,.9,.3,1) 50ms forwards}
+.card.fx-vit.a3 .m-folhagem .ca{animation:por-canto calc(var(--t-vit) / 3) cubic-bezier(.2,1.5,.4,1) calc(var(--t-vit) / 3) forwards}
+.card.fx-vit.a3 .folhas b{animation:brotar-folha calc(var(--t-vit) / 3) cubic-bezier(.2,1.5,.4,1) calc(var(--t-vit) / 3) forwards}
+.card.fx-vit.a3 .folhas .f2,.card.fx-vit.a3 .folhas .f5,.card.fx-vit.a3 .folhas .f8{animation-delay:calc(var(--t-vit) / 3 + 60ms)}
+.card.fx-vit.a3 .folhas .f3,.card.fx-vit.a3 .folhas .f6,.card.fx-vit.a3 .folhas .f9{animation-delay:calc(var(--t-vit) * .66)}
+.card.fx-vit.a3 .folhas .f10{animation-delay:calc(var(--t-vit) * .66 + 60ms)}
+/* 4 — moldura de pedra entalhada: a cantaria fecha e os entalhes aparecem */
+.card.fx-vit.a4 .m-pedra{animation:mostrar-mol calc(var(--t-vit) / 3) ease-out forwards}
+.card.fx-vit.a4 .m-pedra .ba.t,.card.fx-vit.a4 .m-pedra .ba.b{animation:crescer-x calc(var(--t-vit) / 3) cubic-bezier(.2,.9,.3,1) forwards}
+.card.fx-vit.a4 .m-pedra .ba.l,.card.fx-vit.a4 .m-pedra .ba.r{animation:crescer-y calc(var(--t-vit) / 3) cubic-bezier(.2,.9,.3,1) 50ms forwards}
+.card.fx-vit.a4 .m-pedra .ca{animation:por-canto calc(var(--t-vit) / 3) cubic-bezier(.2,1.4,.4,1) calc(var(--t-vit) / 3) forwards}
+.card.fx-vit.a4 .entalhes b{animation:entalhar calc(var(--t-vit) / 3) cubic-bezier(.2,1.5,.4,1) calc(var(--t-vit) * .66) forwards}
+.card.fx-vit.a4 .entalhes .e2,.card.fx-vit.a4 .entalhes .e6,.card.fx-vit.a4 .entalhes .e10{animation-delay:calc(var(--t-vit) * .66 + 30ms)}
+.card.fx-vit.a4 .entalhes .e3,.card.fx-vit.a4 .entalhes .e7,.card.fx-vit.a4 .entalhes .e11{animation-delay:calc(var(--t-vit) * .66 + 60ms)}
+.card.fx-vit.a4 .entalhes .e4,.card.fx-vit.a4 .entalhes .e8,.card.fx-vit.a4 .entalhes .e12{animation-delay:calc(var(--t-vit) * .66 + 90ms)}
+
+@media (prefers-reduced-motion: reduce){ .card-fx,.card-fx *{animation:none !important} }
+
 .card-sheen {
   background:
     radial-gradient(340px circle at var(--mx) var(--my),
@@ -8616,6 +8845,108 @@ function vestirDeRegiao(card, item) {
     </div>`;
 }
 
+
+// ---------------- F11-T4: reação ao mouse por núcleo ----------------
+// Da amostra aprovada (docs/amostras/fase11-vida-por-nucleo.html). O enfeite de
+// cada núcleo é montado na PRIMEIRA vez que o mouse passa naquele card, não na
+// renderização: são até 60 elementos por card, e 225 cards de uma vez seriam
+// 13 mil nós para um efeito que talvez nem aconteça.
+const FX_NUCLEO = { "AD": "ad", "AP": "ap", "Vitalidade": "vit" };
+const FX_VARIANTES = { ad: 5, ap: 4, vit: 4 };
+const FX_RUNAS = "ᚠᚢᚦᚨᚱᚲᚷᚹᚺᚾᛁᛃᛇᛈᛉᛊᛏᛒᛖᛗᛚᛜᛟᛞ";
+
+function fxRepete(molde, n) { let o = ""; for (let i = 1; i <= n; i++) o += molde(i); return o; }
+
+// Moldura genérica: quatro barras que se desenham e ornamentos de canto.
+function fxMoldura(nome, marcas, texto) {
+  const barras = ["t", "r", "b", "l"].map(l => `<i class="ba ${l}"></i>`).join("");
+  const cantos = ["tl", "tr", "br", "bl"].map(c => `<i class="ca ${c}"></i>`).join("");
+  let mk = "";
+  if (marcas) {
+    const metade = marcas / 2;
+    for (let i = 0; i < marcas; i++) {
+      const lado = i < metade ? "cima" : "baixo";
+      const k = i < metade ? i : i - metade;
+      const p = ((k + 0.5) / metade * 100).toFixed(1);
+      mk += `<b class="mk ${lado} m${i + 1}" style="--p:${p}%">${texto ? texto() : ""}</b>`;
+    }
+  }
+  return `<span class="fx mol ${nome}">${barras}${cantos}${mk}</span>`;
+}
+
+function fxOrnamentos(n) {
+  if (n === "ad") {
+    return `<span class="fx lams">${fxRepete(i => `<i class="lam l${i}"></i>`, 4)}</span>` +
+      `<span class="fx anel"><i></i><i></i></span>` +
+      `<span class="fx ests">${fxRepete(i => `<i class="est e${i}"></i>`, 3)}</span>` +
+      `<span class="fx rebites">${fxRepete(i => `<i class="r${i}"></i>`, 8)}</span>`;
+  }
+  if (n === "ap") {
+    const bolhas = fxRepete(i => `<b class="b${i}"></b>`, 4);
+    const runa = () => FX_RUNAS[Math.floor(Math.random() * FX_RUNAS.length)];
+    return fxMoldura("m-latao") +
+      `<span class="fx frasco esq">${bolhas}</span><span class="fx frasco dir">${bolhas}</span>` +
+      fxMoldura("m-runas", 10, runa) +
+      fxMoldura("m-canos") + `<span class="fx vapores">${fxRepete(i => `<b class="v${i}"></b>`, 4)}</span>` +
+      fxMoldura("m-tinta", 4);
+  }
+  return `<span class="fx muralha">${fxRepete(i => `<i class="tj t${i}"></i>`, 20)}</span>` +
+    `<span class="fx escudo"><svg viewBox="0 0 120 130" preserveAspectRatio="none" aria-hidden="true">` +
+    `<path d="M4 4 60 12 116 4v74c0 26-26 40-56 48C30 118 4 104 4 78z"/></svg></span>` +
+    fxMoldura("m-folhagem") + `<span class="fx folhas">${fxRepete(i => `<b class="fo f${i}"></b>`, 10)}</span>` +
+    fxMoldura("m-pedra") + `<span class="fx entalhes">${fxRepete(i => `<b class="en e${i}"></b>`, 12)}</span>`;
+}
+
+function fxLimpar(card) {
+  for (let i = 1; i <= 5; i++) card.classList.remove("a" + i);
+  card.querySelectorAll(".metade").forEach(m => m.remove());
+}
+
+// A variante 5 do AD corta o card em dois: as metades são cópias da superfície,
+// feitas na hora e jogadas fora no fim, para não triplicar o DOM à toa.
+function fxPartirCard(card, palco) {
+  const sup = card.querySelector(".card-surface");
+  if (!sup) return;
+  ["m1", "m2"].forEach(qual => {
+    const metade = document.createElement("span");
+    metade.className = "metade " + qual;
+    metade.setAttribute("aria-hidden", "true");
+    const copia = sup.cloneNode(true);
+    copia.querySelectorAll("[id]").forEach(x => x.removeAttribute("id"));
+    metade.appendChild(copia);
+    palco.appendChild(metade);
+  });
+}
+
+function fxAcionar(card, nucleo) {
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  let palco = card.querySelector(".card-fx");
+  if (!palco) {
+    palco = document.createElement("div");
+    palco.className = "card-fx";
+    palco.innerHTML = fxOrnamentos(nucleo);
+    card.appendChild(palco);
+  }
+  const total = FX_VARIANTES[nucleo];
+  let v;
+  do { v = 1 + Math.floor(Math.random() * total); } while (total > 1 && v === Number(card.dataset.fxUltima));
+  card.dataset.fxUltima = v;
+  fxLimpar(card);
+  void card.offsetWidth;                       // reinicia a animação
+  if (nucleo === "ad" && v === 5) fxPartirCard(card, palco);
+  card.classList.add("a" + v);
+}
+
+// Liga o card ao efeito do núcleo dele. Item sem núcleo (Trinket, consumível)
+// não reage: o efeito é a assinatura da classe, não enfeite de todo mundo.
+function ligarFxDeNucleo(card, item) {
+  const nucleo = FX_NUCLEO[item.itemClass && item.itemClass.core];
+  if (!nucleo) return;
+  card.classList.add("fx-" + nucleo);
+  card.addEventListener("mouseenter", () => fxAcionar(card, nucleo));
+  card.addEventListener("mouseleave", () => fxLimpar(card));
+}
+
 function renderCard(item, attrSorting) {
   const card = document.createElement("div");
   card.className = "card";
@@ -8654,6 +8985,7 @@ function renderCard(item, attrSorting) {
   if (findInBuild(item.slug)) card.classList.add("in-build");
   if (state.applyApex && hasApex(item)) card.classList.add("apex-on");
   const regiaoHtml = vestirDeRegiao(card, item);
+  ligarFxDeNucleo(card, item);
   card.innerHTML = `
     <div class="card-burst"></div>
     <span class="stamp">NO BUILD</span>
