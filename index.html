@@ -2736,6 +2736,25 @@ body.nucleo .group-head::before {
 .bd-runas .br-rotulo { color: var(--loja-tinta-suave); }
 .bd-runas .br-runa.assinatura { width: 29px; height: 29px; }
 
+
+/* ---------- F12-T1: completar a build sem sair da lista ---------- */
+/* O diálogo de marcador abre POR CIMA deste: os dois usam .marker-dialog, e sem
+   isto o de completar ficava na frente e engolia os cliques do de marcador. */
+#pub-falta { z-index: 94; }
+.pf-panel { max-width: 520px; }
+.pf-sub { font-family: var(--loja-texto); font-style: italic; font-size: 13px; color: var(--loja-legenda); margin: 0 0 14px; }
+.pf-campo {
+  width: 100%; padding: 9px 11px; border-radius: 2px;
+  background: var(--loja-papel); border: 1px solid var(--loja-papel-borda);
+  color: var(--loja-tinta); font-family: var(--loja-texto); font-size: 14px; resize: vertical;
+}
+.pf-campo:focus { outline: none; border-color: var(--loja-latao); box-shadow: 0 0 0 1px var(--loja-latao); }
+.pf-dica { font-family: var(--loja-texto); font-style: italic; font-size: 11.5px; letter-spacing: 0; text-transform: none; color: var(--loja-legenda); margin-left: 8px; }
+.pf-marks { display: flex; gap: 8px; }
+.pf-foot { display: flex; align-items: center; gap: 10px; }
+.pf-estado { font-family: var(--loja-gravado); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--loja-legenda); margin-right: auto; }
+.pf-estado.pronta { color: #8fd07a; }
+
 .card-sheen {
   background:
     radial-gradient(340px circle at var(--mx) var(--my),
@@ -4740,6 +4759,35 @@ body.forja .build-cat.drop-after  { transform: translateX(-5px); box-shadow: ins
     <div class="md-foot"><button type="button" class="btn ghost" id="md-clear">Limpar este espaço</button></div>
   </div>
 </div>
+<!-- F12-T1 (Leo, 18/09/2026): em vez de só dizer o que falta para publicar,
+     a janela deixa resolver ali mesmo. -->
+<div id="pub-falta" class="marker-dialog" role="dialog" aria-label="Completar a build para publicar" hidden>
+  <div class="md-panel pf-panel">
+    <button type="button" class="md-close" id="pf-close" aria-label="Fechar">×</button>
+    <h3 class="md-title">Falta pouco para publicar</h3>
+    <p class="pf-sub" id="pf-sub"></p>
+    <div class="md-group" id="pf-nome-g" hidden>
+      <div class="md-label">Nome da build</div>
+      <input type="text" id="pf-nome" class="pf-campo" spellcheck="false" placeholder="Um nome que diga o que ela é">
+    </div>
+    <div class="md-group" id="pf-desc-g" hidden>
+      <div class="md-label">Descrição</div>
+      <textarea id="pf-desc" class="pf-campo" rows="3" spellcheck="false" placeholder="O que ela faz, quando usar, contra quem…"></textarea>
+    </div>
+    <div class="md-group" id="pf-marks-g" hidden>
+      <div class="md-label">Marcadores <span class="pf-dica">os três; clique num espaço para escolher</span></div>
+      <div class="build-marks pf-marks" id="pf-marks"></div>
+    </div>
+    <div class="md-group" id="pf-itens-g" hidden>
+      <p class="md-note">Esta build ainda não tem itens, e isso não dá para resolver aqui — itens se escolhem no catálogo.</p>
+    </div>
+    <div class="md-foot pf-foot">
+      <span class="pf-estado" id="pf-estado"></span>
+      <button type="button" class="btn ghost" id="pf-forja">Abrir na forja</button>
+      <button type="button" class="btn primary" id="pf-publicar">Salvar e publicar</button>
+    </div>
+  </div>
+</div>
 <div id="note-editor" class="note-editor" role="dialog" aria-label="Observação do item">
   <div class="ne-title"><span class="ne-label">Observação</span><span class="ne-item"></span></div>
   <textarea id="note-text" rows="3" placeholder="Quando comprar, contra quem, o que segurar…" spellcheck="false"></textarea>
@@ -5913,7 +5961,8 @@ async function publicarBuild(id) {
   if (!b) return;
   const d = buildResumo(b);
   const falta = faltaParaPublicar(d);
-  if (falta.length) { mostrarPub("Ainda não dá para publicar", `Falta: <b>${esc(falta.join(", "))}</b>.`, "erro"); return; }
+  // F12-T1: em vez da placa que só informa, abre a janela que deixa resolver.
+  if (falta.length) { abrirFaltaPublicar(id); return; }
   if (!Servidor.ativo()) { mostrarPub("Sem servidor", "A página não tem a URL e a chave do servidor (data/servidor.js).", "erro"); return; }
   mostrarPub("Publicando a build", "Aguarde");
   const params = {
@@ -6473,10 +6522,16 @@ function renderMarkSlots() {
 }
 
 let markerSlot = 0;
-function openMarkerDialog(i) {
+// F12-T1: o diálogo passa a aceitar outro dono além da build ativa. Sem isso,
+// completar os marcadores de uma build da lista mexeria na build errada.
+let markerDono = null;
+function donoDeMarcadores() { return markerDono || { markers: build.markers, champion: build.champion, cats: build.cats, aoMudar: () => { saveBuild(); renderBuildAll(); } }; }
+function openMarkerDialog(i, dono) {
   markerSlot = i;
+  markerDono = dono || null;
+  const alvo = donoDeMarcadores();
   const dlg = document.getElementById("marker-dialog");
-  const atual = normMarkers(build.markers)[i] || null;
+  const atual = normMarkers(alvo.markers)[i] || null;
   const same = (m) => atual && JSON.stringify(m) === JSON.stringify(atual);
   const cell = (m, inner, label) => `<button type="button" class="md-cell${same(m) ? " ativo" : ""}" data-m='${esc(JSON.stringify(m))}' title="${esc(label)}">${inner}</button>`;
   // padrão
@@ -6484,19 +6539,19 @@ function openMarkerDialog(i) {
   // habilidades do campeão
   const habs = document.getElementById("md-habs"), habsNote = document.getElementById("md-habs-note");
   habs.innerHTML = ""; habsNote.hidden = true;
-  if (!build.champion) { habsNote.textContent = "Escolha um campeão na barra da biblioteca para ver as habilidades."; habsNote.hidden = false; }
+  if (!alvo.champion) { habsNote.textContent = "Escolha um campeão na barra da biblioteca para ver as habilidades."; habsNote.hidden = false; }
   else {
     habsNote.textContent = "Buscando as habilidades no Data Dragon…"; habsNote.hidden = false;
-    const champId = build.champion.id;
+    const champId = alvo.champion.id;
     Campeoes.habilidades(champId).then(list => {
-      if (dlg.hidden || !build.champion || build.champion.id !== champId) return;
+      if (dlg.hidden || !donoDeMarcadores().champion || donoDeMarcadores().champion.id !== champId) return;
       habs.innerHTML = list.map(sp => cell({ t: "hab", letter: sp.letter }, `<img class="mk mk-hab" src="${Campeoes.spellUrl(sp.img)}" alt="">`, `${sp.letter} · ${sp.name}`)).join("");
       habsNote.hidden = true;
     }).catch(() => { habsNote.textContent = "Sem internet para buscar as habilidades (Data Dragon)."; habsNote.hidden = false; });
   }
   // itens do guia (únicos, na ordem das bancadas)
   const vistos = new Set(); const itens = [];
-  build.cats.forEach(c => c.items.forEach(e => { if (byId[e.itemId] && !vistos.has(e.itemId)) { vistos.add(e.itemId); itens.push(byId[e.itemId]); } }));
+  (alvo.cats || []).forEach(c => c.items.forEach(e => { if (byId[e.itemId] && !vistos.has(e.itemId)) { vistos.add(e.itemId); itens.push(byId[e.itemId]); } }));
   document.getElementById("md-items").innerHTML = itens.map(it => cell({ t: "item", slug: it.slug }, `<img class="mk mk-item" src="${it.iconUrl}" alt="" loading="lazy">`, it.namePt)).join("");
   const itNote = document.getElementById("md-items-note");
   itNote.hidden = itens.length > 0; itNote.textContent = "A build ainda não tem itens.";
@@ -6504,14 +6559,14 @@ function openMarkerDialog(i) {
   dlg.hidden = false;
   Som.play("catalog:pergaminho");
 }
-function closeMarkerDialog() { document.getElementById("marker-dialog").hidden = true; }
+function closeMarkerDialog() { document.getElementById("marker-dialog").hidden = true; markerDono = null; }
 function setMarker(i, m) {
-  const ms = normMarkers(build.markers);
+  const alvo = donoDeMarcadores();
+  const ms = normMarkers(alvo.markers);
   if (m) { if (i < ms.length) ms[i] = m; else ms.push(m); }
   else ms.splice(i, 1);
-  build.markers = normMarkers(ms);
-  saveBuild();
-  renderBuildAll();
+  alvo.markers = normMarkers(ms);
+  if (alvo.aoMudar) alvo.aoMudar();
 }
 function initMarkers() {
   document.getElementById("build-marks").addEventListener("click", (e) => {
@@ -7512,6 +7567,117 @@ function renderRunasDaForja() {
     + `<button type="button" class="br-abrir" id="build-runas-abrir">${escolhidas ? escolhidas + "/9 · trocar" : "escolher runas"}</button>`;
 }
 
+
+// ---------------- F12-T1: completar a build para publicar ----------------
+// Em vez de só dizer o que falta, a janela deixa resolver ali. Nome e descrição
+// são campos; marcador abre o mesmo diálogo da forja, agora apontado para esta
+// build. Item não dá para resolver aqui — para isso existe o botão da forja.
+let pubFalta = null;   // { b, d }
+
+function abrirFaltaPublicar(id) {
+  const b = library.builds.find(x => x.id === id);
+  if (!b) return;
+  pubFalta = { b, id };
+  const dlg = document.getElementById("pub-falta");
+  const nomeAtual = valorAtual("name");
+  // Nome padrão é justamente o que a validação recusa: melhor o campo vazio.
+  const padrao = !nomeAtual.trim() || /^Build \d+$/.test(nomeAtual.trim()) || nomeAtual.trim() === "Build sem nome";
+  document.getElementById("pf-nome").value = padrao ? "" : nomeAtual;
+  document.getElementById("pf-desc").value = valorAtual("desc");
+  dlg.hidden = false;
+  renderFaltaPublicar();
+  Som.play("catalog:pergaminho");
+}
+
+// A build sendo completada pode ser a da forja ou uma da lista: o valor certo
+// vem de build quando é a ativa, e da biblioteca quando não é.
+function valorAtual(campo) {
+  if (!pubFalta) return "";
+  return (pubFalta.id === build.id ? build[campo] : pubFalta.b[campo]) || "";
+}
+function gravarNaBuild(campo, valor) {
+  if (!pubFalta) return;
+  pubFalta.b[campo] = valor;
+  if (pubFalta.id === build.id) build[campo] = valor;
+  gravarBuild();
+}
+function donoDoPopup() {
+  const ativo = pubFalta.id === build.id;
+  return {
+    get markers() { return ativo ? build.markers : pubFalta.b.markers; },
+    set markers(v) { pubFalta.b.markers = v; if (ativo) build.markers = v; },
+    champion: ativo ? build.champion : pubFalta.b.champion,
+    cats: ativo ? build.cats : pubFalta.b.cats,
+    aoMudar: () => { gravarBuild(); renderFaltaPublicar(); renderBuildIndex(); },
+  };
+}
+
+function renderFaltaPublicar() {
+  if (!pubFalta) return;
+  const d = buildResumo(pubFalta.b);
+  const falta = faltaParaPublicar(d);
+  const tem = (parte) => falta.some(f => f.startsWith(parte));
+  document.getElementById("pf-nome-g").hidden = !tem("nome");
+  document.getElementById("pf-desc-g").hidden = !tem("descrição");
+  document.getElementById("pf-marks-g").hidden = !falta.some(f => f.includes("marcador"));
+  document.getElementById("pf-itens-g").hidden = !tem("itens");
+
+  const ms = normMarkers(d.markers);
+  document.getElementById("pf-marks").innerHTML = Array.from({ length: MAX_MARCADORES }, (_, i) => {
+    const m = ms[i];
+    if (!m) return `<button type="button" class="mark-slot" data-i="${i}" title="Escolher marcador">+</button>`;
+    return `<button type="button" class="mark-slot cheio" data-i="${i}" title="${esc(markerLabel(m, d.champ))} — clique para trocar">${markerHtml(m, d.champ, renderFaltaPublicar)}<span class="mark-x" data-x="${i}" title="Remover">×</span></button>`;
+  }).join("");
+
+  const pronta = falta.length === 0;
+  const estado = document.getElementById("pf-estado");
+  estado.textContent = pronta ? "tudo pronto" : "ainda falta: " + falta.join(", ");
+  estado.classList.toggle("pronta", pronta);
+  document.getElementById("pf-publicar").disabled = !pronta;
+  document.getElementById("pf-sub").textContent = pronta
+    ? "Nada mais falta — é só publicar."
+    : "Complete aqui mesmo o que falta — não precisa voltar para a forja.";
+  // O título acompanha: com tudo resolvido, dizer que falta algo é mentira.
+  document.querySelector("#pub-falta .md-title").textContent = pronta ? "Pronta para publicar" : "Falta pouco para publicar";
+}
+
+function fecharFaltaPublicar() {
+  document.getElementById("pub-falta").hidden = true;
+  closeMarkerDialog();
+  pubFalta = null;
+}
+
+function initFaltaPublicar() {
+  const nome = document.getElementById("pf-nome");
+  const desc = document.getElementById("pf-desc");
+  nome.addEventListener("input", () => { gravarNaBuild("name", nome.value.trim()); renderFaltaPublicar(); });
+  desc.addEventListener("input", () => { gravarNaBuild("desc", desc.value.trim()); renderFaltaPublicar(); });
+  document.getElementById("pf-marks").addEventListener("click", (e) => {
+    const x = e.target.closest(".mark-x");
+    if (x) { e.stopPropagation(); markerSlot = Number(x.dataset.x); markerDono = donoDoPopup(); setMarker(markerSlot, null); markerDono = null; return; }
+    const slot = e.target.closest(".mark-slot");
+    if (slot) openMarkerDialog(Number(slot.dataset.i), donoDoPopup());
+  });
+  document.getElementById("pf-close").addEventListener("click", fecharFaltaPublicar);
+  document.getElementById("pf-forja").addEventListener("click", () => {
+    const id = pubFalta && pubFalta.id;
+    fecharFaltaPublicar();
+    if (id) { activateBuild(id); switchTab("build"); showBuildScreen("forja"); }
+  });
+  document.getElementById("pf-publicar").addEventListener("click", () => {
+    const id = pubFalta && pubFalta.id;
+    fecharFaltaPublicar();
+    if (id) publicarBuild(id);
+  });
+  document.getElementById("pub-falta").addEventListener("click", (e) => {
+    if (e.target.id === "pub-falta") fecharFaltaPublicar();
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && !document.getElementById("pub-falta").hidden
+        && document.getElementById("marker-dialog").hidden) fecharFaltaPublicar();
+  });
+}
+
 function initRunas() {
   const conta = document.getElementById("runas-tab-count");
   if (!runasOk()) { if (conta) conta.textContent = ""; return; }
@@ -8126,7 +8292,9 @@ function renderBuildDetail() {
       <button type="button" class="btn ghost" data-act="copy" title="Cria uma cópia e abre na forja"><i class="ico ico-copy-plus" aria-hidden="true"></i>Copiar e editar</button>
       <button type="button" class="btn ghost" data-act="link" title="Copia um link com a build inteira dentro — quem abre recebe a build"><i class="ico ico-copy" aria-hidden="true"></i>Copiar link</button>
       <button type="button" class="btn primary" data-act="edit">Editar</button>
-      <button type="button" class="btn" data-act="publish"${!Servidor.ativo() || falta.length ? " disabled" : ""} title="${!Servidor.ativo() ? "Sem servidor configurado (data/servidor.js)" : falta.length ? "Falta: " + esc(falta.join(", ")) : (d.pubId ? "Envia esta versão para o site (versão " + (d.pubVersao + 1) + ")" : "Publica esta build no site")}"><i class="ico ico-send" aria-hidden="true"></i>${d.pubId ? "Atualizar publicação" : "Publicar"}</button>
+      <!-- F12-T1: faltando alguma coisa o botão NÃO fica morto — ele vira o convite
+           para completar. Desabilitado só quando não há servidor para publicar. -->
+      <button type="button" class="btn" data-act="publish"${!Servidor.ativo() ? " disabled" : ""} title="${!Servidor.ativo() ? "Sem servidor configurado (data/servidor.js)" : falta.length ? "Falta: " + esc(falta.join(", ")) + " — clique para completar aqui mesmo" : (d.pubId ? "Envia esta versão para o site (versão " + (d.pubVersao + 1) + ")" : "Publica esta build no site")}"><i class="ico ico-send" aria-hidden="true"></i>${falta.length ? "Completar e publicar" : d.pubId ? "Atualizar publicação" : "Publicar"}</button>
       ${d.pubId ? `<button type="button" class="btn ghost" data-act="unpub" title="Tira do site e mantém a build aqui">Despublicar</button>` : ""}
       <button type="button" class="btn ghost" data-act="del"${library.builds.length <= 1 ? " disabled" : ""} title="${d.pubId ? "Apaga a build daqui e do site" : "Apaga a build da biblioteca"}">Excluir</button>`,
     nota: `
@@ -10410,6 +10578,7 @@ function init() {
   if (typeof initBuildBuilder === "function") initBuildBuilder();
   if (typeof initCalc === "function") initCalc();
   if (typeof initRunas === "function") initRunas();
+  if (typeof initFaltaPublicar === "function") initFaltaPublicar();
 
   // Controle de som (Fase 4, T1): sino = mudo, régua = volume; persistem.
   const somBtn = document.getElementById("som-mudo");
