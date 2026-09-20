@@ -1,7 +1,7 @@
 window.RUNAS = {
  "meta": {
   "fonte": "data/Runas_League_of_Legends.md",
-  "gerado": "2026-09-18",
+  "gerado": "2026-09-20",
   "patch": "16.18.1",
   "trilhas": 5,
   "runas": 62,
@@ -1410,7 +1410,7 @@ window.RUNAS = {
      ],
      "adaptativa": "",
      "notas": [],
-     "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/StatMods/StatModsHealthScalingIcon.png"
+     "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/StatMods/StatModsHealthPlusIcon.png"
     }
    ]
   },
@@ -1431,7 +1431,7 @@ window.RUNAS = {
      ],
      "adaptativa": "",
      "notas": [],
-     "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/StatMods/StatModsHealthPlusIcon.png"
+     "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/StatMods/StatModsHealthScalingIcon.png"
     },
     {
      "id": "tenacidade-e-resistencia-a-lentidao",
@@ -1462,7 +1462,7 @@ window.RUNAS = {
      ],
      "adaptativa": "",
      "notas": [],
-     "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/StatMods/StatModsHealthScalingIcon.png"
+     "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/StatMods/StatModsHealthPlusIcon.png"
     }
    ]
   }

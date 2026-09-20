@@ -58,6 +58,20 @@ A lição, escrita para não repetir: **um leitor que ignora o que não entende 
 - Runa sem ícone aparece com a inicial dentro da moldura, como o catálogo faz com item sem arte. (Hoje nenhuma está nesse caso.)
 - A substituição quebrada aparece na ficha da runa como aviso, com o nome que o arquivo pede.
 
-## Os fragmentos e a única tabela escrita à mão
+## Os fragmentos e a tabela que eu não devia ter escrito
 
-Os fragmentos não estão no `runesReforged.json`: a Riot publica a arte deles em `perk-images/StatMods/`, com nome de arquivo em inglês. A ponte nome → arquivo é a **única coisa digitada à mão no projeto**, e ela mora no `data/gerar_runas_json.py`, não no app. Cada arquivo é pedido de verdade antes de entrar; o que não responder fica sem ícone e vira pendência, em vez de virar imagem quebrada na tela.
+Os fragmentos não estão no `runesReforged.json`: a Riot publica a arte deles em `perk-images/StatMods/`, com nome de arquivo em inglês. Eu escrevi a ponte nome → arquivo **à mão**, e troquei duas (Leo achou em 20/09/2026).
+
+O motivo do erro vale guardar: **o nome do arquivo da Riot mente.** O fragmento **Vida** (+65) usa `StatModsHealthScalingIcon.png`, e **Escalamento de Vida** (+10-180 por nível) usa `StatModsHealthPlusIcon.png` — o contrário do que qualquer um leria nos nomes.
+
+A tabela não existe mais. Quem diz qual arquivo é de qual fragmento agora é o `perks.json` do Community Dragon, que carrega os dados do próprio cliente do jogo, casado pelo nome em pt-BR. Cada URL continua sendo pedida de verdade antes de entrar; o que não responder fica sem ícone e vira pendência.
+
+| Fragmento | Arquivo |
+|---|---|
+| Força Adaptativa | `StatModsAdaptiveForceIcon.png` |
+| Velocidade de Ataque | `StatModsAttackSpeedIcon.png` |
+| Aceleração de Habilidade | `StatModsCDRScalingIcon.png` |
+| Velocidade de Movimento | `StatModsMovementSpeedIcon.png` |
+| Vida | `StatModsHealthScalingIcon.png` |
+| Escalamento de Vida | `StatModsHealthPlusIcon.png` |
+| Tenacidade e Resistência a Lentidão | `StatModsTenacityIcon.png` |

@@ -34,21 +34,14 @@ CATALOG = os.path.join(AQUI, "catalog.js")
 DD = "https://ddragon.leagueoflegends.com/cdn/{v}/data/pt_BR/runesReforged.json"
 DD_IMG = "https://ddragon.leagueoflegends.com/cdn/img/"
 STATMODS = DD_IMG + "perk-images/StatMods/"
-
-# Os fragmentos NAO estao no runesReforged.json: a Riot publica a arte deles
-# noutro caminho, com nome de arquivo em ingles. Esta tabela e a unica ponte
-# escrita a mao no projeto, e ela fica AQUI, no gerador — o app so recebe a URL
-# que passou na conferencia. Cada arquivo e pedido de verdade antes de entrar;
-# o que responder erro fica sem icone e vira pendencia.
-FRAGMENTO_ARTE = {
-    "forca-adaptativa": "StatModsAdaptiveForceIcon.png",
-    "velocidade-de-ataque": "StatModsAttackSpeedIcon.png",
-    "aceleracao-de-habilidade": "StatModsCDRScalingIcon.png",
-    "velocidade-de-movimento": "StatModsMovementSpeedIcon.png",
-    "escalamento-de-vida": "StatModsHealthScalingIcon.png",
-    "vida": "StatModsHealthPlusIcon.png",
-    "tenacidade-e-resistencia-a-lentidao": "StatModsTenacityIcon.png",
-}
+# Os fragmentos nao estao no runesReforged.json. Quem diz qual arquivo pertence a
+# qual fragmento e o perks.json do Community Dragon, que carrega os dados do
+# proprio cliente do jogo. E precisa ser ele: o NOME DO ARQUIVO da Riot mente —
+# "Vida" usa StatModsHealthScalingIcon e "Escalamento de Vida" usa
+# StatModsHealthPlusIcon, o contrario do que os nomes sugerem. Eu tinha digitado
+# essa tabela a mao e troquei os dois (Leo achou em 20/09/2026).
+CDRAGON = "https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/pt_br/v1/perks.json"
+CACHE_FRAG = os.path.join(AQUI, "_perks_fragmentos.json")
 
 
 def slug(texto):
@@ -235,6 +228,22 @@ def baixa_runes(patch, forcar):
     return dados
 
 
+def arte_dos_fragmentos(forcar):
+    """chave do nome -> arquivo do icone, direto do cliente do jogo."""
+    if os.path.exists(CACHE_FRAG) and not forcar:
+        return json.load(io.open(CACHE_FRAG, encoding="utf-8"))
+    print("  baixando %s" % CDRAGON)
+    req = urllib.request.Request(CDRAGON, headers={"User-Agent": "montador-de-itens-lol (uso pessoal)"})
+    with urllib.request.urlopen(req, timeout=40) as r:
+        dados = json.loads(r.read().decode("utf-8"))
+    mapa = {}
+    for p in dados:
+        if 5000 <= p.get("id", 0) <= 5020 and p.get("iconPath"):
+            mapa[chave(p.get("name", ""))] = p["iconPath"].split("/")[-1]
+    io.open(CACHE_FRAG, "w", encoding="utf-8").write(json.dumps(mapa, ensure_ascii=False))
+    return mapa
+
+
 def mapa_de_icones(runes):
     """chave normalizada -> (caminho do ícone, nome como a Riot escreve)."""
     mapa, oficiais = {}, {}
@@ -311,13 +320,19 @@ def main():
             sem_icone.append("(trilha) " + t["nome"])
         for s in t["slots"]:
             s["runas"] = [veste(r) for r in s["runas"]]
-    # fragmentos: arte conferida arquivo por arquivo antes de entrar
+    # fragmentos: o arquivo de cada um vem do cliente do jogo, e ainda assim
+    # cada URL e pedida de verdade antes de entrar
+    try:
+        arte = arte_dos_fragmentos(forcar)
+    except Exception as e:
+        arte = {}
+        pendencias.append("lista de arte dos fragmentos nao veio (%s); eles ficam sem icone" % e)
     conferidas = {}
     for f in fragmentos:
         for r in f["runas"]:
-            arquivo = FRAGMENTO_ARTE.get(r["id"])
+            arquivo = arte.get(chave(r["nome"]))
             if not arquivo:
-                pendencias.append("fragmento %r não está na tabela de arte do gerador" % r["nome"])
+                pendencias.append("o fragmento %r nao tem arte na lista do cliente do jogo" % r["nome"])
                 continue
             if arquivo not in conferidas:
                 url = STATMODS + arquivo
@@ -326,7 +341,7 @@ def main():
                         conferidas[arquivo] = url if resp.status == 200 and len(resp.read()) > 100 else None
                 except Exception as e:
                     conferidas[arquivo] = None
-                    pendencias.append("arte do fragmento %r não respondeu (%s)" % (r["nome"], e))
+                    pendencias.append("a arte do fragmento %r nao respondeu (%s)" % (r["nome"], e))
             if conferidas[arquivo]:
                 r["iconUrl"] = conferidas[arquivo]
 
