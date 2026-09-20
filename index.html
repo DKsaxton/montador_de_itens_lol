@@ -191,6 +191,16 @@ select.sort-select {
   .layout { grid-template-columns: 300px 1fr; gap: 30px; }
 }
 
+/* 1920 × 1080 é a tela mais comum e a prioridade 2 do Leo (20/09/2026). Sem
+   este degrau ela cai no teto de 1560 px: sobravam ~344 px de margem vazia e o
+   catálogo ficava com as mesmas 4 colunas de uma tela de 1600. */
+@media (min-width: 1800px) {
+  .layout, .top-inner, .search-row, .sort-attr-wrap, .cashback-banner {
+    max-width: 1820px;
+  }
+  .layout { grid-template-columns: 320px 1fr; gap: 32px; }
+}
+
 @media (min-width: 2100px) {
   .layout, .top-inner, .search-row, .sort-attr-wrap, .cashback-banner {
     max-width: 2000px;
@@ -2447,6 +2457,10 @@ body.names-only .card:not(.full).regiao .card-surface { background-color: var(--
 .estandarte, .ofic-cant { display: none; }
 
 body.nucleo .oficina {
+  /* Sem este display a oficina fica em bloco e o estandarte ocupa a largura
+     inteira — foi o que aconteceu de 18/09 a 20/09/2026, quando o conserto da
+     aba "Todos" trocou o bloco sem conferir se a troca pegou. */
+  display: grid;
   /* A faixa e as folgas são estreitas de propósito: cada pixel aqui é tirado do
      grid, e 16 px a mais custavam uma coluna inteira de cards. */
   grid-template-columns: 46px minmax(0, 1fr);
@@ -2540,6 +2554,13 @@ body.nucleo .group-head::before {
    Mesma loja: papel, tinta ferrogálica, latão. A cor de cada trilha é a que o
    gerador leu do ícone oficial dela (data/runas.js), não uma escolha minha. */
 .runas-view { max-width: 1400px; margin: 0 auto; padding: 0 20px 60px; }
+/* A tela de Runas acompanha os mesmos degraus do catálogo. As regras moram aqui,
+   e não junto das do .layout, porque a linha acima vem depois no arquivo e
+   venceria as de lá (mesma especificidade, a última ganha). */
+@media (min-width: 1560px) { .runas-view { max-width: 1560px; } }
+@media (min-width: 1800px) { .runas-view { max-width: 1820px; } }
+@media (min-width: 2100px) { .runas-view { max-width: 2000px; } }
+@media (min-width: 2500px) { .runas-view { max-width: 2360px; } }
 .runas-topo { display: flex; align-items: flex-end; gap: 22px; flex-wrap: wrap; margin: 4px 0 14px; }
 .runas-titulo h2 { font-family: var(--loja-titulos); font-weight: 400; font-size: 26px; color: var(--loja-titulo); margin: 0; }
 .runas-lema { font-family: var(--loja-texto); font-style: italic; color: var(--loja-legenda); margin: 2px 0 0; min-height: 20px; }
