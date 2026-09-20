@@ -124,6 +124,7 @@
    "Demacia",
    "Freljord",
    "Ionia",
+   "Ixtal",
    "Noxus",
    "Piltover",
    "Runeterra",
@@ -1721,8 +1722,8 @@
     "Tenacidade",
     "Movimento"
    ],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Freljord",
+   "regionNote": null,
    "masterwork": null,
    "cashback": null,
    "sources": [
@@ -1862,8 +1863,8 @@
     "Consumível",
     "Cura"
    ],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Noxus",
+   "regionNote": null,
    "masterwork": null,
    "cashback": null,
    "sources": [
@@ -1932,8 +1933,8 @@
     "Consumível",
     "Cura"
    ],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Ionia",
+   "regionNote": null,
    "masterwork": null,
    "cashback": null,
    "sources": [
@@ -2796,8 +2797,8 @@
     "Atirador"
    ],
    "specialEffects": [],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Demacia",
+   "regionNote": null,
    "masterwork": null,
    "cashback": null,
    "sources": [
@@ -3007,8 +3008,8 @@
     "Universal"
    ],
    "specialEffects": [],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Freljord",
+   "regionNote": null,
    "masterwork": null,
    "cashback": null,
    "sources": [
@@ -3326,8 +3327,8 @@
     "Universal"
    ],
    "specialEffects": [],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Demacia",
+   "regionNote": null,
    "masterwork": null,
    "cashback": null,
    "sources": [
@@ -3433,8 +3434,8 @@
    "specialEffects": [
     "Redução de Dano"
    ],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Noxus",
+   "regionNote": null,
    "masterwork": null,
    "cashback": null,
    "sources": [
@@ -3524,8 +3525,8 @@
     "Mago"
    ],
    "specialEffects": [],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Ixtal",
+   "regionNote": null,
    "masterwork": null,
    "cashback": null,
    "sources": [
@@ -3797,8 +3798,8 @@
     "Universal"
    ],
    "specialEffects": [],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Demacia",
+   "regionNote": null,
    "masterwork": null,
    "cashback": null,
    "sources": [
@@ -4306,8 +4307,8 @@
     "Universal"
    ],
    "specialEffects": [],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Ionia",
+   "regionNote": null,
    "masterwork": null,
    "cashback": null,
    "sources": [
@@ -4388,8 +4389,8 @@
     "Universal"
    ],
    "specialEffects": [],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Shadow Isles",
+   "regionNote": null,
    "masterwork": null,
    "cashback": null,
    "sources": [
@@ -4714,8 +4715,8 @@
     "Universal"
    ],
    "specialEffects": [],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Noxus",
+   "regionNote": null,
    "masterwork": null,
    "cashback": null,
    "sources": [
@@ -4808,8 +4809,8 @@
     "Mago"
    ],
    "specialEffects": [],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Ionia",
+   "regionNote": null,
    "masterwork": null,
    "cashback": null,
    "sources": [
@@ -4932,8 +4933,8 @@
     "Universal"
    ],
    "specialEffects": [],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Demacia",
+   "regionNote": null,
    "masterwork": null,
    "cashback": null,
    "sources": [
@@ -5597,8 +5598,8 @@
     "Mago"
    ],
    "specialEffects": [],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Shadow Isles",
+   "regionNote": null,
    "masterwork": null,
    "cashback": null,
    "sources": [
@@ -5942,8 +5943,8 @@
     "Mago"
    ],
    "specialEffects": [],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "The Void",
+   "regionNote": null,
    "masterwork": null,
    "cashback": null,
    "sources": [
@@ -6157,8 +6158,8 @@
     "Restauração de Mana",
     "Cura"
    ],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Shadow Isles",
+   "regionNote": null,
    "masterwork": null,
    "cashback": null,
    "sources": [
@@ -6654,8 +6655,8 @@
    "specialEffects": [
     "Anti-Cura"
    ],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Zaun",
+   "regionNote": null,
    "masterwork": null,
    "cashback": null,
    "sources": [
@@ -6900,8 +6901,8 @@
     "Mago"
    ],
    "specialEffects": [],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Shadow Isles",
+   "regionNote": null,
    "masterwork": null,
    "cashback": null,
    "sources": [
@@ -7021,8 +7022,8 @@
     "Suporte"
    ],
    "specialEffects": [],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "The Void",
+   "regionNote": null,
    "masterwork": null,
    "cashback": null,
    "sources": [
@@ -7264,8 +7265,8 @@
     "Suporte"
    ],
    "specialEffects": [],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Freljord",
+   "regionNote": null,
    "masterwork": null,
    "cashback": null,
    "sources": [
@@ -7384,8 +7385,8 @@
     "Acúmulos",
     "Amplificação de Dano"
    ],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Ionia",
+   "regionNote": null,
    "masterwork": null,
    "cashback": null,
    "sources": [
@@ -7499,8 +7500,8 @@
     "Lutador"
    ],
    "specialEffects": [],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Freljord",
+   "regionNote": null,
    "masterwork": null,
    "cashback": null,
    "sources": [
@@ -7736,8 +7737,8 @@
    "specialEffects": [
     "Dano Mágico"
    ],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Piltover",
+   "regionNote": null,
    "masterwork": null,
    "cashback": null,
    "sources": [
@@ -8153,8 +8154,8 @@
     "Ativa",
     "Investida"
    ],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Bilgewater",
+   "regionNote": null,
    "masterwork": null,
    "cashback": null,
    "sources": [
@@ -8298,8 +8299,8 @@
    "specialEffects": [
     "Restauração de Mana"
    ],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Shadow Isles",
+   "regionNote": null,
    "masterwork": null,
    "cashback": null,
    "sources": [
@@ -8405,8 +8406,8 @@
     "Universal"
    ],
    "specialEffects": [],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Demacia",
+   "regionNote": null,
    "masterwork": null,
    "cashback": null,
    "sources": [
@@ -8514,8 +8515,8 @@
     "Atirador"
    ],
    "specialEffects": [],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Shadow Isles",
+   "regionNote": null,
    "masterwork": null,
    "cashback": null,
    "sources": [
@@ -8608,8 +8609,8 @@
    "specialEffects": [
     "Anti-Cura"
    ],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Piltover",
+   "regionNote": null,
    "masterwork": null,
    "cashback": null,
    "sources": [
@@ -9309,8 +9310,8 @@
     "Estase",
     "Missão/Evolução"
    ],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Freljord",
+   "regionNote": null,
    "masterwork": null,
    "cashback": null,
    "sources": [
@@ -9568,8 +9569,8 @@
     "Efeitos ao Contato",
     "Dano a Estruturas"
    ],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Freljord",
+   "regionNote": null,
    "masterwork": null,
    "cashback": null,
    "sources": [
@@ -9691,8 +9692,8 @@
     "Tanque"
    ],
    "specialEffects": [],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Shadow Isles",
+   "regionNote": null,
    "masterwork": null,
    "cashback": null,
    "sources": [
@@ -9800,8 +9801,8 @@
     "Lutador"
    ],
    "specialEffects": [],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Noxus",
+   "regionNote": null,
    "masterwork": null,
    "cashback": null,
    "sources": [
@@ -10051,8 +10052,8 @@
     "Dano em Área",
     "Efeitos ao Contato"
    ],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Shurima",
+   "regionNote": null,
    "masterwork": null,
    "cashback": null,
    "sources": [
@@ -10190,8 +10191,8 @@
     "Lutador"
    ],
    "specialEffects": [],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Piltover",
+   "regionNote": null,
    "masterwork": null,
    "cashback": null,
    "sources": [
@@ -10305,8 +10306,8 @@
     "Universal"
    ],
    "specialEffects": [],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Noxus",
+   "regionNote": null,
    "masterwork": null,
    "cashback": null,
    "sources": [
@@ -10418,8 +10419,8 @@
    "specialEffects": [
     "Escudo de Feitiço"
    ],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Ixtal",
+   "regionNote": null,
    "masterwork": null,
    "cashback": null,
    "sources": [
@@ -10523,8 +10524,8 @@
    "specialEffects": [
     "Redução de Dano"
    ],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Demacia",
+   "regionNote": null,
    "masterwork": null,
    "cashback": null,
    "sources": [
@@ -10626,8 +10627,8 @@
     "Tanque"
    ],
    "specialEffects": [],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Targon",
+   "regionNote": null,
    "masterwork": null,
    "cashback": null,
    "sources": [
@@ -10755,8 +10756,8 @@
     "Atirador"
    ],
    "specialEffects": [],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Demacia",
+   "regionNote": null,
    "masterwork": null,
    "cashback": null,
    "sources": [
@@ -10865,8 +10866,8 @@
     "Aura",
     "Vulnerabilidade Mágica"
    ],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Shadow Isles",
+   "regionNote": null,
    "masterwork": {
     "eligible": true,
     "stats": [
@@ -11004,8 +11005,8 @@
     "Poder de Cura e Escudo",
     "Redução de Recarga"
    ],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Shurima",
+   "regionNote": null,
    "masterwork": {
     "eligible": true,
     "stats": [
@@ -11289,8 +11290,8 @@
     "Efeitos ao Contato",
     "Velocidade de Ataque"
    ],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Ionia",
+   "regionNote": null,
    "masterwork": {
     "eligible": true,
     "stats": [
@@ -11417,8 +11418,8 @@
    "specialEffects": [
     "Acerto Crítico (condicional pela Vida bônus)"
    ],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Noxus",
+   "regionNote": null,
    "masterwork": {
     "eligible": true,
     "stats": [
@@ -11542,8 +11543,8 @@
    "specialEffects": [
     "Redução de Recarga"
    ],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Ixtal",
+   "regionNote": null,
    "masterwork": {
     "eligible": true,
     "stats": [
@@ -11960,8 +11961,8 @@
     "Dano a Monstros",
     "Dano ao Longo do Tempo"
    ],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Noxus",
+   "regionNote": null,
    "masterwork": {
     "eligible": true,
     "stats": [
@@ -12105,8 +12106,8 @@
     "Redução de Armadura",
     "Movimento"
    ],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Noxus",
+   "regionNote": null,
    "masterwork": {
     "eligible": true,
     "stats": [
@@ -12530,8 +12531,8 @@
     "Acúmulos",
     "Redução de Resistência Mágica"
    ],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Bilgewater",
+   "regionNote": null,
    "masterwork": {
     "eligible": true,
     "stats": [
@@ -12680,8 +12681,8 @@
     "Acúmulos",
     "Dano a Estruturas"
    ],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Shurima",
+   "regionNote": null,
    "masterwork": {
     "eligible": false,
     "stats": [],
@@ -12792,8 +12793,8 @@
    "specialEffects": [
     "Escudo"
    ],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Shurima",
+   "regionNote": null,
    "masterwork": {
     "eligible": true,
     "stats": [
@@ -13199,8 +13200,8 @@
    "specialEffects": [
     "Movimento"
    ],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Targon",
+   "regionNote": null,
    "masterwork": {
     "eligible": true,
     "stats": [
@@ -13342,8 +13343,8 @@
     "Cura",
     "Dano em Área"
    ],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Shadow Isles",
+   "regionNote": null,
    "masterwork": {
     "eligible": true,
     "stats": [
@@ -13479,8 +13480,8 @@
     "Acúmulos",
     "Poder de Cura e Escudo"
    ],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Targon",
+   "regionNote": null,
    "masterwork": {
     "eligible": true,
     "stats": [
@@ -13775,8 +13776,8 @@
     "Dano Verdadeiro",
     "Cura"
    ],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Shurima",
+   "regionNote": null,
    "masterwork": {
     "eligible": true,
     "stats": [
@@ -13923,8 +13924,8 @@
     "Visão",
     "Acúmulos"
    ],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Bandle City",
+   "regionNote": null,
    "masterwork": {
     "eligible": false,
     "stats": [],
@@ -14061,8 +14062,8 @@
     "Efeitos ao Contato",
     "Dano a Estruturas"
    ],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Targon",
+   "regionNote": null,
    "masterwork": {
     "eligible": true,
     "stats": [
@@ -14349,8 +14350,8 @@
     "Dano Percentual",
     "Escudo"
    ],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Targon",
+   "regionNote": null,
    "masterwork": {
     "eligible": true,
     "stats": [
@@ -14479,8 +14480,8 @@
    "specialEffects": [
     "Escudo de Feitiço"
    ],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Noxus",
+   "regionNote": null,
    "masterwork": {
     "eligible": true,
     "stats": [
@@ -14623,8 +14624,8 @@
    "specialEffects": [
     "Acúmulos"
    ],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Shurima",
+   "regionNote": null,
    "masterwork": {
     "eligible": true,
     "stats": [
@@ -14757,8 +14758,8 @@
     "Restauração de Mana",
     "Dano a Estruturas"
    ],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Shadow Isles",
+   "regionNote": null,
    "masterwork": {
     "eligible": true,
     "stats": [
@@ -15062,8 +15063,8 @@
     "Dano Crítico",
     "Dano Verdadeiro"
    ],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Demacia",
+   "regionNote": null,
    "masterwork": {
     "eligible": true,
     "stats": [
@@ -15193,8 +15194,8 @@
     "Acúmulos",
     "Movimento"
    ],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Ixtal",
+   "regionNote": null,
    "masterwork": {
     "eligible": true,
     "stats": [
@@ -15449,8 +15450,8 @@
     "Cura",
     "Restauração de Mana"
    ],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Targon",
+   "regionNote": null,
    "masterwork": {
     "eligible": true,
     "stats": [
@@ -15748,8 +15749,8 @@
     "Dano Percentual",
     "Efeitos ao Contato"
    ],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Ixtal",
+   "regionNote": null,
    "masterwork": {
     "eligible": true,
     "stats": [
@@ -16306,8 +16307,8 @@
     "Dano a Monstros",
     "Execução"
    ],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "The Void",
+   "regionNote": null,
    "masterwork": {
     "eligible": true,
     "stats": [
@@ -16449,8 +16450,8 @@
     "Revelação",
     "Visão"
    ],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Piltover",
+   "regionNote": null,
    "masterwork": {
     "eligible": true,
     "stats": [
@@ -16999,8 +17000,8 @@
     "Gatilho de Vida Baixa",
     "Escudo"
    ],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Noxus",
+   "regionNote": null,
    "masterwork": {
     "eligible": true,
     "stats": [
@@ -17263,8 +17264,8 @@
     "Atirador"
    ],
    "specialEffects": [],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Shurima",
+   "regionNote": null,
    "masterwork": {
     "eligible": true,
     "stats": [
@@ -17529,8 +17530,8 @@
    "specialEffects": [
     "Escudo"
    ],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Noxus",
+   "regionNote": null,
    "masterwork": {
     "eligible": true,
     "stats": [
@@ -17961,8 +17962,8 @@
     "Acúmulos",
     "Amplificação de Dano"
    ],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Shadow Isles",
+   "regionNote": null,
    "masterwork": {
     "eligible": true,
     "stats": [
@@ -18389,8 +18390,8 @@
    "specialEffects": [
     "Amplificação de Dano"
    ],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Noxus",
+   "regionNote": null,
    "masterwork": {
     "eligible": true,
     "stats": [
@@ -18515,8 +18516,8 @@
     "Dano em Área",
     "Acúmulos"
    ],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "The Void",
+   "regionNote": null,
    "masterwork": {
     "eligible": true,
     "stats": [
@@ -19060,8 +19061,8 @@
     "Acúmulos",
     "Movimento"
    ],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Noxus",
+   "regionNote": null,
    "masterwork": {
     "eligible": false,
     "stats": [],
@@ -19187,8 +19188,8 @@
     "Movimento",
     "Atravessar Unidades"
    ],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Shadow Isles",
+   "regionNote": null,
    "masterwork": {
     "eligible": true,
     "stats": [
@@ -19609,8 +19610,8 @@
    "specialEffects": [
     "Anti-Cura"
    ],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Shadow Isles",
+   "regionNote": null,
    "masterwork": {
     "eligible": true,
     "stats": [
@@ -19751,8 +19752,8 @@
    "specialEffects": [
     "Anti-Cura"
    ],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Zaun",
+   "regionNote": null,
    "masterwork": {
     "eligible": true,
     "stats": [
@@ -20295,8 +20296,8 @@
    "specialEffects": [
     "Atravessar Unidades"
    ],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Shadow Isles",
+   "regionNote": null,
    "masterwork": {
     "eligible": true,
     "stats": [
@@ -20429,8 +20430,8 @@
     "Dano em Área",
     "Efeitos ao Contato"
    ],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Bilgewater",
+   "regionNote": null,
    "masterwork": {
     "eligible": true,
     "stats": [
@@ -20935,8 +20936,8 @@
     "Alcance de Ataque",
     "Dano a Estruturas"
    ],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Bilgewater",
+   "regionNote": null,
    "masterwork": {
     "eligible": true,
     "stats": [
@@ -21219,8 +21220,8 @@
     "Dano Percentual",
     "Visão"
    ],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Targon",
+   "regionNote": null,
    "masterwork": {
     "eligible": true,
     "stats": [
@@ -21510,8 +21511,8 @@
     "Cura",
     "Restauração de Mana"
    ],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Shadow Isles",
+   "regionNote": null,
    "masterwork": {
     "eligible": true,
     "stats": [
@@ -22266,8 +22267,8 @@
     "Ativa",
     "Movimento"
    ],
-   "region": "Demacia",
-   "regionNote": "nome: Shurelya",
+   "region": "Shurima",
+   "regionNote": null,
    "masterwork": {
     "eligible": true,
     "stats": [
@@ -22796,8 +22797,8 @@
    "specialEffects": [
     "Poder de Cura e Escudo"
    ],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Shadow Isles",
+   "regionNote": null,
    "masterwork": {
     "eligible": true,
     "stats": [
@@ -22940,8 +22941,8 @@
    "specialEffects": [
     "Redução de Recarga"
    ],
-   "region": "Ionia",
-   "regionNote": "nome: cajado do fluxo d'água",
+   "region": "Bilgewater",
+   "regionNote": null,
    "masterwork": {
     "eligible": true,
     "stats": [
@@ -23252,8 +23253,8 @@
     "Gatilho de Vida Baixa",
     "Escudo"
    ],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Bilgewater",
+   "regionNote": null,
    "masterwork": {
     "eligible": true,
     "stats": [
@@ -23393,8 +23394,8 @@
     "Movimento",
     "Dano a Estruturas"
    ],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Ionia",
+   "regionNote": null,
    "masterwork": {
     "eligible": true,
     "stats": [
@@ -23531,8 +23532,8 @@
     "Dano Mágico",
     "Dano em Área"
    ],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Freljord",
+   "regionNote": null,
    "masterwork": {
     "eligible": true,
     "stats": [
@@ -23960,8 +23961,8 @@
     "Dano a Monstros",
     "Execução"
    ],
-   "region": "Targon",
-   "regionNote": "nome: Égide de Fogo Solar — Solari",
+   "region": "Shurima",
+   "regionNote": null,
    "masterwork": {
     "eligible": true,
     "stats": [
@@ -24109,8 +24110,8 @@
     "Dano Mágico",
     "Efeitos ao Contato"
    ],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Shadow Isles",
+   "regionNote": null,
    "masterwork": {
     "eligible": true,
     "stats": [
@@ -24254,8 +24255,8 @@
     "Execução",
     "Geração de Ouro"
    ],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Bilgewater",
+   "regionNote": null,
    "masterwork": {
     "eligible": true,
     "stats": [
@@ -24378,8 +24379,8 @@
     "Dano Mágico",
     "Anti-Cura"
    ],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Noxus",
+   "regionNote": null,
    "masterwork": {
     "eligible": true,
     "stats": [
@@ -24520,8 +24521,8 @@
     "Efeitos ao Contato",
     "Dano a Estruturas"
    ],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Noxus",
+   "regionNote": null,
    "masterwork": {
     "eligible": true,
     "stats": [
@@ -24676,8 +24677,8 @@
     "Movimento",
     "Dano a Estruturas"
    ],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Ionia",
+   "regionNote": null,
    "masterwork": {
     "eligible": true,
     "stats": [
@@ -25234,8 +25235,8 @@
     "Efeitos ao Contato",
     "Dano a Estruturas"
    ],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Zaun",
+   "regionNote": null,
    "masterwork": {
     "eligible": true,
     "stats": [
@@ -25383,8 +25384,8 @@
    "specialEffects": [
     "Cura"
    ],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Bandle City",
+   "regionNote": null,
    "masterwork": {
     "eligible": true,
     "stats": [
@@ -25544,8 +25545,8 @@
     "Acúmulos",
     "Missão/Evolução"
    ],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Demacia",
+   "regionNote": null,
    "masterwork": {
     "eligible": true,
     "stats": [
@@ -25829,8 +25830,8 @@
     "Dano Mágico",
     "Efeitos ao Contato"
    ],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "The Void",
+   "regionNote": null,
    "masterwork": {
     "eligible": true,
     "stats": [
@@ -26112,8 +26113,8 @@
     "Acúmulos",
     "Velocidade de Ataque"
    ],
-   "region": "Shurima",
-   "regionNote": "nome: Yun Tal",
+   "region": "Ixtal",
+   "regionNote": null,
    "masterwork": {
     "eligible": true,
     "stats": [
@@ -26403,8 +26404,8 @@
     "Lentidão",
     "Dano a Monstros"
    ],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Piltover",
+   "regionNote": null,
    "masterwork": {
     "eligible": true,
     "stats": [
@@ -26540,8 +26541,8 @@
     "Invulnerabilidade",
     "Inalvejável"
    ],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Shurima",
+   "regionNote": null,
    "masterwork": {
     "eligible": true,
     "stats": [
@@ -27148,8 +27149,8 @@
    "specialEffects": [
     "Cura"
    ],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Demacia",
+   "regionNote": null,
    "masterwork": {
     "eligible": true,
     "stats": [
@@ -27386,8 +27387,8 @@
     "Atirador"
    ],
    "specialEffects": [],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Noxus",
+   "regionNote": null,
    "masterwork": null,
    "cashback": null,
    "sources": [
@@ -27990,8 +27991,8 @@
     "Mago"
    ],
    "specialEffects": [],
-   "region": "Runeterra",
-   "regionNote": "sem brasão na página",
+   "region": "Noxus",
+   "regionNote": null,
    "masterwork": null,
    "cashback": null,
    "sources": [
@@ -28090,8 +28091,8 @@
     "Universal"
    ],
    "specialEffects": [],
-   "region": "Noxus",
-   "regionNote": "nome: Fervor Noxiano",
+   "region": "Freljord",
+   "regionNote": null,
    "masterwork": null,
    "cashback": null,
    "sources": [

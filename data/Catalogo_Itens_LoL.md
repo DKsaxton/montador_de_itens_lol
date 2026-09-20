@@ -667,7 +667,7 @@ Elixir de Ferro: Elixir of Iron[
     Classe: Vitalidade (AD 0g · Vitalidade 800,0001g · AP 0g)
     Arquétipo Recomendado: Universal
     Efeitos Especiais: Consumível, Tenacidade, Movimento
-    Região: Runeterra (sem brasão na página)
+    Região: Freljord
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Elixir of Iron") · https://wiki.leagueoflegends.com/en-us/Elixir_of_Iron · Data Dragon pt_BR 16.18.1
 ]
 
@@ -735,7 +735,7 @@ Elixir da Ira: Elixir of Wrath[
     Classe: AD (AD 1.050g · Vitalidade 0g · AP 0g)
     Arquétipo Recomendado: Lutador
     Efeitos Especiais: Consumível, Cura
-    Região: Runeterra (sem brasão na página)
+    Região: Noxus
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Elixir of Wrath") · https://wiki.leagueoflegends.com/en-us/Elixir_of_Wrath · Data Dragon pt_BR 16.18.1
 ]
 
@@ -769,7 +769,7 @@ Poção de Vida: Health Potion[
     Classe: Vitalidade (AD 0g · Vitalidade 0g · AP 0g; desempate 3: sem dano, sobrevivência)
     Arquétipo Recomendado: Universal
     Efeitos Especiais: Consumível, Cura
-    Região: Runeterra (sem brasão na página)
+    Região: Ionia
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Health Potion") · https://wiki.leagueoflegends.com/en-us/Health_Potion · Data Dragon pt_BR 16.18.1
 ]
 
@@ -1151,7 +1151,7 @@ Grevas do Berserker: Berserker's Greaves[
     Classe: AD (AD 750g · Vitalidade 0g · AP 0g)
     Arquétipo Recomendado: Atirador
     Efeitos Especiais: none
-    Região: Runeterra (sem brasão na página)
+    Região: Demacia
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Berserker's Greaves") · https://wiki.leagueoflegends.com/en-us/Berserker's_Greaves · Data Dragon pt_BR 16.18.1
 ]
 
@@ -1219,7 +1219,7 @@ Botas da Rapidez: Boots of Swiftness[
     Classe: Vitalidade (AD 0g · Vitalidade 0g · AP 0g; desempate 3: sem dano, utilidade)
     Arquétipo Recomendado: Universal
     Efeitos Especiais: none
-    Região: Runeterra (sem brasão na página)
+    Região: Freljord
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Boots of Swiftness") · https://wiki.leagueoflegends.com/en-us/Boots_of_Swiftness · Data Dragon pt_BR 16.18.1
 ]
 
@@ -1325,7 +1325,7 @@ Passos de Mercúrio: Mercury's Treads[
     Classe: Vitalidade (AD 0g · Vitalidade 710g · AP 0g)
     Arquétipo Recomendado: Universal
     Efeitos Especiais: none
-    Região: Runeterra (sem brasão na página)
+    Região: Demacia
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Mercury's Treads") · https://wiki.leagueoflegends.com/en-us/Mercury's_Treads · Data Dragon pt_BR 16.18.1
 ]
 
@@ -1361,7 +1361,7 @@ Botas Galvanizadas de Aço: Plated Steelcaps[
     Classe: Vitalidade (AD 0g · Vitalidade 500g · AP 0g)
     Arquétipo Recomendado: Universal
     Efeitos Especiais: Redução de Dano
-    Região: Runeterra (sem brasão na página)
+    Região: Noxus
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Plated Steelcaps") · https://wiki.leagueoflegends.com/en-us/Plated_Steelcaps · Data Dragon pt_BR 16.18.1
 ]
 
@@ -1395,7 +1395,7 @@ Sapatos do Feiticeiro: Sorcerer's Shoes[
     Classe: AP (AD 0g · Vitalidade 0g · AP 560g)
     Arquétipo Recomendado: Mago
     Efeitos Especiais: none
-    Região: Runeterra (sem brasão na página)
+    Região: Ixtal
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Sorcerer's Shoes") · https://wiki.leagueoflegends.com/en-us/Sorcerer's_Shoes · Data Dragon pt_BR 16.18.1
 ]
 ```
@@ -1465,7 +1465,7 @@ Espada G. p. C.: B. F. Sword[
     Classe: AD (AD 1.400g · Vitalidade 0g · AP 0g)
     Arquétipo Recomendado: Universal
     Efeitos Especiais: none
-    Região: Runeterra (sem brasão na página)
+    Região: Demacia
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "B. F. Sword") · https://wiki.leagueoflegends.com/en-us/B._F._Sword · Data Dragon pt_BR 16.18.1
 ]
 
@@ -1597,7 +1597,7 @@ Adaga: Dagger[
     Classe: AD (AD 250g · Vitalidade 0g · AP 0g)
     Arquétipo Recomendado: Universal
     Efeitos Especiais: none
-    Região: Runeterra (sem brasão na página)
+    Região: Ionia
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Dagger") · https://wiki.leagueoflegends.com/en-us/Dagger · Data Dragon pt_BR 16.18.1
 ]
 
@@ -1630,7 +1630,7 @@ Amuleto da Fada: Faerie Charm[
     Classe: AP (AD 0g · Vitalidade 0g · AP 200g)
     Arquétipo Recomendado: Universal
     Efeitos Especiais: none
-    Região: Runeterra (sem brasão na página)
+    Região: Shadow Isles
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Faerie Charm") · https://wiki.leagueoflegends.com/en-us/Faerie_Charm · Data Dragon pt_BR 16.18.1
 ]
 
@@ -1696,7 +1696,7 @@ Espada Longa: Long Sword[
     Classe: AD (AD 350g · Vitalidade 0g · AP 0g)
     Arquétipo Recomendado: Universal
     Efeitos Especiais: none
-    Região: Runeterra (sem brasão na página)
+    Região: Noxus
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Long Sword") · https://wiki.leagueoflegends.com/en-us/Long_Sword · Data Dragon pt_BR 16.18.1
 ]
 
@@ -1729,7 +1729,7 @@ Bastão Desnecessariamente Grande: Needlessly Large Rod[
     Classe: AP (AD 0g · Vitalidade 0g · AP 1.300g)
     Arquétipo Recomendado: Mago
     Efeitos Especiais: none
-    Região: Runeterra (sem brasão na página)
+    Região: Ionia
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Needlessly Large Rod") · https://wiki.leagueoflegends.com/en-us/Needlessly_Large_Rod · Data Dragon pt_BR 16.18.1
 ]
 
@@ -1762,7 +1762,7 @@ Manto Anula-Magia: Null-Magic Mantle[
     Classe: Vitalidade (AD 0g · Vitalidade 400g · AP 0g)
     Arquétipo Recomendado: Universal
     Efeitos Especiais: none
-    Região: Runeterra (sem brasão na página)
+    Região: Demacia
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Null-Magic Mantle") · https://wiki.leagueoflegends.com/en-us/Null-Magic_Mantle · Data Dragon pt_BR 16.18.1
 ]
 
@@ -1932,7 +1932,7 @@ Cintilação Etérea: Aether Wisp[
     Classe: AP (AD 0g · Vitalidade 0g · AP 600g)
     Arquétipo Recomendado: Mago
     Efeitos Especiais: none
-    Região: Runeterra (sem brasão na página)
+    Região: Shadow Isles
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Aether Wisp") · https://wiki.leagueoflegends.com/en-us/Aether_Wisp · Data Dragon pt_BR 16.18.1
 ]
 
@@ -2036,7 +2036,7 @@ Joia da Ruína: Blighting Jewel[
     Classe: AP (AD 0g · Vitalidade 0g · AP 1.099,95g)
     Arquétipo Recomendado: Mago
     Efeitos Especiais: none
-    Região: Runeterra (sem brasão na página)
+    Região: The Void
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Blighting Jewel") · https://wiki.leagueoflegends.com/en-us/Blighting_Jewel · Data Dragon pt_BR 16.18.1
 ]
 
@@ -2105,7 +2105,7 @@ Catalisador das Eras: Catalyst of Aeons[
     Classe: Vitalidade (AD 0g · Vitalidade 800g · AP 375g)
     Arquétipo Recomendado: Mago
     Efeitos Especiais: Restauração de Mana, Cura
-    Região: Runeterra (sem brasão na página)
+    Região: Shadow Isles
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Catalyst of Aeons") · https://wiki.leagueoflegends.com/en-us/Catalyst_of_Aeons · Data Dragon pt_BR 16.18.1
 ]
 
@@ -2240,7 +2240,7 @@ Chamado do Carrasco: Executioner's Calling[
     Classe: AD (AD 525g · Vitalidade 0g · AP 0g)
     Arquétipo Recomendado: Universal
     Efeitos Especiais: Anti-Cura
-    Região: Runeterra (sem brasão na página)
+    Região: Zaun
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Executioner's Calling") · https://wiki.leagueoflegends.com/en-us/Executioner's_Calling · Data Dragon pt_BR 16.18.1
 ]
 
@@ -2308,7 +2308,7 @@ Códex Demoníaco: Fiendish Codex[
     Classe: AP (AD 0g · Vitalidade 0g · AP 500g)
     Arquétipo Recomendado: Mago
     Efeitos Especiais: none
-    Região: Runeterra (sem brasão na página)
+    Região: Shadow Isles
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Fiendish Codex") · https://wiki.leagueoflegends.com/en-us/Fiendish_Codex · Data Dragon pt_BR 16.18.1
 ]
 
@@ -2342,7 +2342,7 @@ Códex Demoníaco: Fiendish Codex[
     Classe: AP (AD 0g · Vitalidade 0g · AP 200g)
     Arquétipo Recomendado: Suporte
     Efeitos Especiais: none
-    Região: Runeterra (sem brasão na página)
+    Região: The Void
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Forbidden Idol") · https://wiki.leagueoflegends.com/en-us/Forbidden_Idol · Data Dragon pt_BR 16.18.1
 ]
 
@@ -2410,7 +2410,7 @@ Broquel Glacial: Glacial Buckler[
     Classe: Vitalidade (AD 0g · Vitalidade 500g · AP 300g)
     Arquétipo Recomendado: Tanque, Suporte
     Efeitos Especiais: none
-    Região: Runeterra (sem brasão na página)
+    Região: Freljord
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Glacial Buckler") · https://wiki.leagueoflegends.com/en-us/Glacial_Buckler · Data Dragon pt_BR 16.18.1
 ]
 ```
@@ -2449,7 +2449,7 @@ Máscara Assustadora: Haunting Guise[
     Classe: AP (AD 0g · Vitalidade 533,33g · AP 600g)
     Arquétipo Recomendado: Mago
     Efeitos Especiais: Acúmulos, Amplificação de Dano
-    Região: Runeterra (sem brasão na página)
+    Região: Ionia
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Haunting Guise") · https://wiki.leagueoflegends.com/en-us/Haunting_Guise · Data Dragon pt_BR 16.18.1
 ]
 
@@ -2483,7 +2483,7 @@ Machado Termestre: Hearthbound Axe[
     Classe: AD (AD 1.200g · Vitalidade 0g · AP 0g)
     Arquétipo Recomendado: Lutador
     Efeitos Especiais: none
-    Região: Runeterra (sem brasão na página)
+    Região: Freljord
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Hearthbound Axe") · https://wiki.leagueoflegends.com/en-us/Hearthbound_Axe · Data Dragon pt_BR 16.18.1
 ]
 
@@ -2552,7 +2552,7 @@ Alternador Hextec: Hextech Alternator[
     Classe: AP (AD 0g · Vitalidade 0g · AP 900g)
     Arquétipo Recomendado: Mago
     Efeitos Especiais: Dano Mágico
-    Região: Runeterra (sem brasão na página)
+    Região: Piltover
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Hextech Alternator") · https://wiki.leagueoflegends.com/en-us/Hextech_Alternator · Data Dragon pt_BR 16.18.1
 ]
 
@@ -2656,7 +2656,7 @@ Salva-Vidas: Lifeline[
     Classe: AD (AD 1.025g · Vitalidade 0g · AP 0g)
     Arquétipo Recomendado: Assassino
     Efeitos Especiais: Ativa, Investida
-    Região: Runeterra (sem brasão na página)
+    Região: Bilgewater
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Lifeline") · https://wiki.leagueoflegends.com/en-us/Lifeline · Data Dragon pt_BR 16.18.1
 ]
 
@@ -2692,7 +2692,7 @@ Capítulo Perdido: Lost Chapter[
     Classe: AP (AD 0g · Vitalidade 0g · AP 1.100g)
     Arquétipo Recomendado: Mago
     Efeitos Especiais: Restauração de Mana
-    Região: Runeterra (sem brasão na página)
+    Região: Shadow Isles
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Lost Chapter") · https://wiki.leagueoflegends.com/en-us/Lost_Chapter · Data Dragon pt_BR 16.18.1
 ]
 
@@ -2725,7 +2725,7 @@ Capa Negatron: Negatron Cloak[
     Classe: Vitalidade (AD 0g · Vitalidade 900g · AP 0g)
     Arquétipo Recomendado: Universal
     Efeitos Especiais: none
-    Região: Runeterra (sem brasão na página)
+    Região: Demacia
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Negatron Cloak") · https://wiki.leagueoflegends.com/en-us/Negatron_Cloak · Data Dragon pt_BR 16.18.1
 ]
 
@@ -2759,7 +2759,7 @@ Aljava Vespertina: Noonquiver[
     Classe: AD (AD 1.325g · Vitalidade 0g · AP 0g)
     Arquétipo Recomendado: Atirador
     Efeitos Especiais: none
-    Região: Runeterra (sem brasão na página)
+    Região: Shadow Isles
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Noonquiver") · https://wiki.leagueoflegends.com/en-us/Noonquiver · Data Dragon pt_BR 16.18.1
 ]
 
@@ -2793,7 +2793,7 @@ Orbe do Oblívio: Oblivion Orb[
     Classe: AP (AD 0g · Vitalidade 0g · AP 500g)
     Arquétipo Recomendado: Mago, Suporte
     Efeitos Especiais: Anti-Cura
-    Região: Runeterra (sem brasão na página)
+    Região: Piltover
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Oblivion Orb") · https://wiki.leagueoflegends.com/en-us/Oblivion_Orb · Data Dragon pt_BR 16.18.1
 ]
 
@@ -3004,7 +3004,7 @@ Armaguarda da Caçadora: Seeker's Armguard[
     Classe: AP (AD 0g · Vitalidade 500g · AP 800g)
     Arquétipo Recomendado: Mago
     Efeitos Especiais: Ativa, Estase, Missão/Evolução
-    Região: Runeterra (sem brasão na página)
+    Região: Freljord
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Seeker's Armguard") · https://wiki.leagueoflegends.com/en-us/Seeker's_Armguard · Data Dragon pt_BR 16.18.1
 ]
 
@@ -3072,7 +3072,7 @@ Fulgor: Sheen[
     Classe: AD (AD 0g · Vitalidade 0g · AP 0g; desempate 2: dano físico)
     Arquétipo Recomendado: Universal
     Efeitos Especiais: Ataque Fortalecido, Dano Físico, Efeitos ao Contato, Dano a Estruturas
-    Região: Runeterra (sem brasão na página)
+    Região: Freljord
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Sheen") · https://wiki.leagueoflegends.com/en-us/Sheen · Data Dragon pt_BR 16.18.1
 ]
 
@@ -3107,7 +3107,7 @@ Capuz do Espectro: Spectre's Cowl[
     Classe: Vitalidade (AD 0g · Vitalidade 1.533,33g · AP 0g)
     Arquétipo Recomendado: Tanque
     Efeitos Especiais: none
-    Região: Runeterra (sem brasão na página)
+    Região: Shadow Isles
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Spectre's Cowl") · https://wiki.leagueoflegends.com/en-us/Spectre's_Cowl · Data Dragon pt_BR 16.18.1
 ]
 
@@ -3141,7 +3141,7 @@ Sigilo de Aço: Steel Sigil[
     Classe: Vitalidade (AD 525g · Vitalidade 600g · AP 0g)
     Arquétipo Recomendado: Lutador
     Efeitos Especiais: none
-    Região: Runeterra (sem brasão na página)
+    Região: Noxus
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Steel Sigil") · https://wiki.leagueoflegends.com/en-us/Steel_Sigil · Data Dragon pt_BR 16.18.1
 ]
 
@@ -3212,7 +3212,7 @@ Tiamat: Tiamat[
     Classe: AD (AD 875g · Vitalidade 0g · AP 0g)
     Arquétipo Recomendado: Lutador, Tanque
     Efeitos Especiais: Ativa, Dano Físico, Dano em Área, Efeitos ao Contato
-    Região: Runeterra (sem brasão na página)
+    Região: Shurima
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Tiamat") · https://wiki.leagueoflegends.com/en-us/Tiamat · Data Dragon pt_BR 16.18.1
 ]
 
@@ -3246,7 +3246,7 @@ Tunelizador: Tunneler[
     Classe: Vitalidade (AD 525g · Vitalidade 666,67g · AP 0g)
     Arquétipo Recomendado: Lutador
     Efeitos Especiais: none
-    Região: Runeterra (sem brasão na página)
+    Região: Piltover
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Tunneler") · https://wiki.leagueoflegends.com/en-us/Tunneler · Data Dragon pt_BR 16.18.1
 ]
 
@@ -3280,7 +3280,7 @@ Cetro Vampírico: Vampiric Scepter[
     Classe: AD (AD 899,85g · Vitalidade 0g · AP 0g)
     Arquétipo Recomendado: Universal
     Efeitos Especiais: none
-    Região: Runeterra (sem brasão na página)
+    Região: Noxus
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Vampiric Scepter") · https://wiki.leagueoflegends.com/en-us/Vampiric_Scepter · Data Dragon pt_BR 16.18.1
 ]
 
@@ -3315,7 +3315,7 @@ Barreira Verdejante: Verdant Barrier[
     Classe: AP (AD 0g · Vitalidade 500g · AP 800g)
     Arquétipo Recomendado: Mago
     Efeitos Especiais: Escudo de Feitiço
-    Região: Runeterra (sem brasão na página)
+    Região: Ixtal
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Verdant Barrier") · https://wiki.leagueoflegends.com/en-us/Verdant_Barrier · Data Dragon pt_BR 16.18.1
 ]
 
@@ -3349,7 +3349,7 @@ Carapaça do Vigia: Warden's Mail[
     Classe: Vitalidade (AD 0g · Vitalidade 800g · AP 0g)
     Arquétipo Recomendado: Tanque
     Efeitos Especiais: Redução de Dano
-    Região: Runeterra (sem brasão na página)
+    Região: Demacia
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Warden's Mail") · https://wiki.leagueoflegends.com/en-us/Warden's_Mail · Data Dragon pt_BR 16.18.1
 ]
 
@@ -3383,7 +3383,7 @@ Couraça Lunar Alada: Winged Moonplate[
     Classe: Vitalidade (AD 0g · Vitalidade 533,33g · AP 0g)
     Arquétipo Recomendado: Tanque
     Efeitos Especiais: none
-    Região: Runeterra (sem brasão na página)
+    Região: Targon
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Winged Moonplate") · https://wiki.leagueoflegends.com/en-us/Winged_Moonplate · Data Dragon pt_BR 16.18.1
 ]
 
@@ -3418,7 +3418,7 @@ Zelo: Zeal[
     Classe: AD (AD 975g · Vitalidade 0g · AP 0g)
     Arquétipo Recomendado: Atirador
     Efeitos Especiais: none
-    Região: Runeterra (sem brasão na página)
+    Região: Demacia
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Zeal") · https://wiki.leagueoflegends.com/en-us/Zeal · Data Dragon pt_BR 16.18.1
 ]
 ```
@@ -3458,7 +3458,7 @@ Máscara Abissal: Abyssal Mask[
     Classe: Vitalidade (AD 0g · Vitalidade 1.833,33g · AP 0g)
     Arquétipo Recomendado: Tanque, Suporte
     Efeitos Especiais: Aura, Vulnerabilidade Mágica
-    Região: Runeterra (sem brasão na página)
+    Região: Shadow Isles
     Mestre Forjador: Elegível — 3 categorias upgradáveis (333,33g cada): Vida 350(+125)=475; Resistência Mágica 45(+18,52)=63,52; Aceleração de Habilidade 15(+10,67)=25,67
     Reembolso (runa Cash Back): 7,5% de 2.650g = 198,75g (líquido: 2.451,25g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Abyssal Mask") · https://wiki.leagueoflegends.com/en-us/Abyssal_Mask · Data Dragon pt_BR 16.18.1
@@ -3496,7 +3496,7 @@ Atualizador: Actualizer[
     Classe: AP (AD 0g · Vitalidade 0g · AP 2.100g)
     Arquétipo Recomendado: Mago
     Efeitos Especiais: Ativa, Amplificação de Dano, Poder de Cura e Escudo, Redução de Recarga
-    Região: Runeterra (sem brasão na página)
+    Região: Shurima
     Mestre Forjador: Elegível — 2 categorias upgradáveis (500g cada; Mana não conta): Poder de Habilidade 90(+25)=115; Aceleração de Habilidade 10(+16)=26
     Reembolso (runa Cash Back): 7,5% de 2.800g = 210g (líquido: 2.590g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Actualizer") · https://wiki.leagueoflegends.com/en-us/Actualizer · Data Dragon pt_BR 16.18.1
@@ -3577,7 +3577,7 @@ Turíbulo Ardente: Ardent Censer[
     Classe: AP (AD 0g · Vitalidade 0g · AP 1.400g)
     Arquétipo Recomendado: Suporte
     Efeitos Especiais: Dano Mágico, Efeitos ao Contato, Velocidade de Ataque
-    Região: Runeterra (sem brasão na página)
+    Região: Ionia
     Mestre Forjador: Elegível — 1 categoria upgradável (1.000g): Poder de Habilidade 45(+50)=95
     Reembolso (runa Cash Back): 7,5% de 2.200g = 165g (líquido: 2.035g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Ardent Censer") · https://wiki.leagueoflegends.com/en-us/Ardent_Censer · Data Dragon pt_BR 16.18.1
@@ -3615,7 +3615,7 @@ Acerto de Contas de Atma: Atma's Reckoning[
     Classe: Vitalidade (AD 800g · Vitalidade 1.866,67g · AP 0g)
     Arquétipo Recomendado: Lutador
     Efeitos Especiais: Acerto Crítico (condicional pela Vida bônus)
-    Região: Runeterra (sem brasão na página)
+    Região: Noxus
     Mestre Forjador: Elegível — 1 categoria upgradável (1.000g; Acerto Crítico não conta): Vida 700(+375)=1.075
     Reembolso (runa Cash Back): 7,5% de 2.900g = 217,5g (líquido: 2.682,5g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Atma's Reckoning") · https://wiki.leagueoflegends.com/en-us/Atma's_Reckoning · Data Dragon pt_BR 16.18.1 · captura do cliente (ARAM) fornecida pelo usuário em 12/09/2026
@@ -3653,7 +3653,7 @@ Arco do Axioma: Axiom Arc[
     Classe: AD (AD 2.465g · Vitalidade 0g · AP 0g)
     Arquétipo Recomendado: Assassino
     Efeitos Especiais: Redução de Recarga
-    Região: Runeterra (sem brasão na página)
+    Região: Ixtal
     Mestre Forjador: Elegível — 2 categorias upgradáveis (500g cada; Letalidade não conta): Dano de Ataque 55(+14,29)=69,29; Aceleração de Habilidade 20(+16)=36
     Reembolso (runa Cash Back): 7,5% de 2.750g = 206,25g (líquido: 2.543,75g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Axiom Arc") · https://wiki.leagueoflegends.com/en-us/Axiom_Arc · Data Dragon pt_BR 16.18.1
@@ -3769,7 +3769,7 @@ Quebra-Bastião: Bastionbreaker[
     Classe: AD (AD 2.585g · Vitalidade 0g · AP 0g)
     Arquétipo Recomendado: Assassino
     Efeitos Especiais: Dano Verdadeiro, Dano a Estruturas, Dano a Monstros, Dano ao Longo do Tempo
-    Região: Runeterra (sem brasão na página)
+    Região: Noxus
     Mestre Forjador: Elegível — 2 categorias upgradáveis (500g cada; Letalidade não conta): Dano de Ataque 55(+14,29)=69,29; Aceleração de Habilidade 15(+16)=31
     Reembolso (runa Cash Back): 7,5% de 3.000g = 225g (líquido: 2.775g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Bastionbreaker") · https://wiki.leagueoflegends.com/en-us/Bastionbreaker · Data Dragon pt_BR 16.18.1
@@ -3809,7 +3809,7 @@ Cutelo Negro: Black Cleaver[
     Classe: AD (AD 1.575g · Vitalidade 1.066,67g · AP 0g)
     Arquétipo Recomendado: Lutador
     Efeitos Especiais: Acúmulos, Redução de Armadura, Movimento
-    Região: Runeterra (sem brasão na página)
+    Região: Noxus
     Mestre Forjador: Elegível — 3 categorias upgradáveis (333,33g cada): Dano de Ataque 45(+9,52)=54,52; Vida 400(+125)=525; Aceleração de Habilidade 20(+10,67)=30,67
     Reembolso (runa Cash Back): 7,5% de 3.000g = 225g (líquido: 2.775g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Black Cleaver") · https://wiki.leagueoflegends.com/en-us/Black_Cleaver · Data Dragon pt_BR 16.18.1
@@ -3928,7 +3928,7 @@ Maldição Sanguinária: Bloodletter's Curse[
     Classe: AP (AD 0g · Vitalidade 1.066,67g · AP 1.300g)
     Arquétipo Recomendado: Mago
     Efeitos Especiais: Acúmulos, Redução de Resistência Mágica
-    Região: Runeterra (sem brasão na página)
+    Região: Bilgewater
     Mestre Forjador: Elegível — 3 categorias upgradáveis (333,33g cada): Poder de Habilidade 65(+16,67)=81,67; Vida 400(+125)=525; Aceleração de Habilidade 15(+10,67)=25,67
     Reembolso (runa Cash Back): 7,5% de 2.900g = 217,5g (líquido: 2.682,5g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Bloodletter's Curse") · https://wiki.leagueoflegends.com/en-us/Bloodletter's_Curse · Data Dragon pt_BR 16.18.1
@@ -3969,7 +3969,7 @@ Canção de Sangue: Bloodsong[
     Classe: Vitalidade (AD 0g · Vitalidade 758,33g · AP 300g)
     Arquétipo Recomendado: Suporte
     Efeitos Especiais: Ataque Fortalecido, Dano Físico, Efeitos ao Contato, Vulnerabilidade a Dano, Ativa, Visão, Acúmulos, Dano a Estruturas
-    Região: Runeterra (sem brasão na página)
+    Região: Shurima
     Mestre Forjador: Não elegível (classe Legendary Support Item)
     Reembolso (runa Cash Back): none (item Lendário da linha de Suporte, obtido gratuitamente por transformação — sem compra, sem reembolso; confirmado pelo usuário em 12/09/2026)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Bloodsong") · https://wiki.leagueoflegends.com/en-us/Bloodsong · Data Dragon pt_BR 16.18.1
@@ -4006,7 +4006,7 @@ Sedenta por Sangue: Bloodthirster[
     Classe: AD (AD 3.603,25g · Vitalidade 0g · AP 0g)
     Arquétipo Recomendado: Atirador
     Efeitos Especiais: Escudo
-    Região: Runeterra (sem brasão na página)
+    Região: Shurima
     Mestre Forjador: Elegível — 1 categoria upgradável (1.000g; Roubo de Vida não conta): Dano de Ataque 80(+28,57)=108,57
     Reembolso (runa Cash Back): 7,5% de 3.400g = 255g (líquido: 3.145g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Bloodthirster") · https://wiki.leagueoflegends.com/en-us/Bloodthirster · Data Dragon pt_BR 16.18.1
@@ -4128,7 +4128,7 @@ Serrespada Quimiopunk: Chempunk Chainsword[
     Classe: AP (AD 0g · Vitalidade 933,33g · AP 1.400g)
     Arquétipo Recomendado: Mago
     Efeitos Especiais: Movimento
-    Região: Runeterra (sem brasão na página)
+    Região: Targon
     Mestre Forjador: Elegível — 3 categorias upgradáveis (333,33g cada; Velocidade de Movimento não conta): Poder de Habilidade 70(+16,67)=86,67; Vida 350(+125)=475; Aceleração de Habilidade 25(+10,67)=35,67
     Reembolso (runa Cash Back): 7,5% de 3.000g = 225g (líquido: 2.775g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Cosmic Drive") · https://wiki.leagueoflegends.com/en-us/Cosmic_Drive · Data Dragon pt_BR 16.18.1
@@ -4166,7 +4166,7 @@ Criptoflora: Cryptbloom[
     Classe: AP (AD 0g · Vitalidade 0g · AP 2.884,5g)
     Arquétipo Recomendado: Mago
     Efeitos Especiais: Cura, Dano em Área
-    Região: Runeterra (sem brasão na página)
+    Região: Shadow Isles
     Mestre Forjador: Elegível — 2 categorias upgradáveis (500g cada; Penetração Mágica não conta): Poder de Habilidade 75(+25)=100; Aceleração de Habilidade 20(+16)=36
     Reembolso (runa Cash Back): 7,5% de 3.000g = 225g (líquido: 2.775g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Cryptbloom") · https://wiki.leagueoflegends.com/en-us/Cryptbloom · Data Dragon pt_BR 16.18.1
@@ -4204,7 +4204,7 @@ Auronúcleo: Dawncore[
     Classe: AP (AD 0g · Vitalidade 0g · AP 1.300g)
     Arquétipo Recomendado: Suporte
     Efeitos Especiais: Acúmulos, Poder de Cura e Escudo
-    Região: Runeterra (sem brasão na página)
+    Região: Targon
     Mestre Forjador: Elegível — 1 categoria upgradável (1.000g): Poder de Habilidade 45(+50)=95
     Reembolso (runa Cash Back): 7,5% de 2.500g = 187,5g (líquido: 2.312,5g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Dawncore") · https://wiki.leagueoflegends.com/en-us/Dawncore · Data Dragon pt_BR 16.18.1
@@ -4285,7 +4285,7 @@ Dança da Morte: Death's Dance[
     Classe: AD (AD 2.100g · Vitalidade 1.000g · AP 0g)
     Arquétipo Recomendado: Lutador
     Efeitos Especiais: Redução de Dano, Dano ao Longo do Tempo, Dano Verdadeiro, Cura
-    Região: Runeterra (sem brasão na página)
+    Região: Shurima
     Mestre Forjador: Elegível — 3 categorias upgradáveis (333,33g cada): Dano de Ataque 60(+9,52)=69,52; Armadura 50(+16,67)=66,67; Aceleração de Habilidade 15(+10,67)=25,67
     Reembolso (runa Cash Back): 7,5% de 3.300g = 247,5g (líquido: 3.052,5g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Death's Dance") · https://wiki.leagueoflegends.com/en-us/Death's_Dance · Data Dragon pt_BR 16.18.1
@@ -4326,7 +4326,7 @@ Criassonhos: Dream Maker[
     Classe: Vitalidade (AD 0g · Vitalidade 758,33g · AP 300g)
     Arquétipo Recomendado: Suporte
     Efeitos Especiais: Redução de Dano, Dano Mágico, Efeitos ao Contato, Ativa, Visão, Acúmulos
-    Região: Runeterra (sem brasão na página)
+    Região: Bandle City
     Mestre Forjador: Não elegível (classe Legendary Support Item)
     Reembolso (runa Cash Back): none (item Lendário da linha de Suporte, obtido gratuitamente por transformação — sem compra, sem reembolso; decisão de 12/09/2026)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Dream Maker") · https://wiki.leagueoflegends.com/en-us/Dream_Maker · Data Dragon pt_BR 16.18.1
@@ -4365,7 +4365,7 @@ Aurora e Crepúsculo: Dusk and Dawn[
     Classe: AP (AD 500g · Vitalidade 800g · AP 1.200g)
     Arquétipo Recomendado: Mago
     Efeitos Especiais: Ataque Fortalecido, Dano Mágico, Cura, Efeitos ao Contato, Dano a Estruturas
-    Região: Runeterra (sem brasão na página)
+    Região: Targon
     Mestre Forjador: Elegível — 4 categorias upgradáveis (250g cada): Vida 300(+90)=390; Poder de Habilidade 60(+12,5)=72,5; Aceleração de Habilidade 20(+8)=28; Velocidade de Ataque 20%(+8,33%)=28,33%
     Reembolso (runa Cash Back): 7,5% de 3.100g = 232,5g (líquido: 2.867,5g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Dusk and Dawn") · https://wiki.leagueoflegends.com/en-us/Dusk_and_Dawn · Data Dragon pt_BR 16.18.1
@@ -4441,7 +4441,7 @@ Eclipse: Eclipse[
     Classe: AD (AD 2.100g · Vitalidade 0g · AP 0g)
     Arquétipo Recomendado: Lutador
     Efeitos Especiais: Acúmulos, Dano Físico, Dano Percentual, Escudo
-    Região: Runeterra (sem brasão na página)
+    Região: Targon
     Mestre Forjador: Elegível — 2 categorias upgradáveis (500g cada): Dano de Ataque 60(+14,29)=74,29; Aceleração de Habilidade 15(+16)=31
     Reembolso (runa Cash Back): 7,5% de 2.900g = 217,5g (líquido: 2.682,5g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Eclipse") · https://wiki.leagueoflegends.com/en-us/Eclipse · Data Dragon pt_BR 16.18.1
@@ -4479,7 +4479,7 @@ Limiar da Noite: Edge of Night[
     Classe: AD (AD 2.200g · Vitalidade 666,67g · AP 0g)
     Arquétipo Recomendado: Assassino
     Efeitos Especiais: Escudo de Feitiço
-    Região: Runeterra (sem brasão na página)
+    Região: Noxus
     Mestre Forjador: Elegível — 2 categorias upgradáveis (500g cada; Letalidade não conta): Dano de Ataque 50(+14,29)=64,29; Vida 250(+185)=435
     Reembolso (runa Cash Back): 7,5% de 3.000g = 225g (líquido: 2.775g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Edge of Night") · https://wiki.leagueoflegends.com/en-us/Edge_of_Night · Data Dragon pt_BR 16.18.1
@@ -4519,7 +4519,7 @@ Fome Eterna: Endless Hunger[
     Classe: AD (AD 2.275g · Vitalidade 206,67g · AP 0g)
     Arquétipo Recomendado: Lutador
     Efeitos Especiais: Acúmulos
-    Região: Runeterra (sem brasão na página)
+    Região: Shurima
     Mestre Forjador: Elegível — 1 categoria upgradável (1.000g; Vampirismo e Tenacidade não contam): Dano de Ataque 65(+28,57)=93,57
     Reembolso (runa Cash Back): 7,5% de 3.100g = 232,5g (líquido: 2.867,5g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Endless Hunger") · https://wiki.leagueoflegends.com/en-us/Endless_Hunger · Data Dragon pt_BR 16.18.1
@@ -4557,7 +4557,7 @@ Colhedor de Essência: Essence Reaver[
     Classe: AD (AD 2.750g · Vitalidade 0g · AP 0g)
     Arquétipo Recomendado: Atirador
     Efeitos Especiais: Ataque Fortalecido, Dano Físico, Efeitos ao Contato, Restauração de Mana, Dano a Estruturas
-    Região: Runeterra (sem brasão na página)
+    Região: Shadow Isles
     Mestre Forjador: Elegível — 2 categorias upgradáveis (500g cada; Acerto Crítico não conta): Dano de Ataque 50(+14,29)=64,29; Aceleração de Habilidade 20(+16)=36
     Reembolso (runa Cash Back): 7,5% de 3.050g = 228,75g (líquido: 2.821,25g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Essence Reaver") · https://wiki.leagueoflegends.com/en-us/Essence_Reaver · Data Dragon pt_BR 16.18.1
@@ -4643,7 +4643,7 @@ Dardos de Caça-Demônios: Fiendhunter Bolts[
     Classe: AD (AD 2.125g · Vitalidade 0g · AP 0g)
     Arquétipo Recomendado: Atirador
     Efeitos Especiais: Velocidade de Ataque, Dano Crítico, Dano Verdadeiro
-    Região: Runeterra (sem brasão na página)
+    Região: Demacia
     Mestre Forjador: Elegível — 1 categoria upgradável (1.000g; Acerto Crítico e Velocidade de Movimento não contam): Velocidade de Ataque 45%(+33,33%)=78,33%
     Reembolso (runa Cash Back): 7,5% de 2.650g = 198,75g (líquido: 2.451,25g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Fiendhunter Bolts") · https://wiki.leagueoflegends.com/en-us/Fiendhunter_Bolts · Data Dragon pt_BR 16.18.1
@@ -4681,7 +4681,7 @@ Força da Natureza: Force of Nature[
     Classe: Vitalidade (AD 0g · Vitalidade 2.166,67g · AP 0g)
     Arquétipo Recomendado: Tanque
     Efeitos Especiais: Acúmulos, Movimento
-    Região: Runeterra (sem brasão na página)
+    Região: Ixtal
     Mestre Forjador: Elegível — 2 categorias upgradáveis (500g cada; Velocidade de Movimento não conta): Vida 400(+185)=585; Resistência Mágica 55(+27,78)=82,78
     Reembolso (runa Cash Back): 7,5% de 2.800g = 210g (líquido: 2.590g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Force of Nature") · https://wiki.leagueoflegends.com/en-us/Force_of_Nature · Data Dragon pt_BR 16.18.1
@@ -4756,7 +4756,7 @@ Anjo Guardião: Guardian Angel[
     Classe: AD (AD 1.925g · Vitalidade 900g · AP 0g)
     Arquétipo Recomendado: Universal
     Efeitos Especiais: Ressurreição, Invulnerabilidade, Inalvejável, Cura, Restauração de Mana
-    Região: Runeterra (sem brasão na página)
+    Região: Targon
     Mestre Forjador: Elegível — 2 categorias upgradáveis (500g cada): Dano de Ataque 55(+14,29)=69,29; Armadura 45(+25)=70
     Reembolso (runa Cash Back): 7,5% de 3.200g = 240g (líquido: 2.960g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Guardian Angel") · https://wiki.leagueoflegends.com/en-us/Guardian_Angel · Data Dragon pt_BR 16.18.1
@@ -4836,7 +4836,7 @@ Coração de Aço: Heartsteel[
     Classe: Vitalidade (AD 0g · Vitalidade 2.700g · AP 0g)
     Arquétipo Recomendado: Tanque
     Efeitos Especiais: Acúmulos, Dano Físico, Dano Percentual, Efeitos ao Contato
-    Região: Runeterra (sem brasão na página)
+    Região: Ixtal
     Mestre Forjador: Elegível — 1 categoria upgradável (1.000g): Vida 900(+375)=1.275
     Reembolso (runa Cash Back): 7,5% de 3.000g = 225g (líquido: 2.775g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Heartsteel") · https://wiki.leagueoflegends.com/en-us/Heartsteel · Data Dragon pt_BR 16.18.1
@@ -4992,7 +4992,7 @@ Resplendor Vazio: Hollow Radiance[
     Classe: Vitalidade (AD 0g · Vitalidade 2.166,67g · AP 0g)
     Arquétipo Recomendado: Tanque
     Efeitos Especiais: Aura, Dano Mágico, Dano em Área, Dano ao Longo do Tempo, Dano a Tropas, Dano a Monstros, Execução
-    Região: Runeterra (sem brasão na página)
+    Região: The Void
     Mestre Forjador: Elegível — 3 categorias upgradáveis (333,33g cada): Vida 400(+125)=525; Resistência Mágica 40(+18,52)=58,52; Aceleração de Habilidade 10(+10,67)=20,67
     Reembolso (runa Cash Back): 7,5% de 2.800g = 210g (líquido: 2.590g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Hollow Radiance") · https://wiki.leagueoflegends.com/en-us/Hollow_Radiance · Data Dragon pt_BR 16.18.1
@@ -5031,7 +5031,7 @@ Foco do Horizonte: Horizon Focus[
     Classe: AP (AD 0g · Vitalidade 0g · AP 1.500g)
     Arquétipo Recomendado: Mago
     Efeitos Especiais: Amplificação de Dano, Revelação, Visão
-    Região: Runeterra (sem brasão na página)
+    Região: Piltover
     Mestre Forjador: Elegível — 2 categorias upgradáveis (500g cada): Poder de Habilidade 75(+25)=100; Aceleração de Habilidade 25(+16)=41
     Reembolso (runa Cash Back): 7,5% de 2.700g = 202,5g (líquido: 2.497,5g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Horizon Focus") · https://wiki.leagueoflegends.com/en-us/Horizon_Focus · Data Dragon pt_BR 16.18.1
@@ -5184,7 +5184,7 @@ Arco-escudo Imortal: Immortal Shieldbow[
     Classe: AD (AD 2.925g · Vitalidade 0g · AP 0g)
     Arquétipo Recomendado: Atirador
     Efeitos Especiais: Gatilho de Vida Baixa, Escudo
-    Região: Runeterra (sem brasão na página)
+    Região: Noxus
     Mestre Forjador: Elegível — 1 categoria upgradável (1.000g; Acerto Crítico não conta): Dano de Ataque 55(+28,57)=83,57
     Reembolso (runa Cash Back): 7,5% de 3.000g = 225g (líquido: 2.775g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Immortal Shieldbow") · https://wiki.leagueoflegends.com/en-us/Immortal_Shieldbow · Data Dragon pt_BR 16.18.1
@@ -5265,7 +5265,7 @@ Gume do Infinito: Infinity Edge[
     Classe: AD (AD 3.625g · Vitalidade 0g · AP 0g)
     Arquétipo Recomendado: Atirador
     Efeitos Especiais: none
-    Região: Runeterra (sem brasão na página)
+    Região: Shurima
     Mestre Forjador: Elegível — 1 categoria upgradável (1.000g; Acerto Crítico e Dano Crítico não contam): Dano de Ataque 75(+28,57)=103,57
     Reembolso (runa Cash Back): 7,5% de 3.500g = 262,5g (líquido: 3.237,5g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Infinity Edge") · https://wiki.leagueoflegends.com/en-us/Infinity_Edge · Data Dragon pt_BR 16.18.1
@@ -5341,7 +5341,7 @@ Rookern Lamúrico: Kaenic Rookern[
     Classe: Vitalidade (AD 0g · Vitalidade 2.966,67g · AP 0g)
     Arquétipo Recomendado: Tanque
     Efeitos Especiais: Escudo
-    Região: Runeterra (sem brasão na página)
+    Região: Noxus
     Mestre Forjador: Elegível — 2 categorias upgradáveis (500g cada): Vida 400(+185)=585; Resistência Mágica 80(+27,78)=107,78
     Reembolso (runa Cash Back): 7,5% de 2.900g = 217,5g (líquido: 2.682,5g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Kaenic Rookern") · https://wiki.leagueoflegends.com/en-us/Kaenic_Rookern · Data Dragon pt_BR 16.18.1
@@ -5459,7 +5459,7 @@ Tormento de Liandry: Liandry's Torment[
     Classe: AP (AD 0g · Vitalidade 800g · AP 1.200g)
     Arquétipo Recomendado: Mago
     Efeitos Especiais: Dano Mágico, Dano ao Longo do Tempo, Dano Percentual, Acúmulos, Amplificação de Dano
-    Região: Runeterra (sem brasão na página)
+    Região: Shadow Isles
     Mestre Forjador: Elegível — 2 categorias upgradáveis (500g cada): Poder de Habilidade 60(+25)=85; Vida 300(+185)=485
     Reembolso (runa Cash Back): 7,5% de 3.000g = 225g (líquido: 2.775g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Liandry's Torment") · https://wiki.leagueoflegends.com/en-us/Liandry's_Torment · Data Dragon pt_BR 16.18.1
@@ -5574,7 +5574,7 @@ Lembranças do Lorde Dominik: Lord Dominik's Regards[
     Classe: AD (AD 3.683,33g · Vitalidade 0g · AP 0g)
     Arquétipo Recomendado: Atirador
     Efeitos Especiais: Amplificação de Dano
-    Região: Runeterra (sem brasão na página)
+    Região: Noxus
     Mestre Forjador: Elegível — 1 categoria upgradável (1.000g; Penetração de Armadura e Acerto Crítico não contam): Dano de Ataque 35(+28,57)=63,57
     Reembolso (runa Cash Back): 7,5% de 3.300g = 247,5g (líquido: 3.052,5g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Lord Dominik's Regards") · https://wiki.leagueoflegends.com/en-us/Lord_Dominik's_Regards · Data Dragon pt_BR 16.18.1
@@ -5612,7 +5612,7 @@ Eco de Luden: Luden's Echo[
     Classe: AP (AD 0g · Vitalidade 0g · AP 2.600g)
     Arquétipo Recomendado: Mago
     Efeitos Especiais: Dano Mágico, Dano em Área, Acúmulos
-    Região: Runeterra (sem brasão na página)
+    Região: The Void
     Mestre Forjador: Elegível — 2 categorias upgradáveis (500g cada; Mana não conta): Poder de Habilidade 100(+25)=125; Aceleração de Habilidade 10(+16)=26
     Reembolso (runa Cash Back): 7,5% de 2.750g = 206,25g (líquido: 2.543,75g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Luden's Echo") · https://wiki.leagueoflegends.com/en-us/Luden's_Echo · Data Dragon pt_BR 16.18.1
@@ -5770,7 +5770,7 @@ Ladrão de Almas de Mejai: Mejai's Soulstealer[
     Classe: AP (AD 0g · Vitalidade 266,67g · AP 400g)
     Arquétipo Recomendado: Mago
     Efeitos Especiais: Acúmulos, Movimento
-    Região: Runeterra (sem brasão na página)
+    Região: Noxus
     Mestre Forjador: Não elegível (Ladrão de Almas de Mejai)
     Reembolso (runa Cash Back): 7,5% de 1.500g = 112,5g (líquido: 1.387,5g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Mejai's Soulstealer") · https://wiki.leagueoflegends.com/en-us/Mejai's_Soulstealer · Data Dragon pt_BR 16.18.1
@@ -5812,7 +5812,7 @@ Cimitarra Mercurial: Mercurial Scimitar[
     Classe: AD (AD 2.285,5g · Vitalidade 700g · AP 0g)
     Arquétipo Recomendado: Lutador, Atirador
     Efeitos Especiais: Ativa, Remoção de Controle, Movimento, Atravessar Unidades
-    Região: Runeterra (sem brasão na página)
+    Região: Shadow Isles
     Mestre Forjador: Elegível — 2 categorias upgradáveis (500g cada; Roubo de Vida não conta): Dano de Ataque 50(+14,29)=64,29; Resistência Mágica 35(+27,78)=62,78
     Reembolso (runa Cash Back): 7,5% de 3.200g = 240g (líquido: 2.960g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Mercurial Scimitar") · https://wiki.leagueoflegends.com/en-us/Mercurial_Scimitar · Data Dragon pt_BR 16.18.1
@@ -5928,7 +5928,7 @@ Morellonomicon: Morellonomicon[
     Classe: AP (AD 0g · Vitalidade 933,33g · AP 1.500g)
     Arquétipo Recomendado: Mago, Suporte
     Efeitos Especiais: Anti-Cura
-    Região: Runeterra (sem brasão na página)
+    Região: Shadow Isles
     Mestre Forjador: Elegível — 3 categorias upgradáveis (333,33g cada): Poder de Habilidade 75(+16,67)=91,67; Vida 350(+125)=475; Aceleração de Habilidade 15(+10,67)=25,67
     Reembolso (runa Cash Back): 7,5% de 2.850g = 213,75g (líquido: 2.636,25g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Morellonomicon") · https://wiki.leagueoflegends.com/en-us/Morellonomicon · Data Dragon pt_BR 16.18.1
@@ -5966,7 +5966,7 @@ Lembrete Mortal: Mortal Reminder[
     Classe: AD (AD 3.475g · Vitalidade 0g · AP 0g)
     Arquétipo Recomendado: Atirador
     Efeitos Especiais: Anti-Cura
-    Região: Runeterra (sem brasão na página)
+    Região: Zaun
     Mestre Forjador: Elegível — 1 categoria upgradável (1.000g; Penetração de Armadura e Acerto Crítico não contam): Dano de Ataque 35(+28,57)=63,57
     Reembolso (runa Cash Back): 7,5% de 3.000g = 225g (líquido: 2.775g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Mortal Reminder") · https://wiki.leagueoflegends.com/en-us/Mortal_Reminder · Data Dragon pt_BR 16.18.1
@@ -6120,7 +6120,7 @@ Dançarina Fantasma: Phantom Dancer[
     Classe: AD (AD 2.625g · Vitalidade 0g · AP 0g)
     Arquétipo Recomendado: Atirador
     Efeitos Especiais: Atravessar Unidades
-    Região: Runeterra (sem brasão na página)
+    Região: Shadow Isles
     Mestre Forjador: Elegível — 1 categoria upgradável (1.000g; Acerto Crítico e Velocidade de Movimento não contam): Velocidade de Ataque 65%(+33,33%)=98,33%
     Reembolso (runa Cash Back): 7,5% de 2.650g = 198,75g (líquido: 2.451,25g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Phantom Dancer") · https://wiki.leagueoflegends.com/en-us/Phantom_Dancer · Data Dragon pt_BR 16.18.1
@@ -6160,7 +6160,7 @@ Hidra Profana: Profane Hydra[
     Classe: AD (AD 2.465g · Vitalidade 0g · AP 0g)
     Arquétipo Recomendado: Assassino
     Efeitos Especiais: Ativa, Dano Físico, Dano em Área, Efeitos ao Contato
-    Região: Runeterra (sem brasão na página)
+    Região: Bilgewater
     Mestre Forjador: Elegível — 2 categorias upgradáveis (500g cada; Letalidade não conta): Dano de Ataque 55(+14,29)=69,29; Aceleração de Habilidade 10(+16)=26
     Reembolso (runa Cash Back): 7,5% de 2.850g = 213,75g (líquido: 2.636,25g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Profane Hydra") · https://wiki.leagueoflegends.com/en-us/Profane_Hydra · Data Dragon pt_BR 16.18.1
@@ -6312,7 +6312,7 @@ Canhão Fumegante: Rapid Firecannon[
     Classe: AD (AD 1.875g · Vitalidade 0g · AP 0g)
     Arquétipo Recomendado: Atirador
     Efeitos Especiais: Energizado, Dano Mágico, Efeitos ao Contato, Alcance de Ataque, Dano a Estruturas
-    Região: Runeterra (sem brasão na página)
+    Região: Bilgewater
     Mestre Forjador: Elegível — 1 categoria upgradável (1.000g; Acerto Crítico e Velocidade de Movimento não contam): Velocidade de Ataque 35%(+33,33%)=68,33%
     Reembolso (runa Cash Back): 7,5% de 2.650g = 198,75g (líquido: 2.451,25g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Rapid Firecannon") · https://wiki.leagueoflegends.com/en-us/Rapid_Firecannon · Data Dragon pt_BR 16.18.1
@@ -6395,7 +6395,7 @@ Redenção: Redemption[
     Classe: AP (AD 0g · Vitalidade 0g · AP 1.000g)
     Arquétipo Recomendado: Suporte
     Efeitos Especiais: Ativa, Cura, Dano Verdadeiro, Dano em Área, Dano Percentual, Visão
-    Região: Runeterra (sem brasão na página)
+    Região: Targon
     Mestre Forjador: Elegível — 2 categorias upgradáveis (500g cada; Regeneração de Mana e Poder de Cura e Escudo não contam): Poder de Habilidade 30(+25)=55; Aceleração de Habilidade 15(+16)=31
     Reembolso (runa Cash Back): 7,5% de 2.300g = 172,5g (líquido: 2.127,5g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Redemption") · https://wiki.leagueoflegends.com/en-us/Redemption · Data Dragon pt_BR 16.18.1
@@ -6476,7 +6476,7 @@ Bastão das Eras: Rod of Ages[
     Classe: AP (AD 0g · Vitalidade 933,33g · AP 1.400g)
     Arquétipo Recomendado: Mago
     Efeitos Especiais: Acúmulos, Ganho de Nível, Cura, Restauração de Mana
-    Região: Runeterra (sem brasão na página)
+    Região: Shadow Isles
     Mestre Forjador: Elegível — 2 categorias upgradáveis (500g cada; Mana não conta): Poder de Habilidade 45(+25)=70; Vida 350(+185)=535
     Reembolso (runa Cash Back): 7,5% de 2.600g = 195g (líquido: 2.405g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Rod of Ages") · https://wiki.leagueoflegends.com/en-us/Rod_of_Ages · Data Dragon pt_BR 16.18.1
@@ -6702,7 +6702,7 @@ Hino Bélico de Shurelya: Shurelya's Battlesong[
     Classe: AP (AD 0g · Vitalidade 0g · AP 1.500g)
     Arquétipo Recomendado: Suporte
     Efeitos Especiais: Ativa, Movimento
-    Região: Demacia (nome: Shurelya)
+    Região: Shurima
     Mestre Forjador: Elegível — 2 categorias upgradáveis (500g cada; Velocidade de Movimento e Regeneração de Mana não contam): Poder de Habilidade 50(+25)=75; Aceleração de Habilidade 15(+16)=31
     Reembolso (runa Cash Back): 7,5% de 2.200g = 165g (líquido: 2.035g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Shurelya's Battlesong") · https://wiki.leagueoflegends.com/en-us/Shurelya's_Battlesong · Data Dragon pt_BR 16.18.1
@@ -6860,7 +6860,7 @@ Semblante Espiritual: Spirit Visage[
     Classe: Vitalidade (AD 0g · Vitalidade 2.366,67g · AP 0g)
     Arquétipo Recomendado: Tanque
     Efeitos Especiais: Poder de Cura e Escudo
-    Região: Runeterra (sem brasão na página)
+    Região: Shadow Isles
     Mestre Forjador: Elegível — 3 categorias upgradáveis (333,33g cada; Regeneração de Vida não conta): Vida 400(+125)=525; Resistência Mágica 50(+18,52)=68,52; Aceleração de Habilidade 10(+10,67)=20,67
     Reembolso (runa Cash Back): 7,5% de 2.700g = 202,5g (líquido: 2.497,5g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Spirit Visage") · https://wiki.leagueoflegends.com/en-us/Spirit_Visage · Data Dragon pt_BR 16.18.1
@@ -6899,7 +6899,7 @@ Cajado Aquafluxo: Staff of Flowing Water[
     Classe: AP (AD 0g · Vitalidade 0g · AP 1.200g)
     Arquétipo Recomendado: Suporte
     Efeitos Especiais: Redução de Recarga
-    Região: Ionia (nome: cajado do fluxo d'água)
+    Região: Bilgewater
     Mestre Forjador: Elegível — 2 categorias upgradáveis (500g cada; Regeneração de Mana e Poder de Cura e Escudo não contam): Poder de Habilidade 35(+25)=60; Aceleração de Habilidade 10(+16)=26
     Reembolso (runa Cash Back): 7,5% de 2.250g = 168,75g (líquido: 2.081,25g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Staff of Flowing Water") · https://wiki.leagueoflegends.com/en-us/Staff_of_Flowing_Water · Data Dragon pt_BR 16.18.1
@@ -6986,7 +6986,7 @@ Sinal de Sterak: Sterak's Gage[
     Classe: Vitalidade (AD 0g · Vitalidade 1.273,33g · AP 0g)
     Arquétipo Recomendado: Lutador
     Efeitos Especiais: Gatilho de Vida Baixa, Escudo
-    Região: Runeterra (sem brasão na página)
+    Região: Bilgewater
     Mestre Forjador: Elegível — 1 categoria upgradável (1.000g; Tenacidade não conta; o DdA de Garras Caçadoras não é atributo do item): Vida 400(+375)=775
     Reembolso (runa Cash Back): 7,5% de 3.200g = 240g (líquido: 2.960g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Sterak's Gage") · https://wiki.leagueoflegends.com/en-us/Sterak's_Gage · Data Dragon pt_BR 16.18.1
@@ -7026,7 +7026,7 @@ Chuva de Canivete: Stormrazor[
     Classe: AD (AD 3.375g · Vitalidade 0g · AP 0g)
     Arquétipo Recomendado: Atirador
     Efeitos Especiais: Energizado, Dano Mágico, Efeitos ao Contato, Movimento, Dano a Estruturas
-    Região: Runeterra (sem brasão na página)
+    Região: Ionia
     Mestre Forjador: Elegível — 2 categorias upgradáveis (500g cada; Acerto Crítico não conta): Dano de Ataque 50(+14,29)=64,29; Velocidade de Ataque 25%(+16,67%)=41,67%
     Reembolso (runa Cash Back): 7,5% de 3.200g = 240g (líquido: 2.960g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Stormrazor") · https://wiki.leagueoflegends.com/en-us/Stormrazor · Data Dragon pt_BR 16.18.1
@@ -7066,7 +7066,7 @@ Chuva de Canivete: Stormrazor[
     Classe: AP (AD 0g · Vitalidade 0g · AP 2.500g)
     Arquétipo Recomendado: Mago
     Efeitos Especiais: Dano Mágico, Dano em Área
-    Região: Runeterra (sem brasão na página)
+    Região: Freljord
     Mestre Forjador: Elegível — 1 categoria upgradável (1.000g; Penetração Mágica e Velocidade de Movimento não contam): Poder de Habilidade 90(+50)=140
     Reembolso (runa Cash Back): 7,5% de 2.800g = 210g (líquido: 2.590g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Stormsurge") · https://wiki.leagueoflegends.com/en-us/Stormsurge · Data Dragon pt_BR 16.18.1
@@ -7182,7 +7182,7 @@ Céu Dividido: Sundered Sky[
     Classe: Vitalidade (AD 0g · Vitalidade 1.933,33g · AP 0g)
     Arquétipo Recomendado: Tanque
     Efeitos Especiais: Aura, Dano Mágico, Dano em Área, Dano ao Longo do Tempo, Dano a Tropas, Dano a Monstros, Execução
-    Região: Targon (nome: Égide de Fogo Solar — Solari)
+    Região: Shurima
     Mestre Forjador: Elegível — 3 categorias upgradáveis (333,33g cada): Vida 350(+125)=475; Armadura 50(+16,67)=66,67; Aceleração de Habilidade 10(+10,67)=20,67
     Reembolso (runa Cash Back): 7,5% de 2.800g = 210g (líquido: 2.590g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Sunfire Aegis") · https://wiki.leagueoflegends.com/en-us/Sunfire_Aegis · Data Dragon pt_BR 16.18.1
@@ -7222,7 +7222,7 @@ Terminus: Terminus[
     Classe: AD (AD 1.925g · Vitalidade 0g · AP 0g)
     Arquétipo Recomendado: Lutador, Atirador
     Efeitos Especiais: Acúmulos, Dano Mágico, Efeitos ao Contato
-    Região: Runeterra (sem brasão na página)
+    Região: Shadow Isles
     Mestre Forjador: Elegível — 2 categorias upgradáveis (500g cada): Dano de Ataque 30(+14,29)=44,29; Velocidade de Ataque 35%(+16,67%)=51,67%
     Reembolso (runa Cash Back): 7,5% de 3.000g = 225g (líquido: 2.775g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Terminus") · https://wiki.leagueoflegends.com/en-us/Terminus · Data Dragon pt_BR 16.18.1
@@ -7262,7 +7262,7 @@ A Coletora: The Collector[
     Classe: AD (AD 3.050g · Vitalidade 0g · AP 0g)
     Arquétipo Recomendado: Atirador, Assassino
     Efeitos Especiais: Execução, Geração de Ouro
-    Região: Runeterra (sem brasão na página)
+    Região: Bilgewater
     Mestre Forjador: Elegível — 1 categoria upgradável (1.000g; Letalidade e Acerto Crítico não contam): Dano de Ataque 50(+28,57)=78,57
     Reembolso (runa Cash Back): 7,5% de 3.000g = 225g (líquido: 2.775g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "The Collector") · https://wiki.leagueoflegends.com/en-us/The_Collector · Data Dragon pt_BR 16.18.1
@@ -7299,7 +7299,7 @@ Armadura de Espinhos: Thornmail[
     Classe: Vitalidade (AD 0g · Vitalidade 1.900g · AP 0g)
     Arquétipo Recomendado: Tanque
     Efeitos Especiais: Reflexão de Dano, Dano Mágico, Anti-Cura
-    Região: Runeterra (sem brasão na página)
+    Região: Noxus
     Mestre Forjador: Elegível — 2 categorias upgradáveis (500g cada): Vida 150(+185)=335; Armadura 75(+25)=100
     Reembolso (runa Cash Back): 7,5% de 2.450g = 183,75g (líquido: 2.266,25g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Thornmail") · https://wiki.leagueoflegends.com/en-us/Thornmail · Data Dragon pt_BR 16.18.1
@@ -7338,7 +7338,7 @@ Hidra Titânica: Titanic Hydra[
     Classe: Vitalidade (AD 1.400g · Vitalidade 1.600g · AP 0g)
     Arquétipo Recomendado: Lutador, Tanque
     Efeitos Especiais: Ativa, Ataque Fortalecido, Dano Físico, Dano em Área, Dano Percentual, Efeitos ao Contato, Dano a Estruturas
-    Região: Runeterra (sem brasão na página)
+    Região: Noxus
     Mestre Forjador: Elegível — 2 categorias upgradáveis (500g cada): Dano de Ataque 40(+14,29)=54,29; Vida 600(+185)=785
     Reembolso (runa Cash Back): 7,5% de 3.300g = 247,5g (líquido: 3.052,5g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Titanic Hydra") · https://wiki.leagueoflegends.com/en-us/Titanic_Hydra · Data Dragon pt_BR 16.18.1
@@ -7379,7 +7379,7 @@ Força da Trindade: Trinity Force[
     Classe: AD (AD 2.010g · Vitalidade 888g · AP 0g)
     Arquétipo Recomendado: Lutador, Atirador
     Efeitos Especiais: Ataque Fortalecido, Dano Físico, Efeitos ao Contato, Movimento, Dano a Estruturas
-    Região: Runeterra (sem brasão na página)
+    Região: Ionia
     Mestre Forjador: Elegível — 4 categorias upgradáveis (250g cada): Dano de Ataque 36(+7,14)=43,14; Velocidade de Ataque 30%(+8,33%)=38,33%; Vida 333(+90)=423; Aceleração de Habilidade 15(+8)=23
     Reembolso (runa Cash Back): 7,5% de 3.333g = 249,97g (líquido: 3.083,03g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Trinity Force") · https://wiki.leagueoflegends.com/en-us/Trinity_Force · Data Dragon pt_BR 16.18.1
@@ -7535,7 +7535,7 @@ Cicloespada Voltaica: Voltaic Cyclosword[
     Classe: AD (AD 2.225g · Vitalidade 0g · AP 0g)
     Arquétipo Recomendado: Assassino
     Efeitos Especiais: Energizado, Dano Físico, Dano Percentual, Efeitos ao Contato, Dano a Estruturas
-    Região: Runeterra (sem brasão na página)
+    Região: Zaun
     Mestre Forjador: Elegível — 2 categorias upgradáveis (500g cada; Letalidade não conta): Dano de Ataque 55(+14,29)=69,29; Aceleração de Habilidade 10(+16)=26
     Reembolso (runa Cash Back): 7,5% de 3.000g = 225g (líquido: 2.775g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Voltaic Cyclosword") · https://wiki.leagueoflegends.com/en-us/Voltaic_Cyclosword · Data Dragon pt_BR 16.18.1
@@ -7581,7 +7581,7 @@ Armadura de Warmog: Warmog's Armor[
     Classe: Vitalidade (AD 0g · Vitalidade 2.966,67g · AP 0g)
     Arquétipo Recomendado: Tanque
     Efeitos Especiais: Cura
-    Região: Runeterra (sem brasão na página)
+    Região: Bandle City
     Mestre Forjador: Elegível — 1 categoria upgradável (1.000g; Regeneração de Vida não conta): Vida 1.000(+375)=1.375
     Reembolso (runa Cash Back): 7,5% de 3.100g = 232,5g (líquido: 2.867,5g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Warmog's Armor") · https://wiki.leagueoflegends.com/en-us/Warmog's_Armor · Data Dragon pt_BR 16.18.1
@@ -7624,7 +7624,7 @@ Tiara Sussurrante: Whispering Circlet[
     Classe: AP (AD 0g · Vitalidade 533,33g · AP 600g)
     Arquétipo Recomendado: Mago, Suporte
     Efeitos Especiais: Acúmulos, Missão/Evolução
-    Região: Runeterra (sem brasão na página)
+    Região: Demacia
     Mestre Forjador: Elegível — 1 categoria upgradável (1.000g; Mana, Regeneração de Mana e Poder de Cura e Escudo não contam): Vida 200(+375)=575 (confirmado em jogo pelo usuário em 12/09/2026: só a Vida é aprimorada)
     Reembolso (runa Cash Back): 7,5% de 2.250g = 168,75g (líquido: 2.081,25g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Whispering Circlet") · https://wiki.leagueoflegends.com/en-us/Whispering_Circlet · Data Dragon pt_BR 16.18.1
@@ -7705,7 +7705,7 @@ Limite da Razão: Wit's End[
     Classe: AD (AD 1.250g · Vitalidade 1.106,67g · AP 0g)
     Arquétipo Recomendado: Lutador, Atirador
     Efeitos Especiais: Dano Mágico, Efeitos ao Contato
-    Região: Runeterra (sem brasão na página)
+    Região: The Void
     Mestre Forjador: Elegível — 2 categorias upgradáveis (500g cada; Tenacidade não conta): Velocidade de Ataque 50%(+16,67%)=66,67%; Resistência Mágica 45(+27,78)=72,78
     Reembolso (runa Cash Back): 7,5% de 2.800g = 210g (líquido: 2.590g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Wit's End") · https://wiki.leagueoflegends.com/en-us/Wit's_End · Data Dragon pt_BR 16.18.1
@@ -7785,7 +7785,7 @@ Flechatroz de Yun Tal: Yun Tal Wildarrows[
     Classe: AD (AD 2.875g · Vitalidade 0g · AP 0g)
     Arquétipo Recomendado: Atirador
     Efeitos Especiais: Acúmulos, Velocidade de Ataque
-    Região: Shurima (nome: Yun Tal)
+    Região: Ixtal
     Mestre Forjador: Elegível — 2 categorias upgradáveis (500g cada; Acerto Crítico não conta): Dano de Ataque 50(+14,29)=64,29; Velocidade de Ataque 45%(+16,67%)=61,67%
     Reembolso (runa Cash Back): 7,5% de 3.000g = 225g (líquido: 2.775g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Yun Tal Wildarrows") · https://wiki.leagueoflegends.com/en-us/Yun_Tal_Wildarrows · Data Dragon pt_BR 16.18.1
@@ -7868,7 +7868,7 @@ Convergência de Zeke: Zeke's Convergence[
     Classe: Vitalidade (AD 0g · Vitalidade 1.800g · AP 0g)
     Arquétipo Recomendado: Tanque, Suporte
     Efeitos Especiais: Aura, Dano Mágico, Dano em Área, Dano ao Longo do Tempo, Lentidão, Dano a Monstros
-    Região: Runeterra (sem brasão na página)
+    Região: Piltover
     Mestre Forjador: Elegível — 4 categorias upgradáveis (250g cada): Vida 300(+90)=390; Armadura 25(+12,5)=37,5; Resistência Mágica 25(+13,89)=38,89; Aceleração de Habilidade 10(+8)=18
     Reembolso (runa Cash Back): 7,5% de 2.200g = 165g (líquido: 2.035g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Zeke's Convergence") · https://wiki.leagueoflegends.com/en-us/Zeke's_Convergence · Data Dragon pt_BR 16.18.1
@@ -7905,7 +7905,7 @@ Ampulheta de Zhonya: Zhonya's Hourglass[
     Classe: AP (AD 0g · Vitalidade 1.000g · AP 2.100g)
     Arquétipo Recomendado: Mago
     Efeitos Especiais: Ativa, Estase, Invulnerabilidade, Inalvejável
-    Região: Runeterra (sem brasão na página)
+    Região: Shurima
     Mestre Forjador: Elegível — 2 categorias upgradáveis (500g cada): Poder de Habilidade 105(+25)=130; Armadura 50(+25)=75
     Reembolso (runa Cash Back): 7,5% de 3.250g = 243,75g (líquido: 3.006,25g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Zhonya's Hourglass") · https://wiki.leagueoflegends.com/en-us/Zhonya's_Hourglass · Data Dragon pt_BR 16.18.1
@@ -8103,7 +8103,7 @@ Diadema de Canções: Diadem of Songs[
     Classe: AP (AD 0g · Vitalidade 533,33g · AP 1.400g)
     Arquétipo Recomendado: Suporte
     Efeitos Especiais: Cura
-    Região: Runeterra (sem brasão na página)
+    Região: Demacia
     Mestre Forjador: Elegível — 1 categoria upgradável (1.000g): Vida 200(+375)=575 (infobox da wiki; confirmado em jogo pelo usuário, 12/09/2026)
     Reembolso (runa Cash Back): none (item obtido por transformação gratuita — sem compra, sem reembolso; regra de 12/09/2026)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Diadem of Songs") · https://wiki.leagueoflegends.com/en-us/Diadem_of_Songs · Data Dragon pt_BR 16.18.1
@@ -8181,7 +8181,7 @@ Grevas Bélicas: Gunmetal Greaves[
     Classe: AD (AD 1.392,75g · Vitalidade 0g · AP 0g)
     Arquétipo Recomendado: Atirador
     Efeitos Especiais: none
-    Região: Runeterra (sem brasão na página)
+    Região: Noxus
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Gunmetal Greaves") · https://wiki.leagueoflegends.com/en-us/Gunmetal_Greaves · Data Dragon pt_BR 16.18.1
 ]
 
@@ -8378,7 +8378,7 @@ Sapatos Enfeitiçados: Spellslinger's Shoes[
     Classe: AP (AD 0g · Vitalidade 0g · AP 1.302,53g)
     Arquétipo Recomendado: Mago
     Efeitos Especiais: none
-    Região: Runeterra (sem brasão na página)
+    Região: Noxus
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Spellslinger's Shoes") · https://wiki.leagueoflegends.com/en-us/Spellslinger's_Shoes · Data Dragon pt_BR 16.18.1
 ]
 
@@ -8416,7 +8416,7 @@ Marcha Célere: Swiftmarch[
     Classe: AD (adaptativo: DdA ou PdH conforme a adaptação; decisão de 12/09/2026 para bônus adaptativos)
     Arquétipo Recomendado: Universal
     Efeitos Especiais: none
-    Região: Noxus (nome: Fervor Noxiano)
+    Região: Freljord
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Swiftmarch") · https://wiki.leagueoflegends.com/en-us/Swiftmarch · Data Dragon pt_BR 16.18.1
 ]
 ```
