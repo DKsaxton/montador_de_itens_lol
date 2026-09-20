@@ -4,3 +4,10 @@
 # O que o site usa são os JPG cortados em assets/regioes/cards/, gerados por
 # docs/gerar_cards_regiao.ps1.
 assets/regioes/texturas/
+
+# Fora do repositório por decisão do Leo (20/09/2026): a página de estudo das
+# runas e o pacote de ícones do Deadlock. Continuam na pasta dele, só não vão
+# para o Pages — o primeiro não é parte do app, o segundo são 1,6 MB de arte
+# da qual nada é usado hoje.
+forja-de-runas.html
+assets/Icon/
