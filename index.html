@@ -2168,10 +2168,14 @@ select.sort-select, .sort-attr-wrap select {
   position: absolute; inset: 0; opacity: var(--vr);
   background: radial-gradient(135% 88% at 0% 100%, var(--tom) 0%, transparent 62%);
 }
-/* O preço fica no alto à direita, o único texto do card fora do alcance do degradê. */
+/* A faixa de cima: nome do item, nome em inglês e preço. Medido em 20/09/2026,
+   o nome ocupa de 28% a 77% da largura do card — o degradê principal já perdeu
+   força em 76%, porque foi desenhado para a amostra, onde o texto ficava no
+   terço esquerdo. Por isso este reforço é uma FAIXA, não um canto: a força vem
+   da medição do topo à direita, que é a parte mais crítica dela. */
 .card.regiao .reg-preco {
   position: absolute; inset: 0; opacity: var(--vd);
-  background: radial-gradient(70% 62% at 100% 0%, var(--tom) 0%, transparent 70%);
+  background: radial-gradient(125% 58% at 76% 0%, var(--tom) 0%, color-mix(in srgb, var(--tom) 45%, transparent) 55%, transparent 78%);
 }
 /* Grão: o que o contraste não consegue criar numa chapa lisa. A dose é o que
    falta para a imagem chegar ao detalhe das outras. */
@@ -3903,6 +3907,11 @@ body.editando .cat-kind:hover { filter: brightness(1.15); }
 /* ---- Fase 3, T9: totais de atributos e eficiência por bancada ---- */
 .cat-stats { display: none; margin: 0 10px 8px; padding: 8px 10px 6px; border-top: 1px dashed var(--forja-tracejado); }
 .cat-stats.show { display: block; }
+/* F12 (Leo, 20/09/2026): no modo leitura a tela mostra os ITENS. Atributos e
+   eficiência — da caixa e da build inteira — só aparecem editando, que é quando
+   servem para decidir. */
+body:not(.editando) .cat-stats.show,
+body:not(.editando) .build-totals.show { display: none; }
 .cat-stats .cs-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; margin-bottom: 5px; }
 .cat-stats .cs-title { font-family: var(--loja-gravado); font-size: 8.5px; letter-spacing: .18em; text-transform: uppercase; color: var(--forja-texto-suave); }
 .cat-stats .cs-eff { font-family: var(--loja-texto); font-size: 12px; color: var(--forja-texto-suave); font-style: italic; }
@@ -10200,8 +10209,11 @@ const REG_BRASAO = {
   "Piltover": "piltover-zaun", "Zaun": "piltover-zaun", "Shurima": "shurima",
   "Bandle City": "bandle-city",
 };
-// Imagens que puseram todo o detalhe num canto só pedem outro enquadramento.
-const REG_ENQUADRA = { "Piltover": "background-size:138%;background-position:84% 58%" };
+// Enquadramento próprio, para imagem que ponha todo o detalhe num canto só.
+// A Piltover precisou disso até 20/09/2026, quando o Leo trocou a imagem por uma
+// com o cristal e as engrenagens já bem postos — o corte do centro virou o certo
+// e a exceção saiu.
+const REG_ENQUADRA = {};
 
 // Sorteio estável: o mesmo item cai sempre na mesma variante. Com Math.random a
 // textura trocaria a cada redesenho da lista — a cada filtro, a cada clique.
@@ -10221,7 +10233,7 @@ function vestirDeRegiao(card, item) {
   const arq = regiaoVariante(regiao, item.slug);
   const m = arq && REGIOES.medidas[arq];
   if (!m) return "";
-  const [brilho, rodape, direita, detalhe] = m;
+  const [brilho, rodape, direita, detalhe, corMedida] = m;
   // O papel entra só o quanto falta para o texto ler: alvo de 150 de brilho no
   // corpo e 172 no rodapé, que é linha fina. O papel da loja tem 212.
   const papel = (x, alvo) => Math.max(0, Math.min(0.78, (alvo - x) / (212 - x)));
@@ -10234,7 +10246,17 @@ function vestirDeRegiao(card, item) {
   card.style.setProperty("--vr", vr.toFixed(3));
   card.style.setProperty("--vd", vd.toFixed(3));
   card.style.setProperty("--gr", gr.toFixed(3));
-  card.style.setProperty("--tom", `color-mix(in srgb, #e5d3ad 86%, ${REG_PALETA[regiao] || "#907848"})`);
+  // O papel leva 14% da cor da região. Onde há brasão oficial, é a cor lida dele;
+  // onde não há (Ixtal, o Vazio), é a cor média da própria imagem, medida pelo
+  // gerador. Nos dois casos é cor lida, não escolhida.
+  // A cor do brasão é viva e entra direto. A cor média de uma imagem é escura
+  // (a de Ixtal é verde-musgo), e misturá-la crua derrubava o contraste que o
+  // cálculo do véu tinha acabado de garantir: ela é clareada antes, o que guarda
+  // o tom e devolve a luz.
+  const corDaRegiao = REG_PALETA[regiao]
+    ? REG_PALETA[regiao]
+    : `color-mix(in srgb, ${corMedida || "#907848"} 45%, #ffffff)`;
+  card.style.setProperty("--tom", `color-mix(in srgb, #e5d3ad 86%, ${corDaRegiao})`);
   const bra = REG_BRASAO[regiao];
   return `<div class="reg">
       <span class="reg-img" style="background-image:url('assets/regioes/cards/${arq}.jpg');${REG_ENQUADRA[regiao] || ""}"></span>

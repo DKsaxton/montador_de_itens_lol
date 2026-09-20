@@ -53,6 +53,18 @@ function Contrastar($bmp, $c, $centro) {
   $out
 }
 
+# Cor media da imagem. Serve de tom do papel nas regioes que nao tem brasao
+# oficial para eu ler a cor (Ixtal e o Vazio).
+function CorMedia($bmp) {
+  $r = 0.0; $g = 0.0; $b = 0.0; $n = 0
+  for ($x = 4; $x -lt $bmp.Width - 4; $x += 9) {
+    for ($y = 4; $y -lt $bmp.Height - 4; $y += 9) {
+      $p = $bmp.GetPixel($x, $y); $r += $p.R; $g += $p.G; $b += $p.B; $n++
+    }
+  }
+  "#{0:x2}{1:x2}{2:x2}" -f [int]($r / $n), [int]($g / $n), [int]($b / $n)
+}
+
 # Detalhe fino: diferenca media de brilho entre pixels vizinhos na horizontal.
 function Detalhe($bmp) {
   $soma = 0.0; $n = 0
@@ -153,12 +165,23 @@ Get-ChildItem $origem -File | Where-Object { $_.Extension -match '\.(png|jpg|jpe
   $rodape = MedirRodape $bmp
   $direita = MedirCantoDir $bmp
   $detFinal = Detalhe $bmp
+  $cor = CorMedia $bmp
   $bmp.Dispose(); $src.Dispose()
   $antes = $_.Length; $depois = (Get-Item $saida).Length
   $totalAntes += $antes; $totalDepois += $depois
-  $medidas += [pscustomobject]@{ nome = $nome; brilho = $brilho; rodape = $rodape; direita = $direita; det = $detFinal }
+  $medidas += [pscustomobject]@{ nome = $nome; brilho = $brilho; rodape = $rodape; direita = $direita; det = $detFinal; cor = $cor }
   "{0,-24} {1,4:N0} KB   detalhe {2,5} -> {3,5} (x{4})   brilho {5,5}  gama {6,5}" -f `
     $nome, ($depois/1KB), $det, $detFinal, $contraste, $brilho, $gama
+}
+
+# card sem textura de origem e lixo de uma imagem substituida
+$fontes = Get-ChildItem $origem -File | Where-Object { $_.Extension -match '\.(png|jpg|jpeg)$' } |
+          ForEach-Object { [System.IO.Path]::GetFileNameWithoutExtension($_.Name) }
+Get-ChildItem $destino -Filter *.jpg | Where-Object {
+  $fontes -notcontains [System.IO.Path]::GetFileNameWithoutExtension($_.Name)
+} | ForEach-Object {
+  "  apagado (a textura de origem sumiu): {0}" -f $_.Name
+  Remove-Item $_.FullName -Force
 }
 
 ""
@@ -177,14 +200,14 @@ $MAPA = [ordered]@{
   "Ionia" = "ionia"; "Freljord" = "freljord"; "Noxus" = "noxus"; "Demacia" = "demacia";
   "Targon" = "targon"; "Bilgewater" = "bilgewater"; "The Void" = "void";
   "Shadow Isles" = "shadow-isles"; "Piltover" = "piltover"; "Zaun" = "zaun";
-  "Shurima" = "shurima"; "Bandle City" = "bandle-city";
+  "Shurima" = "shurima"; "Bandle City" = "bandle-city"; "Ixtal" = "ixtal";
 }
 $inv = [System.Globalization.CultureInfo]::InvariantCulture
 $nomes = $medidas | ForEach-Object { $_.nome.Replace(".jpg", "") }
 
 $linhasMed = $medidas | ForEach-Object {
-  '    "{0}": [{1}, {2}, {3}, {4}],' -f $_.nome.Replace(".jpg", ""),
-    $_.brilho.ToString($inv), $_.rodape.ToString($inv), $_.direita.ToString($inv), $_.det.ToString($inv)
+  '    "{0}": [{1}, {2}, {3}, {4}, "{5}"],' -f $_.nome.Replace(".jpg", ""),
+    $_.brilho.ToString($inv), $_.rodape.ToString($inv), $_.direita.ToString($inv), $_.det.ToString($inv), $_.cor
 }
 
 $linhasVar = foreach ($regiao in $MAPA.Keys) {
@@ -195,9 +218,22 @@ $linhasVar = foreach ($regiao in $MAPA.Keys) {
   '    "{0}": [{1}],' -f $regiao, (($lista | ForEach-Object { '"' + $_ + '"' }) -join ", ")
 }
 
+# Regiao no catalogo sem entrada aqui vira aviso. Foi assim que o Ixtal saiu
+# calado da lista de variantes em 20/09/2026.
+$catJs = Join-Path $raiz "data\catalog.js"
+if (Test-Path $catJs) {
+  $txt = [System.IO.File]::ReadAllText($catJs)
+  $regioesDoCatalogo = [regex]::Matches($txt, '"region":\s*"([^"]+)"') | ForEach-Object { $_.Groups[1].Value } | Sort-Object -Unique
+  foreach ($r in $regioesDoCatalogo) {
+    if ($r -ne "Runeterra" -and -not $MAPA.Contains($r)) {
+      "  AVISO: o catalogo tem a regiao '$r' e este gerador nao a conhece - ela fica sem textura"
+    }
+  }
+}
+
 $js = @(
   "// GERADO por docs/gerar_cards_regiao.ps1 - nao editar a mao.",
-  "// medidas[arquivo] = [brilho do corpo, do rodape, do canto direito de cima, detalhe fino],",
+  "// medidas[arquivo] = [brilho do corpo, do rodape, do canto direito de cima, detalhe fino, cor media],",
   "// medidos no proprio JPG depois do corte, do levante de meio-tom e do contraste.",
   "// variantes[regiao] = as imagens que existem; o card sorteia entre elas.",
   "window.REGIOES = {",
