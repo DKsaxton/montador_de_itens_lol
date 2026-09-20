@@ -91,6 +91,10 @@ drop policy if exists "leitura publica das builds" on public.builds;
 create policy "leitura publica das builds" on public.builds for select to anon, authenticated using (true);
 drop policy if exists "leitura publica dos eventos" on public.eventos;
 create policy "leitura publica dos eventos" on public.eventos for select to anon, authenticated using (true);
+-- ATENÇÃO: este grant é POR COLUNA. Coluna nova que entre na builds_publicas
+-- precisa entrar nesta lista (ou num grant próprio, como o de runas e
+-- habilidades em runas_e_habilidades.sql), senão a view inteira responde
+-- "permission denied for table builds" — foi o que aconteceu em 20/09/2026.
 grant select (id, nome, descricao, campeao, modo, marcadores, caixas, patch, versao, autor, criado_em, atualizado_em, visualizacoes, copias, layout)
   on public.builds to anon, authenticated;
 grant select on public.eventos to anon, authenticated;

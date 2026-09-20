@@ -88,6 +88,15 @@ from public.builds b;
 
 grant select on public.builds_publicas to anon, authenticated;
 
+-- 3b. E O GRANT DAS DUAS COLUNAS NOVAS -------------------------------
+-- BUG DE PRODUÇÃO, achado pelo Leo em 20/09/2026: "permission denied for
+-- table builds" na aba Públicas. A view é security_invoker, então quem lê é o
+-- anon — e o SELECT do anon em public.builds é **por coluna** (o hash do
+-- segredo fica de fora de propósito). Acrescentar coluna na tabela e na view
+-- sem acrescentar no grant derruba a view inteira, não só as colunas novas.
+-- Regra: toda coluna nova que entrar na builds_publicas entra aqui também.
+grant select (runas, habilidades) on public.builds to anon, authenticated;
+
 -- 4. confere ----------------------------------------------------------
 -- select id, nome, runas, habilidades from public.builds_publicas limit 5;
 -- select count(*) from pg_proc p join pg_namespace n on n.oid = p.pronamespace
