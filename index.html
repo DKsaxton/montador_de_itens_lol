@@ -2839,6 +2839,24 @@ body.editando .modo-leitura { display: none; }
 body:not(.editando) .build-habs .bh-cel { cursor: default; pointer-events: none; }
 body:not(.editando) .build-habs .bh-limpar { display: none; }
 
+
+/* ---------- F12: a ordem de habilidades no detalhe da build ---------- */
+.bd-habs { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 0 0 10px; }
+.bd-maxim {
+  font-family: var(--loja-gravado); font-size: 12px; letter-spacing: .14em;
+  color: var(--loja-titulo); border: 1px solid var(--loja-latao); border-radius: 2px; padding: 2px 8px;
+}
+.bd-ordem { display: flex; gap: 2px; flex-wrap: wrap; }
+.bd-ordem i {
+  width: 17px; height: 17px; display: flex; align-items: center; justify-content: center;
+  font-family: var(--loja-gravado); font-size: 9px; font-style: normal; border-radius: 2px;
+  background: rgba(0,0,0,.28); color: var(--loja-legenda); border: 1px solid transparent;
+}
+.bd-ordem i.lQ { color: #e8c07a; border-color: #8a6a32; }
+.bd-ordem i.lW { color: #8fc7e8; border-color: #35617a; }
+.bd-ordem i.lE { color: #9fd79a; border-color: #3e6b3a; }
+.bd-ordem i.lR { color: #e89a9a; border-color: #7a3535; background: rgba(120,40,40,.28); }
+
 .card-sheen {
   background:
     radial-gradient(340px circle at var(--mx) var(--my),
@@ -5474,6 +5492,25 @@ function normHabilidades(h) {
   });
   return out;
 }
+// F12 (Leo, 20/09/2026): "a ordem de maximização" — qual habilidade chega aos
+// 5 pontos primeiro. Quem não chega a 5 entra depois, pela quantidade de pontos;
+// empate desempata por quem recebeu o primeiro ponto antes.
+function ordemDeMaximizacao(h) {
+  const basicas = ["Q", "W", "E"];
+  const dados = basicas.map(L => {
+    let pontos = 0, nivelDoQuinto = 99, primeiro = 99;
+    (h || []).forEach((x, i) => {
+      if (x !== L) return;
+      pontos++;
+      if (primeiro === 99) primeiro = i;
+      if (pontos === HAB_MAX[L]) nivelDoQuinto = i;
+    });
+    return { L, pontos, nivelDoQuinto, primeiro };
+  }).filter(d => d.pontos > 0);
+  dados.sort((a, b) => a.nivelDoQuinto - b.nivelDoQuinto || b.pontos - a.pontos || a.primeiro - b.primeiro);
+  return dados.map(d => d.L);
+}
+
 function habPontos(h) {
   const c = { Q: 0, W: 0, E: 0, R: 0 };
   (h || []).forEach(L => { if (c[L] !== undefined) c[L]++; });
@@ -6137,14 +6174,24 @@ async function publicarBuild(id) {
   const params = {
     p_nome: d.name, p_descricao: d.desc, p_campeao: d.champ, p_modo: d.mode, p_marcadores: d.markers,
     p_caixas: caixasParaServidor(d.cats), p_patch: CATALOG.meta.patch, p_autor: "", p_segredo: Servidor.segredo(), p_id: d.pubId || null, p_layout: layoutValido(d.layout),
+    // F12 (Leo, 20/09/2026): a build publicada leva também a página de runas e a
+    // ordem de habilidades. Servidor ainda sem as colunas? O catch abaixo
+    // republica sem elas, como já era feito com o layout.
+    p_runas: normRunas(d.runas), p_habilidades: normHabilidades(d.habilidades),
   };
   try {
     let r;
     const publicar = async (ps) => {
       try { return await Servidor.rpc("publicar_build", ps); }
       catch (e) {
+        // Servidor ainda sem as colunas novas (SQL runas_e_habilidades.sql não
+        // rodado): manda sem elas em vez de falhar a publicação inteira.
+        if (/p_runas|p_habilidades/i.test(e.message)) {
+          const { p_runas, p_habilidades, ...semRunas } = ps;
+          return await publicar(semRunas);
+        }
         // Servidor ainda sem a coluna layout (SQL da Fase 9 não rodado): manda sem ela.
-        if (/p_layout|Could not find the function/i.test(e.message)) { const { p_layout, ...semLayout } = ps; return await Servidor.rpc("publicar_build", semLayout); }
+        if (/p_layout|Could not find the function/i.test(e.message)) { const { p_layout, p_runas, p_habilidades, ...semLayout } = ps; return await Servidor.rpc("publicar_build", semLayout); }
         throw e;
       }
     };
@@ -8189,6 +8236,7 @@ function buildResumo(b) {
     markers: normMarkers(isActive ? build.markers : b.markers),
     desc: isActive ? (build.desc || "") : (b.desc || ""),
     runas: isActive ? build.runas : (b.runas || null),
+    habilidades: isActive ? build.habilidades : (b.habilidades || null),
     fav: isActive ? !!build.fav : !!b.fav,
     updatedAt: isActive ? (build.updatedAt || 0) : (b.updatedAt || 0),
     pubId: (isActive ? build.pubId : b.pubId) || null,
@@ -8259,6 +8307,7 @@ function publicaResumo(p) {
     popularSemana: !!p.popular_semana, diasNoTop: p.dias_no_top || 0,
     fav: favoritosIds().includes(p.id), desatualizada: !!p.patch && p.patch !== CATALOG.meta.patch,
     layout: layoutValido(p.layout),
+    runas: p.runas || null, habilidades: p.habilidades || null,
   };
 }
 async function carregarPublicas(force) {
@@ -8364,7 +8413,8 @@ function abrirPublicaTemporaria(d) {
   if (!library.builds.some(b => b.id === id)) {
     library.builds.push({ id, name: d.name, seq: d.cats.length + 1, mode: d.mode, masterwork: false,
       champion: d.champ ? { key: String(d.champ.key), id: String(d.champ.id), name: String(d.champ.name) } : null,
-      markers: d.markers, desc: d.desc, fav: false, updatedAt: Date.now(), temp: true, pubOrigem: d.pubId,
+      markers: d.markers, desc: d.desc, runas: normRunas(d.runas), habilidades: normHabilidades(d.habilidades),
+      fav: false, updatedAt: Date.now(), temp: true, pubOrigem: d.pubId,
       patch: d.pubPatch || CATALOG.meta.patch, revisao: null, layout: layoutValido(d.layout), cats: JSON.parse(JSON.stringify(d.cats)) });
   }
   activateBuild(id);
@@ -8526,7 +8576,8 @@ function guardarPublicaNaBiblioteca(d) {
   library.builds.push({
     id: newBuildId(), name: d.name, seq: cats.length + 1, mode: d.mode, masterwork: false,
     champion: d.champ ? { key: String(d.champ.key), id: String(d.champ.id), name: String(d.champ.name) } : null,
-    markers: d.markers, desc: d.desc, fav: false, updatedAt: Date.now(),
+    markers: d.markers, desc: d.desc, runas: normRunas(d.runas), habilidades: normHabilidades(d.habilidades),
+    fav: false, updatedAt: Date.now(),
     patch: d.pubPatch || CATALOG.meta.patch, revisao: null, layout: layoutValido(d.layout), cats,
   });
 }
@@ -8562,6 +8613,19 @@ function detalheHtml(d, partes) {
       ? `<div class="bd-label">Runas</div><div class="bd-runas">${faixaDeRunas(p)}</div>`
       : "";
   }
+  // A ordem de habilidades: primeiro o que interessa de relance (a ordem de
+  // maximização), depois a subida nível a nível.
+  if (partes.habilidades === undefined) {
+    const h = normHabilidades(d.habilidades);
+    const ordem = ordemDeMaximizacao(h);
+    partes.habilidades = h.some(Boolean)
+      ? `<div class="bd-label">Habilidades</div>
+         <div class="bd-habs">
+           ${ordem.length ? `<span class="bd-maxim">${ordem.join(" › ")}</span>` : ""}
+           <span class="bd-ordem">${h.map((L, i) => `<i class="${L ? "l" + L : "vazio"}" title="nível ${i + 1}">${L || "·"}</i>`).join("")}</span>
+         </div>`
+      : "";
+  }
   const marcas = Array.from({ length: MAX_MARCADORES }, (_, i) => d.markers[i]
     ? `<span class="bd-mark">${markerHtml(d.markers[i], d.champ, renderBuildDetail)}${esc(markerLabel(d.markers[i], d.champ))}</span>`
     : `<span class="bd-mark vazio">marcador ${i + 1}</span>`).join("");
@@ -8575,6 +8639,7 @@ function detalheHtml(d, partes) {
     ${partes.aviso || ""}
     ${d.desc ? `<p class="bd-desc">${esc(d.desc)}</p>` : `<p class="bd-desc vazia">${esc(partes.semDesc || "Sem descrição.")}</p>`}
     ${partes.runas || ""}
+    ${partes.habilidades || ""}
     <div class="bd-label">Itens (sem os opcionais)</div>
     <div class="bd-items">${itens.length ? itens.map(it => `<img src="${it.iconUrl}" alt="" title="${esc(it.namePt)}" loading="lazy">`).join("") : `<span class="bd-sem">nenhum item ainda</span>`}</div>
     <div class="bd-actions">${partes.botoes}</div>
