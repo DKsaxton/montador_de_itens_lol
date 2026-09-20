@@ -13,6 +13,10 @@ alter table public.builds add column if not exists runas jsonb not null default 
 alter table public.builds add column if not exists habilidades jsonb not null default '[]'::jsonb;
 
 -- 2. publicar_build passa a aceitá-las --------------------------------
+-- A versão antiga (11 parâmetros) PRECISA sair: com as duas no banco, uma
+-- chamada sem os parâmetros novos casaria com as duas (ambas têm default) e o
+-- PostgREST responderia "function is not unique". Rodado em 20/09/2026.
+drop function if exists public.publicar_build(text, text, jsonb, text, jsonb, jsonb, text, text, text, text, text);
 -- Os dois parâmetros têm default, então um navegador com a página antiga
 -- continua publicando normalmente, só que sem runas.
 create or replace function public.publicar_build(
@@ -86,3 +90,10 @@ grant select on public.builds_publicas to anon, authenticated;
 
 -- 4. confere ----------------------------------------------------------
 -- select id, nome, runas, habilidades from public.builds_publicas limit 5;
+-- select count(*) from pg_proc p join pg_namespace n on n.oid = p.pronamespace
+--  where n.nspname = 'public' and p.proname = 'publicar_build';   -- tem de ser 1
+
+-- RODADO no projeto okifbriwwxohkjxhqzfc em 20/09/2026, com o Leo autorizando.
+-- Conferido: publicar com runas grava e volta pela view; publicar sem runas
+-- (navegador com a página antiga) continua funcionando. As duas provas foram
+-- feitas dentro de blocos que abortam no fim, então nada ficou no banco.
