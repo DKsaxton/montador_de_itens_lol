@@ -6866,7 +6866,17 @@ let markerSlot = 0;
 // F12-T1: o diálogo passa a aceitar outro dono além da build ativa. Sem isso,
 // completar os marcadores de uma build da lista mexeria na build errada.
 let markerDono = null;
-function donoDeMarcadores() { return markerDono || { markers: build.markers, champion: build.champion, cats: build.cats, aoMudar: () => { saveBuild(); renderBuildAll(); } }; }
+// O dono precisa de GET e SET: `setMarker` escreve em `alvo.markers`, e num
+// objeto comum isso gravaria no literal de passagem, não na build — foi esse o
+// bug de 20/09/2026, em que escolher marcador na forja não fazia nada.
+function donoDeMarcadores() {
+  return markerDono || {
+    get markers() { return build.markers; },
+    set markers(v) { build.markers = v; },
+    champion: build.champion, cats: build.cats,
+    aoMudar: () => { saveBuild(); renderBuildAll(); },
+  };
+}
 function openMarkerDialog(i, dono) {
   markerSlot = i;
   markerDono = dono || null;
