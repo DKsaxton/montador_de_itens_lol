@@ -2882,6 +2882,77 @@ body:not(.editando) .build-habs .bh-limpar { display: none; }
 .bd-ordem i.lE { color: #9fd79a; border-color: #3e6b3a; }
 .bd-ordem i.lR { color: #e89a9a; border-color: #7a3535; background: rgba(120,40,40,.28); }
 
+
+/* ---------- F12-T5: acessibilidade ---------- */
+.acess-ctl { position: relative; display: inline-flex; align-items: center; }
+.acess-sim {
+  font-family: var(--loja-titulos); font-size: 17px; line-height: 1;
+  color: var(--loja-titulo);
+}
+.acess-menu { min-width: 330px; }
+.acess-nota {
+  margin: 8px 0 0; font-family: var(--loja-texto); font-style: italic;
+  font-size: 11.5px; line-height: 1.45; color: #8f8074;
+}
+
+/* 1. Menos movimento — a mesma coisa que o prefers-reduced-motion já faz,
+   agora ligável à mão por quem tem o sistema configurado de outro jeito. */
+body.ac-movimento *, body.ac-movimento *::before, body.ac-movimento *::after {
+  animation: none !important;
+  transition: none !important;
+}
+body.ac-movimento .card:hover .card-surface,
+body.ac-movimento .card:hover .card-fx { transform: none !important; }
+body.ac-movimento .card-fx { display: none; }
+
+/* 2. Menos brilho — halos, reflexos e o fundo em brasa saem. */
+body.ac-brilho .card-sheen,
+body.ac-brilho .card-burst { display: none !important; }
+body.ac-brilho .card-surface,
+body.ac-brilho .build-cat,
+body.ac-brilho .runa,
+body.ac-brilho .trilha-btn,
+body.ac-brilho .class-tab { box-shadow: none !important; }
+body.ac-brilho .card.regiao .card-name,
+body.ac-brilho .card.regiao .card-price,
+body.ac-brilho .card.regiao .card-attrs,
+body.ac-brilho .card.regiao .card-tags,
+body.ac-brilho .c h4 { text-shadow: none !important; }
+body.ac-brilho .bh-cel.marcada { filter: none; }
+
+/* 3. Leitura calma — o texto cresce e o que está atrás dele se acalma. */
+body.ac-leitura { font-size: 17px; }
+body.ac-leitura .card-name { font-size: 1.05em; }
+body.ac-leitura .card.regiao .reg-img { opacity: .38; }
+body.ac-leitura .card.regiao .reg-grao,
+body.ac-leitura .runa { background-image: none; }
+body.ac-leitura .card-surface { background-image: none; }
+body.ac-leitura .oficina::before { display: none; }
+
+/* 4. Daltonismo — paleta de Okabe & Ito, feita para se separar em protanopia,
+   deuteranopia e tritanopia. O símbolo de cada núcleo continua lá: a cor nunca
+   é a única pista, e aqui ela deixa de atrapalhar. */
+body.ac-daltonismo {
+  --loja-ad: #e69f00;    /* laranja-âmbar */
+  --loja-ap: #0072b2;    /* azul */
+  --loja-vit: #009e73;   /* verde-azulado */
+  --forja-brasa: #e69f00;
+  --forja-brasa-clara: #f0c46a;
+}
+body.ac-daltonismo .class-tab[data-classe="AD"]  { --metal: linear-gradient(180deg, #6b4a1a, #35230a); --letra: #f5d28a; }
+body.ac-daltonismo .class-tab[data-classe="AP"]  { --metal: linear-gradient(180deg, #2f4f6e, #16283c); --letra: #b8d9f2; }
+body.ac-daltonismo .class-tab[data-classe="Vitalidade"] { --metal: linear-gradient(180deg, #2d5f52, #14302a); --letra: #a9e2cf; }
+body.ac-daltonismo.nucleo-ap {
+  --nuc-fundo: radial-gradient(circle at 20% 30%, rgba(120,190,255,.10) 0 2px, transparent 3px),
+               radial-gradient(circle at 70% 60%, rgba(120,190,255,.08) 0 2px, transparent 3px),
+               radial-gradient(circle at 45% 85%, rgba(120,190,255,.07) 0 1.5px, transparent 3px),
+               linear-gradient(180deg, #16222e, #0e161d);
+}
+body.ac-daltonismo .bd-ordem i.lQ { color: #e69f00; border-color: #8a6a32; }
+body.ac-daltonismo .bd-ordem i.lW { color: #56b4e9; border-color: #35617a; }
+body.ac-daltonismo .bd-ordem i.lE { color: #009e73; border-color: #3e6b3a; }
+body.ac-daltonismo .bd-ordem i.lR { color: #cc79a7; border-color: #7a3535; }
+
 .card-sheen {
   background:
     radial-gradient(340px circle at var(--mx) var(--my),
@@ -4551,6 +4622,22 @@ body.forja .build-cat.drop-after  { transform: translateX(-5px); box-shadow: ins
     </nav>
     <div class="counts-wrap">
       <div class="counts"><b id="total-count">0</b> itens catalogados</div>
+      <!-- F12-T5 (Leo, 18/09/2026): acessibilidade. Quatro interruptores, cada um
+           resolvendo uma barreira que o app cria. -->
+      <div class="acess-ctl" id="acess-ctl">
+        <button type="button" id="acess-btn" class="som-btn" aria-label="Acessibilidade" aria-haspopup="true" aria-expanded="false" title="Acessibilidade">
+          <span class="acess-sim" aria-hidden="true">A</span>
+        </button>
+        <div id="acess-menu" class="som-menu acess-menu" hidden>
+          <div class="som-menu-title">Acessibilidade</div>
+          <label class="som-opt"><input type="checkbox" id="ac-movimento"><span>Menos movimento</span><small>desliga as animações e as transições — golpes, molduras, chuva e brasas</small></label>
+          <label class="som-opt"><input type="checkbox" id="ac-brilho"><span>Menos brilho</span><small>tira os halos, o reflexo do card e o fundo em brasa</small></label>
+          <label class="som-opt"><input type="checkbox" id="ac-leitura"><span>Leitura calma</span><small>texto maior e fundo liso atrás dele; a arte da região recua</small></label>
+          <div class="som-sep"></div>
+          <label class="som-opt"><input type="checkbox" id="ac-daltonismo"><span>Daltonismo</span><small>troca laranja, roxo e verde por cores que se separam nas três formas mais comuns</small></label>
+          <p class="acess-nota">Fica guardado neste navegador. O sistema pedindo menos movimento já é obedecido sem ligar nada aqui.</p>
+        </div>
+      </div>
       <div class="som-ctl" id="som-ctl">
         <button type="button" id="som-mudo" class="som-btn" aria-label="Opções de som" aria-haspopup="true" aria-expanded="false" title="Som: clique para as opções">
           <i class="ico ico-som-on som-alto" aria-hidden="true"></i>
@@ -8074,6 +8161,52 @@ function marcarHabilidade(letra, nivel) {
   Som.play("catalog:tag_select");
 }
 
+
+// ---------------- F12-T5: acessibilidade ----------------
+// Quatro interruptores independentes, guardados neste navegador. Cada um
+// desfaz uma barreira que o próprio app cria: movimento, brilho, densidade de
+// leitura e dependência de cor.
+const ACESSIBILIDADE = ["movimento", "brilho", "leitura", "daltonismo"];
+const acess = {};
+try {
+  const g = JSON.parse(localStorage.getItem("acessibilidade") || "{}");
+  ACESSIBILIDADE.forEach(k => { if (g[k]) acess[k] = true; });
+} catch (e) { /* sem persistência: tudo desligado */ }
+
+function aplicarAcessibilidade() {
+  ACESSIBILIDADE.forEach(k => {
+    document.body.classList.toggle("ac-" + k, !!acess[k]);
+    const cx = document.getElementById("ac-" + k);
+    if (cx) cx.checked = !!acess[k];
+  });
+  const btn = document.getElementById("acess-btn");
+  const ligados = ACESSIBILIDADE.filter(k => acess[k]).length;
+  if (btn) btn.title = ligados ? `Acessibilidade — ${ligados} ${ligados === 1 ? "ajuste ligado" : "ajustes ligados"}` : "Acessibilidade";
+  try { localStorage.setItem("acessibilidade", JSON.stringify(acess)); } catch (e) { /* idem */ }
+}
+
+function initAcessibilidade() {
+  const btn = document.getElementById("acess-btn");
+  const menu = document.getElementById("acess-menu");
+  if (!btn || !menu) return;
+  const abrir = (on) => { menu.hidden = !on; btn.setAttribute("aria-expanded", on ? "true" : "false"); };
+  btn.addEventListener("click", (e) => { e.stopPropagation(); abrir(menu.hidden); });
+  document.addEventListener("click", (e) => { if (!menu.hidden && !menu.contains(e.target) && e.target !== btn) abrir(false); });
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !menu.hidden) abrir(false); });
+  ACESSIBILIDADE.forEach(k => {
+    const cx = document.getElementById("ac-" + k);
+    if (!cx) return;
+    cx.addEventListener("change", () => {
+      if (cx.checked) acess[k] = true; else delete acess[k];
+      aplicarAcessibilidade();
+      // Trocar a paleta ou a leitura muda o que está desenhado: redesenha.
+      if (k === "daltonismo" || k === "leitura") { if (typeof render === "function") render(); }
+      Som.play("catalog:tag_select");
+    });
+  });
+  aplicarAcessibilidade();
+}
+
 function initRunas() {
   const conta = document.getElementById("runas-tab-count");
   if (!runasOk()) { if (conta) conta.textContent = ""; return; }
@@ -11028,6 +11161,7 @@ function init() {
   if (typeof initRunas === "function") initRunas();
   if (typeof initFaltaPublicar === "function") initFaltaPublicar();
   if (typeof initPerguntarCaixa === "function") initPerguntarCaixa();
+  if (typeof initAcessibilidade === "function") initAcessibilidade();
 
   // Controle de som (Fase 4, T1): sino = mudo, régua = volume; persistem.
   const somBtn = document.getElementById("som-mudo");
