@@ -48,7 +48,10 @@ O nome do arquivo está sem extensão de propósito: use a que o ChatGPT devolve
 | `piltover` | Piltover | polished brass plate with a faint hexagonal lattice etched into it, precise machined edges, small exposed gears at the lower right, a soft blue hextech crystal glow from the upper right corner, clean and engineered |
 | `zaun` | Zaun | grimy industrial metal plate stained with toxic green chemical residue, riveted pipes and a brass valve along the bottom, dripping luminous green sludge, smog haze at the top, no gold, no polish |
 | `shurima` | Shurima | golden sandstone slab with carved hieroglyph bands along the bottom, fine desert sand drifted across the lower edge, gold inlay catching hard sunlight, sun-bleached and dry |
+| `ixtal` | Ixtal | carved dark volcanic stone overgrown with thick tropical jungle, broad wet leaves and hanging vines along the edges, veins of raw elemental crystal glowing faint amber and jade inside the cracks, damp moss, humid and alive |
 | `bandle-city` | Bandle City | soft felt and woven cloth in lime and moss green, visible hand stitching, small wooden pegs and acorns at the edges, cozy and handmade, warm daylight |
+
+Ixtal entrou em 20/09/2026, com a lista de regiões do Leo. Ela é a única região do catálogo **sem brasão oficial da Riot** — não existe na lista de regiões do Data Dragon do LoR, junto com o Vazio. Até haver símbolo, o card dela mostra só a textura e a barra do núcleo.
 
 ## As três tribos do Freljord
 
