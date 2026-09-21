@@ -76,17 +76,24 @@ horizontal e nada fora da tela.
 
 **Console** — nenhuma exceção e nenhum 404 durante o percurso inteiro.
 
-## Achado na primeira volta (21/09/2026)
+## Achado na primeira volta — e consertado (21/09/2026)
 
-Com as **38 builds publicadas na tela**, a página trava: o processo do Chrome
-passa a queimar um núcleo inteiro e para de responder por mais de um minuto.
-Reproduzido nas duas pontas — no navegador do roteiro e no navegador embutido,
-contra o site publicado. Medido por dentro: **`renderBuildIndex` roda cerca de
-80 vezes em 4 segundos**, uma tempestade de redesenho, e a página morre no meio
-dela. As outras telas não têm nada disso.
+Com as **38 builds publicadas na tela**, a página travava: o Chrome queimava um
+núcleo inteiro e parava de responder por mais de um minuto. Acontecia nas duas
+pontas — no navegador do roteiro e no navegador embutido, contra o site no ar.
 
-Por isso o grupo das públicas é o **último** do roteiro: depois dele qualquer
-medida sai contaminada. O conserto é a próxima tarefa; o roteiro só apontou.
+Causa, medida por dentro: cada marcador de **habilidade** sem a lista do campeão
+no cache pedia a lista ao Data Dragon e, na resposta, mandava redesenhar a lista
+inteira. 38 linhas × até 3 marcadores = dezenas de pedidos, e cada redesenho
+fazia os pedidos de novo. **`renderBuildIndex` rodava ~80 vezes em 4 segundos.**
+
+Conserto: `pedirRedesenho()` junta os pedidos e redesenha **uma vez por quadro**.
+De ~80 para **7**, a página continua respondendo e a arte da habilidade chega
+igual. Duas checagens novas seguram isso: "sem tempestade de redesenho" e "a
+arte da habilidade chega no marcador".
+
+O grupo das públicas continua sendo o **último** do roteiro: é o estado mais
+pesado do app, e depois dele qualquer medida sai contaminada.
 
 ## O que ele não faz
 

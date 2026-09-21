@@ -5530,8 +5530,21 @@ function markerLabel(m, champ) {
   const sp = h && h.find(x => x.letter === m.letter);
   return `Habilidade ${m.letter}` + (sp ? ` · ${sp.name}` : "");
 }
+// F13-T2 (21/09/2026): um redesenho por quadro, não um por marcador.
+// A lista pública tem 38 linhas e cada linha até 3 marcadores. Marcador de
+// habilidade sem a lista do campeão no cache pedia a lista e, na resposta,
+// mandava redesenhar a lista INTEIRA — e o redesenho pedia tudo de novo. Dava
+// ~80 redesenhos em 4 segundos, um núcleo queimado e a página muda por mais de
+// um minuto. Achado pelo roteiro de QA (docs/qa_roteiro.py).
+const redesenhosPedidos = new Set();
+function pedirRedesenho(fn) {
+  if (typeof fn !== "function" || redesenhosPedidos.has(fn)) return;
+  redesenhosPedidos.add(fn);
+  requestAnimationFrame(() => { redesenhosPedidos.delete(fn); fn(); });
+}
+
 // Ícone do marcador. Habilidade sem a lista carregada mostra a letra e pede a
-// lista; quando chega, quem chamou (`aoCarregar`) redesenha.
+// lista; quando chega, quem chamou (`aoCarregar`) redesenha — uma vez só.
 function markerHtml(m, champ, aoCarregar) {
   const title = esc(markerLabel(m, champ));
   if (m.t === "tag") return `<img class="mk mk-tag" src="${marcadorUrl(m.id)}" alt="" title="${title}">`;
@@ -5539,7 +5552,7 @@ function markerHtml(m, champ, aoCarregar) {
   const h = champ && Campeoes.habilidadesCache(champ.id);
   const sp = h && h.find(x => x.letter === m.letter);
   if (sp) return `<img class="mk mk-hab" src="${Campeoes.spellUrl(sp.img)}" alt="" title="${title}" loading="lazy">`;
-  if (champ && aoCarregar) Campeoes.habilidades(champ.id).then(aoCarregar).catch(() => { /* fica a letra */ });
+  if (champ && aoCarregar) Campeoes.habilidades(champ.id).then(() => pedirRedesenho(aoCarregar)).catch(() => { /* fica a letra */ });
   return `<span class="mk mk-hab mk-letra" title="${title}">${m.letter}</span>`;
 }
 

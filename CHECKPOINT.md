@@ -185,8 +185,8 @@ Ordem definida pelo Leo em 18/09/2026: primeiro tudo que já estava na fila; as 
   - Em aberto, só a pedido: levar a página de runas junto na **publicação** — hoje a tabela do Supabase não tem coluna para ela.
 
 **Fase 13 — começou pelo roteiro de QA.** Mesmo rito: uma tarefa por vez, captura + aprovado + commit "F13-T<n>".
-- **T1** Roteiro de QA (feito, aguardando aprovado) — `docs/qa_roteiro.py` + `docs/qa.md`, 39 checagens com clique de verdade, uma linha nova por bug que o Leo achar. Captura: `fase13-t1-qa.png`.
-- **T2** A tempestade de redesenho da lista pública (achada pela T1): com 38 builds na tela a página queima um núcleo e congela. Achar quem chama `renderBuildIndex` em cadeia e cortar.
+- **T1** ✔ aprovado 21/09/2026 — Roteiro de QA: `docs/qa_roteiro.py` + `docs/qa.md`, 39 checagens com clique de verdade, uma linha nova por bug que o Leo achar. Captura: `fase13-t1-qa.png`.
+- **T2** Tempestade de redesenho da lista pública (feito, aguardando aprovado). Causa: **marcador de habilidade**. Sem a lista do campeão no cache, `markerHtml` pedia a lista ao Data Dragon e, na resposta, mandava redesenhar a lista inteira — e o redesenho refazia os pedidos. 38 linhas × até 3 marcadores viravam ~80 redesenhos em 4 segundos, um núcleo queimado e a página muda por mais de um minuto. Achado com pilha **assíncrona** (`Debugger.setAsyncCallStackDepth` + `console.trace`): o `Error().stack` comum para na borda do `then` e mostrava chamador vazio. Conserto: `pedirRedesenho()` junta os pedidos e redesenha uma vez por quadro — de ~80 para **7**, página viva, e a arte da habilidade chega igual (0 letras, 32 ícones). Duas checagens novas no roteiro seguram isso. Capturas: `fase13-t2-publicas.png`.
 
 O resto continua em aberto, à escolha do Leo:
 - **Quatro variações de textura por região** (plano do Leo, 20/09/2026: "Bilgewater com uma pistola sob a mesa, cartas do Twisted Fate"). O sistema já sorteia variante por hash do slug do item, então é só gerar e rodar `docs/gerar_cards_regiao.ps1`. Conta: 13 regiões × 4 ≈ 52 cards, ~1,4 MB depois da compressão.

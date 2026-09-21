@@ -521,6 +521,11 @@ def checar_publicas(s, p, online):
         return
     s.js("switchTab('build'); showBuildScreen('lista')")
     time.sleep(0.6)
+    # F13-T2: contar os redesenhos. Eram ~80 em 4 segundos, com a página morta —
+    # cada marcador de habilidade pedia a lista inteira de volta.
+    s.js("""(() => { window.__redesenhos = 0; const f = window.renderBuildIndex;
+      window.renderBuildIndex = function (...a) { window.__redesenhos++; return f.apply(this, a); };
+      return 'ok'; })()""")
     s.js("""document.querySelector('.bi-tab[data-view=\"publicas\"]').click()""")
     # A lista vem do Supabase e traz o retrato de cada campeão do Data Dragon:
     # depende de rede, então espera até aparecer em vez de cronometrar no chute.
@@ -541,6 +546,23 @@ def checar_publicas(s, p, online):
     p.conta("públicas", "a lista vem do servidor", estado["linhas"] > 0,
             "%d builds — %s" % (estado["linhas"], estado["texto"]))
     p.conta("públicas", "nenhum 'permission denied'", "permission denied" not in estado["texto"].lower())
+
+    time.sleep(3)
+    try:
+        n = s.js("window.__redesenhos")
+        vivo = s.js("document.querySelectorAll('#bi-rows .bi-row').length") > 0
+    except RuntimeError as e:
+        n, vivo = -1, False
+    p.conta("públicas", "sem tempestade de redesenho", 0 <= n <= 12 and vivo,
+            "%s redesenhos; página %s" % (n if n >= 0 else "?", "viva" if vivo else "MUDA"))
+    # a arte das habilidades ainda tem de chegar: a letra vira ícone sozinha
+    try:
+        arte = s.js("""(() => ({ letras: document.querySelectorAll('#bi-rows .mk-letra').length,
+          icones: document.querySelectorAll('#bi-rows .mk-hab:not(.mk-letra)').length }))()""")
+        p.conta("públicas", "a arte da habilidade chega no marcador",
+                arte["letras"] == 0, "%s letras, %s ícones" % (arte["letras"], arte["icones"]))
+    except RuntimeError as e:
+        p.conta("públicas", "a arte da habilidade chega no marcador", False, str(e)[:80])
 
 
 def checar_resolucoes(s, p):
