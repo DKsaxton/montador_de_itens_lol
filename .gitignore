@@ -11,3 +11,6 @@ assets/regioes/texturas/
 # da qual nada é usado hoje.
 forja-de-runas.html
 assets/Icon/
+
+# lixo do Python ao importar o roteiro de QA
+__pycache__/
