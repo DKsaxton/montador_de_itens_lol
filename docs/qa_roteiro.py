@@ -46,8 +46,11 @@ CHROMES = [
     r"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe",
     "/usr/bin/google-chrome",
 ]
-# O Leo abre o app nestas três, nesta ordem de prioridade (20/09/2026).
-RESOLUCOES = [(2560, 1440), (1920, 1080), (1600, 900)]
+# O Leo abre o app nestas três, nesta ordem de prioridade (20/09/2026). A quarta
+# é um piso: notebook comum, conferido mas sem prioridade.
+# Celular NÃO é alvo (Leo, 21/09/2026: "não tenho a intenção de fazer para o
+# celular") — o app é ferramenta de mesa, e 375px nem entra na conta.
+RESOLUCOES = [(2560, 1440), (1920, 1080), (1600, 900), (1280, 800)]
 
 VERDE, VERMELHO, AMARELO, CINZA, FIM = "\033[32m", "\033[31m", "\033[33m", "\033[90m", "\033[0m"
 

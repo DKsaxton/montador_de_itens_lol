@@ -71,8 +71,11 @@ transições de verdade, e tudo sobrevive ao recarregar.
 
 **Builds publicadas** — a lista vem do servidor e não traz "permission denied".
 
-**Resoluções** — 2560×1440, 1920×1080 e 1600×900, a ordem do Leo: sem rolagem
-horizontal e nada fora da tela.
+**Resoluções** — 2560×1440, 1920×1080 e 1600×900, a ordem do Leo, mais
+1280×800 como piso de notebook: sem rolagem horizontal e nada fora da tela.
+**Celular não é alvo** (Leo, 21/09/2026: "não tenho a intenção de fazer para o
+celular"): o app é ferramenta de mesa, e 375px não entra na conta — medido, a
+página abre com viewport de 513px e os cards têm 281px fixos.
 
 **Console** — nenhuma exceção e nenhum 404 durante o percurso inteiro.
 
