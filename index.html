@@ -3943,6 +3943,40 @@ body.editando .item-tile.mf-elegivel:not(.mf):hover .item-icon { border-color: #
 .pk-price.discount::before { content: "↓ "; font-size: 10px; }
 
 /* ---- Fase 3, T6: observação por item editada na própria tela (substitui o prompt) ---- */
+
+/* ---------- F13-T4: menu do tipo da caixa ---------- */
+.kind-menu {
+  position: fixed; z-index: 72; display: none; width: 268px;
+  background: linear-gradient(180deg, var(--forja-placa-1), var(--forja-placa-2));
+  border: 1px solid var(--forja-placa-borda); border-left: 3px solid var(--forja-brasa);
+  border-radius: 3px; padding: 5px; color: var(--forja-texto);
+  box-shadow: 0 10px 30px rgba(0,0,0,.75), 0 0 16px var(--forja-brasa-glow);
+  animation: modal-unroll .18s ease-out;
+}
+.kind-menu.show { display: block; }
+.kind-menu button {
+  display: block; width: 100%; text-align: left; cursor: pointer;
+  background: none; border: 0; border-radius: 2px; padding: 7px 9px;
+  color: var(--forja-texto); font-family: var(--loja-texto); font-size: 12.5px;
+}
+.kind-menu button + button { margin-top: 3px; }
+.kind-menu button:hover { background: rgba(255,140,40,.12); }
+.kind-menu button:focus-visible { outline: 2px solid var(--forja-brasa); outline-offset: -2px; }
+.kind-menu .km-nome {
+  display: flex; align-items: baseline; gap: 7px;
+  font-family: var(--loja-titulos); font-size: 14px; color: var(--forja-titulo);
+}
+.kind-menu .km-marca { width: 11px; color: var(--forja-brasa); font-size: 12px; }
+.kind-menu button[aria-checked="true"] { background: rgba(255,140,40,.1); }
+.kind-menu button[aria-checked="true"] .km-nome { color: var(--forja-brasa-clara); }
+.kind-menu .km-desc {
+  /* bloco, não inline: em linha a margem só empurrava a primeira linha e a
+     segunda voltava para a borda. */
+  display: block;
+  margin: 2px 0 0 18px; font-size: 11px; line-height: 1.42;
+  color: var(--forja-texto-suave);
+}
+
 .note-editor {
   position: fixed; z-index: 70; display: none; width: 300px;
   background: linear-gradient(180deg, var(--forja-placa-1), var(--forja-placa-2));
@@ -5076,6 +5110,11 @@ body.forja .build-cat.drop-after  { transform: translateX(-5px); box-shadow: ins
     </div>
   </div>
 </div>
+<!-- F13-T4: o rótulo da caixa era um botão que dava a volta olímpica
+     (Comum → Prioridade → Opcional → Escolha 1, um clique de cada vez).
+     Agora abre isto, com os quatro à vista e o atual marcado. -->
+<div id="kind-menu" class="kind-menu" role="menu" aria-label="Tipo da caixa"></div>
+
 <div id="note-editor" class="note-editor" role="dialog" aria-label="Observação do item">
   <div class="ne-title"><span class="ne-label">Observação</span><span class="ne-item"></span></div>
   <textarea id="note-text" rows="3" placeholder="Quando comprar, contra quem, o que segurar…" spellcheck="false"></textarea>
@@ -5444,6 +5483,13 @@ const build = {
 // alternativas para o MESMO slot — o de cima é o padrão e só ele conta nos totais.
 const KINDS = ["comum", "prioridade", "opcional", "escolha"];
 const KIND_LABEL = { comum: "Comum", prioridade: "Prioridade", opcional: "Opcional", escolha: "Escolha 1" };
+// F13-T4: o que cada tipo faz de verdade, para o menu poder dizer.
+const KIND_DESC = {
+  comum: "Entra no total da build como qualquer outra caixa.",
+  prioridade: "Entra no total e soma no número “Prioridade” do topo; nas leituras, é ela que fecha o núcleo.",
+  opcional: "Fica fora do “Total (sem opcionais)” e vai para a bandeja das leituras, como item de quando precisar.",
+  escolha: "Uma coluna só: o item de cima é o padrão e conta nos atributos e no preço; os de baixo são trocas para a mesma vaga.",
+};
 // Layouts de leitura da build (Fase 9): o tabuleiro do Leo é o padrão e é a própria forja.
 const LAYOUTS = { tabuleiro: "Tabuleiro", nucleo: "Núcleo + bandeja", trilha: "Trilha por fases", arvore: "Árvore de decisão" };
 // F10-T14 (Leo, 16/09/2026): a "Grade categoria × custo" saiu e virou a "Árvore de decisão";
@@ -7110,7 +7156,7 @@ function renderCategories() {
           <circle cx="15" cy="12" r="1"/><circle cx="9" cy="18" r="1"/><circle cx="15" cy="18" r="1"/>
         </svg>
         <input class="cat-name" value="${esc(cat.name)}" title="${esc(cat.name)}" spellcheck="false"${build.editing ? "" : " readonly tabindex=\"-1\""}>
-        <button class="cat-btn cat-kind"${build.editing ? "" : " disabled tabindex=\"-1\""} title="Clique para alternar: Comum → Prioridade → Opcional → Escolha 1">${KIND_LABEL[cat.kind]}</button>
+        <button class="cat-btn cat-kind"${build.editing ? "" : " disabled tabindex=\"-1\""} title="Tipo da caixa — clique para escolher">${KIND_LABEL[cat.kind]}</button>
         ${cat.marco ? `<span class="cat-marco-badge" title="Marco / teto desta caixa">${esc(cat.marco)}</span>` : ""}
         <button class="cat-btn cat-del" title="Remover categoria">✕</button>
       </header>
@@ -7522,9 +7568,8 @@ function initCategoryUI() {
     if (e.target.closest(".cat-del")) { if (build.editing) removeCategory(id); return; }
     if (e.target.closest(".cat-kind")) {
       if (!build.editing) return;
-      const cat = getCat(id);
-      cat.kind = KINDS[(KINDS.indexOf(cat.kind) + 1) % KINDS.length];
-      renderBuild(); saveBuild(); return;
+      abrirMenuDeTipo(e.target.closest(".cat-kind"), id);
+      return;
     }
     if (e.target.closest(".cat-name") || e.target.closest(".cat-desc") || e.target.closest(".cat-marco")) return;
     // Mestre Forjador: na edição, com o interruptor ligado, clicar no ÍCONE do
@@ -8284,6 +8329,58 @@ function initAcessibilidade() {
     });
   });
   aplicarAcessibilidade();
+}
+
+
+// ---------------- F13-T4: o tipo da caixa ----------------
+// Era um botão que dava a volta: para voltar um passo, quatro cliques. Agora é
+// um menu com os quatro, o atual marcado, e cada um dizendo o que faz.
+let kindMenuCat = null;
+function abrirMenuDeTipo(botao, catId) {
+  const cat = getCat(catId);
+  const menu = document.getElementById("kind-menu");
+  if (!cat || !menu) return;
+  kindMenuCat = catId;
+  menu.innerHTML = KINDS.map(k => `
+    <button type="button" role="menuitemradio" data-kind="${k}" aria-checked="${k === cat.kind}">
+      <span class="km-nome"><span class="km-marca">${k === cat.kind ? "✦" : ""}</span>${esc(KIND_LABEL[k])}</span>
+      <span class="km-desc">${esc(KIND_DESC[k])}</span>
+    </button>`).join("");
+  menu.classList.add("show");
+  const r = botao.getBoundingClientRect();
+  const w = menu.offsetWidth, h = menu.offsetHeight;
+  menu.style.left = Math.max(8, Math.min(window.innerWidth - w - 8, r.left)) + "px";
+  menu.style.top = (r.bottom + h > window.innerHeight - 8 ? Math.max(8, r.top - h - 6) : r.bottom + 6) + "px";
+  const atual = menu.querySelector('[aria-checked="true"]') || menu.querySelector("button");
+  if (atual) atual.focus();
+  Som.play("catalog:tag_select");
+}
+function fecharMenuDeTipo() {
+  document.getElementById("kind-menu").classList.remove("show");
+  kindMenuCat = null;
+}
+function initMenuDeTipo() {
+  const menu = document.getElementById("kind-menu");
+  if (!menu) return;
+  menu.addEventListener("click", (e) => {
+    const b = e.target.closest("[data-kind]");
+    if (!b || !kindMenuCat) return;
+    const cat = getCat(kindMenuCat);
+    fecharMenuDeTipo();
+    if (!cat || cat.kind === b.dataset.kind) return;
+    cat.kind = b.dataset.kind;
+    renderBuild();
+    saveBuild();
+  });
+  document.addEventListener("click", (e) => {
+    if (menu.classList.contains("show") && !menu.contains(e.target) && !e.target.closest(".cat-kind")) fecharMenuDeTipo();
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && menu.classList.contains("show")) { e.stopPropagation(); fecharMenuDeTipo(); }
+  });
+  // a caixa pode sair do lugar enquanto o menu está aberto
+  window.addEventListener("resize", fecharMenuDeTipo);
+  window.addEventListener("scroll", fecharMenuDeTipo, true);
 }
 
 function initRunas() {
@@ -11241,6 +11338,7 @@ function init() {
   if (typeof initFaltaPublicar === "function") initFaltaPublicar();
   if (typeof initPerguntarCaixa === "function") initPerguntarCaixa();
   if (typeof initAcessibilidade === "function") initAcessibilidade();
+  if (typeof initMenuDeTipo === "function") initMenuDeTipo();
 
   // Controle de som (Fase 4, T1): sino = mudo, régua = volume; persistem.
   const somBtn = document.getElementById("som-mudo");

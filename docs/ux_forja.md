@@ -18,11 +18,13 @@ Duplo clique abre a observação do item, botão direito remove, arrastar move p
 
 Três coisas que só apareceram olhando renderizado: o "✎" como texto virava **emoji colorido** (a única coisa de desenho infantil na tela) e foi refeito em SVG de traço; os botões nos cantos de cima **comiam a arte do item**, então desceram para a faixa; e com nome de três linhas a faixa deixava o texto aparecer por trás — agora ela é opaca e o nome desbota no hover, já que o balão mostra o nome inteiro.
 
-## 3. O rótulo da caixa é um botão que dá a volta
+## 3. O rótulo da caixa é um botão que dá a volta — RESOLVIDO (F13-T4, 22/09/2026)
 
 `COMUM` → `PRIORIDADE` → `OPCIONAL` → `ESCOLHA 1` → `COMUM`, um clique de cada vez. Parece etiqueta e é controle. E para voltar um passo você dá a volta inteira.
 
-**Proposta:** clique abre um menuzinho com os quatro, com o atual marcado. Continua um clique para abrir, e some a volta olímpica.
+**Feito:** o clique abre um menu com os quatro, o atual marcado com ✦, e **cada um dizendo o que faz** — texto escrito lendo o código (`itensContados`, `buildTotal`, `catCols` e os layouts da Fase 9), não de memória. Some a volta olímpica: qualquer tipo fica a um clique de qualquer outro.
+
+O menu fecha ao clicar fora, no Esc, e ao rolar ou redimensionar — ele é ancorado no botão, e ficaria solto no ar.
 
 ## 4. Adicionar item pede um passo invisível antes
 

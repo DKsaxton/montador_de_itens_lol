@@ -192,8 +192,13 @@ class Sessao:
         raise RuntimeError("a página não terminou de carregar")
 
     def caixa(self, seletor):
+        # Rolar só quando precisa: um scrollIntoView à toa fecha menu ancorado
+        # (que escuta scroll de propósito) e o clique seguinte cai no vazio.
         return self.js("""(() => { const e = document.querySelector(%s); if (!e) return null;
-          e.scrollIntoView({block:'center'}); const r = e.getBoundingClientRect();
+          let r = e.getBoundingClientRect();
+          if (r.top < 4 || r.bottom > innerHeight - 4 || r.left < 4 || r.right > innerWidth - 4) {
+            e.scrollIntoView({block:'center'}); r = e.getBoundingClientRect();
+          }
           if (r.width < 1 || r.height < 1) return 'invisivel';
           return [Math.round(r.left + r.width/2), Math.round(r.top + r.height/2)]; })()""" % json.dumps(seletor))
 
@@ -396,6 +401,24 @@ def checar_forja(s, p):
     p.conta("forja", "o ✕ tira o item da caixa", s.js("build.cats[1].items.length") == antes - 1,
             "de %s para %s" % (antes, s.js("build.cats[1].items.length")))
 
+    # F13-T4: o tipo da caixa deixou de ser um botão que dá a volta olímpica.
+    s.clicar(".build-cat:nth-of-type(2) .cat-kind", 0.6)
+    menu = s.js("""(() => { const m = document.getElementById('kind-menu');
+      if (!m || !m.classList.contains('show')) return null;
+      const r = m.getBoundingClientRect();
+      return { opcoes: [...m.querySelectorAll('button')].map(b => b.dataset.kind),
+               marcado: (m.querySelector('[aria-checked="true"]') || {}).dataset,
+               cabe: r.left >= 0 && r.top >= 0 && r.right <= innerWidth + 1 && r.bottom <= innerHeight + 1 }; })()""")
+    p.conta("forja", "o tipo da caixa abre um menu com os quatro",
+            bool(menu) and menu["opcoes"] == ["comum", "prioridade", "opcional", "escolha"] and menu["cabe"],
+            "%s" % (menu or "não abriu"))
+    s.clicar('#kind-menu [data-kind="opcional"]', 0.7)
+    p.conta("forja", "escolher no menu troca o tipo e fecha",
+            s.js("build.cats[1].kind") == "opcional"
+            and not s.js("document.getElementById('kind-menu').classList.contains('show')"),
+            "ficou %s" % s.js("build.cats[1].kind"))
+    s.js("build.cats[1].kind = 'comum'; renderBuild()")
+
 
 def checar_marcadores(s, p):
     """O bug de 20/09: o diálogo abria, a escolha não gravava. Todo passo aqui é
@@ -574,7 +597,11 @@ def checar_publicas(s, p, online):
         vivo = s.js("document.querySelectorAll('#bi-rows .bi-row').length") > 0
     except RuntimeError as e:
         n, vivo = -1, False
-    p.conta("públicas", "sem tempestade de redesenho", 0 <= n <= 12 and vivo,
+    # O número varia com a rede: é um redesenho por quadro em que chega a lista
+    # de habilidades de algum campeão, então 6 com cache quente e 15 com cache
+    # frio, nas mesmas 42 builds. O que se pega aqui é a disparada — eram ~80 e
+    # subindo até a página morrer —, não um valor exato.
+    p.conta("públicas", "sem tempestade de redesenho", 0 <= n <= 30 and vivo,
             "%s redesenhos; página %s" % (n if n >= 0 else "?", "viva" if vivo else "MUDA"))
     # a arte das habilidades ainda tem de chegar: a letra vira ícone sozinha
     try:
