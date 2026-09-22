@@ -193,6 +193,14 @@ Ordem definida pelo Leo em 18/09/2026: primeiro tudo que já estava na fila; as 
   - Corrigido ao olhar renderizado: a descrição era `span` com `margin-left`, então só a primeira linha ficava indentada e a segunda voltava para a borda. Virou bloco.
   - Duas armadilhas do próprio roteiro, consertadas nele: `scrollIntoView` à toa fechava o menu (que escuta scroll de propósito) — agora ele só rola quando o alvo está fora da tela; e `captureBeyondViewport` mexe no viewport, dispara `resize` e fechava o menu antes da foto — captura de menu aberto vai sem ele.
   - O teto da checagem de redesenho subiu de 12 para 30: o número varia com a rede (6 com cache quente, 15 com cache frio, nas mesmas 42 builds). O que se pega é a disparada, não um valor exato.
+- **T5** Caçada de bugs (feito, aguardando o Leo escolher a ordem dos consertos). Oito leitores em paralelo, um por subsistema, e três céticos por achado (129 agentes; a primeira volta caiu no limite de uso e foi retomada do cache). **40 achados, 33 bugs distintos**, todos em `docs/cacada_de_bugs.md`. Os céticos derrubaram 1 voto em 120, aprovação demais para confiar sem conferir, então reproduzi os quatro mais graves no app. **Os quatro se confirmaram:**
+  1. **Busca por ID inexistente nas Públicas** → 117 pedidos ao Supabase em 5 s, sem parar.
+  2. **Favorita que sumiu do site** → 126 pedidos em 5 s na aba Minhas, e volta a cada recarga (o ID mora no localStorage).
+  3. **Tirar dois itens em menos de 0,38 s** → o segundo splice usa o índice de antes do primeiro: pedi A e B, saíram A e C.
+  4. **Duplicar ou "Copiar e editar"** perde runas, ordem de habilidades e Mestre Forjador.
+  - Três dos achados de gravidade média são da minha F12-T5, de dois dias atrás: "Leitura calma" quase não aumenta texto (o app é todo em `px`), "Menos movimento" não para a chuva de entrada (é animação em JS, não em CSS) e "Menos brilho" deixa o fundo em brasa da forja.
+  - A primeira tentativa de reproduzir o nº 3 deu certo **por acidente**: usei um código de item que não existe (`dorans-blade`; o certo é `doran-s-blade`), a placa do meio não era desenhada e a remoção virava imediata. Com três itens reais do catálogo, o bug apareceu. Um teste que "não reproduz" também precisa ser conferido.
+  - O roteiro de QA passou a mostrar a mensagem de erro de verdade do JS, em vez de só "Uncaught".
 
 O resto continua em aberto, à escolha do Leo:
 - **Quatro variações de textura por região** (plano do Leo, 20/09/2026: "Bilgewater com uma pistola sob a mesa, cartas do Twisted Fate"). O sistema já sorteia variante por hash do slug do item, então é só gerar e rodar `docs/gerar_cards_regiao.ps1`. Conta: 13 regiões × 4 ≈ 52 cards, ~1,4 MB depois da compressão.

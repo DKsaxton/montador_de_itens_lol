@@ -178,7 +178,10 @@ class Sessao:
     def js(self, expr):
         r = self.envia("Runtime.evaluate", {"expression": expr, "returnByValue": True, "awaitPromise": True})
         if "exceptionDetails" in r:
-            raise RuntimeError(r["exceptionDetails"].get("text", "erro no JS") + " :: " + expr[:80])
+            # "Uncaught" sozinho não diz nada: a mensagem de verdade mora em exception.description
+            d = r["exceptionDetails"]
+            desc = ((d.get("exception") or {}).get("description") or d.get("text") or "erro no JS").split(chr(10))[0]
+            raise RuntimeError(desc + " :: " + expr[:80])
         return r["result"].get("value")
 
     def abrir(self, caminho=""):
