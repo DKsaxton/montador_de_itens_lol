@@ -10,11 +10,13 @@ Abrindo uma build, não dá para renomear caixa, criar caixa, arrastar item nem 
 
 **Proposta:** o aviso sai do card vazio e vira uma faixa junto do interruptor, visível sempre que a edição está desligada. Uma linha: "Modo leitura — ligue Editar para mexer".
 
-## 2. Três verbos escondidos num balão
+## 2. Três verbos escondidos num balão — RESOLVIDO (F13-T3, 22/09/2026)
 
 Duplo clique abre a observação do item, botão direito remove, arrastar move para outra caixa. As três coisas existem só no tooltip que aparece parando o mouse sobre o item (`.tt-hint`). Quem não para o mouse, não descobre; quem descobre, precisa lembrar.
 
-**Proposta:** o item ganha, no hover, dois botões pequenos — observação e remover — e o arrastar continua existindo para quem já sabe. Verbo visível não tira o atalho de ninguém.
+**Feito:** no hover, o molde mostra uma faixa de ferro embaixo com dois botões — ✎ observação e ✕ tirar da caixa. Duplo clique, botão direito e arrastar continuam valendo: verbo visível não tirou o atalho de ninguém.
+
+Três coisas que só apareceram olhando renderizado: o "✎" como texto virava **emoji colorido** (a única coisa de desenho infantil na tela) e foi refeito em SVG de traço; os botões nos cantos de cima **comiam a arte do item**, então desceram para a faixa; e com nome de três linhas a faixa deixava o texto aparecer por trás — agora ela é opaca e o nome desbota no hover, já que o balão mostra o nome inteiro.
 
 ## 3. O rótulo da caixa é um botão que dá a volta
 

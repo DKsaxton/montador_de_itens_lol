@@ -378,6 +378,24 @@ def checar_forja(s, p):
     p.conta("forja", "o Editar liga", s.js("document.body.classList.contains('editando')"))
     p.conta("forja", "e com ele os atributos voltam", s.js(atributos))
 
+    # F13-T3: os dois verbos que estavam escondidos no balão. Como só existem no
+    # hover, o mouse passa antes — senão o clique cai num retângulo invisível.
+    s.hover(".item-tile")
+    p.conta("forja", "os botões do molde aparecem no hover",
+            s.js("""(() => { const f = document.querySelector('.item-tile .tile-acoes');
+              return !!f && Number(getComputedStyle(f).opacity) > .9
+                     && getComputedStyle(f).pointerEvents === 'auto'; })()"""))
+    s.clicar(".item-tile .ta-nota", 0.6)
+    p.conta("forja", "o ✎ abre a observação",
+            s.js("document.getElementById('note-editor').classList.contains('show')"))
+    s.js("closeNoteEditor(false)")
+    time.sleep(0.4)
+    antes = s.js("build.cats[1].items.length")
+    s.hover(".item-tile")
+    s.clicar(".item-tile .ta-x", 0.6)
+    p.conta("forja", "o ✕ tira o item da caixa", s.js("build.cats[1].items.length") == antes - 1,
+            "de %s para %s" % (antes, s.js("build.cats[1].items.length")))
+
 
 def checar_marcadores(s, p):
     """O bug de 20/09: o diálogo abria, a escolha não gravava. Todo passo aqui é
