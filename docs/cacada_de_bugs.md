@@ -85,11 +85,15 @@ Status de cada um:
 
 ### 9. "Leitura calma" não aumenta praticamente nenhum texto: o app inteiro usa font-size em px
 
+**CONSERTADO na F13-T10 (22/09/2026).** Ver o registro da T10 no CHECKPOINT.
+
 `index.html:2959` · media · achado por: CSS e acessibilidade · **passou pelos céticos**
 
 **Como quebra:** Entrar na loja → botão "A" (Acessibilidade) → marcar "Leitura calma" (o rótulo promete "texto maior"). O interruptor sobe a fonte-base do body de 16px para 17px, mas o index.html tem 364 declarações de font-size em px e ZERO em em/rem — a única exceção é a que o próprio bloco cria na linha 2960 (`body.ac-leitura .card-name { font-size: 1.05em; }`). Resultado: só o nome do item no card do Catálogo cresce (16px → ~17,85px). O nome em inglês (12px, linha 3015), os atributos (13px, linha 3029), o preço (14px, linha 3019), o painel de filtros, o balão do item, a forja inteira, a lista de Builds, as Runas e a Calculadora ficam exatamente do mesmo tamanho. Pior: basta trocar a vista para "só nomes" e nem o nome cresce, porque `body.names-only .card:not(.full) .card-name { font-size: 14.5px; }` (linha 3389) tem especificidade maior (0,4,1) que a regra do interruptor (0,2,1). Quem ligou o ajuste na aba Build não vê uma letra a mais em lugar nenhum.
 
 ### 10. "Menos brilho" não apaga o fundo em brasa da forja, que é o item citado no próprio rótulo
+
+**CONSERTADO na F13-T10 (22/09/2026).** Ver o registro da T10 no CHECKPOINT.
 
 `index.html:3601` · media · achado por: CSS e acessibilidade · **passou pelos céticos**
 
@@ -150,6 +154,8 @@ Status de cada um:
 **Como quebra:** loteParaTexto diz no comentario que escreve "no mesmo formato de docs/formato_de_importacao.md", mas textToBuild so sabe ler UMA build. Passo a passo: aba Build -> lista -> "Selecionar" -> marcar tres builds -> "Copiar como texto". Colar o resultado em Exportar/importar -> "Importar como nova build". Cada `BUILD:` sobrescreve result.name (e MODO/CAMPEAO/DESCRICAO/LAYOUT idem), entao a build nova recebe o nome da ULTIMA; todas as caixas das tres builds se empilham na mesma build; os MARCADORES das tres entram na mesma fila e normMarkers corta nos tres primeiros; e a linha separadora "========..." cai no ramo `line.startsWith("=")` e vira o marco da ultima caixa da build anterior ("=" x39, porque o replace /^=\s*/ tira so o primeiro). A mensagem diz "Importado: N categoria(s), M item(ns)" sem nenhum aviso. De quebra, loteParaTexto nunca escreve MESTRE FORJADOR, RUNAS, RUNAS 2, FRAGMENTOS nem HABILIDADES — campos que o "Copiar esta build" individual escreve — entao quem usa o lote como backup perde runas, ordem de habilidades e item forjado.
 
 ### 20. "Menos movimento" não desliga a chuva de entrada — a animação que o próprio rótulo promete desligar
+
+**CONSERTADO na F13-T10 (22/09/2026).** Ver o registro da T10 no CHECKPOINT.
 
 `index.html:9069` · media · achado por: CSS e acessibilidade · **passou pelos céticos**
 
@@ -273,3 +279,12 @@ Cinco pontos que nenhum dos oito leitores cobriu. Todas as linhas se referem a `
    - O card guarda `hoveredCard` como referência ao elemento, e o `render()` recria todos os cards (linhas 10865 e 10880). Depois de trocar Ápice ou Reembolso com o mouse parado, a referência aponta para um card que saiu da tela. A ficha só volta quando o mouse sai e entra de novo.
    - O Ápice ligado pelo Catálogo chama `render()`, mas não `renderBuildAll()`. O Reembolso chama os dois (linhas 10174–10193). Os totais da forja ficam velhos até o próximo redesenho.
    - Tipo de bug: estado de hover preso a elemento velho e duas telas que discordam depois de um interruptor.
+
+## Achado depois da caçada
+
+### 34. A forja em 1280×800 rola de lado quando a build tem o Biscoito Total da Determinação Eterna
+
+`index.html:6891` (`statsListHtml` na faixa "Atributos da build") · média · achado na F13-T10 · **REPRODUZIDO**
+
+O atributo do Biscoito no catálogo é uma frase longa ("+30 Vida máxima permanente por biscoito consumido ou vendido (tooltip do cliente, captura do usuário em 12/09/2026: …)"), e a faixa de atributos da build desenha cada atributo sem quebra de linha: um `span` de 1.415px deixa a página com 1.478px numa janela de 1.280. O roteiro de QA não pegou porque a build dele não tem o Biscoito. Conserto no app é deixar o atributo quebrar; o texto do atributo em si é do Capítulo 1.
+

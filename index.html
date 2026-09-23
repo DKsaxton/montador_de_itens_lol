@@ -2954,10 +2954,77 @@ body.ac-brilho .card.regiao .card-attrs,
 body.ac-brilho .card.regiao .card-tags,
 body.ac-brilho .c h4 { text-shadow: none !important; }
 body.ac-brilho .bh-cel.marcada { filter: none; }
+/* F13-T10: o rótulo promete tirar "o fundo em brasa" — e a forja seguia acesa.
+   Sai a brasa do rodapé (fica o ferro riscado) e sai o halo laranja de
+   aba ativa, botão principal, interruptor ligado, barra de lote e marco da
+   trilha. O relevo de cima (a linha clara interna) fica: é forma, não brilho. */
+body.ac-brilho.forja {
+  background-image: repeating-linear-gradient(180deg, transparent 0 5px, rgba(0,0,0,.35) 5px 6px) !important;
+}
+body.ac-brilho .tab-btn.active,
+body.ac-brilho .btn.primary { box-shadow: inset 0 1px 0 rgba(255,255,255,.35) !important; }
+body.ac-brilho .sw input:checked + i,
+body.ac-brilho .lay-dot,
+body.ac-brilho #bi-lote-bar { box-shadow: none !important; }
+/* Os moldes da forja: sai a luz espalhada, fica o aro — ele é informação
+   (Mestre Forjador em ouro, fora do modo em vinho, hover em brasa). A marca
+   interna de "tem observação" também fica. Achado pela varredura de brilho. */
+body.ac-brilho .item-tile { box-shadow: inset 0 3px 8px rgba(0,0,0,.9), inset 0 -1px 0 rgba(255,255,255,.06), 0 0 0 2px #6a3a18 !important; }
+body.ac-brilho .item-tile.off-mode { box-shadow: inset 0 3px 8px rgba(0,0,0,.9), 0 0 0 2px #5a2a20 !important; }
+body.ac-brilho .item-tile.mf { box-shadow: inset 0 3px 8px rgba(0,0,0,.9), 0 0 0 2px #c9973f !important; }
+body.ac-brilho .item-tile:hover { box-shadow: inset 0 3px 8px rgba(0,0,0,.9), 0 0 0 2px var(--forja-brasa) !important; }
+body.ac-brilho .item-icon { box-shadow: none !important; }
+body.ac-brilho:not(.editando) .item-tile.has-note .item-icon { box-shadow: inset 0 0 0 2px var(--forja-brasa-clara) !important; }
+body.ac-brilho .edit-hint { box-shadow: 0 6px 16px rgba(0,0,0,.6) !important; }
 
-/* 3. Leitura calma — o texto cresce e o que está atrás dele se acalma. */
+/* 3. Leitura calma — o texto cresce e o que está atrás dele se acalma.
+   F13-T10 (22/09/2026): subir a fonte do body não alcançava quase nada — o app
+   declara tamanho em px em cada texto, e só 4 de 10 cresciam; o nome no molde
+   da forja ficava em 10px. Agora cada texto de LEITURA ganha o seu tamanho
+   (cerca de +15%, medido tela a tela). Plaquinhas decorativas em caixa-alta e
+   os números da grade de habilidades ficam como estão: não são leitura, e a
+   grade não tem espaço. O !important é de propósito: preferência de quem lê
+   vence qualquer regra de vista. */
 body.ac-leitura { font-size: 17px; }
-body.ac-leitura .card-name { font-size: 1.05em; }
+/* catálogo */
+body.ac-leitura .card-name { font-size: 18px !important; }
+body.ac-leitura.names-only .card:not(.full) .card-name { font-size: 16.5px !important; }
+body.ac-leitura .card .en { font-size: 13.5px !important; }
+/* o nome tem teto de duas linhas + a linha em inglês, calculado para 16px;
+   com o nome em 18px a conta refeita, senão o inglês saía cortado ao meio */
+body.ac-leitura .card-name { max-height: calc(18px * 1.12 * 2 + 20px) !important; }
+body.ac-leitura .attr-line, body.ac-leitura .attr-line b { font-size: 15px !important; }
+body.ac-leitura .card-price { font-size: 16px !important; }
+body.ac-leitura .card .tag { font-size: 10px !important; }
+body.ac-leitura .chip { font-size: 15px !important; }
+body.ac-leitura .g-label, body.ac-leitura .g-count { font-size: 13.5px !important; }
+body.ac-leitura .toggle-row { font-size: 15.5px !important; }
+body.ac-leitura .toggle-row .count { font-size: 12.5px !important; }
+body.ac-leitura #search-input { font-size: 17px !important; }
+body.ac-leitura .item-tooltip .tt-name { font-size: 17px !important; }
+body.ac-leitura .item-tooltip .tt-sub { font-size: 13px !important; }
+body.ac-leitura .item-tooltip .tt-note { font-size: 14px !important; }
+/* forja */
+body.ac-leitura .item-tile .tile-name {
+  font-size: 12px !important;
+  /* em 12px "Protoplasmática" não cabe nos 84px do molde e era cortada no
+     meio, sem reticências: palavra longa quebra com hífen */
+  hyphens: auto; overflow-wrap: anywhere;
+}
+body.ac-leitura .pk-name { font-size: 15.5px !important; }
+body.ac-leitura .pk-price { font-size: 14px !important; }
+body.ac-leitura .pk-tier { font-size: 12.5px !important; }
+body.ac-leitura .cat-total { font-size: 14px !important; }
+body.ac-leitura .slot-vazio { font-size: 12px !important; }
+body.ac-leitura .cat-desc, body.ac-leitura .cat-marco { font-size: 13px !important; }
+body.ac-leitura .bt-eff, body.ac-leitura .cs-eff { font-size: 14px !important; }
+/* lista de builds */
+body.ac-leitura .bd-desc { font-size: 16px !important; }
+body.ac-leitura .bd-meta { font-size: 11px !important; }
+body.ac-leitura .bi-note, body.ac-leitura .bd-pub-note { font-size: 13.5px !important; }
+body.ac-leitura .bd-sem { font-size: 14.5px !important; }
+/* runas */
+body.ac-leitura .runa p { font-size: 14px !important; }
 body.ac-leitura .card.regiao .reg-img { opacity: .38; }
 body.ac-leitura .card.regiao .reg-grao,
 body.ac-leitura .runa { background-image: none; }
@@ -3813,6 +3880,10 @@ header.top { transition: background .5s ease, border-color .5s ease; }
   color: var(--forja-texto);
   border-top: 1px dashed var(--forja-tracejado);
   margin-top: 4px;
+  /* F13-T10: o respiro de baixo fica FORA da área recortada. Dentro dela, a
+     ponta da terceira linha escondida pelo line-clamp aparecia cortada embaixo
+     do nome ("Eterna" sob "Determinação…"). */
+  padding-bottom: 0; margin-bottom: 5px;
 }
 .item-tile .tier-strip { height: 3px; bottom: 0; border-radius: 0 0 6px 6px; opacity: .9; }
 .item-tile.named .tier-strip { top: auto; bottom: 0; }
@@ -9127,7 +9198,10 @@ function refletirFiltro() {
 
 // ---- chuva de entrada (Leo, 14/09/2026): pingos revelam a tela, como tinta molhada
 function chuvaDeEntrada(el) {
-  if (!el || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  // F13-T10: a chuva é escrita quadro a quadro em JS, e o "Menos movimento" do
+  // painel só zerava animation e transition de CSS — ela passava por baixo.
+  if (!el || window.matchMedia("(prefers-reduced-motion: reduce)").matches
+      || document.body.classList.contains("ac-movimento")) return;
   const r = el.getBoundingClientRect();
   const W = Math.max(1, r.width), H = Math.max(1, Math.min(r.height, window.innerHeight));
   const pingos = Array.from({ length: 34 }, () => ({ x: Math.random() * W, y: Math.random() * H, d: Math.random() * 520, r: 90 + Math.random() * 160 }));

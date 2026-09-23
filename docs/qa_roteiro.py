@@ -621,6 +621,31 @@ def checar_acessibilidade(s, p):
     p.conta("acessibilidade", "menos movimento zera as transições",
             s.js("""(() => { const c = document.querySelector('.card-surface');
               return !c || /^0s/.test(getComputedStyle(c).transitionDuration); })()"""))
+    # F13-T10: cada interruptor cumpre o que o próprio rótulo promete.
+    s.nova_build()
+    s.js("build.cats[1].items = CATALOG.items.slice(0, 2).map(it => ({ itemId: it.slug, note: '' })); renderBuildAll(); 'ok'")
+    time.sleep(0.4)
+    tam = s.js("""(() => { const t = document.querySelector('.item-tile .tile-name');
+      return t ? parseFloat(getComputedStyle(t).fontSize) : 0; })()""")
+    p.conta("acessibilidade", "leitura calma aumenta o nome no molde da forja", tam >= 12, "%spx" % tam)
+    s.js("""(() => { window.__choveu = false; const o = new MutationObserver(() => {
+        if (document.querySelector('.chovendo')) window.__choveu = true; });
+      o.observe(document.body, { subtree: true, attributes: true, attributeFilter: ['class'] });
+      switchTab('catalog'); switchTab('build'); showBuildScreen('lista'); return 'ok'; })()""")
+    time.sleep(1.2)
+    p.conta("acessibilidade", "menos movimento para a chuva de entrada", not s.js("window.__choveu"))
+    s.js("switchTab('build'); showBuildScreen('forja'); 'ok'")
+    time.sleep(0.5)
+    brilho = s.js(r"""(() => {
+      const quente = (x) => { const m = x.match(/rgba?\((\d+), (\d+), (\d+)/); if (!m) return false;
+        const [r, g, b] = m.slice(1).map(Number); return r > 200 && g > 60 && g < 200 && b < 90; };
+      let n = 0;
+      document.querySelectorAll('body *').forEach(e => { const r = e.getBoundingClientRect(); if (r.width < 1) return;
+        const bs = getComputedStyle(e).boxShadow; if (!bs || bs === 'none') return;
+        if (bs.split(/,(?![^(]*\))/).some(x => !/inset/.test(x) && quente(x) && !/0px 0px 0px/.test(x.replace(/rgba?\([^)]*\)/, '')))) n++; });
+      return { halos: n, brasa: /255, 110, 30/.test(getComputedStyle(document.body).backgroundImage) }; })()""")
+    p.conta("acessibilidade", "menos brilho apaga a brasa e os halos da forja",
+            brilho["halos"] == 0 and not brilho["brasa"], "%s halo(s), brasa=%s" % (brilho["halos"], brilho["brasa"]))
     s.abrir()
     time.sleep(1.0)
     s.entrar()
@@ -717,12 +742,23 @@ def checar_resolucoes(s, p):
             mau.push(el.className.split(' ')[0]); });
       return { rolagem: document.documentElement.scrollWidth > innerWidth + 1,
                fora: [...new Set(mau)].slice(0, 4) }; })()"""
+    # Até 22/09 só o catálogo era medido, e a forja em 1280 rolava de lado sem
+    # ninguém ver. Agora as três telas, em cada resolução.
+    if not s.js("typeof build !== 'undefined' && !!build"):
+        s.nova_build()
     for largura, altura in RESOLUCOES:
         s.tela(largura, altura)
-        r = s.js(fora_js)
-        p.conta("resoluções", "%dx%d sem nada fora da tela" % (largura, altura),
-                not r["rolagem"] and not r["fora"],
-                "rolagem %s, fora: %s" % (r["rolagem"], ", ".join(r["fora"]) or "nada"))
+        ruins = []
+        for tela, cmd in (("catálogo", "switchTab('catalog')"), ("forja", "switchTab('build'); showBuildScreen('forja')"),
+                          ("runas", "switchTab('runas')")):
+            s.js(cmd + "; 'ok'")
+            time.sleep(0.4)
+            r = s.js(fora_js)
+            if r["rolagem"] or r["fora"]:
+                ruins.append("%s (%s)" % (tela, ", ".join(r["fora"]) or "rolagem"))
+        p.conta("resoluções", "%dx%d sem nada fora da tela" % (largura, altura), not ruins,
+                "catálogo, forja e runas" if not ruins else "; ".join(ruins))
+    s.js("switchTab('catalog'); 'ok'")
     s.tela_normal()
 
 
