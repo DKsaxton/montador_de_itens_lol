@@ -404,6 +404,19 @@ def checar_forja(s, p):
     p.conta("forja", "o ✕ tira o item da caixa", s.js("build.cats[1].items.length") == antes - 1,
             "de %s para %s" % (antes, s.js("build.cats[1].items.length")))
 
+    # F13-T7: dois ✕ em 150 ms tiravam o item errado (achado da caçada de bugs).
+    # A saída espera a animação; a posição mudava no meio. Pedir A e B tem de
+    # deixar o C.
+    fim = s.js("""(async () => { const c = build.cats[1]; c.items = [];
+      CATALOG.items.filter(i => i.tier === 'Lendário').slice(0, 3).forEach(it => c.items.push({ itemId: it.slug, note: '' }));
+      renderBuildAll(); await new Promise(r => setTimeout(r, 400));
+      const c3 = c.items[2].itemId;
+      removeItemFromCategory(c.id, 0); await new Promise(r => setTimeout(r, 150));
+      removeItemFromCategory(c.id, 1); await new Promise(r => setTimeout(r, 900));
+      return { sobrou: c.items.map(i => i.itemId), esperado: [c3] }; })()""")
+    p.conta("forja", "dois ✕ seguidos tiram os dois pedidos", fim["sobrou"] == fim["esperado"],
+            "sobrou %s" % fim["sobrou"])
+
     # F13-T4: o tipo da caixa deixou de ser um botão que dá a volta olímpica.
     s.clicar(".build-cat:nth-of-type(2) .cat-kind", 0.6)
     menu = s.js("""(() => { const m = document.getElementById('kind-menu');

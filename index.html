@@ -4056,6 +4056,9 @@ body.editando .cat-kind:hover { filter: brightness(1.15); }
 .build-cat.cat-impact { animation: bancada-treme .45s ease-out .22s; }
 @keyframes bancada-treme { 0% { transform: none; } 20% { transform: translateY(3px); } 45% { transform: translateY(-2px) rotate(.2deg); } 70% { transform: translateY(1px); } 100% { transform: none; } }
 .item-tile.tile-remove { animation: pedra-some .38s ease-in forwards; pointer-events: none; }
+/* F13-T7: molde de um item que já está saindo, redesenhado no meio da saída.
+   Sem animação: ela recomeçaria do zero e a placa pareceria afundar duas vezes. */
+.item-tile.tile-saindo { opacity: 0; pointer-events: none; }
 @keyframes pedra-some {
   0%   { transform: none; opacity: 1; filter: none; }
   40%  { filter: brightness(.5); box-shadow: inset 0 3px 8px rgba(0,0,0,.9), 0 0 0 2px #3a2f28; }
@@ -6077,13 +6080,27 @@ function addItemToCategory(itemId, catId, index) {
   return true;
 }
 
+// F13-T7 (22/09/2026): quem sai é o ITEM, não a posição. O splice espera
+// 380 ms pela animação, e nesse meio tempo um segundo ✕ podia mudar as
+// posições: pedir A e B tirava A e C. Achado pela caçada de bugs e reproduzido.
+// Agora a saída procura o próprio item na hora de sair, e o item que já está
+// saindo fica escondido nos redesenhos do meio, em vez de reaparecer.
+const itensSaindo = new Set();
 function removeItemFromCategory(catId, index) {
   const cat = getCat(catId);
   if (!cat) return;
-  const finish = () => { cat.items.splice(index, 1); renderBuild(); saveBuild(); };
+  const entry = cat.items[index];
+  if (!entry || itensSaindo.has(entry)) return;          // já está saindo: o primeiro pedido cuida
+  const finish = () => {
+    itensSaindo.delete(entry);
+    const i = cat.items.indexOf(entry);
+    if (i >= 0) cat.items.splice(i, 1);
+    renderBuild(); saveBuild();
+  };
   // A placa afunda e a brasa apaga antes de sair do DOM.
   const tile = document.querySelector(`.item-tile[data-cat-id="${catId}"][data-index="${index}"]`);
   if (tile && !tile.classList.contains("tile-remove")) {
+    itensSaindo.add(entry);
     tile.classList.add("tile-remove");
     setTimeout(finish, 380);
   } else {
@@ -7177,7 +7194,7 @@ function renderCategories() {
         const tile = document.createElement("div");
         const offMode = build.mode && !itemAvailableIn(item, build.mode);
         // O modo (compacto x nomeado) é decidido depois, medindo a largura real.
-        tile.className = "item-tile named" + (entry.note ? " has-note" : "") + (offMode ? " off-mode" : "") + (mfApplies(item, entry) ? " mf" : "") + (build.masterwork && mfEligible(item) ? " mf-elegivel" : "") + (state.applyApex && hasApex(item) ? " apex" : "");
+        tile.className = "item-tile named" + (itensSaindo.has(entry) ? " tile-saindo" : "") + (entry.note ? " has-note" : "") + (offMode ? " off-mode" : "") + (mfApplies(item, entry) ? " mf" : "") + (build.masterwork && mfEligible(item) ? " mf-elegivel" : "") + (state.applyApex && hasApex(item) ? " apex" : "");
         if (offMode) tile.title = `${item.namePt} não existe em ${build.mode}`;
         tile.draggable = build.editing;
         tile.style.setProperty("--tier-color", TIER_CSS[item.tier] || "");

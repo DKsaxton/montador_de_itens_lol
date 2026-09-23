@@ -13,6 +13,8 @@ Status de cada um:
 
 ### 1. Remover dois itens em sequência rápida apaga o item errado: o splice atrasado usa um índice velho
 
+**CONSERTADO na F13-T7 (22/09/2026).** A saída procura o próprio item na hora de sair (`indexOf(entry)`), não a posição guardada 380 ms antes; o item que já está saindo nasce escondido nos redesenhos do meio (`.tile-saindo`) em vez de reaparecer, e um segundo ✕ no mesmo item é ignorado. Conferido em 8 casos, incluindo o mouse de verdade com o segundo clique aos 170 ms.
+
 `index.html:6083` · alta · achado por: Estado da build, Eventos e redesenho
 
 **REPRODUZIDO.** Reproduzido em 22/09: pedi para tirar A e B, o app tirou A e C.
