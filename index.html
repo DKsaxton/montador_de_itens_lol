@@ -4048,6 +4048,13 @@ body.editando .item-tile.mf-elegivel:not(.mf):hover .item-icon { border-color: #
   color: var(--forja-texto-suave);
 }
 
+/* F13-T14: a lista do que não saiu do site, no aviso do lote — alinhada à
+   esquerda, um item por bloco; centralizada, as linhas longas não se liam. */
+.pub-lista { list-style: none; text-align: left; margin: 12px auto 0; padding: 0; max-width: 440px; }
+.pub-lista li { padding: 7px 0 7px 12px; border-left: 2px solid var(--forja-brasa); margin-top: 6px; background: rgba(0,0,0,.18); }
+.pub-lista b { font-family: var(--loja-titulos); font-weight: 400; font-size: 15px; color: var(--forja-titulo); }
+.pub-lista .pl-motivo { font-style: italic; font-size: 13px; color: var(--forja-texto-suave); }
+
 .note-editor {
   position: fixed; z-index: 70; display: none; width: 300px;
   background: linear-gradient(180deg, var(--forja-placa-1), var(--forja-placa-2));
@@ -6091,6 +6098,12 @@ async function tirarDoSite(pubId) {
   publicas.favs = publicas.favs.filter(x => x.id !== pubId);
   esquecerFavoritos([pubId]); publicas.naoExistem.add(pubId);
   return { ok: true };
+}
+// a mesma coisa, curta, para a lista do lote (o nome e o ID já estão na linha)
+function motivoCurto(r) {
+  if (r.motivo === "segredo") return "é de outro navegador — só quem publicou consegue tirá-la do site";
+  if (r.motivo === "sem-servidor") return "não há servidor configurado";
+  return "sem conexão com o servidor — continua no site";
 }
 function porqueNaoSaiu(r, pubId) {
   if (r.motivo === "segredo") return `A publicação ${pubId} não é deste navegador (o segredo não confere): só quem publicou consegue tirá-la do site.`;
@@ -9467,7 +9480,7 @@ function initBuildIndex() {
         if (d && d.pubId) {
           loteMsg(`Tirando ${d.pubId} do site…`);
           const r = await tirarDoSite(d.pubId);
-          if (!r.ok) { ficaram.push(`${d.name} (${d.pubId}): ${porqueNaoSaiu(r, d.pubId)}`); continue; }
+          if (!r.ok) { ficaram.push({ nome: d.name, pubId: d.pubId, motivo: motivoCurto(r) }); continue; }
         }
         deleteBuild(id); saiu++;
       }
@@ -9475,7 +9488,9 @@ function initBuildIndex() {
       biSelected = null;
       renderBuildIndex();
       loteMsg(`${saiu} build(s) excluída(s).` + (ficaram.length ? ` ${ficaram.length} ${ficaram.length === 1 ? "ficou" : "ficaram"} na biblioteca porque não ${ficaram.length === 1 ? "saiu" : "saíram"} do site.` : ""));
-      if (ficaram.length) mostrarPub("Algumas não saíram do site", `Estas continuam na sua biblioteca, com o ID guardado:<br>${ficaram.map(esc).join("<br>")}`, "erro");
+      if (ficaram.length) mostrarPub(ficaram.length === 1 ? "Uma não saiu do site" : "Algumas não saíram do site",
+        `${ficaram.length === 1 ? "Esta continua" : "Estas continuam"} na sua biblioteca, com o ID guardado para tentar de novo:
+         <ul class="pub-lista">${ficaram.map(f => `<li><b>${esc(f.nome)}</b> <span class="pub-id">${esc(f.pubId)}</span><br><span class="pl-motivo">${esc(f.motivo)}</span></li>`).join("")}</ul>`, "erro");
     })();
   });
   document.getElementById("bi-search").addEventListener("input", renderBuildIndex);
