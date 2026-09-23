@@ -21,6 +21,8 @@ Status de cada um:
 
 ### 2. Busca por ID inexistente na aba Públicas entra em laço infinito de requisições ao Supabase
 
+**CONSERTADO na F13-T6 (22/09/2026).** O app passa a lembrar os IDs que o servidor já disse que não existem (`publicas.naoExistem`); a favorita que sumiu do site sai dos favoritos; `carregarFavoritas` pede uma vez só; sem internet, um pedido e espera um minuto. O ⟳ esquece tudo e pergunta de novo. Medido: de 117 e 126 pedidos em 5 s para **1**.
+
 `index.html:8726` · alta · achado por: Servidor das builds publicadas, Eventos e redesenho
 
 **REPRODUZIDO.** Reproduzido em 22/09: **117 pedidos ao Supabase em 5 segundos**, com a busca parada.
@@ -28,6 +30,8 @@ Status de cada um:
 **Como quebra:** Abrir Builds → aba Públicas → digitar (ou colar) na busca um ID de 6 caracteres hexadecimais que não existe no servidor — um ID apagado, um ID digitado errado, ou até uma palavra que só usa letras a-f, como "cabeça" (o norm() tira o acento e sobra "cabeca", 6 caracteres hex). O guarda da linha 8724 (q não vazio, dados vazio, regex hex, publicaPorId(q) nulo, buscandoId nulo) passa e dispara o GET. A resposta volta [] (ou cai no .catch quando não há internet), o .finally zera publicas.buscandoId e chama renderBuildIndex(), que volta a renderPublicasIndex com a MESMA busca: dados continua vazio, publicaPorId(q) continua nulo, buscandoId já é nulo de novo — e o mesmo GET é disparado outra vez. O ciclo só para se o usuário alterar o texto da busca ou trocar de aba. Enquanto isso a página dispara requisições ao Supabase sem parar (uma por round-trip, indefinidamente) e redesenha a lista inteira a cada volta.
 
 ### 3. Favorita apagada do site põe a lista de builds num laço infinito de requisição + redesenho
+
+**CONSERTADO na F13-T6 (22/09/2026).** O app passa a lembrar os IDs que o servidor já disse que não existem (`publicas.naoExistem`); a favorita que sumiu do site sai dos favoritos; `carregarFavoritas` pede uma vez só; sem internet, um pedido e espera um minuto. O ⟳ esquece tudo e pergunta de novo. Medido: de 117 e 126 pedidos em 5 s para **1**.
 
 `index.html:8933` · alta · achado por: Eventos e redesenho, Servidor das builds publicadas
 

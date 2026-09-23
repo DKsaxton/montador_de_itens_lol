@@ -615,6 +615,27 @@ def checar_publicas(s, p, online):
     except RuntimeError as e:
         p.conta("públicas", "a arte da habilidade chega no marcador", False, str(e)[:80])
 
+    # F13-T6: os dois laços de pedidos ao Supabase achados pela caçada de bugs
+    # (117 e 126 pedidos em 5 s). Conta os pedidos que o app faz sozinho,
+    # parado, depois de uma ação só.
+    s.js("""(() => { window.__pedidos = 0; if (!window.__fetchEspiado) { const f = window.fetch;
+      window.fetch = function (u, ...a) { if (String(u).includes('supabase')) window.__pedidos++;
+        return f.call(this, u, ...a); }; window.__fetchEspiado = true; } return 'ok'; })()""")
+    s.js("""(() => { const c = document.getElementById('bi-search'); c.value = 'cabeca';
+      c.dispatchEvent(new Event('input', { bubbles: true })); return 'ok'; })()""")
+    time.sleep(4)
+    n = s.js("window.__pedidos")
+    p.conta("públicas", "busca por ID que não existe não vira laço", n <= 1, "%s pedido(s) em 4 s" % n)
+    s.js("""(() => { const c = document.getElementById('bi-search'); c.value = '';
+      c.dispatchEvent(new Event('input', { bubbles: true })); return 'ok'; })()""")
+
+    s.js("localStorage.setItem('publicacao.favoritos', JSON.stringify(['ffffff'])); window.__pedidos = 0; 'ok'")
+    s.js("""document.querySelector('.bi-tab[data-view="minhas"]').click(); 'ok'""")
+    time.sleep(4)
+    n = s.js("window.__pedidos")
+    p.conta("públicas", "favorita apagada do site não vira laço", n <= 1,
+            "%s pedido(s) em 4 s; favoritos agora: %s" % (n, s.js("favoritosIds()")))
+
 
 def checar_resolucoes(s, p):
     print("\n%sRESOLUCOES (1440, depois 1080, depois 900)%s" % (AMARELO, FIM))

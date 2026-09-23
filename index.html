@@ -6442,6 +6442,7 @@ async function despublicarBuild(id) {
     alvo.pubId = null; alvo.pubVersao = 0; alvo.pubEm = 0; alvo.pubPatch = "";
     gravarBuild();
     publicas.lista = publicas.lista.filter(x => x.id !== pubId); publicas.favs = publicas.favs.filter(x => x.id !== pubId);
+    esquecerFavoritos([pubId]); publicas.naoExistem.add(pubId);
     mostrarPub("Build retirada do site", `A publicação <b class="pub-id">${esc(pubId)}</b> foi apagada. A build continua aqui, na sua biblioteca.`, "sucesso");
     if (buildScreen === "lista") renderBuildIndex(); else renderBuildAll();
   } catch (e) { mostrarPub("Não deu para tirar do site", esc(e.message || "erro desconhecido"), "erro"); }
@@ -6456,6 +6457,7 @@ async function excluirPublicacao(pubId) {
     const ok = await Servidor.rpc("apagar_build", { p_id: pubId, p_segredo: Servidor.segredo() });
     if (!ok) throw new Error("Essa publicação não é deste navegador (o segredo não confere). Só quem publicou pode excluir; se foi você em outro navegador, apague pelo painel do Supabase.");
     publicas.lista = publicas.lista.filter(x => x.id !== pubId); publicas.favs = publicas.favs.filter(x => x.id !== pubId);
+    esquecerFavoritos([pubId]); publicas.naoExistem.add(pubId);
     biSelected = null;
     mostrarPub("Publicação excluída", `A build <b class="pub-id">${esc(pubId)}</b> saiu do site.`, "sucesso");
     renderBuildIndex();
@@ -8614,10 +8616,22 @@ function showBuildScreen(tela) {
 // conta uma visualização (uma por sessão por build); "Copiar e editar" conta
 // uma cópia e traz a build para a biblioteca.
 let biView = "minhas";
-const publicas = { lista: [], favs: [], erro: null, carregando: false, carregadoEm: 0, quantidade: 50 };
+const publicas = { lista: [], favs: [], erro: null, carregando: false, carregadoEm: 0, quantidade: 50,
+  // F13-T6: IDs que o servidor já respondeu que não existem. Sem esta memória,
+  // dois caminhos viravam laço — pede, redesenha, o redesenho vê que ainda
+  // falta, pede de novo: buscar um ID inexistente dava 117 pedidos em 5 s, e
+  // uma favorita apagada do site, 126. O ⟳ ("Buscar de novo") esquece tudo.
+  naoExistem: new Set(), pedindoFavs: false, favsFalhouEm: 0 };
 try { const q = Number(localStorage.getItem("publicas.quantidade")); if ([10, 20, 50, 100].includes(q)) publicas.quantidade = q; } catch (e) { /* padrão 50 */ }
 
 function favoritosIds() { try { return JSON.parse(localStorage.getItem("publicacao.favoritos") || "[]"); } catch (e) { return []; } }
+// Build que saiu do site não tem o que favoritar: o ID sai da lista, senão fica
+// pedindo ao servidor por uma coisa que não volta mais.
+function esquecerFavoritos(ids) {
+  if (!ids || !ids.length) return;
+  const resto = favoritosIds().filter(id => !ids.includes(id));
+  try { localStorage.setItem("publicacao.favoritos", JSON.stringify(resto)); } catch (e) { /* sem persistência */ }
+}
 // Devolve true quando a build ACABOU de virar favorita — só esse lado conta
 // engajamento (F11-T1: tirar dos favoritos é mudar de ideia, não engajar).
 function toggleFavorito(id) {
@@ -8652,6 +8666,7 @@ function publicaResumo(p) {
 async function carregarPublicas(force) {
   if (!Servidor.ativo()) { publicas.erro = "Sem servidor configurado (data/servidor.js)."; return; }
   if (publicas.carregando || (!force && Date.now() - publicas.carregadoEm < 60000)) return;
+  if (force) { publicas.naoExistem.clear(); publicas.favsFalhouEm = 0; }   // "Buscar de novo" pergunta tudo de novo
   publicas.carregando = true; publicas.erro = null; renderBuildIndex();
   try {
     publicas.lista = await Servidor.get("builds_publicas?select=*&order=atualizado_em.desc&limit=200") || [];
@@ -8661,13 +8676,27 @@ async function carregarPublicas(force) {
   renderBuildIndex();
 }
 async function carregarFavoritas() {
-  const ids = favoritosIds().filter(id => !publicas.lista.some(p => p.id === id) && !publicas.favs.some(p => p.id === id));
+  if (publicas.pedindoFavs) return;                                   // um pedido por vez, não uma corrente por redesenho
+  if (Date.now() - publicas.favsFalhouEm < 60000) return;            // sem internet: tenta de novo daqui a um minuto
+  const ids = favoritosIds().filter(id => !publicaPorId(id) && !publicas.naoExistem.has(id));
   if (!ids.length || !Servidor.ativo()) return;
+  publicas.pedindoFavs = true;
   try {
     const extra = await Servidor.get(`builds_publicas?select=*&id=in.(${ids.map(encodeURIComponent).join(",")})`) || [];
     publicas.favs = publicas.favs.concat(extra);
+    // O que não voltou foi apagado do site: não pergunta de novo e sai dos favoritos.
+    const vieram = new Set(extra.map(p => p.id));
+    const sumiram = ids.filter(id => !vieram.has(id));
+    sumiram.forEach(id => publicas.naoExistem.add(id));
+    esquecerFavoritos(sumiram);
+    publicas.pedindoFavs = false;
     renderBuildIndex();
-  } catch (e) { /* sem internet: as favoritas aparecem quando voltar */ }
+  } catch (e) {
+    // Sem internet as favoritas aparecem quando voltar — mas sem redesenhar
+    // agora, que o redesenho pediria de novo na hora.
+    publicas.pedindoFavs = false;
+    publicas.favsFalhouEm = Date.now();
+  }
 }
 function publicaPorId(id) { return publicas.lista.find(p => p.id === id) || publicas.favs.find(p => p.id === id) || null; }
 // Ordem da aba: top 10 hoje, top 10 semana (fora do top do dia), recentes.
@@ -8721,9 +8750,13 @@ function renderPublicasIndex(rows) {
   if (publicas.erro && !publicas.lista.length) { rows.innerHTML = `<div class="bi-empty">Não deu para buscar as builds publicadas: ${esc(publicas.erro)}</div>`; renderBuildDetail(); return; }
   let dados = publicasOrdenadas().filter(d => passaFiltro(d, q)).slice(0, publicas.quantidade);
   // Busca por ID que não está na lista carregada: vai ao servidor
-  if (q && !dados.length && /^[0-9a-f]{6}$/.test(q) && Servidor.ativo() && !publicaPorId(q) && !publicas.buscandoId) {
+  if (q && !dados.length && /^[0-9a-f]{6}$/.test(q) && Servidor.ativo() && !publicaPorId(q) && !publicas.buscandoId && !publicas.naoExistem.has(q)) {
     publicas.buscandoId = q;
-    Servidor.get(`builds_publicas?select=*&id=eq.${q}`).then(r => { if (r && r.length) publicas.favs.push(r[0]); }).catch(() => {}).finally(() => { publicas.buscandoId = null; renderBuildIndex(); });
+    Servidor.get(`builds_publicas?select=*&id=eq.${q}`)
+      .then(r => { if (r && r.length) publicas.favs.push(r[0]); else publicas.naoExistem.add(q); })
+      // sem internet também não pergunta de novo sozinho: o ⟳ esquece e tenta
+      .catch(() => { publicas.naoExistem.add(q); })
+      .finally(() => { publicas.buscandoId = null; renderBuildIndex(); });
   }
   if (q && !dados.length) { const f = publicas.favs.map(publicaResumo).filter(d => passaFiltro(d, q)); dados = f; }
   if (!dados.some(d => d.id === biSelected)) biSelected = dados[0] ? dados[0].id : null;
