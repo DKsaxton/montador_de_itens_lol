@@ -2692,6 +2692,12 @@ body.nucleo .group-head::before {
 }
 .runa .abrir:hover { color: var(--loja-tinta); }
 .runas-vazio { font-family: var(--loja-texto); font-style: italic; color: var(--loja-legenda); padding: 30px 0; }
+/* a legenda das linhas "Vira…": a mesma barra vermelha do aviso no card */
+.runas-rodape {
+  margin: 18px 0 4px; padding-left: 9px; border-left: 2px solid #8d2c22;
+  font-family: var(--loja-texto); font-style: italic; font-size: 12.5px; color: var(--loja-legenda); max-width: 760px;
+}
+.runas-view.v-icones .runas-rodape { display: none; }
 @media (max-width: 880px) {
   .runas-busca { margin-left: 0; width: 100%; }
   .runas-busca input { width: 100%; max-width: none; }
@@ -3041,6 +3047,7 @@ body.ac-leitura .bi-note, body.ac-leitura .bd-pub-note { font-size: 13.5px !impo
 body.ac-leitura .bd-sem { font-size: 14.5px !important; }
 /* runas */
 body.ac-leitura .runa p { font-size: 14px !important; }
+body.ac-leitura .runas-rodape { font-size: 14.5px !important; }
 body.ac-leitura .card.regiao .reg-img { opacity: .38; }
 body.ac-leitura .card.regiao .reg-grao,
 body.ac-leitura .runa { background-image: none; }
@@ -7994,6 +8001,15 @@ function runasSubstituicoes(nome) {
   return (RUNAS.substituicoes || []).filter(x => iguais(x.de, nome));
 }
 
+// Dito uma vez, embaixo da lista: as linhas "Vira…" são trocas do jogo, e o
+// app não troca a runa de ninguém (F13-T18). Só aparece se alguma runa na tela
+// tiver troca.
+function runasRodape(runas) {
+  return runas.some(r => runasSubstituicoes(r.nome).length)
+    ? `<p class="runas-rodape">As linhas “Vira…” são trocas que o próprio jogo faz, conforme o campeão ou o modo de jogo. O app só avisa: a runa escolhida na página não muda.</p>`
+    : "";
+}
+
 function runaCasa(r, q) {
   if (!q) return true;
   const alvo = [r.nome, r.descricao, (r.atributos || []).join(" "), (r.classes || []).join(" ")].join(" ");
@@ -8009,7 +8025,7 @@ function runaHtml(r, trilha, tipo) {
   const chips = (r.atributos || []).map(a => `<span class="chip">${esc(a)}</span>`).join("")
     + (r.classes || []).map(c => `<span class="chip classe">${esc(c)}</span>`).join("");
   const subs = runasSubstituicoes(r.nome).map(x =>
-    `<p class="aviso">Vira <b>${esc(x.para)}</b>${x.quando ? " " + esc(x.quando) : ""}.${x.vigente ? "" : " (ainda não vale no app)"}</p>`).join("");
+    `<p class="aviso" title="Troca que o próprio jogo faz. O app só avisa: a runa da página não muda.">Vira <b>${esc(x.para)}</b>${x.quando ? " " + esc(x.quando) : ""}.</p>`).join("");
   const aberta = runasEstado.abertas.has(r.id);
   // O controle de grupo que a runa aceita (bloco "Controle de grupo válido"
   // do markdown) é detalhe técnico: aparece junto com as notas.
@@ -8083,6 +8099,7 @@ function renderRunas() {
     conta.textContent = achadas.length + (achadas.length === 1 ? " runa" : " runas");
     corpo.innerHTML = achadas.length
       ? `<div class="runas-slot"><div class="runas-grade">${achadas.map(x => runaHtml(x.runa, x.trilha, x.slot.tipo)).join("")}</div></div>`
+        + runasRodape(achadas.map(x => x.runa))
       : `<p class="runas-vazio">Nenhuma runa com "${esc(q)}".</p>`;
     return;
   }
@@ -8095,6 +8112,7 @@ function renderRunas() {
       <h3>${esc(s.nome === "Keystone" ? "Runa de assinatura" : s.nome)}<small>${s.runas.length} ${s.runas.length === 1 ? "runa" : "runas"}</small></h3>
       <div class="runas-grade">${s.runas.map(r => runaHtml(r, t, s.tipo)).join("")}</div>
     </section>`).join("")
+    + runasRodape(t.slots.flatMap(s => s.runas))
     + (RUNAS.fragmentos || []).map(f => `<section class="runas-slot">
       <h3>Fragmentos · ${esc(f.nome)}<small>valem para qualquer trilha</small></h3>
       <div class="runas-grade">${f.runas.map(r => runaHtml(r, { cor: "#b6873a" }, "slot")).join("")}</div>
@@ -8194,6 +8212,7 @@ function renderMontar() {
       `<button type="button" class="trilha-btn${t.id === p.secundaria ? " ativa" : ""}" data-secundaria="${esc(t.id)}" style="--cor:${esc(t.cor || "#b6873a")}">
         ${t.iconUrl ? `<img src="${t.iconUrl}" alt="">` : ""}${esc(t.nome)}</button>`).join("")}</div></section>`;
   if (sec) html += sec.slots.map((sl, i) => i === 0 ? "" : fileira(sec, sl, i, "secundaria")).join("");
+  html += runasRodape(prim.slots.flatMap(sl => sl.runas).concat(sec ? sec.slots.slice(1).flatMap(sl => sl.runas) : []));
 
   html += (RUNAS.fragmentos || []).map((f, i) => `<section class="runas-slot">
       <h3>Fragmento · ${esc(f.nome)}</h3>

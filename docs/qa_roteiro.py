@@ -557,6 +557,13 @@ def checar_runas(s, p):
       return (p.assinatura ? 1 : 0) + p.slots.filter(Boolean).length
            + p.secundarios.filter(Boolean).length + p.fragmentos.filter(Boolean).length; })()""")
     p.conta("runas", "a página fecha em 9 de 9", cheias == 9, "%s de 9" % cheias)
+    # F13-T18: o app não aplica as trocas automáticas, só avisa — e a tela diz isso.
+    # No Resumido, que é onde as linhas "Vira…" aparecem (em Ícones o card não
+    # tem texto, e a legenda some junto de propósito).
+    s.js("document.querySelector('.runas-vista[data-vista=resumido]').click(); 'ok'")
+    time.sleep(0.4)
+    rodape_montar = s.js("""(() => { const r = document.querySelector('#runas-corpo .runas-rodape');
+      return !!r && getComputedStyle(r).display !== 'none' && r.textContent.includes('O app só avisa'); })()""")
     p.conta("runas", "a faixa aparece na forja",
             s.js("""(() => { switchTab('build'); showBuildScreen('forja');
               const f = document.querySelector('.build-runas');
@@ -578,6 +585,11 @@ def checar_runas(s, p):
     p.conta("runas", "a ficha mostra o controle de grupo válido",
             cg["visivel"] and "Inclui" in cg["texto"] and "Cripple" in cg["texto"],
             "Golpe Desleal, modo Completo" if cg["visivel"] else "o bloco não aparece")
+    rodape_ler = s.js("""(() => { const r = document.querySelector('#runas-corpo .runas-rodape');
+      return !!r && getComputedStyle(r).display !== 'none' && r.textContent.includes('O app só avisa'); })()""")
+    p.conta("runas", "a tela diz que as trocas “Vira…” são só aviso", rodape_montar and rodape_ler,
+            "no Ler e no Montar" if rodape_montar and rodape_ler
+            else "falta no " + " e no ".join(n for n, ok in (("Montar", rodape_montar), ("Ler", rodape_ler)) if not ok))
 
 
 def checar_habilidades(s, p):

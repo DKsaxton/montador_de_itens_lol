@@ -1558,146 +1558,122 @@ window.RUNAS = {
   {
    "de": "Caminhar Sobre as Águas",
    "para": "Chamuscar",
-   "quando": "em modos sem rio",
-   "vigente": true
+   "quando": "em modos sem rio"
   },
   {
    "de": "Caminhar Sobre as Águas",
    "para": "Tempestade Crescente",
-   "quando": "em A Lenda do Rei Poro",
-   "vigente": true
+   "quando": "em A Lenda do Rei Poro"
   },
   {
    "de": "Demolir",
    "para": "Fonte da Vida",
-   "quando": "em modos sem estruturas ou com estruturas que não podem ser alvo",
-   "vigente": true
+   "quando": "em modos sem estruturas ou com estruturas que não podem ser alvo"
   },
   {
    "de": "Demolir",
    "para": "Fonte da Vida",
-   "quando": "na Lua Sangrenta",
-   "vigente": true
+   "quando": "na Lua Sangrenta"
   },
   {
    "de": "Sentinela Profunda",
    "para": "Lembranças Aterrorizantes",
-   "quando": "em modos sem sentinelas",
-   "vigente": true
+   "quando": "em modos sem sentinelas"
   },
   {
    "de": "Sentinela Profunda",
    "para": "Lembranças Aterrorizantes",
-   "quando": "no Fiddlesticks",
-   "vigente": true
+   "quando": "no Fiddlesticks"
   },
   {
    "de": "Sexto Sentido",
    "para": "Lembranças Aterrorizantes",
-   "quando": "em modos sem sentinelas",
-   "vigente": true
+   "quando": "em modos sem sentinelas"
   },
   {
    "de": "Faixa de Fluxo de Mana",
    "para": "Arcanista do Axioma",
-   "quando": "em campeões sem mana, no URF e no URFeA na Neve",
-   "vigente": true
+   "quando": "em campeões sem mana, no URF e no URFeA na Neve"
   },
   {
    "de": "Faixa de Fluxo de Mana",
    "para": "Manto de Nimbus",
-   "quando": "na Ambessa",
-   "vigente": true
+   "quando": "na Ambessa"
   },
   {
    "de": "Presença de Espírito",
    "para": "Triunfo",
-   "quando": "em campeões sem mana nem energia, no URF e no URFeA na Neve",
-   "vigente": true
+   "quando": "em campeões sem mana nem energia, no URF e no URFeA na Neve"
   },
   {
    "de": "Pós-choque",
    "para": "Aperto dos Mortos-Vivos",
-   "quando": "em campeões sem efeito de imobilização e no Yorick",
-   "vigente": true
+   "quando": "em campeões sem efeito de imobilização e no Yorick"
   },
   {
    "de": "Pós-choque",
    "para": "Guardião",
-   "quando": "na Yuumi",
-   "vigente": true
+   "quando": "na Yuumi"
   },
   {
    "de": "Aprimoramento Glacial",
    "para": "Primeiro Ataque",
-   "quando": "em campeões sem efeito de imobilização e no Yorick",
-   "vigente": true
+   "quando": "em campeões sem efeito de imobilização e no Yorick"
   },
   {
    "de": "Flashtração Hextec",
    "para": "Reembolso",
-   "quando": "em campeões que não equipam Flash",
-   "vigente": true
+   "quando": "em campeões que não equipam Flash"
   },
   {
    "de": "Caça Suprema",
    "para": "Caça Incansável",
-   "quando": "em Bel'Veth",
-   "vigente": true
+   "quando": "em Bel'Veth"
   },
   {
    "de": "Caça Suprema",
    "para": "Caçador de Tesouros",
-   "quando": "em Samira",
-   "vigente": true
+   "quando": "em Samira"
   },
   {
    "de": "Arcanista do Axioma",
    "para": "Manto de Nimbus",
-   "quando": "em Elise, Jayce, Nidalee e Zoe",
-   "vigente": true
+   "quando": "em Elise, Jayce, Nidalee e Zoe"
   },
   {
    "de": "Livro de Feitiços Deslacrado",
    "para": "Primeiro Ataque",
-   "quando": "no URF e no Livro Supremo de Ultimates",
-   "vigente": true
+   "quando": "no URF e no Livro Supremo de Ultimates"
   },
   {
    "de": "Livro de Feitiços Deslacrado",
    "para": "Aprimoramento Glacial",
-   "quando": "na Lua Sangrenta e em A Lenda do Rei Poro",
-   "vigente": true
+   "quando": "na Lua Sangrenta e em A Lenda do Rei Poro"
   },
   {
    "de": "Entrega de Biscoitos",
    "para": "Tônico de Distorção no Tempo",
-   "quando": "no ARAM e no Confronto",
-   "vigente": true
+   "quando": "no ARAM e no Confronto"
   },
   {
    "de": "Tônico Triplo",
    "para": "Tônico de Distorção no Tempo",
-   "quando": "no Confronto",
-   "vigente": true
+   "quando": "no Confronto"
   },
   {
    "de": "Perspicácia Cósmica",
    "para": "Velocidade de Aproximação",
-   "quando": "no URFeA na Neve",
-   "vigente": true
+   "quando": "no URFeA na Neve"
   },
   {
    "de": "Manto de Nimbus",
    "para": "Arcanista do Axioma",
-   "quando": "no URFeA na Neve",
-   "vigente": true
+   "quando": "no URFeA na Neve"
   },
   {
    "de": "Fonte da Vida",
    "para": "Demolir",
-   "quando": "no Corki",
-   "vigente": true
+   "quando": "no Corki"
   }
  ]
 };

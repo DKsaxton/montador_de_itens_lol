@@ -27,7 +27,7 @@ python data/gerar_runas_json.py
 | A2 | Bug nº 35: o texto perde a primária e a secundária quando a primária está sem runa | Forjador | aberto (média) |
 | A3 | Bug nº 19: "Copiar como texto" do lote não leva runas | Forjador | aberto (média) |
 | A4 | Bug nº 29: build publicada aberta "só para ver" tem as runas editáveis | Forjador | aberto (baixa) |
-| A5 | O app não aplica nenhuma troca automática, só avisa, e a tela não diz isso | Forjador | aberto (baixa) |
+| A5 | O app não aplica nenhuma troca automática, só avisa, e a tela não dizia isso | Forjador | ✔ resolvido em 23/09/2026 (F13-T18) |
 | A6 | Documentos desatualizados (o SQL do servidor é o que tem risco) | Forjador | aberto (média) |
 
 ---
@@ -131,7 +131,14 @@ A linha `RUNAS:` só sai quando alguma runa da primária está escolhida. Com a 
 ### A4. Bug nº 29: build publicada aberta "só para ver" tem as runas editáveis
 A aba Runas não confere se a build é só para ver: `escolherRuna`, a troca de trilha e o Limpar gravam na hora. A grade de habilidades confere. De quebra: abrir uma publicada com o Editar já ligado deixa a build temporária em modo edição (`activateBuild`).
 
-### A5. O app só avisa as trocas automáticas, e não diz isso
+### A5. ✔ O app só avisa as trocas automáticas, e agora diz isso — resolvido na F13-T18
+**Como ficou:**
+- abaixo das runas da trilha (no Ler e no Montar) aparece, uma vez só: "As linhas 'Vira…' são trocas que o próprio jogo faz, conforme o campeão ou o modo de jogo. O app só avisa: a runa escolhida na página não muda.";
+- cada linha "Vira…" repete isso ao passar o mouse;
+- o sufixo "(ainda não vale no app)" saiu, e com ele o campo `vigente` do `runas.js`.
+
+O registro original:
+
 O app **não aplica nenhuma** das 24 trocas: todas são só um aviso na ficha ("Vira X quando..."). Não existe lógica por campeão nem por modo. O sufixo "(ainda não vale no app)" dependia de um comentário do MD e ficou sem uso quando a troca da Cassiopeia saiu. Proposta: tirar o código do sufixo e dizer uma vez, na tela de Runas, que as trocas são informativas.
 
 ### A6. Documentos desatualizados

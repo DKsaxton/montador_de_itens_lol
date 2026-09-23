@@ -234,18 +234,16 @@ RE_SUBST = re.compile(r"^\s{4}(?P<de>.+?)\s*->\s*vira\s+(?P<para>.+?)(?:\s+(?P<q
 
 
 def le_substituicoes(linhas):
-    fora = False
+    # O app não aplica troca nenhuma, só avisa (F13-T18): não existe troca que
+    # "ainda não vale no app". O antigo campo "vigente" saiu.
     subs = []
     for l in linhas:
         if l.strip().startswith("--"):
-            # o bloco final do markdown é o que ainda não vale no app
-            if "ainda não está no app" in l:
-                fora = True
             continue
         m = RE_SUBST.match(l)
         if m:
             subs.append({"de": m.group("de").strip(), "para": m.group("para").strip(),
-                         "quando": (m.group("quando") or "").strip(), "vigente": not fora})
+                         "quando": (m.group("quando") or "").strip()})
     return subs
 
 
