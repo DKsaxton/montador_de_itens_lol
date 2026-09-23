@@ -6061,10 +6061,10 @@ function createNewBuild(name, cats, mode, champion, markers) {
   return b;
 }
 
+// Só a biblioteca deste navegador. Tirar do site é com excluirBuild, que pede
+// ao servidor ANTES e só apaga aqui quando ele confirma (ou a pessoa decide).
 function deleteBuild(id) {
   const eraAtiva = id === build.id;
-  const alvo = library.builds.find(b => b.id === id);
-  if (alvo && alvo.pubId && Servidor.ativo()) Servidor.rpc("apagar_build", { p_id: alvo.pubId, p_segredo: Servidor.segredo() }).catch(() => { /* já não estava lá, ou sem internet */ });
   if (eraAtiva) rascunho.sujo = false;
   library.builds = library.builds.filter(b => b.id !== id);
   if (!library.builds.length) {
@@ -6075,6 +6075,47 @@ function deleteBuild(id) {
   if (eraAtiva) activateBuild(library.builds[0].id, true);
   gravarBuild();
   renderBuildAll();
+}
+
+// F13-T14 (23/09/2026): excluir uma build publicada prometia "ela também sai
+// do site", mas o pedido saía sem esperar resposta, o erro caía num catch vazio
+// e o "segredo não confere" nem era olhado — a build sumia daqui, a publicação
+// ficava no ar, e o ID dela (o único jeito de tirá-la depois) ia junto.
+async function tirarDoSite(pubId) {
+  if (!Servidor.ativo()) return { ok: false, motivo: "sem-servidor" };
+  try {
+    const ok = await Servidor.rpc("apagar_build", { p_id: pubId, p_segredo: Servidor.segredo() });
+    if (!ok) return { ok: false, motivo: "segredo" };
+  } catch (e) { return { ok: false, motivo: "rede", erro: e.message || "" }; }
+  publicas.lista = publicas.lista.filter(x => x.id !== pubId);
+  publicas.favs = publicas.favs.filter(x => x.id !== pubId);
+  esquecerFavoritos([pubId]); publicas.naoExistem.add(pubId);
+  return { ok: true };
+}
+function porqueNaoSaiu(r, pubId) {
+  if (r.motivo === "segredo") return `A publicação ${pubId} não é deste navegador (o segredo não confere): só quem publicou consegue tirá-la do site.`;
+  if (r.motivo === "sem-servidor") return `Não há servidor configurado, então a publicação ${pubId} não pôde ser tirada do site.`;
+  return `Não deu para falar com o servidor${r.erro ? " (" + r.erro + ")" : ""}: a publicação ${pubId} continua no site.`;
+}
+// true = a build saiu da biblioteca. Publicada: primeiro o site; se ele não
+// confirmar, a pessoa decide se apaga só daqui (e fica sabendo do ID).
+async function excluirBuild(id) {
+  const b = library.builds.find(x => x.id === id);
+  if (!b) return false;
+  const pubId = buildResumo(b).pubId;
+  if (pubId) {
+    mostrarPub("Tirando do site", `Apagando a publicação <b class="pub-id">${esc(pubId)}</b>…`);
+    const r = await tirarDoSite(pubId);
+    fecharPub();
+    if (!r.ok) {
+      const depois = r.motivo === "rede" ? ` Para tirá-la do site depois, procure ${pubId} na aba Públicas quando a conexão voltar.` : "";
+      if (!window.confirm(`${porqueNaoSaiu(r, pubId)}
+
+Apagar só da sua biblioteca mesmo assim?${depois}`)) return false;
+    }
+  }
+  deleteBuild(id);
+  return true;
 }
 
 // ---------------- categorias ----------------
@@ -9374,7 +9415,9 @@ function initBuildIndex() {
     if (act.dataset.act === "del") {
       if (library.builds.length <= 1) return;
       if (b.temp) { deleteBuild(b.id); biSelected = null; renderBuildIndex(); return; }
-      if (window.confirm(`Excluir a build "${buildResumo(b).name}"?${b.pubId ? " Ela também sai do site." : ""} Isso não dá pra desfazer.`)) { deleteBuild(b.id); biSelected = null; renderBuildIndex(); }
+      if (window.confirm(`Excluir a build "${buildResumo(b).name}"?${buildResumo(b).pubId ? " Ela também sai do site." : ""} Isso não dá pra desfazer.`)) {
+        excluirBuild(b.id).then(saiu => { if (saiu) { biSelected = null; } renderBuildIndex(); });
+      }
     }
   });
   // ---- F10-T7: modo Selecionar ----
@@ -9414,11 +9457,26 @@ function initBuildIndex() {
     if (restantes < 1) { loteMsg("Guarde pelo menos uma build."); return; }
     const nomes = ids.map(id => (resumoPorId(id) || {}).name).filter(Boolean);
     if (!window.confirm(`Excluir ${ids.length} build(s)?\n\n${nomes.join("\n")}\n\nAs publicadas também saem do site. Isso não dá pra desfazer.`)) return;
-    ids.forEach(id => deleteBuild(id));
-    biLote.clear();
-    biSelected = null;
-    renderBuildIndex();
-    loteMsg(`${ids.length} build(s) excluída(s).`);
+    (async () => {
+      // uma de cada vez: a publicada só sai daqui depois que o site confirmar;
+      // a que não sair fica na biblioteca, e o aviso diz qual e por quê
+      const ficaram = [];
+      let saiu = 0;
+      for (const id of ids) {
+        const d = resumoPorId(id);
+        if (d && d.pubId) {
+          loteMsg(`Tirando ${d.pubId} do site…`);
+          const r = await tirarDoSite(d.pubId);
+          if (!r.ok) { ficaram.push(`${d.name} (${d.pubId}): ${porqueNaoSaiu(r, d.pubId)}`); continue; }
+        }
+        deleteBuild(id); saiu++;
+      }
+      biLote.clear();
+      biSelected = null;
+      renderBuildIndex();
+      loteMsg(`${saiu} build(s) excluída(s).` + (ficaram.length ? ` ${ficaram.length} ${ficaram.length === 1 ? "ficou" : "ficaram"} na biblioteca porque não ${ficaram.length === 1 ? "saiu" : "saíram"} do site.` : ""));
+      if (ficaram.length) mostrarPub("Algumas não saíram do site", `Estas continuam na sua biblioteca, com o ID guardado:<br>${ficaram.map(esc).join("<br>")}`, "erro");
+    })();
   });
   document.getElementById("bi-search").addEventListener("input", renderBuildIndex);
   document.getElementById("bi-new").addEventListener("click", () => { createNewBuild(); showBuildScreen("forja"); });
@@ -9536,8 +9594,8 @@ function initLibrary() {
 
   document.getElementById("del-build").addEventListener("click", () => {
     if (library.builds.length <= 1) return;
-    if (window.confirm(`Excluir a build "${build.name}"? Isso não dá pra desfazer.`)) {
-      deleteBuild(build.id);
+    if (window.confirm(`Excluir a build "${build.name}"?${build.pubId ? " Ela também sai do site." : ""} Isso não dá pra desfazer.`)) {
+      excluirBuild(build.id);
     }
   });
 

@@ -58,6 +58,8 @@ Status de cada um:
 
 ### 5. Excluir uma build publicada promete tirá-la do site, mas engole a falha do apagar_build
 
+**CONSERTADO na F13-T14 (23/09/2026).** Primeiro o site, depois a biblioteca: `excluirBuild` espera o servidor; se ele não confirmar (sem conexão, ou o segredo não confere), diz por quê e pergunta se apaga só daqui — dizendo não, a build fica com o ID guardado. No lote, a que não sai do site fica na biblioteca e o aviso lista o ID. O botão Excluir da forja passou a avisar "ela também sai do site", como o da lista.
+
 `index.html:5983` · alta · achado por: Servidor das builds publicadas · **passou pelos céticos**
 
 **Como quebra:** Publicar uma build. Depois, sem internet (ou com o Supabase fora do ar / bloqueado por CORS ao abrir do disco), selecionar a build na lista e clicar em Excluir: o confirm diz textualmente "Ela também sai do site." (mesma promessa no lote: "As publicadas também saem do site."). O usuário confirma, a chamada apagar_build é disparada sem await, a rejeição cai num .catch vazio e a execução segue apagando a build local. Resultado: a build some da biblioteca, a publicação continua no ar, nenhuma mensagem aparece — e como o pubId foi apagado junto, o usuário não tem mais como chamar "Excluir do site" nem sabe o ID para procurar na aba Públicas. O retorno também é ignorado: quando apagar_build devolve false (segredo não confere), não há rejeição nenhuma e o silêncio é o mesmo.

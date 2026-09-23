@@ -680,6 +680,36 @@ def checar_texto(s, p):
             "rascunho sujo=%s, MF gravado=%s, campeão gravado=%s" % (r["sujo"], r["mfSalvo"], r["campeaoSalvo"]))
 
 
+def checar_exclusao(s, p):
+    """F13-T14: excluir uma build publicada prometia "ela também sai do site" e,
+    se o servidor falhasse, apagava daqui calada — a publicação ficava no ar e o
+    ID dela sumia. O servidor é SIMULADO: o pedido apagar_build nunca sai deste
+    navegador, e o confirm é respondido pelo roteiro."""
+    print(chr(10) + "%sEXCLUSÃO%s" % (AMARELO, FIM))
+    s.js("""(() => { window.__fetchOrig = window.fetch; window.__confirmOrig = window.confirm;
+      window.fetch = function (u, ...a) {
+        if (String(u).includes('apagar_build')) return Promise.reject(new TypeError('Failed to fetch'));
+        return window.__fetchOrig.call(this, u, ...a); };
+      window.__confirms = []; window.__respostas = [true, false];   // sim ao Excluir; não a "apagar só daqui"
+      window.confirm = (m) => { window.__confirms.push(m); return window.__respostas.length ? window.__respostas.shift() : false; };
+      return 'ok'; })()""")
+    s.nova_build()
+    bid = s.js("""(() => { build.name = 'Publicada de teste'; build.pubId = 'qa0000';
+      build.cats[3].items = CATALOG.items.slice(0, 2).map(i => ({ itemId: i.slug, note: '' })); gravarBuild(); return build.id; })()""")
+    s.nova_build()
+    s.js("switchTab('build'); showBuildScreen('lista'); biSelected = %s; renderBuildIndex(); 'ok'" % json.dumps(bid))
+    time.sleep(0.5)
+    s.js("""(() => { const b = [...document.querySelectorAll('[data-act="del"]')][0]; if (b) b.click(); return !!b; })()""")
+    time.sleep(1.0)
+    r = s.js("""(() => ({ ficou: library.builds.some(b => b.id === %s),
+      pub: (library.builds.find(b => b.id === %s) || {}).pubId || null, perguntas: window.__confirms }))()""" % (json.dumps(bid), json.dumps(bid)))
+    p.conta("exclusão", "servidor fora do ar: a publicada não some calada",
+            len(r["perguntas"]) == 2 and "continua no site" in r["perguntas"][1],
+            (r["perguntas"][1][:70] if len(r["perguntas"]) > 1 else "só %d pergunta(s)" % len(r["perguntas"])))
+    p.conta("exclusão", "dizendo não, a build fica, com o ID guardado", r["ficou"] and r["pub"] == "qa0000")
+    s.js("window.fetch = window.__fetchOrig; window.confirm = window.__confirmOrig; 'ok'")
+
+
 def checar_acessibilidade(s, p):
     print("\n%sACESSIBILIDADE%s" % (AMARELO, FIM))
     s.js("switchTab('catalog')")
@@ -868,6 +898,7 @@ GRUPOS = [
     ("runas", checar_runas),
     ("habilidades", checar_habilidades),
     ("texto", checar_texto),
+    ("exclusão", checar_exclusao),
     ("acessibilidade", checar_acessibilidade),
     ("resoluções", checar_resolucoes),
     # Por último de propósito: com as 38 builds publicadas na tela, o navegador
