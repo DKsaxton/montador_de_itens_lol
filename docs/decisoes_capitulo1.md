@@ -2,6 +2,8 @@
 
 O Catálogo é do Capítulo 1 e está fechado (225 itens, patch 16.18.1). O que a checagem de integridade do catalog.json aponta abaixo NÃO é pendência: são decisões já tomadas lá (CHECKPOINT do Capítulo 1, 12/09/2026). O app respeita o dado como está.
 
+O que ainda é pendência do Capítulo 1 (dado errado, forma do dado, patch novo, campos a acrescentar) está em `docs/pendencias_capitulo1.md`.
+
 - **Shattered Armguard (ID 2421) não existe no catálogo** — removido de propósito: é a versão pós-uso da Armaguarda da Caçadora, registrada como nota no bloco dela. Amplifying Tome e Cloth Armor continuam listando-o em "Vira em"; o app mostra o nome sem link.
 - **World Atlas → "Missão de Suporte"** — destino por transformação, não item. O app mostra o texto como está.
 - **Stat Bonus mantém ID 6032** com a anotação da wiki (220000) no próprio campo; o `id` sai como texto, o `iconUrl` usa 6032. O app não depende de `id` numérico.
