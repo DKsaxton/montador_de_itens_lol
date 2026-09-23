@@ -1,7 +1,7 @@
 window.RUNAS = {
  "meta": {
   "fonte": "data/Runas_League_of_Legends.md",
-  "gerado": "2026-09-20",
+  "gerado": "2026-09-23",
   "patch": "16.18.1",
   "trilhas": 5,
   "runas": 62,
@@ -11,7 +11,7 @@ window.RUNAS = {
   {
    "id": "precisao",
    "nome": "Precisão",
-   "lema": "Torne-se uma Lenda",
+   "lema": "Torne-se uma lenda",
    "slots": [
     {
      "nome": "Keystone",
@@ -21,10 +21,7 @@ window.RUNAS = {
        "id": "pressione-o-ataque",
        "nome": "Pressione o Ataque",
        "descricao": "Acertar um Campeão inimigo com 3 ataques básicos consecutivos causa 40 – 160 de Dano Adaptativo adicional (com base no nível) e amplifica o dano causado por você em 8% até sair de combate contra Campeões.",
-       "atributos": [
-        "Dano de Ataque",
-        "Poder de Habilidade"
-       ],
+       "atributos": [],
        "classes": [
         "Lutador",
         "Assassino",
@@ -35,8 +32,8 @@ window.RUNAS = {
         "O dano adaptativo é do tipo \"proc\" — não aciona efeitos de feitiço.",
         "Não é afetado por modificadores de dano on-hit.",
         "A aplicação é rastreada individualmente e não interage entre usuários diferentes atacando o mesmo alvo.",
-        "Efeitos que aplicam mais de um efeito on-hit por ataque (Lightslinger da Kalista, Predador Implacável do Rengar, Mordida Dupla do Renekton, Lâmina Fervilhante do Guinsoo) também aplicam acúmulos extras de Pressione o Ataque.",
-        "O próprio ataque que dispara o 3º acúmulo (e ativa o bônus de dano) não se beneficia do dano amplificado — mas dano contínuo/efeitos seguintes que vêm junto com esse ataque (ex: Hemorragia, Revestimento Tóxico) são amplificados."
+        "Efeitos que aplicam mais de um efeito on-hit por ataque (Disparo Iluminado do Lucian, Predador Desumano do Renekton, Lâmina da Fúria de Guinsoo) também aplicam acúmulos extras de Pressione o Ataque.",
+        "O próprio ataque que dispara o 3º acúmulo (e ativa o bônus de dano) não se beneficia do dano amplificado — mas dano contínuo/efeitos seguintes que vêm junto com esse ataque (ex: Hemorragia, Tiro Tóxico) são amplificados."
        ],
        "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Precision/PressTheAttack/PressTheAttack.png"
       },
@@ -54,10 +51,10 @@ window.RUNAS = {
         "Lutador",
         "Assassino"
        ],
-       "adaptativa": "1.1–2.4 de Dano de Ataque ou 1.8–4 de Poder de Habilidade — nunca as duas coisas juntas.",
+       "adaptativa": "1.08–2.4 de Dano de Ataque ou 1.8–4 de Poder de Habilidade — nunca as duas coisas juntas.",
        "notas": [
-        "Só acumula uma vez por instância de conjuração — ex: as ondas de fogo do Ultimate da Kayle compartilham a instância com o ataque básico que as originou, não empilham separadamente.",
-        "Efeitos de dano ao longo do tempo ou fontes contínuas de dano só concedem acúmulo uma vez a cada 5 segundos."
+        "Só acumula uma vez por instância de conjuração — ex: as ondas de fogo da passiva da Kayle (Ascensão Divina, nível 11) compartilham a instância com o ataque básico que as originou, não empilham separadamente.",
+        "Efeitos de dano ao longo do tempo ou fontes contínuas de dano só concedem acúmulo uma vez a cada 4 segundos."
        ],
        "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Precision/Conqueror/Conqueror.png"
       },
@@ -73,16 +70,17 @@ window.RUNAS = {
        ],
        "adaptativa": "",
        "notas": [
-        "Permite exceder temporariamente o limite de Velocidade de Ataque.",
+        "Não permite exceder o limite de Velocidade de Ataque; a Velocidade de Ataque acima do limite ainda aumenta o dano do disparo.",
         "O dano do disparo (bolt) é do tipo \"proc\" — não aciona efeitos de feitiço.",
-        "Para campeões de ataque à distância, o cálculo do bônus de dano do disparo usa uma redução de apenas 1/6 (16,67%) em vez da redução de 1/3 (33,33%) aplicada a campeões corpo a corpo."
+        "Os valores de ataque à distância vêm dos de corpo a corpo: a Velocidade de Ataque por acúmulo é multiplicada por 0,8 e o dano do disparo por 0,667 (é o ataque à distância que leva o corte de 1/3). A escala de 1% a cada 1% de Velocidade de Ataque adicional não muda.",
+        "O texto oficial da Riot ainda mostra 4% e 6-24 para ataque à distância; o jogo usa 4,8% por acúmulo (6% × 0,8) e cerca de 6-20 de dano (× 0,667)."
        ],
        "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Precision/LethalTempo/LethalTempoTemp.png"
       },
       {
        "id": "agilidade-nos-pes",
        "nome": "Agilidade nos Pés",
-       "descricao": "Ao atacar ou se mover, você recebe acúmulos de Energia. Com 100 acúmulos, seu próximo Ataque fica Energizado. Ataques Energizados curam em 10 - 130 (+0.1 de DdA adicional, +0.05 de PdH) e concedem 20% de Velocidade de Movimento por 1s. Para Campeões de ataque à distância, a cura é 60% eficaz e a Velocidade de Movimento é 75% eficaz. Toda a cura é 15% eficaz contra tropas.",
+       "descricao": "Ao atacar ou se mover, você recebe acúmulos de Energia. Com 100 acúmulos, seu próximo Ataque fica Energizado. Ataques Energizados curam em 15 - 160 (+0.1 de DdA adicional, +0.05 de PdH) e concedem 20% de Velocidade de Movimento por 1s. Para Campeões de ataque à distância, a cura é 60% eficaz e a Velocidade de Movimento é 75% eficaz. Toda a cura é 15% eficaz contra tropas.",
        "atributos": [
         "Dano de Ataque",
         "Poder de Habilidade",
@@ -95,7 +93,7 @@ window.RUNAS = {
        ],
        "adaptativa": "",
        "notas": [
-        "Cada ataque básico on-attack gera 6 pontos de acúmulo; also gera 1 ponto a cada 24 unidades de distância percorrida (por qualquer forma de movimento, incluindo dash/blink/deslocamento).",
+        "Cada ataque básico on-attack gera 6 pontos de acúmulo; também gera 1 ponto a cada 24 unidades de distância percorrida (por qualquer forma de movimento, incluindo dash/blink/deslocamento).",
         "Habilidades que aplicam efeitos on-hit também geram 6 pontos de acúmulo.",
         "Não é consumido contra sentinelas ou plantas da selva."
        ],
@@ -112,7 +110,6 @@ window.RUNAS = {
        "nome": "Absorção Vital",
        "descricao": "Abater um alvo restaura 1-23 de Vida com base no nível.",
        "atributos": [
-        "Vida Máxima",
         "Cura"
        ],
        "classes": [
@@ -152,7 +149,6 @@ window.RUNAS = {
        "nome": "Presença de Espírito",
        "descricao": "Causar dano a um Campeão inimigo restaura 6 - 50 (80% para Campeões à distância) de Mana ou 6 de Energia. Eliminações restauram 15% do seu Mana máximo ou da sua Energia máxima. Tempo de Recarga da restauração por dano: 8s.",
        "atributos": [
-        "Cura",
         "Mana / Energia"
        ],
        "classes": [
@@ -162,8 +158,7 @@ window.RUNAS = {
        ],
        "adaptativa": "",
        "notas": [
-        "A quantidade de regeneração de mana concedida é calculada só no momento em que o efeito é adquirido, e não se atualiza enquanto estiver ativo — campeões que alternam entre forma corpo a corpo e à distância (Nidalee, Jayce) podem ativar o efeito na forma corpo a corpo (bônus maior) e manter esse valor mesmo depois de trocar de forma.",
-        "Em abate, campeões que usam energia restauram 30 de energia (60 pra Shen, 42 pra Akali durante o Manto do Crepúsculo)."
+        "Em abate, campeões que usam energia restauram 30 de energia (60 pra Shen, 42 pra Akali durante a Proteção do Crepúsculo)."
        ],
        "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Precision/PresenceOfMind/PresenceOfMind.png"
       }
@@ -185,7 +180,7 @@ window.RUNAS = {
        ],
        "adaptativa": "",
        "notas": [
-        "As 3 runas de Lenda (Espontaneidade, Aceleração, Linhagem) compartilham o mesmo sistema de acúmulo: 100 pontos por abate de campeão, 100 por abate de monstro épico, 25 por monstro grande, 4 por minion — até 10 acúmulos."
+        "As 3 runas de Lenda (Espontaneidade, Aceleração, Linhagem) compartilham o mesmo sistema de acúmulo: 100 pontos por abate de campeão, 100 por abate de monstro épico, 25 por monstro grande, 4 por minion — até 10 acúmulos (15 na Linhagem)."
        ],
        "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Precision/LegendAlacrity/LegendAlacrity.png"
       },
@@ -210,7 +205,7 @@ window.RUNAS = {
        "descricao": "Recebe 0.45% de Roubo de Vida para cada acúmulo de Lenda (máximo de 15 acúmulos). Com o máximo de acúmulos de Lenda, recebe 85 de Vida máxima adicional. Progride nos acúmulos de Lenda a cada eliminação de Campeão, eliminação de monstro épico, abate de monstro grande e abate de tropas.",
        "atributos": [
         "Vida Máxima",
-        "roubo_vida"
+        "Roubo de Vida"
        ],
        "classes": [
         "Atirador",
@@ -238,7 +233,7 @@ window.RUNAS = {
        "adaptativa": "",
        "notas": [
         "Só ativa em dano causado DEPOIS que o alvo já estiver abaixo de 40% de vida — o próprio golpe que derruba o alvo abaixo desse limite não recebe o bônus.",
-        "Atualmente também se aplica a Dano Verdadeiro (exceto Executar/Smite)."
+        "Atualmente também se aplica a Dano Verdadeiro (exceto o de Golpear)."
        ],
        "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Precision/CoupDeGrace/CoupDeGrace.png"
       },
@@ -254,7 +249,7 @@ window.RUNAS = {
        ],
        "adaptativa": "",
        "notas": [
-        "Atualmente também se aplica a Dano Verdadeiro (exceto Executar/Smite)."
+        "Atualmente também se aplica a Dano Verdadeiro (exceto o de Golpear)."
        ],
        "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Precision/CutDown/CutDown.png"
       },
@@ -270,7 +265,7 @@ window.RUNAS = {
        ],
        "adaptativa": "",
        "notas": [
-        "Atualmente também se aplica a Dano Verdadeiro (exceto Executar/Smite)."
+        "Atualmente também se aplica a Dano Verdadeiro (exceto o de Golpear)."
        ],
        "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Sorcery/LastStand/LastStand.png"
       }
@@ -283,7 +278,7 @@ window.RUNAS = {
   {
    "id": "dominacao",
    "nome": "Dominação",
-   "lema": "Caçe e Elimine Presas",
+   "lema": "Caçar e eliminar presa",
    "slots": [
     {
      "nome": "Keystone",
@@ -325,8 +320,8 @@ window.RUNAS = {
        ],
        "adaptativa": "",
        "notas": [
-        "Não ativa com dano menor que 2 (exceto a Chama do Brand).",
-        "Não ativa com dano do tipo \"proc\" de outras fontes (ex: Chamuscar, Angústia de Liandry, Ricochete) — exceto o Revestimento Tóxico do Teemo.",
+        "Não ativa com dano menor que 2 (exceto a Labareda do Brand).",
+        "Não ativa com dano do tipo \"proc\" de outras fontes (ex: Chamuscar, Tormento de Liandry, Ricochete da Sivir) — exceto o Tiro Tóxico do Teemo.",
         "Ativa em clones, mas não em zumbis.",
         "Não colhe uma Alma adicional durante o pequeno atraso entre causar a condição e efetivamente ganhar a Alma."
        ],
@@ -348,7 +343,7 @@ window.RUNAS = {
        "adaptativa": "",
        "notas": [
         "Dano do tipo \"proc\" — não aciona efeitos de feitiço.",
-        "Só gera acúmulo extra a partir de reset de ataque se o efeito que resetou tiver uma marcação específica de \"reset de ataque\" — feitiços como Escolha de Cartas (Twisted Fate), Uivo Primordial recastado (Warwick) e o Cinto-Foguete Hextec resetam o temporizador de ataque mas NÃO têm essa marcação, então não geram acúmulo extra."
+        "Só gera acúmulo extra a partir de reset de ataque se o efeito que resetou tiver uma marcação específica de \"reset de ataque\" — feitiços como Escolha uma Carta (Twisted Fate), Uivo Primitivo reconjurado (Warwick) e o Explocinturão Hextec resetam o temporizador de ataque mas NÃO têm essa marcação, então não geram acúmulo extra."
        ],
        "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Domination/HailOfBlades/HailOfBlades.png"
       }
@@ -362,9 +357,7 @@ window.RUNAS = {
        "id": "golpe-desleal",
        "nome": "Golpe Desleal",
        "descricao": "Causar dano a Campeões com movimento ou ações debilitadas causa 10 - 45 de Dano Verdadeiro adicional (com base no nível). Tempo de Recarga: 4s. É ativado pelo dano causado após a debilitação.",
-       "atributos": [
-        "Dano de Ataque"
-       ],
+       "atributos": [],
        "classes": [
         "Assassino",
         "Lutador",
@@ -375,7 +368,7 @@ window.RUNAS = {
         "O dano é do tipo \"proc\" — não aciona efeitos de feitiço (item/runa) que dependem de dano de habilidade ou de ataque básico.",
         "Verifica o status do alvo toda vez que dano é causado, não só uma vez — pode ativar em qualquer instância de dano após o alvo ficar debilitado.",
         "Não ativa se o dano ocorrer no mesmo tick de jogo em que a própria debilitação foi aplicada pela mesma instância de conjuração (exceto se o alvo já estava debilitado por outra fonte antes).",
-        "Debilitação aplicada on-hit (ex: Investida do Alistar) já conta antes dessa checagem; debilitação aplicada on-pre-apply (ex: Cetro de Cristal de Rylai) não conta."
+        "Debilitação aplicada on-hit (ex: Atropelar do Alistar) já conta antes dessa checagem; debilitação aplicada on-pre-apply (ex: Cetro de Cristal de Rylai) não conta."
        ],
        "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Domination/CheapShot/CheapShot.png"
       },
@@ -401,9 +394,7 @@ window.RUNAS = {
        "id": "impacto-repentino",
        "nome": "Impacto Repentino",
        "descricao": "Depois de usar um avanço, salto, teleporte ou ao sair da furtividade, seus ataques básicos e habilidades de dano causam 20-80 de Dano Verdadeiro adicional com base no nível a Campeões inimigos por 4s. Tempo de Recarga: 10s.",
-       "atributos": [
-        "Dano de Ataque"
-       ],
+       "atributos": [],
        "classes": [
         "Assassino"
        ],
@@ -420,7 +411,7 @@ window.RUNAS = {
       {
        "id": "sexto-sentido",
        "nome": "Sexto Sentido",
-       "descricao": "Detecta automaticamente uma sentinela oculta próxima, rastreando-a para a equipe. Nível 11: também revela a sentinela por 106s. O efeito tem um Tempo de Recarga de 250s.",
+       "descricao": "Detecta automaticamente uma sentinela oculta próxima, rastreando-a para a equipe. Nível 11: também revela a sentinela por 10s. O efeito tem um Tempo de Recarga de 250s.",
        "atributos": [
         "Visão"
        ],
@@ -437,8 +428,8 @@ window.RUNAS = {
        "nome": "Lembranças Aterrorizantes",
        "descricao": "Colete 1 Lembrança ao eliminar Campeões, até um máximo de 18. Recebe 6 de Aceleração de Amuleto para cada Lembrança coletada. Em modos de jogo sem Amuletos de visão, recebe 3 de Aceleração de Feitiço de Invocador.",
        "atributos": [
-        "Aceleração de Habilidade",
-        "Visão"
+        "Visão",
+        "Aceleração de Feitiço de Invocador"
        ],
        "classes": [
         "Assassino",
@@ -524,7 +515,7 @@ window.RUNAS = {
   {
    "id": "feiticaria",
    "nome": "Feitiçaria",
-   "lema": "Liberte a Destruição",
+   "lema": "Desferir destruição",
    "slots": [
     {
      "nome": "Keystone",
@@ -533,7 +524,7 @@ window.RUNAS = {
       {
        "id": "invocar-aery",
        "nome": "Invocar Aery",
-       "descricao": "Causar dano a Campeões inimigos com ataques básicos ou Habilidades envia Aery até eles, causando 10 - 50 de dano com base no nível (+0.05 de PdH) (+0.1 de DdA adicional). Fortalecer ou proteger aliados com Habilidades envia Aery até eles, concedendo um escudo de 20 - 100 com base no nível (+0.05 de PdH) (+0.1 de DdA adicional).",
+       "descricao": "Causar dano a Campeões inimigos com ataques básicos ou Habilidades envia Aery até eles, causando 10 - 50 de dano com base no nível (+0.05 de PdH) (+0.1 de DdA adicional). Fortalecer ou proteger aliados com Habilidades envia Aery até eles, concedendo um escudo de 20 - 100 com base no nível (+0.05 de PdH) (+0.1 de DdA adicional). Aery não é enviada novamente até que ela retorne a você.",
        "atributos": [
         "Dano de Ataque",
         "Poder de Habilidade",
@@ -546,8 +537,8 @@ window.RUNAS = {
        "adaptativa": "",
        "notas": [
         "Dano do tipo \"proc\" — não aciona efeitos de feitiço.",
-        "O efeito de aliado dispara em qualquer habilidade que afete aliados (mirada ou não) — inclui o escudo do Estandarte Demaciano (J4), o Descanso da Ovelha (Kindred) e o Capricho (Lulu). NÃO dispara com a Maré Ascendente da Nami (não dá pra escudar um aliado debilitando um inimigo com ela).",
-        "Ótima em habilidades de dano ao longo do tempo, já que pode ativar várias vezes durante a duração (ex: Visões Malignas do Malzahar, Rastro Venenoso do Singed)."
+        "O efeito de aliado dispara em qualquer habilidade que afete aliados (mirada ou não) — inclui o Estandarte Demaciano do Jarvan IV (o escudo vai para o aliado mais perto da bandeira), o Refúgio da Ovelha (Kindred) e os Caprichos (Lulu). NÃO dispara com a Maré Oscilante da Nami (não dá pra escudar um aliado acertando-o com a Prisão Aquática).",
+        "Ótima em habilidades de dano ao longo do tempo, já que pode ativar várias vezes durante a duração (ex: Visões Maléficas do Malzahar, Rastro de Veneno do Singed)."
        ],
        "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Sorcery/SummonAery/SummonAery.png"
       },
@@ -565,7 +556,7 @@ window.RUNAS = {
        "adaptativa": "",
        "notas": [
         "Dano do tipo \"proc\" e marcado como área de efeito — não aciona efeitos de feitiço.",
-        "Pode ser bloqueado por escudos de feitiço, e é um projétil — pode ser interceptado pelo Inquebrável do Braum, Giro de Lâmina da Samira e Muralha de Vento do Yasuo.",
+        "Pode ser bloqueado por escudos de feitiço, e é um projétil — pode ser interceptado pelo Inquebrável do Braum, Voragem Afiada da Samira e Parede de Vento do Yasuo.",
         "Não ativa causando 0 de dano.",
         "Fica visível mesmo sem visão do campeão que a usou — pode entregar a posição dele."
        ],
@@ -584,14 +575,14 @@ window.RUNAS = {
        ],
        "adaptativa": "",
        "notas": [
-        "Essa runa (Stormraider's Surge) voltou ao jogo em abril de 2026 (Patch 26.09) substituindo a antiga Ímpeto Gradual (Phase Rush) — ela mesma é o retorno de uma mastery da Season 6 removida em 2018."
+        "Essa runa (Stormraider's Surge) voltou ao jogo em abril de 2026 (Patch 26.09) substituindo a antiga Ímpeto Gradual (Phase Rush) — ela mesma é o retorno de uma mastery da Season 6 removida em novembro de 2017 (Patch 7.22)."
        ],
        "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Sorcery/PhaseRush/StormraidersSurgeRuneIcon2.png"
       },
       {
        "id": "toque-igneo",
        "nome": "Toque Ígneo",
-       "descricao": "Causar dano a um Campeão com uma Habilidade o queima, causando 3-12 com base no nível (+2.5% do PdH) (+7% do DdA adicional) de Dano Mágico por segundo. Após queimar por 3s, o dano da Queimadura aumenta em 75% enquanto o alvo permanece em chamas. Duração: Alvo único: 4s. Área de ação: 2s.",
+       "descricao": "Causar dano a um Campeão com uma Habilidade o queima, causando 3-12 com base no nível (+2.5% do PdH) (+7% do DdA adicional) de Dano Mágico por segundo. Após queimar por 3s, o dano da Queimadura aumenta em 75% enquanto o alvo permanece em chamas. Duração: Alvo único: 4s. Área de ação: 2s. Dano ao longo do tempo: 1s.",
        "atributos": [
         "Dano de Ataque",
         "Poder de Habilidade"
@@ -624,7 +615,7 @@ window.RUNAS = {
        ],
        "adaptativa": "",
        "notas": [
-        "Afeta os efeitos de dano da passiva da ultimate do usuário (com exceções específicas por campeão, ex: não amplifica corretamente o dano de Fluxo de Feitiço + Sobrecarga do Ryze mesmo sendo tecnicamente um efeito de dano contínuo da ultimate).",
+        "Afeta os efeitos de dano da passiva da ultimate do usuário (com exceções específicas por campeão, ex: a passiva do Portal de Reinos do Ryze é um efeito de dano, mas não parece aumentar em 12% nem em 8% o dano do combo Fluxo de Feitiço + Sobrecarregar).",
         "Também amplifica dano/cura/escudo de pets invocados pela ultimate (exceto o Salto de Fé da Illaoi).",
         "Afeta dano da ultimate contra não-campeões e cura/escudo pra não-campeões aliados."
        ],
@@ -635,7 +626,6 @@ window.RUNAS = {
        "nome": "Faixa de Fluxo de Mana",
        "descricao": "Atingir um Campeão inimigo com uma habilidade aumenta permanentemente seu Mana máximo em 25, até o total de 250 de Mana. Após atingir 250 de Mana adicional, 1% do seu Mana perdido é restaurado a cada 5s. Tempo de Recarga: 15s.",
        "atributos": [
-        "Cura",
         "Mana / Energia"
        ],
        "classes": [
@@ -653,7 +643,7 @@ window.RUNAS = {
       {
        "id": "manto-de-nimbus",
        "nome": "Manto de Nimbus",
-       "descricao": "Depois de conjurar um Feitiço de Invocador, recebe um aumento de Velocidade de Movimento que dura 2.5s e permite atravessar unidades. Aumento: 15% - 45% de Velocidade de Movimento com base no Tempo de Recarga do Feitiço de Invocador (Feitiços de Invocador com Tempos de Recarga maiores concedem mais Velocidade de Movimento).",
+       "descricao": "Depois de conjurar um Feitiço de Invocador, recebe um aumento de Velocidade de Movimento que dura 2s e permite atravessar unidades. Aumento: 15% - 45% de Velocidade de Movimento com base no Tempo de Recarga do Feitiço de Invocador (Feitiços de Invocador com Tempos de Recarga maiores concedem mais Velocidade de Movimento).",
        "atributos": [
         "Velocidade de Movimento"
        ],
@@ -665,9 +655,9 @@ window.RUNAS = {
        "adaptativa": "",
        "notas": [
         "O bônus de Velocidade de Movimento depende de qual faixa de tempo de recarga o feitiço de invocador usado se encaixa (existem 3 faixas).",
-        "Teleporte é tratado como sempre estando na faixa mais alta (exceto quando usado via Ladra de Feitiços da Zoe, que usa a faixa mais baixa).",
+        "Teleporte é tratado como sempre estando na faixa mais alta (exceto quando usado via Roubo Arcano da Zoe, que usa a faixa mais baixa).",
         "Usar múltiplos feitiços só considera o de maior bônus; cada faixa de recarga tem sua própria ativação independente.",
-        "Pra Teleporte/Hexflash, ativa quando o canalizar termina OU é interrompido (o Hexflash precisa ter canalizado até o dash ficar disponível pra contar como interrompido)."
+        "Pra Teleporte/Flash Hextec, ativa quando a canalização termina OU é interrompida (o Flash Hextec precisa ter canalizado até o teleporte ficar disponível pra contar como interrompido)."
        ],
        "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Sorcery/NimbusCloak/6361.png"
       }
@@ -707,7 +697,7 @@ window.RUNAS = {
        ],
        "adaptativa": "",
        "notas": [
-        "Concede Velocidade de Movimento bônus fixa igual a 7% dos seus OUTROS bônus fixos de velocidade (não os bônus percentuais) — inclui até bônus fixos negativos (ex: Capricho da Lulu contra inimigos, Purgar do Urgot)."
+        "Amplia em 7% os seus OUTROS bônus de Velocidade de Movimento: os fixos sempre — inclusive os negativos (ex: Caprichos da Lulu contra inimigos, Expurgar do Urgot) —, os percentuais aditivos só quando a soma deles passa de 5%, e os multiplicativos sempre."
        ],
        "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Sorcery/Celerity/CelerityTemp.png"
       },
@@ -737,9 +727,7 @@ window.RUNAS = {
        "id": "chamuscar",
        "nome": "Chamuscar",
        "descricao": "Sua próxima habilidade de dano a atingir o alvo incinera Campeões, causando de 20 a 40 de Dano Mágico adicional, com base no nível, após 1s. Tempo de Recarga: 10s.",
-       "atributos": [
-        "Poder de Habilidade"
-       ],
+       "atributos": [],
        "classes": [
         "Mago"
        ],
@@ -786,7 +774,7 @@ window.RUNAS = {
        ],
        "adaptativa": "",
        "notas": [
-        "O intervalo de 10 minutos muda por modo de jogo: ARAM e URF a cada 6min, Swiftplay a cada 7min, Nexus Blitz a cada 4.5min."
+        "O intervalo de 10 minutos muda por modo de jogo: ARAM e URF a cada 6min, Jogo Dinâmico a cada 7min, Blitz do Nexus a cada 4.5min."
        ],
        "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Sorcery/GatheringStorm/GatheringStorm.png"
       }
@@ -799,7 +787,7 @@ window.RUNAS = {
   {
    "id": "determinacao",
    "nome": "Determinação",
-   "lema": "Viva Para Sempre",
+   "lema": "Viva para sempre",
    "slots": [
     {
      "nome": "Keystone",
@@ -810,7 +798,6 @@ window.RUNAS = {
        "nome": "Aperto dos Mortos-Vivos",
        "descricao": "A cada 4s em combate, seu próximo ataque básico contra um Campeão irá: - Causar Dano Mágico adicional equivalente a 3.5% da sua Vida máxima - Curar você em 1.3% da sua Vida máxima - Aumentar permanentemente sua Vida em 5 Campeões de ataque à distância: o dano, a cura e a Vida permanente recebidos têm 40% de eficácia.",
        "atributos": [
-        "Poder de Habilidade",
         "Vida Máxima",
         "Cura"
        ],
@@ -821,7 +808,7 @@ window.RUNAS = {
        "adaptativa": "",
        "notas": [
         "Dano do tipo \"proc\" — não aciona efeitos de feitiço, e não é afetado por modificadores de dano on-hit.",
-        "Pra campeões de ataque à distância, o dano e a cura são reduzidos pela metade, e o ganho de vida permanente também é menor."
+        "Pra campeões de ataque à distância, o dano, a cura e o ganho de Vida permanente têm 40% de eficácia (1.4% de dano, 0.52% de cura e 2 de Vida por ativação)."
        ],
        "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Resolve/GraspOfTheUndying/GraspOfTheUndying.png"
       },
@@ -830,9 +817,9 @@ window.RUNAS = {
        "nome": "Pós-choque",
        "descricao": "Após imobilizar um Campeão inimigo, aumenta a própria Armadura e Resistência Mágica em 45 + 75% de suas resistências adicionais por 2.5s. Depois, ocorre uma explosão que causa Dano Mágico a inimigos próximos. Dano: 25 - 120 (+8% da sua Vida adicional). Tempo de Recarga: 20s. A resistência adicional de Pós-choque é limitada a: 80 - 150 (com base no nível).",
        "atributos": [
-        "Poder de Habilidade",
         "Armadura",
-        "Resistência Mágica"
+        "Resistência Mágica",
+        "Vida Máxima"
        ],
        "classes": [
         "Tank",
@@ -851,6 +838,7 @@ window.RUNAS = {
        "descricao": "Protege por 2.5s aliados a até 350 unidades de distância de você e aliados nos quais você tenha conjurado habilidades. Durante a Proteção, caso você ou o aliado sofram uma quantidade significativa de dano ao longo da duração de Guardião, ambos ganham um escudo por 1.5s. Tempo de Recarga: 75s-40s. Escudo: 40 - 150 + 20% do seu Poder de Habilidade + 6% da sua Vida adicional. Limiar de acionamento: 50 - 165 de dano pós-mitigação.",
        "atributos": [
         "Poder de Habilidade",
+        "Vida Máxima",
         "Escudo"
        ],
        "classes": [
@@ -859,7 +847,7 @@ window.RUNAS = {
        ],
        "adaptativa": "",
        "notas": [
-        "NÃO ativa com Cura genérica, Ária da Perseverança da Sona ou Barreira Prismática da Lux.",
+        "NÃO ativa com Curar (feitiço de invocador), Ária da Perseverança da Sona ou Barreira Prismática da Lux.",
         "ATIVA com a Passagem Sombria do Thresh quando conjurada num aliado.",
         "O \"Você e Eu!\" da Yuumi não aplica o Guardião por si só, mas o Guardião ainda ativa se ela estiver no alcance do aliado alvo.",
         "Não ativa se o usuário estiver morto."
@@ -877,7 +865,7 @@ window.RUNAS = {
        "nome": "Demolir",
        "descricao": "Seu terceiro ataque contra torres causa 85 (+28% da Vida máxima) corpo a corpo ou 50 (+20% da Vida máxima) à distância de Dano Físico adicional. Tempo de Recarga: 30s.",
        "atributos": [
-        "Dano de Ataque"
+        "Vida Máxima"
        ],
        "classes": [
         "Tank",
@@ -905,7 +893,8 @@ window.RUNAS = {
        "adaptativa": "",
        "notas": [
         "Não concede assistência (assist) pela cura.",
-        "Ativa mesmo com o usuário ou alvo já em 100% de vida (o dano/cura listado no total pode não refletir cura real aplicada)."
+        "Ativa mesmo com o usuário ou alvo já em 100% de vida (o dano/cura listado no total pode não refletir cura real aplicada).",
+        "O texto oficial da Riot não traz o valor da cura; pelo dado do jogo e pela wiki, 10 – 50 (corpo a corpo) e 7 – 35 (à distância), do nível 1 ao 18."
        ],
        "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Resolve/FontOfLife/FontOfLife.png"
       },
@@ -913,7 +902,10 @@ window.RUNAS = {
        "id": "golpe-de-escudo",
        "nome": "Golpe de Escudo",
        "descricao": "Sempre que receber um novo escudo, seu próximo ataque básico contra um Campeão causará 5-30 (+2.5% de Vida adicional) (+15.0% da quantidade do novo escudo) de Dano Adaptativo adicional. Você tem até 2s após o escudo acabar para usar este efeito.",
-       "atributos": [],
+       "atributos": [
+        "Vida Máxima",
+        "Escudo"
+       ],
        "classes": [
         "Tank",
         "Lutador"
@@ -953,7 +945,7 @@ window.RUNAS = {
       {
        "id": "ventos-revigorantes",
        "nome": "Ventos Revigorantes",
-       "descricao": "Após sofrer dano de um Campeão inimigo, cura em 4% da sua Vida perdida ao longo de 10.5s.",
+       "descricao": "Após sofrer dano de um Campeão inimigo, cura em 4% da sua Vida perdida ao longo de 10s.",
        "atributos": [
         "Cura"
        ],
@@ -970,7 +962,7 @@ window.RUNAS = {
       {
        "id": "osso-revestido",
        "nome": "Osso Revestido",
-       "descricao": "Após sofrer dano de um Campeão inimigo, os próximos 3 Ataques ou Habilidades que você sofrer desse inimigo causarão 30 - 60 (com base no nível) a menos de dano. Duração: 1.5s. Tempo de Recarga: 555s.",
+       "descricao": "Após sofrer dano de um Campeão inimigo, os próximos 3 Ataques ou Habilidades que você sofrer desse inimigo causarão 30 - 60 (com base no nível) a menos de dano. Duração: 1.5s. Tempo de Recarga: 55s.",
        "atributos": [],
        "classes": [
         "Tank"
@@ -1013,7 +1005,6 @@ window.RUNAS = {
        "nome": "Revitalizar",
        "descricao": "Recebe 5% de Cura e Resistência do Escudo. Curas e Escudos conjurados ou recebidos são 10% mais fortes em alvos com menos de 40% de Vida.",
        "atributos": [
-        "Vida Máxima",
         "Cura",
         "Escudo"
        ],
@@ -1023,7 +1014,7 @@ window.RUNAS = {
        ],
        "adaptativa": "",
        "notas": [
-        "Combina os efeitos de duas masteries antigas removidas (Runic Armor e Windspeaker's Blessing) — inclusive o fato de ambos os efeitos empilharem multiplicativamente entre si."
+        "Combina os efeitos de dois talentos antigos removidos (Armadura Rúnica e Bênção da Voz do Vento) — inclusive o fato de ambos os efeitos empilharem multiplicativamente entre si."
        ],
        "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Resolve/Revitalize/Revitalize.png"
       },
@@ -1055,7 +1046,7 @@ window.RUNAS = {
   {
    "id": "inspiracao",
    "nome": "Inspiração",
-   "lema": "Ultrapasse os Mortais",
+   "lema": "Iludir os meros mortais",
    "slots": [
     {
      "nome": "Keystone",
@@ -1069,7 +1060,7 @@ window.RUNAS = {
         "Dano de Ataque",
         "Poder de Habilidade",
         "Cura",
-        "Aplica Lentidão / CC"
+        "Escudo"
        ],
        "classes": [
         "Tank",
@@ -1082,7 +1073,7 @@ window.RUNAS = {
       {
        "id": "livro-de-feiticos-deslacrado",
        "nome": "Livro de Feitiços Deslacrado",
-       "descricao": "Troque um dos seus Feitiços de Invocador equipados por um novo de uso único. Cada troca de Feitiço de Invocador reduz permanentemente seu Tempo de Recarga em 25s (Tempo de Recarga inicial de 3s). Sua primeira troca fica disponível aos 6min. Feitiços de Invocador só podem ser trocados fora de combate. Depois de usar um Feitiço de Invocador que já foi trocado, você precisa trocar mais 3 vezes antes que ele possa ser selecionado novamente. O dano de Golpear aumenta após duas trocas de Feitiço de Invocador.",
+       "descricao": "Troque um dos seus Feitiços de Invocador equipados por um novo de uso único. Cada troca de Feitiço de Invocador reduz permanentemente seu Tempo de Recarga em 25s (Tempo de Recarga inicial de 270s). Sua primeira troca fica disponível aos 6min. Feitiços de Invocador só podem ser trocados fora de combate. Depois de usar um Feitiço de Invocador que já foi trocado, você precisa trocar mais 3 vezes antes que ele possa ser selecionado novamente. O dano de Golpear aumenta após duas trocas de Feitiço de Invocador.",
        "atributos": [],
        "classes": [
         "Mago",
@@ -1092,7 +1083,7 @@ window.RUNAS = {
        "notas": [
         "O tempo de recarga da troca é fixo — não é reduzido por Aceleração de Feitiço de Invocador.",
         "Não existe prazo pros feitiços trocados — eles ficam disponíveis indefinidamente até serem usados.",
-        "Trocar o Executar (Smite) não concede acesso aos itens exclusivos de selva; trocar o Executar por outro feitiço também não bloqueia o acesso a esses itens."
+        "Selecionar o Golpear numa troca não concede acesso aos itens exclusivos de selva; trocar o Golpear por outro feitiço também não bloqueia o acesso a esses itens."
        ],
        "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Inspiration/UnsealedSpellbook/UnsealedSpellbook.png"
       },
@@ -1134,9 +1125,9 @@ window.RUNAS = {
        ],
        "adaptativa": "",
        "notas": [
-        "O Hexflash fica desabilitado enquanto o usuário estiver ancorado, enraizado ou impedido de conjurar.",
-        "Se o Flash normal for usado enquanto o Hexflash está sendo canalizado, ainda dá pra completar a conjuração (perdendo o Hexflash), e ela ainda entra em recarga.",
-        "Não considera o nocaute do Cone de Rajada (planta da selva) como \"entrar em combate\"."
+        "O Flash Hextec fica desabilitado enquanto o usuário estiver ancorado, enraizado ou impedido de conjurar.",
+        "Se o Flash sair da recarga enquanto o Flash Hextec está sendo canalizado, ainda dá pra completar a conjuração (perdendo o Flash Hextec), e ela ainda entra em recarga.",
+        "Não considera o arremesso do Pinstouro (planta da selva) como \"entrar em combate\"."
        ],
        "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Inspiration/HextechFlashtraption/HextechFlashtraption.png"
       },
@@ -1153,7 +1144,6 @@ window.RUNAS = {
        ],
        "adaptativa": "",
        "notas": [
-        "Na Cassiopeia (que não usa botas), é substituída por Reembolso.",
         "Se as botas forem vendidas, dá pra recomprar normalmente na loja."
        ],
        "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Inspiration/MagicalFootwear/MagicalFootwear.png"
@@ -1171,7 +1161,7 @@ window.RUNAS = {
        ],
        "adaptativa": "",
        "notas": [
-        "Itens da linha Guardião (Relicário Antigo etc.) não contam como itens Lendários pra esse reembolso."
+        "Itens do Guardião (Lâmina, Martelo, Berrante e Orbe do Guardião) não contam como itens Lendários pra esse reembolso."
        ],
        "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Inspiration/CashBack/CashBack2.png"
       }
@@ -1184,7 +1174,7 @@ window.RUNAS = {
       {
        "id": "tonico-triplo",
        "nome": "Tônico Triplo",
-       "descricao": "Concede Elixires gratuitos conforme você sobe de nível: - Nível 3: Elixir da Avareza — +5 de Dano Verdadeiro ao atingir tropas por 60s; ao expirar, concede 40 de ouro - Nível 6: Elixir da Força — +5 de Dano de Ataque (AD) adaptável ou 9 de Poder de Habilidade (AP) adaptável por 60s - Nível 9: Elixir da Habilidade — concede 1 ponto de habilidade adicional",
+       "descricao": "Concede Elixires gratuitos conforme você sobe de nível: - Nível 3: Elixir da Avareza — +5 de Dano Verdadeiro ao atingir tropas por 60s; ao expirar, concede 60 de ouro - Nível 6: Elixir da Força — +15 de Dano de Ataque (AD) adaptável ou 25 de Poder de Habilidade (AP) adaptável por 60s - Nível 9: Elixir da Habilidade — concede 1 ponto de habilidade adicional",
        "atributos": [
         "Dano de Ataque",
         "Poder de Habilidade",
@@ -1211,7 +1201,7 @@ window.RUNAS = {
        ],
        "adaptativa": "",
        "notas": [
-        "Consumir uma poção ou biscoito concede metade da cura instantaneamente, mas impede reusar aquele consumível até o efeito acabar — o resto da cura vem ao longo da duração normal, só que pela metade por tick.",
+        "A cura imediata é um adicional: a poção continua curando o total normal ao longo da duração. Só vale para poções (Poção de Vida: 48; Poção com Refil: 40) — biscoito não conta.",
         "Se consumíveis estiverem empilhados, a restauração instantânea do próximo só se aplica depois que a duração do atual terminar."
        ],
        "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Inspiration/TimeWarpTonic/TimeWarpTonic.png"
@@ -1245,9 +1235,10 @@ window.RUNAS = {
       {
        "id": "perspicacia-cosmica",
        "nome": "Perspicácia Cósmica",
-       "descricao": "+18 de Aceleração de Feitiço de Invocador. +10 de Aceleração de item.",
+       "descricao": "+18 de Aceleração de Feitiço de Invocador. +10 de Aceleração de Item.",
        "atributos": [
-        "Aceleração de Habilidade"
+        "Aceleração de Feitiço de Invocador",
+        "Aceleração de Item"
        ],
        "classes": [
         "Tank",
@@ -1260,7 +1251,7 @@ window.RUNAS = {
       {
        "id": "velocidade-de-aproximacao",
        "nome": "Velocidade de Aproximação",
-       "descricao": "Recebe 7.5% de Velocidade de Movimento em direção a Campeões inimigos próximos que estiverem com movimento debilitado. Esse bônus aumenta para 15% de Velocidade de Movimento em direção a Campeões Inimigos cujo movimento você debilitou. Alcance de ativação do CG de aliados: 1000.",
+       "descricao": "Recebe 7.5% de Velocidade de Movimento em direção a Campeões inimigos próximos que estiverem com movimento debilitado. Esse bônus aumenta para 15% de Velocidade de Movimento em direção a Campeões inimigos cujo movimento você debilitou. Alcance de ativação do CG de aliados: 1000.",
        "atributos": [
         "Velocidade de Movimento"
        ],
@@ -1277,8 +1268,8 @@ window.RUNAS = {
       },
       {
        "id": "quebra-galho",
-       "nome": "Quebra-Galho",
-       "descricao": "A cada atributo diferente recebido de itens, recebe um acúmulo de Quebra-Galho. Cada acúmulo concede 1 Aceleração de Habilidade. Recebe 8 ou 20 de Força Adaptativa adicional com 5 e 10 acúmulos, respectivamente.",
+       "nome": "Quebra-galho",
+       "descricao": "A cada atributo diferente recebido de itens, recebe um acúmulo de Quebra-galho. Cada acúmulo concede 1 Aceleração de Habilidade. Recebe 8 ou 20 de Força Adaptativa adicional com 5 e 10 acúmulos, respectivamente.",
        "atributos": [
         "Aceleração de Habilidade",
         "Dano de Ataque",
@@ -1291,7 +1282,7 @@ window.RUNAS = {
        ],
        "adaptativa": "com 5 acúmulos: 4.8 de Dano de Ataque ou 8 de Poder de Habilidade — com 10 acúmulos: 12.0 de Dano de Ataque ou 20 de Poder de Habilidade. Nunca as duas coisas juntas.",
        "notas": [
-        "Nem todo efeito que concede um atributo conta como \"diferente\" pra gerar acúmulo — efeitos de itens como o Couraça de Sterak ou a Fúria de Yun Tal contam; já efeitos como a Fome Insaciável do Presságio da Fome NÃO contam.",
+        "Nem todo efeito que concede um atributo conta como \"diferente\" pra gerar acúmulo — efeitos de itens como o Sinal de Sterak ou a Flechatroz de Yun Tal contam; já efeitos como a Fome da Fome Eterna NÃO contam.",
         "Atributos elegíveis incluem: Dano de Ataque, Alcance de Ataque, Velocidade de Ataque, Aceleração de Habilidade, Poder de Habilidade, Armadura, Penetração de Armadura percentual, Chance de Crítico, Dano Crítico, Geração de Ouro, Poder de Cura/Escudo, Vida, Regeneração de Vida base, Roubo de Vida, Letalidade, Penetração Mágica fixa e percentual, Resistência Mágica, Mana e Regeneração de Mana base (lista não exaustiva)."
        ],
        "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Inspiration/JackOfAllTrades/JackofAllTrades2.png"
@@ -1400,7 +1391,7 @@ window.RUNAS = {
     {
      "id": "escalamento-de-vida",
      "nome": "Escalamento de Vida",
-     "descricao": "+10-180 de vida (com base no nível).",
+     "descricao": "+10-180 de Vida (com base no nível).",
      "atributos": [
       "Vida Máxima"
      ],
@@ -1438,7 +1429,8 @@ window.RUNAS = {
      "nome": "Tenacidade e Resistência a Lentidão",
      "descricao": "+15% de Tenacidade e Resistência a Lentidão.",
      "atributos": [
-      "Tenacidade"
+      "Tenacidade",
+      "Resistência a Lentidão"
      ],
      "classes": [
       "Tank",
@@ -1452,7 +1444,7 @@ window.RUNAS = {
     {
      "id": "escalamento-de-vida",
      "nome": "Escalamento de Vida",
-     "descricao": "+10-180 de vida (com base no nível).",
+     "descricao": "+10-180 de Vida (com base no nível).",
      "atributos": [
       "Vida Máxima"
      ],
@@ -1475,15 +1467,33 @@ window.RUNAS = {
    "vigente": true
   },
   {
+   "de": "Caminhar Sobre as Águas",
+   "para": "Tempestade Crescente",
+   "quando": "em A Lenda do Rei Poro",
+   "vigente": true
+  },
+  {
    "de": "Demolir",
    "para": "Fonte da Vida",
-   "quando": "em modos sem estruturas",
+   "quando": "em modos sem estruturas ou com estruturas que não podem ser alvo",
+   "vigente": true
+  },
+  {
+   "de": "Demolir",
+   "para": "Fonte da Vida",
+   "quando": "na Lua Sangrenta",
    "vigente": true
   },
   {
    "de": "Sentinela Profunda",
    "para": "Lembranças Aterrorizantes",
    "quando": "em modos sem sentinelas",
+   "vigente": true
+  },
+  {
+   "de": "Sentinela Profunda",
+   "para": "Lembranças Aterrorizantes",
+   "quando": "no Fiddlesticks",
    "vigente": true
   },
   {
@@ -1495,25 +1505,37 @@ window.RUNAS = {
   {
    "de": "Faixa de Fluxo de Mana",
    "para": "Arcanista do Axioma",
-   "quando": "em campeões sem mana",
+   "quando": "em campeões sem mana, no URF e no URFeA na Neve",
+   "vigente": true
+  },
+  {
+   "de": "Faixa de Fluxo de Mana",
+   "para": "Manto de Nimbus",
+   "quando": "na Ambessa",
    "vigente": true
   },
   {
    "de": "Presença de Espírito",
    "para": "Triunfo",
-   "quando": "em campeões sem mana nem energia",
+   "quando": "em campeões sem mana nem energia, no URF e no URFeA na Neve",
    "vigente": true
   },
   {
    "de": "Pós-choque",
    "para": "Aperto dos Mortos-Vivos",
-   "quando": "em campeões sem efeito de imobilização",
+   "quando": "em campeões sem efeito de imobilização e no Yorick",
+   "vigente": true
+  },
+  {
+   "de": "Pós-choque",
+   "para": "Guardião",
+   "quando": "na Yuumi",
    "vigente": true
   },
   {
    "de": "Aprimoramento Glacial",
    "para": "Primeiro Ataque",
-   "quando": "em campeões sem efeito de imobilização (exceto Yorick)",
+   "quando": "em campeões sem efeito de imobilização e no Yorick",
    "vigente": true
   },
   {
@@ -1543,14 +1565,44 @@ window.RUNAS = {
   {
    "de": "Livro de Feitiços Deslacrado",
    "para": "Primeiro Ataque",
-   "quando": "no URF e no Feitiço Supremo",
+   "quando": "no URF e no Livro Supremo de Ultimates",
    "vigente": true
   },
   {
-   "de": "Calçados Mágicos",
-   "para": "Reembolso",
-   "quando": "na Cassiopeia (não usa botas)",
-   "vigente": false
+   "de": "Livro de Feitiços Deslacrado",
+   "para": "Aprimoramento Glacial",
+   "quando": "na Lua Sangrenta e em A Lenda do Rei Poro",
+   "vigente": true
+  },
+  {
+   "de": "Entrega de Biscoitos",
+   "para": "Tônico de Distorção no Tempo",
+   "quando": "no ARAM e no Confronto",
+   "vigente": true
+  },
+  {
+   "de": "Tônico Triplo",
+   "para": "Tônico de Distorção no Tempo",
+   "quando": "no Confronto",
+   "vigente": true
+  },
+  {
+   "de": "Perspicácia Cósmica",
+   "para": "Velocidade de Aproximação",
+   "quando": "no URFeA na Neve",
+   "vigente": true
+  },
+  {
+   "de": "Manto de Nimbus",
+   "para": "Arcanista do Axioma",
+   "quando": "no URFeA na Neve",
+   "vigente": true
+  },
+  {
+   "de": "Fonte da Vida",
+   "para": "Demolir",
+   "quando": "no Corki",
+   "vigente": true
   }
  ]
 };

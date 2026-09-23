@@ -92,6 +92,7 @@ def le_runas(linhas, re_runa, pendencias, onde):
     linhas de continuacao como "notas tecnicas" da runa anterior.
     """
     runas, atual = [], None
+    vazios = set()
     i, n = 0, len(linhas)
     while i < n:
         linha = linhas[i]
@@ -124,6 +125,11 @@ def le_runas(linhas, re_runa, pendencias, onde):
             if m:
                 campo, valor = m.group("campo"), m.group("valor").strip()
                 if campo == "Atributos":
+                    # "—" = a runa não dá nem escala com atributo nenhum, de
+                    # propósito (Leo, 23/09/2026): lista vazia, sem pendência.
+                    if valor in ("—", "-"):
+                        vazios.add(id(atual))
+                        valor = ""
                     atual["atributos"] = [x.strip() for x in valor.split(",") if x.strip()]
                 elif campo == "Classes":
                     atual["classes"] = [x.strip() for x in valor.split(",") if x.strip()]
@@ -136,7 +142,7 @@ def le_runas(linhas, re_runa, pendencias, onde):
                 atual["notas"].append(m.group("texto").strip())
         i += 1
     for r in runas:
-        if not r["atributos"]:
+        if not r["atributos"] and id(r) not in vazios:
             pendencias.append("%s: %s está sem Atributos" % (onde, r["nome"]))
         if not r["classes"]:
             pendencias.append("%s: %s está sem Classes" % (onde, r["nome"]))
@@ -348,6 +354,19 @@ def main():
     # --- integridade 1: a substituição automática aponta para runa que existe? ---
     nomes = {chave(r["nome"]) for t in trilhas for s in t["slots"] for r in s["runas"]}
     nomes |= {chave(r["nome"]) for f in fragmentos for r in f["runas"]}
+    # O RE_SUBST corta o destino na primeira preposição: "Tônico de Distorção no
+    # Tempo no ARAM" sai como "Tônico de Distorção" + "no Tempo no ARAM". Quando o
+    # destino lido não é runa, vale o nome de runa mais longo que começa ali, e o
+    # resto volta para a condição. Se nenhum casar, a checagem abaixo acusa.
+    por_tamanho = sorted({r["nome"] for t in trilhas for s in t["slots"] for r in s["runas"]}, key=len, reverse=True)
+    for sub in substituicoes:
+        if chave(sub["para"]) in nomes:
+            continue
+        inteiro = (sub["para"] + " " + sub["quando"]).strip()
+        for n in por_tamanho:
+            if inteiro == n or inteiro.startswith(n + " "):
+                sub["para"], sub["quando"] = n, inteiro[len(n):].strip()
+                break
     for sub in substituicoes:
         for lado in ("de", "para"):
             if chave(sub[lado]) not in nomes:
