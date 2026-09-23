@@ -17,7 +17,7 @@ Fica fora daqui o que já foi decidido no Capítulo 1 (`docs/decisoes_capitulo1.
 | B1 | `goldValueTotal` com dois sentidos | ✔ "Valor de Ouro (atributos)" e "(base)" nos 225 | ✔ F13-T20: o valor em ouro é o `goldValueBase`, o contorno da T15 saiu, e a ficha mostra "Só atributos" quando o efeito conta |
 | B2 | Biscoito: nota de pesquisa no atributo | ✔ nota movida para Notas | ✔ automático (F13-T19) |
 | C1, C2 | Atlas Mundial e Bússola Rúnica no 26.19 | sem mudança: o Data Dragon ainda é 16.18.1 | nada a fazer até o patch do catálogo subir |
-| D1 | Ápice em números | ✔ "Ápice numérico" em 102 itens | F13-T21: sai a extração de texto (o Atma passa a 50%); F13-T22: eficiência no ápice |
+| D1 | Ápice em números | ✔ "Ápice numérico" em 102 itens | ✔ F13-T21: os atributos no ápice vêm dos números (Atma 50%, Couraça 841,18); falta a eficiência no ápice (F13-T22) |
 | D2 | Ouro do Mestre Forjador | ✔ tabelas de preço + "Mestre Forjador (ouro)" (1.000g nos 109) | F13-T22: eficiência com o Mestre Forjador |
 | D3 | Fragmentos do Atributo adicional | ✔ bloco `Fragmentos[]` (34) | F13-T23: escolher o fragmento na build |
 | E1 | Lentidão do Garrabrasa | ✔ 3s (cliente) | ✔ automático (F13-T19) |

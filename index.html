@@ -6952,7 +6952,7 @@ function fmtNum(n) { return Number(n).toLocaleString("pt-BR", { maximumFractionD
 
 // ---------------- Totais de atributos e eficiência (Fase 3, T9) ----------------
 // Atributos "como ficam": base → Mestre Forjador (total do catálogo) → Ápice
-// (valor extraído do texto; tem prioridade quando os dois mexem no mesmo
+// (apexNumeric do catálogo; tem prioridade quando os dois mexem no mesmo
 // atributo). Soma-se por atributo, separando fixos de percentuais.
 function effectiveAttributes(item, entry) {
   let list = mfAttributes(item, entry).map(a => ({ ...a, src: a.mfBase !== undefined ? "mf" : "" }));
@@ -7938,7 +7938,7 @@ function showTooltip(tile) {
       ? `<div class="tt-offmode">Não disponível em ${build.mode}</div>` : ""}
     ${state.applyApex && hasApex(item) ? `
       <div class="tt-apex"><span class="k">Ápice</span>
-        ${(apexAttributes(item) || []).filter(a => a.changed).map(a => `<div><b>${esc(a.raw)}</b>${a.added ? " (só no ápice)" : ` <span style="opacity:.7">no lugar de ${esc(a.baseRaw)}</span>`}</div>`).join("") || `<div>${esc(item.apex)}</div>`}
+        ${(apexAttributes(item) || []).filter(a => a.changed).map(a => `<div><b>${esc(a.raw)}</b>${a.added ? " (só no ápice)" : ` <span style="opacity:.7">no lugar de ${esc(a.baseRaw)}</span>`}${a.note ? ` <span style="opacity:.7">· ${esc(a.note)}</span>` : ""}</div>`).join("") || `<div>${esc(item.apex)}</div>`}
       </div>` : ""}
     ${item.masterwork && item.masterwork.eligible === true && (item.masterwork.stats || []).length ? `
       <div class="tt-mf${mfApplies(item, entry) ? "" : " off"}"><span class="k">Mestre Forjador${mfApplies(item, entry) ? " — forjado" : (build.masterwork ? (build.editing ? " — elegível, clique no ícone para forjar" : " — elegível (ligue Editar e clique no ícone)") : " (desligado)")}</span>
@@ -10385,31 +10385,59 @@ function hasCashback(item) { return !!(item.cashback && typeof item.cashback.net
 // Ápice: texto livre do catálogo; "igual ao base" significa que nada muda no máximo.
 function hasApex(item) { return !!item.apex && !/^igual ao base/i.test(item.apex.trim()); }
 
-// Atributos no Ápice, extraídos do texto `apex` do catálogo (provisório: quando o
-// Capítulo 1 fornecer o ápice estruturado, este trecho passa a ler o campo).
-// Regra conservadora: só "+N de <atributo>" com sinal, em que <atributo> é um nome
-// que o catálogo já usa em attributes[].stat. Nada de cura, regeneração por
-// segundo ou totais sem sinal — esses ficam só no texto.
-let KNOWN_STATS = null;
+// F13-T21: o Ápice vem em números do Capítulo 1 (apexNumeric, 23/09/2026), e
+// a leitura do texto `apex` (F2-T8b, remendada na F13-T9) saiu. Cada linha diz
+// o atributo, o valor, a unidade e se é o TOTAL no máximo ou um tanto A MAIS
+// sobre o do item — o que o texto livre não dizia, e por isso o Atma mostrava
+// 30% de crítico onde o total é 50%.
+//
+// O catálogo escreve o atributo do ápice pela Categoria de Atributo
+// ("Movimento", "Acerto Crítico", "Vampirismo"), e o do item pelo nome da linha
+// ("Velocidade de Movimento", "Chance de Acerto Crítico", "Vampirismo
+// Universal"). A ponte sai dos próprios dados, sem mapa digitado: o nome
+// exato, se algum item usa; senão, o nome de mesma unidade que contém a
+// categoria e é o mais usado no catálogo — fora os "X como Y" ("Vida bônus
+// como Poder de Habilidade" não é Poder de Habilidade).
+let NOMES_DO_APICE = null;
+function nomeDoAtributo(cat, unit) {
+  if (!NOMES_DO_APICE) {
+    const uso = new Map();
+    CATALOG.items.forEach(it => (it.attributes || []).forEach(a => {
+      if (typeof a.value !== "number") return;
+      const k = a.stat + "|" + a.unit;
+      uso.set(k, (uso.get(k) || 0) + 1);
+    }));
+    NOMES_DO_APICE = { uso, feitos: new Map() };
+  }
+  const k = cat + "|" + unit;
+  if (NOMES_DO_APICE.feitos.has(k)) return NOMES_DO_APICE.feitos.get(k);
+  let nome = cat;
+  if (!NOMES_DO_APICE.uso.has(k)) {
+    let melhor = 0;
+    NOMES_DO_APICE.uso.forEach((n, chave) => {
+      const corte = chave.lastIndexOf("|");
+      const st = chave.slice(0, corte), un = chave.slice(corte + 1);
+      if (un !== unit || st.includes(" como ")) return;
+      if ((st.endsWith(" " + cat) || st.startsWith(cat + " ")) && n > melhor) { melhor = n; nome = st; }
+    });
+  }
+  NOMES_DO_APICE.feitos.set(k, nome);
+  return nome;
+}
+
 function apexStatsOf(item) {
   if (item._apexStats) return item._apexStats;
-  if (!KNOWN_STATS) KNOWN_STATS = ALL_STATS.map(([st]) => st).sort((a, b) => b.length - a.length);
   const out = [];
-  if (hasApex(item)) {
-    let t = item.apex;
-    // F13-T9: "+15 de Dano de Ataque ou +25 de Poder de Habilidade" é uma coisa
-    // OU a outra, conforme a adaptação — somar as duas inventa um número. Os
-    // dois lados de um "ou" saem da leitura.
-    t = t.replace(/\+\d[\d.,]*\s*%?\s+de\s+[^,;:()]+?\s+ou\s+\+\d[\d.,]*\s*%?\s+de\s+[^,;:()]+/g, m => " ".repeat(m.length));
-    KNOWN_STATS.forEach(st => {
-      const re = new RegExp("\\+(\\d[\\d.,]*)\\s*(%?)\\s+de\\s+" + st.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "(?![\\wÀ-ú])", "g");
-      t = t.replace(re, (m, num, pct) => {
-        const value = Number(num.replace(/\./g, "").replace(",", "."));
-        if (!Number.isNaN(value) && !out.some(o => o.stat === st)) {
-          out.push({ stat: st, value, unit: pct ? "percent" : "flat", raw: `+${num}${pct} de ${st}` });
-        }
-        return " ".repeat(m.length);
-      });
+  const an = item.apexNumeric;
+  if (hasApex(item) && an && Array.isArray(an.stats)) {
+    an.stats.forEach(x => {
+      if (typeof x.value !== "number") return;
+      // Alternativas ("adaptativo: ou esta linha ou a seguinte", no Elixir da
+      // Força): é uma coisa OU a outra — somar as duas inventa um número (F13-T9).
+      if (/ou esta linha/.test(x.note || "")) return;
+      const stat = nomeDoAtributo(x.stat, x.unit);
+      out.push({ stat, value: x.value, unit: x.unit, mode: x.mode, note: x.note || "",
+        raw: `+${fmtNum(x.value)}${x.unit === "percent" ? "%" : ""} de ${stat}` });
     });
   }
   item._apexStats = out;
@@ -10417,27 +10445,21 @@ function apexStatsOf(item) {
 }
 
 // Lista de atributos a exibir com o Ápice ligado: os do item, com o valor do
-// ápice onde ele existe (marcados), mais os que só aparecem no ápice.
+// ápice onde ele existe (marcados), mais os que só aparecem no ápice. "total"
+// troca o número do item; "a mais" soma a ele. Em outra unidade (o Ímpeto
+// Cósmico dá 4% e o ápice, 20 fixos), vira uma linha a mais.
 function apexAttributes(item) {
   const ap = apexStatsOf(item);
   if (!ap.length) return null;
-  const base = item.attributes || [];
-  // F13-T9 (22/09/2026): o texto livre do Ápice mistura três coisas — o total
-  // no máximo ("+55 de PdH" no Lacre Sombrio, que era 15), um tanto A MAIS sobre
-  // o do item ("+241 de Vida máxima" na Couraça Protoplasmática, que tem 600) e
-  // outra grandeza ("+20% de PdH" na Tocha, que tem +80 fixos). A leitura antiga
-  // trocava o número em todos os casos, e a Tocha perdia os 80. Sem o Ápice
-  // estruturado no Capítulo 1, a regra é humilde: só substitui quando é a MESMA
-  // grandeza e MAIOR (um máximo nunca é menor que o base). Na dúvida, fica o do
-  // item — o texto do Ápice continua na ficha.
-  const list = base.map(a => {
-    const x = ap.find(o => o.stat === a.stat);
-    if (!x) return a;
-    const mesmaGrandeza = x.unit === a.unit;
-    const maior = typeof a.value !== "number" || x.value > a.value;
-    return mesmaGrandeza && maior ? { ...x, changed: true, baseRaw: a.raw } : a;
+  const list = (item.attributes || []).slice();
+  ap.forEach(x => {
+    const i = list.findIndex(a => a.stat === x.stat && a.unit === x.unit);
+    if (i < 0) { list.push({ ...x, changed: true, added: true }); return; }
+    const a = list[i];
+    const value = x.mode === "extra" && typeof a.value === "number" ? a.value + x.value : x.value;
+    list[i] = { ...a, value, raw: `+${fmtNum(value)}${x.unit === "percent" ? "%" : ""} de ${x.stat}`,
+                note: x.note, mode: x.mode, changed: true, baseRaw: a.raw };
   });
-  ap.forEach(x => { if (!base.some(a => a.stat === x.stat)) list.push({ ...x, changed: true, added: true }); });
   return list;
 }
 // Condição do ápice: o trecho antes do primeiro ":" (ex.: "10 acúmulos de Glória").
@@ -10849,7 +10871,7 @@ function attrValuesHtml(item) {
   const shown = list.length > 3 ? list.slice(0, 2) : list.slice(0, 3);
   const extra = list.length - shown.length;
   const linhas = shown.map(a =>
-    `<div class="attr-line${a.changed ? " apex-changed" : ""}"><b>+${a.value}${a.unit === "percent" ? "%" : ""}</b> ${shortStat(a.stat)}</div>`);
+    `<div class="attr-line${a.changed ? " apex-changed" : ""}"><b>+${fmtNum(a.value)}${a.unit === "percent" ? "%" : ""}</b> ${shortStat(a.stat)}</div>`);
   if (extra) linhas.push(`<div class="attr-line more">+${extra} atributo${extra > 1 ? "s" : ""}</div>`);
   return `<div class="card-attrs">${linhas.join("")}${apexCond}</div>`;
 }
@@ -11458,7 +11480,7 @@ function openModal(id) {
   // Campo vazio não vira texto: a seção inteira some.
   const attrList = (state.applyApex && hasApex(item) && apexAttributes(item)) || item.attributes || [];
   const attrHtml = attrList.length
-    ? attrList.map(a => `<div class="attr-line${a.changed ? " apex-changed" : ""}">+${a.value}${a.unit === "percent" ? "%" : ""} de ${a.stat}${a.changed ? `<span class="base">${a.added ? "só no ápice" : "base " + esc(a.baseRaw)}</span>` : ""}</div>`).join("")
+    ? attrList.map(a => `<div class="attr-line${a.changed ? " apex-changed" : ""}">+${fmtNum(a.value)}${a.unit === "percent" ? "%" : ""} de ${a.stat}${a.changed ? `<span class="base">${a.added ? "só no ápice" : "base " + esc(a.baseRaw)}${a.note ? " · " + esc(a.note) : ""}</span>` : ""}</div>`).join("")
     : "";
 
   const abilitiesHtml = (item.abilities || []).length

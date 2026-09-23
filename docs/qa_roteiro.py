@@ -383,14 +383,22 @@ def checar_catalogo(s, p):
     # (o texto diz "+20% de PdH"), a Couraça Protoplasmática ia de 600 para 241
     # de Vida, e o Elixir da Força somava as duas alternativas de um "ou". E o
     # caminho antigo: o Lacre Sombrio continua indo de 15 para 55 no Ápice.
+    # F13-T21: desde o Capítulo 1 de 23/09 o Ápice vem em números (apexNumeric):
+    # o total no máximo substitui, o "a mais" soma. A Couraça chega a 841,18 de
+    # Vida no nível 13 (a leitura humilde da T9 deixava os 600), a Tocha mantém
+    # os +80 e ganha o multiplicador de +20%, e o Atma — o caso que provou que
+    # o texto não bastava — chega a 50% de crítico, não 30%.
     ap = s.js("""(() => { const pega = (n) => CATALOG.items.find(i => i.namePt === n);
       const le = (n) => { const it = pega(n); state.applyApex = true;
         const r = effectiveAttributes(it, { itemId: it.slug }).map(a => a.raw); state.applyApex = false; return r; };
       return { tocha: le('Tocha de Chamas Negras'), couraca: le('Couraça Protoplasmática'),
-               elixir: le('Elixir da Força'), lacre: le('Lacre Sombrio') }; })()""")
-    p.conta("catálogo", "Ápice não apaga número do item (Tocha, Couraça)",
-            "+80 de Poder de Habilidade" in ap["tocha"] and "+600 de Vida" in ap["couraca"],
-            "Tocha %s | Couraça %s" % (ap["tocha"][:1], ap["couraca"][:1]))
+               elixir: le('Elixir da Força'), lacre: le('Lacre Sombrio'), atma: le('Acerto de Contas de Atma') }; })()""")
+    p.conta("catálogo", "Ápice não apaga número do item (Tocha +80 e +20%)",
+            "+80 de Poder de Habilidade" in ap["tocha"] and "+20% de Poder de Habilidade" in ap["tocha"],
+            "Tocha %s" % ap["tocha"][:3])
+    p.conta("catálogo", "Ápice usa o total do catálogo (Couraça 841,18; Atma 50%)",
+            "+841,18 de Vida" in ap["couraca"] and "+50% de Chance de Acerto Crítico" in ap["atma"],
+            "Couraça %s | Atma %s" % (ap["couraca"][:1], [x for x in ap["atma"] if "Crítico" in x]))
     p.conta("catálogo", "Ápice não soma as duas pontas de um \"ou\"", ap["elixir"] == [], str(ap["elixir"]))
     p.conta("catálogo", "Ápice ainda sobe o que é máximo (Lacre 15 → 55)",
             "+55 de Poder de Habilidade" in ap["lacre"], str(ap["lacre"][:1]))
