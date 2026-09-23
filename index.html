@@ -6086,6 +6086,12 @@ function addItemToCategory(itemId, catId, index) {
 // Agora a saída procura o próprio item na hora de sair, e o item que já está
 // saindo fica escondido nos redesenhos do meio, em vez de reaparecer.
 const itensSaindo = new Set();
+// F13-T8: o que chega depois da importação (campeão do Data Dragon, Mestre
+// Forjador) tem de ficar GRAVADO. saveBuild() com o Editar ligado só marca
+// rascunho — a build importada nascia "não salva" e, recarregando, perdia os dois.
+// Se a pessoa já começou a mexer, o rascunho é dela: aí fica rascunho mesmo.
+function gravarImportado() { if (rascunho.sujo) saveBuild(); else gravarBuild(); }
+
 function removeItemFromCategory(catId, index) {
   const cat = getCat(catId);
   if (!cat) return;
@@ -8824,7 +8830,12 @@ function copiarPublica(d) {
   const cats = p ? caixasDoServidor(p.caixas, removidos) : JSON.parse(JSON.stringify(d.cats));
   if (removidos.length) setTimeout(() => mostrarPub("Build copiada com itens de fora", `Publicada no catálogo ${esc(d.pubPatch)}. Estes itens não existem mais e ficaram de fora: <b>${esc(removidos.map(x => x.nome).join(", "))}</b>. O resto já vem com os atributos atuais.`, "erro"), 300);
   createNewBuild(d.name, cats, d.mode, d.champ ? { key: String(d.champ.key), id: String(d.champ.id), name: String(d.champ.name) } : null, d.markers);
-  build.desc = d.desc; build.layout = layoutValido(d.layout); gravarBuild();
+  build.desc = d.desc; build.layout = layoutValido(d.layout);
+  // F13-T8: "abrir para ver" MOSTRAVA as runas e a ordem, e "Copiar e editar"
+  // entregava a cópia sem elas.
+  build.runas = normRunas(d.runas);
+  build.habilidades = normHabilidades(d.habilidades);
+  gravarBuild();
   showBuildScreen("forja");
 }
 
@@ -9152,10 +9163,18 @@ function duplicateBuild(id) {
   const b = library.builds.find(x => x.id === id);
   if (!b) return;
   const d = buildResumo(b);
+  const mestre = !!(d.isActive ? build.masterwork : b.masterwork);   // lido antes: createNewBuild troca a build ativa
   // Cópia profunda: a duplicata não pode compartilhar itens com a original.
   const cats = JSON.parse(JSON.stringify(d.isActive ? build.cats : (b.cats || [])));
   createNewBuild(d.temp ? d.name : d.name + " (cópia)", cats, d.mode, d.champ ? { ...d.champ } : null, d.markers);
-  build.desc = d.desc || ""; build.layout = layoutValido(d.layout); gravarBuild();
+  build.desc = d.desc || ""; build.layout = layoutValido(d.layout);
+  // F13-T8 (22/09/2026): a cópia nascia sem runas, sem ordem de habilidades e
+  // com o Mestre Forjador desligado — createNewBuild começa tudo vazio e só a
+  // descrição e o layout eram copiados. Achado pela caçada de bugs.
+  build.runas = normRunas(JSON.parse(JSON.stringify(d.runas || null)));
+  build.habilidades = normHabilidades(JSON.parse(JSON.stringify(d.habilidades || null)));
+  build.masterwork = mestre;
+  gravarBuild();
   if (d.temp && d.pubOrigem) registrarEvento(d.pubOrigem, "copia");
 }
 
@@ -9460,7 +9479,7 @@ function initLibrary() {
         const idNova = build.id;
         Campeoes.carregar().then(() => {
           const c = Campeoes.porChave(r.championKey);
-          if (c && build.id === idNova) { build.champion = c; saveBuild(); renderBuildAll(); }
+          if (c && build.id === idNova) { build.champion = c; gravarImportado(); renderBuildAll(); }
         }).catch(() => { /* sem internet: fica em Todos os campeões */ });
       }
       return;
@@ -9478,7 +9497,7 @@ function initLibrary() {
       const idNova = build.id;
       Campeoes.carregar().then(() => {
         const c = Campeoes.porNome(r.championName);
-        if (c && build.id === idNova) { build.champion = c; saveBuild(); renderBuildAll(); }
+        if (c && build.id === idNova) { build.champion = c; gravarImportado(); renderBuildAll(); }
         else if (!c) showIoMsg(`Campeão "${r.championName}" não está na lista do Data Dragon; a build ficou em Todos os campeões.`, true);
       }).catch(() => showIoMsg(`Sem internet para conferir o campeão "${r.championName}"; a build ficou em Todos os campeões.`, true));
     }
@@ -9487,7 +9506,7 @@ function initLibrary() {
       if (r.forgedId) {
         for (const c of build.cats) { const e = c.items.find(x => x.itemId === r.forgedId); if (e) { e.mf = true; break; } }
       }
-      saveBuild(); renderBuildAll();
+      gravarImportado(); renderBuildAll();
     }
 
     const total = r.cats.reduce((s, c) => s + c.items.length, 0);

@@ -142,6 +142,7 @@ class Sessao:
         self._id = 0
         self.erros = []
         self.rede = []
+        self.dialogos = []
         self.envia("Page.enable"); self.envia("Runtime.enable"); self.envia("Log.enable")
         self.url = url
 
@@ -166,6 +167,16 @@ class Sessao:
             self._anota(msg)
 
     def _anota(self, msg):
+        if msg.get("method") == "Page.javascriptDialogOpening":
+            # Um diálogo nativo (confirm, alert, "sair sem salvar?") trava a
+            # página inteira até alguém responder: o roteiro via só "o navegador
+            # parou de responder". Agora ele anota qual foi e aceita.
+            d = msg["params"]
+            self.dialogos.append("%s: %s" % (d.get("type"), (d.get("message") or "")[:80]))
+            self._id += 1
+            self.ws.send(json.dumps({"id": self._id, "method": "Page.handleJavaScriptDialog",
+                                     "params": {"accept": True}}))
+            return
         if msg.get("method") == "Runtime.exceptionThrown":
             self.erros.append((msg["params"]["exceptionDetails"].get("text") or "")[:160])
         elif msg.get("method") == "Log.entryAdded":
@@ -530,6 +541,16 @@ def checar_habilidades(s, p):
     s.clicar(".bh-cel[data-hab='R'][data-nivel='6']")
     p.conta("habilidades", "supremo aceito no nível 6", (s.js("build.habilidades[5]") or "") == "R")
 
+    # F13-T8: duplicar perdia runas, habilidades e Mestre Forjador (caçada de bugs).
+    antes = s.js("""(() => { build.masterwork = true; gravarBuild();
+      return { hab: build.habilidades.map(x => x || '-').join(''), runas: JSON.stringify(build.runas), id: build.id }; })()""")
+    s.js("duplicateBuild(build.id)")
+    time.sleep(0.6)
+    depois = s.js("({ hab: build.habilidades.map(x => x || '-').join(''), runas: JSON.stringify(build.runas), id: build.id, mf: !!build.masterwork })")
+    p.conta("habilidades", "duplicar leva habilidades, runas e Mestre Forjador",
+            depois["id"] != antes["id"] and depois["hab"] == antes["hab"] and depois["runas"] == antes["runas"] and depois["mf"],
+            "habilidades %s" % depois["hab"])
+
 
 def checar_texto(s, p):
     """Exportar e reimportar tem de devolver a mesma build — é como o Leo move
@@ -552,6 +573,24 @@ def checar_texto(s, p):
       return JSON.stringify(d); })()""")
     p.conta("texto", "exportar e reimportar devolve a mesma build", antes == depois,
             "antes %s / depois %s" % (antes, depois))
+
+    # F13-T8: importar tem de CRIAR uma build nova (senão a comparação acima
+    # passa sem testar nada) e ela tem de nascer GRAVADA — com Mestre Forjador e
+    # campeão, o importador deixava rascunho, e recarregar perdia os dois.
+    s.js("""(async () => { await Campeoes.carregar(); build.champion = Campeoes.porNome('Jinx');
+      build.masterwork = true; gravarBuild(); return 'ok'; })()""")
+    id_origem = s.js("build.id")
+    texto = s.js("buildToText()")
+    s.js("document.getElementById('import-text').value = %s" % json.dumps(texto))
+    s.js("document.getElementById('import-btn').click()")
+    time.sleep(2.5)                       # o campeão chega pelo Data Dragon, depois
+    r = s.js("""(() => { const salva = library.builds.find(b => b.id === build.id) || {};
+      return { nova: build.id !== %s, sujo: rascunho.sujo,
+               mfSalvo: !!salva.masterwork, campeaoSalvo: salva.champion ? salva.champion.name : null }; })()""" % json.dumps(id_origem))
+    p.conta("texto", "importar cria uma build nova", r["nova"])
+    p.conta("texto", "a build importada nasce gravada (Mestre Forjador e campeão)",
+            not r["sujo"] and r["mfSalvo"] and r["campeaoSalvo"] == "Jinx",
+            "rascunho sujo=%s, MF gravado=%s, campeão gravado=%s" % (r["sujo"], r["mfSalvo"], r["campeaoSalvo"]))
 
 
 def checar_acessibilidade(s, p):
@@ -674,6 +713,8 @@ def checar_resolucoes(s, p):
 def checar_console(s, p):
     print("\n%sCONSOLE%s" % (AMARELO, FIM))
     p.conta("console", "nenhuma exceção durante o roteiro", not s.erros, "; ".join(s.erros[:3]))
+    if s.dialogos:
+        print("  %sdiálogos nativos que apareceram e foram aceitos: %s%s" % (CINZA, "; ".join(s.dialogos[:4]), FIM))
     # 404 de arquivo é o bug clássico do Pages: nome com outra caixa de letra.
     # o favicon.ico não existe de propósito: o 404 dele não é arquivo perdido
     quatro04 = [r for r in s.rede if "404" in r and "favicon" not in r]

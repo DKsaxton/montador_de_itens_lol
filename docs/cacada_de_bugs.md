@@ -43,6 +43,10 @@ Status de cada um:
 
 ### 4. Duplicar uma build perde a página de runas e a ordem de habilidades (e o Mestre Forjador)
 
+**CONSERTADO na F13-T8 (22/09/2026).** `duplicateBuild` e `copiarPublica` passam a levar runas e ordem de habilidades, e o duplicar leva também o Mestre Forjador (a publicada não guarda esse interruptor — os outros dois caminhos da publicada já nasciam com ele desligado). Conferido em 12 casos: cópia independente da original, duplicar a build que não está ativa, build vazia, "Copiar e editar" de uma publicada real, e recarregar.
+
+**Achado no caminho, e consertado junto:** importar uma build com **Mestre Forjador** ou **campeão** deixava a build nova como rascunho "não salvo" — o importador chamava `saveBuild()`, que com o Editar ligado só marca rascunho. Recarregando e escolhendo sair, os dois se perdiam. Apareceu porque, com o duplicar consertado, o texto exportado passou a levar a linha do Mestre Forjador, e o roteiro de QA travou num aviso de "sair sem salvar?" ao recarregar. Agora `gravarImportado()` grava — a não ser que a pessoa já tenha começado a mexer, e aí o rascunho é dela.
+
 `index.html:9107` · alta · achado por: Estado da build, Runas e habilidades, Servidor das builds publicadas
 
 **REPRODUZIDO.** Reproduzido em 22/09: a cópia nasce com runas vazias, 0 de 6 níveis de habilidade e o Mestre Forjador desligado.
