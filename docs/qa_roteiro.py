@@ -572,23 +572,58 @@ def checar_texto(s, p):
     """Exportar e reimportar tem de devolver a mesma build — é como o Leo move
     build entre máquinas e como uma IA gera build para ele."""
     print("\n%sTEXTO%s" % (AMARELO, FIM))
+    # sempre uma build nova, com as 8 caixas: herdar a do grupo anterior fazia o
+    # teste depender da ordem (rodando só -k texto, não havia caixa nem item)
+    s.nova_build()
     garantir_build_editavel(s)
-    antes = s.js("""(() => { const d = { itens: build.cats.flatMap(c => c.items.map(i => i.itemId)),
-      marcadores: build.markers.length, habilidades: (build.habilidades || []).filter(Boolean).length,
-      runas: Object.keys(build.runas || {}).length };
-      return JSON.stringify(d); })()""")
+    # F13-T12: a comparação antiga contava as CHAVES do objeto de runas — sempre
+    # 6 — e não via runa sumindo. Agora compara o conteúdo, com a pior página:
+    # Slot 1 da primária vazio e fragmento do Slot 1 vazio. Era exatamente aí
+    # que a ida e volta perdia runas (a escrita espremia os vazios e a leitura
+    # confiava na posição).
+    s.js("""(() => { const t = RUNAS.trilhas[0], t2 = RUNAS.trilhas[1];
+      const F = RUNAS.fragmentos;
+      // itens: texto sem item é recusado pelo importador, e aí não há ida e volta
+      if (!build.cats.some(c => c.items.length))
+        build.cats[3].items = CATALOG.items.filter(i => i.tier === 'Lendário').slice(0, 3).map(it => ({ itemId: it.slug, note: '' }));
+      build.runas = normRunas({ primaria: t.id, assinatura: t.slots[0].runas[0].id,
+        slots: ['', t.slots[2].runas[0].id, t.slots[3].runas[0].id],
+        secundaria: t2.id, secundarios: [t2.slots[1].runas[0].id, t2.slots[3].runas[0].id],
+        fragmentos: ['', F[1].runas[0].id, F[2].runas[0].id] });
+      gravarBuild(); return 'ok'; })()""")
+    RETRATO = """(() => JSON.stringify({ itens: build.cats.flatMap(c => c.items.map(i => i.itemId)),
+      marcadores: build.markers, habilidades: build.habilidades, runas: normRunas(build.runas) }))()"""
+    antes = s.js(RETRATO)
+    id_antes = s.js("build.id")
     texto = s.js("buildToText()")
     s.js("switchTab('build'); showBuildScreen('lista'); document.getElementById('toggle-io').classList.add('active')")
     time.sleep(0.4)
     s.js("document.getElementById('import-text').value = %s" % json.dumps(texto))
     s.js("document.getElementById('import-btn').click()")
     time.sleep(1.4)
-    depois = s.js("""(() => { const d = { itens: build.cats.flatMap(c => c.items.map(i => i.itemId)),
-      marcadores: build.markers.length, habilidades: (build.habilidades || []).filter(Boolean).length,
-      runas: Object.keys(build.runas || {}).length };
-      return JSON.stringify(d); })()""")
-    p.conta("texto", "exportar e reimportar devolve a mesma build", antes == depois,
-            "antes %s / depois %s" % (antes, depois))
+    depois = s.js(RETRATO)
+    importou = s.js("build.id") != id_antes
+    if not importou:
+        det = "a importação NÃO criou build nova: comparar seria comparar a build com ela mesma"
+    elif antes == depois:
+        det = "itens, marcadores, habilidades e runas iguais"
+    else:
+        a, d = json.loads(antes), json.loads(depois)
+        det = "; ".join("%s: %s → %s" % (k, json.dumps(a[k], ensure_ascii=False)[:90], json.dumps(d[k], ensure_ascii=False)[:90])
+                        for k in a if a[k] != d[k])
+    p.conta("texto", "exportar e reimportar devolve a mesma build", importou and antes == depois, det)
+
+    # F13-T12: texto exportado ANTES do conserto espremia as vagas vazias, e o
+    # formato promete que dá para importar só os fragmentos. Os dois voltavam
+    # sem runa nenhuma — e "Vida" era acusada de "não encontrada".
+    texto_velho = chr(10).join(["BUILD: t", "[COMUM] Core | 3x1", "- Abatedora",
+        "RUNAS: Precisão > Pressione o Ataque | Lenda: Espontaneidade | Golpe de Misericórdia",
+        "FRAGMENTOS: Força Adaptativa | Vida"])
+    velho = s.js("""(() => { const r = textToBuild(%s);
+      const p = normRunas(r.runas); return { slots: p.slots, frag: p.fragmentos, unknown: r.unknown }; })()""" % json.dumps(texto_velho))
+    p.conta("texto", "texto antigo (vagas espremidas) e só fragmentos voltam inteiros",
+            velho["slots"][1:] == ["lenda-espontaneidade", "golpe-de-misericordia"] and "vida" in velho["frag"] and not velho["unknown"],
+            "slots %s, fragmentos %s, não encontrei %s" % (velho["slots"], velho["frag"], velho["unknown"]))
 
     # F13-T8: importar tem de CRIAR uma build nova (senão a comparação acima
     # passa sem testar nada) e ela tem de nascer GRAVADA — com Mestre Forjador e
@@ -605,7 +640,7 @@ def checar_texto(s, p):
                mfSalvo: !!salva.masterwork, campeaoSalvo: salva.champion ? salva.champion.name : null }; })()""" % json.dumps(id_origem))
     p.conta("texto", "importar cria uma build nova", r["nova"])
     p.conta("texto", "a build importada nasce gravada (Mestre Forjador e campeão)",
-            not r["sujo"] and r["mfSalvo"] and r["campeaoSalvo"] == "Jinx",
+            r["nova"] and not r["sujo"] and r["mfSalvo"] and r["campeaoSalvo"] == "Jinx",
             "rascunho sujo=%s, MF gravado=%s, campeão gravado=%s" % (r["sujo"], r["mfSalvo"], r["campeaoSalvo"]))
 
 

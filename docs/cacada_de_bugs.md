@@ -64,6 +64,8 @@ Status de cada um:
 
 ### 6. Runa escolhida fora do primeiro slot some sem aviso ao copiar e reimportar a build
 
+**CONSERTADO na F13-T12 (22/09/2026).** Vaga vazia sai como `-`; a primária é lida pelo slot de cada runa; fragmentos sem os `-` (texto antigo) procuram a primeira distribuição em que cada nome cabe no seu grupo. De brinde: página só com fragmentos deixou de ser apagada.
+
 `index.html:6154` · alta · achado por: Importar e exportar, Runas e habilidades · **passou pelos céticos**
 
 **Como quebra:** A lista da trilha primaria e POSICIONAL na leitura (textToBuild: i===0 vira assinatura, i===1 vira slots[0], etc.), mas a escrita compacta os vazios com .filter(Boolean). Passo a passo: na forja, abrir "escolher runas", escolher Precisao, clicar em "Pressione o Ataque" (assinatura), pular o Slot 1 e clicar em "Lenda: Espontaneidade" (Slot 2) e "Golpe de Misericordia" (Slot 3) — o editor permite isso, cada fileira e independente (escolherRuna, linha ~7971). Builds -> Exportar/importar -> "Copiar esta build": sai "RUNAS: Precisao > Pressione o Ataque | Lenda: Espontaneidade | Golpe de Misericordia" (tres nomes para quatro posicoes). Colar esse mesmo texto em "Importar como nova build": a leitura poe "Lenda: Espontaneidade" em slots[0] (Slot 1) e "Golpe de Misericordia" em slots[1] (Slot 2); normRunas confere posicao por posicao (daSlot) e joga as duas fora. A build nova fica so com "Precisao" e nenhuma runa menor, e como acha() encontrou os ids, nada entra em result.unknown — a mensagem diz apenas "Importado: N categoria(s)...", sem um unico aviso. Se a assinatura tambem estiver vazia, a pagina inteira de runas evapora do mesmo jeito.
@@ -130,6 +132,8 @@ Status de cada um:
 **Como quebra:** A guarda "sempre sobra pelo menos uma build" conta as builds temporárias de visualização, mas a gravação (linha 5754) as descarta: `builds: library.builds.filter(b => !b.temp)`. Passo a passo: (1) Leo tem exatamente UMA build salva. (2) Vai em Build > lista > aba Públicas e dá duplo clique numa build publicada para olhar; abrirPublicaTemporaria (linha 8751) empurra `{id:"tmp:…", temp:true}` para library.builds, que agora tem 2 entradas. (3) Volta em "Minhas", seleciona a build dele e clica Excluir — o botão está habilitado porque library.builds.length é 2 (linhas 9022 e 9173). (4) deleteBuild filtra a build fora; library.builds = [tmp], length 1, então esta guarda NÃO dispara e nenhuma build nova é criada; gravarBuild() grava `{"builds":[], "activeId":"tmp:…"}`. (5) Leo recarrega a página. Em loadBuild a condição `d.builds.length` (linha 5846) é 0, o bloco inteiro é pulado e a execução cai na migração do formato anterior (linha 5884). (6) Como não existe um único `removeItem` no arquivo, a chave `lol-build-v2` nunca foi apagada desde a migração da Fase 0 — a build velha do HTML anterior volta para a biblioteca como se fosse dele, com nome e caixas antigos. Se a chave antiga não existir, o efeito é outro, mas ainda errado: a biblioteca volta vazia e initBuildBuilder (linha 9459) inventa uma build em branco sem nome.
 
 ### 16. Fragmento do Slot 2 volta no Slot 1 e o do Slot 3 e acusado de "nao encontrado no catalogo"
+
+**CONSERTADO na F13-T12 (22/09/2026).** Vaga vazia sai como `-`; a primária é lida pelo slot de cada runa; fragmentos sem os `-` (texto antigo) procuram a primeira distribuição em que cada nome cabe no seu grupo. De brinde: página só com fragmentos deixou de ser apagada.
 
 `index.html:6158` · media · achado por: Importar e exportar · **passou pelos céticos**
 

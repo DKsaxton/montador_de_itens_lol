@@ -5736,8 +5736,16 @@ function normRunas(r) {
   const vazia = { primaria: "", assinatura: "", slots: ["", "", ""], secundaria: "", secundarios: [], fragmentos: ["", "", ""] };
   if (!r || typeof r !== "object" || !window.RUNAS) return vazia;
   const trilha = (id) => RUNAS.trilhas.find(t => t.id === id) || null;
+  const fragmentos = [0, 1, 2].map(i => {
+    const f = (RUNAS.fragmentos || [])[i];
+    const id = (r.fragmentos || [])[i];
+    return f && f.runas.some(x => x.id === id) ? id : "";
+  });
   const p = trilha(r.primaria);
-  if (!p) return vazia;
+  // F13-T12: os fragmentos não dependem de trilha — no jogo e no formato de
+  // texto ("dá para importar só os fragmentos"). Sem primária, a página ficava
+  // inteira vazia e a linha FRAGMENTOS importada sumia calada.
+  if (!p) return { ...vazia, fragmentos };
   const daSlot = (t, i, id) => (t && t.slots[i] && t.slots[i].runas.some(x => x.id === id)) ? id : "";
   const sec = trilha(r.secundaria);
   const out = {
@@ -5746,11 +5754,7 @@ function normRunas(r) {
     slots: [1, 2, 3].map(i => daSlot(p, i, (r.slots || [])[i - 1])),
     secundaria: sec && sec.id !== p.id ? sec.id : "",
     secundarios: [],
-    fragmentos: [0, 1, 2].map(i => {
-      const f = (RUNAS.fragmentos || [])[i];
-      const id = (r.fragmentos || [])[i];
-      return f && f.runas.some(x => x.id === id) ? id : "";
-    }),
+    fragmentos,
   };
   if (out.secundaria) {
     // dois, e de slots diferentes: é a regra do jogo, não enfeite
@@ -6230,6 +6234,7 @@ function moveItem(fromCatId, fromIndex, toCatId, toIndex) {
 //   RUNAS: Precisão > Pressione o Ataque | Triunfo | Lenda: Espontaneidade | Golpe de Misericórdia
 //   RUNAS 2: Dominação > Golpe Desleal | Sexto Sentido       (secundária: duas, de slots diferentes)
 //   FRAGMENTOS: Força Adaptativa | Força Adaptativa | Vida
+//   (vaga vazia de runa ou fragmento sai como "-", como nas habilidades)
 //   HABILIDADES: Q W E Q Q R Q W Q W R W W E E R E E   (18 níveis; "-" = nível em branco)
 //
 //   [PRIORIDADE] Núcleo | ½
@@ -6251,12 +6256,15 @@ function linhasDeRunas(pagina) {
   const nome = (id) => { const a = runaPorId(id); return a ? a.runa.nome : null; };
   const trilha = (id) => { const t = RUNAS.trilhas.find(x => x.id === id); return t ? t.nome : null; };
   const out = [];
-  const prim = [p.assinatura, ...p.slots].map(nome).filter(Boolean);
-  if (prim.length && trilha(p.primaria)) out.push(`RUNAS: ${trilha(p.primaria)} > ${prim.join(" | ")}`);
-  const sec = p.secundarios.map(nome).filter(Boolean);
+  // F13-T12 (22/09/2026): vaga vazia sai como "-", igual à linha de
+  // habilidades. Antes os vazios eram espremidos e a leitura, que confia na
+  // posição, punha a runa do Slot 3 no Slot 2 e jogava fora — calada.
+  const vaga = (id) => nome(id) || "-";
+  const prim = [p.assinatura, ...p.slots];
+  if (prim.some(nome) && trilha(p.primaria)) out.push(`RUNAS: ${trilha(p.primaria)} > ${prim.map(vaga).join(" | ")}`);
+  const sec = p.secundarios.map(nome).filter(Boolean);   // secundária: duas, reconhecidas pelo nome
   if (sec.length && trilha(p.secundaria)) out.push(`RUNAS 2: ${trilha(p.secundaria)} > ${sec.join(" | ")}`);
-  const frag = p.fragmentos.map(nome).filter(Boolean);
-  if (frag.length) out.push(`FRAGMENTOS: ${frag.join(" | ")}`);
+  if (p.fragmentos.some(nome)) out.push(`FRAGMENTOS: ${p.fragmentos.map(vaga).join(" | ")}`);
   return out;
 }
 
@@ -6648,20 +6656,25 @@ function textToBuild(text) {
       const secundaria = !!mRun[1];
       const partes = mRun[2].split(">");
       const nomeTrilha = partes.length > 1 ? partes[0].trim() : "";
-      const lista = (partes.length > 1 ? partes.slice(1).join(">") : partes[0]).split("|").map(x => x.trim()).filter(Boolean);
+      const lista = (partes.length > 1 ? partes.slice(1).join(">") : partes[0]).split("|").map(x => x.trim())
+        .filter(x => x && x !== "-");                     // "-" é vaga vazia (F13-T12)
       const t = RUNAS.trilhas.find(x => norm(x.nome) === norm(nomeTrilha));
       if (!t) { result.unknown.push(nomeTrilha || mRun[2]); return; }
-      result.runas = result.runas || { primaria: "", assinatura: "", slots: [], secundaria: "", secundarios: [], fragmentos: [] };
-      const acha = (n) => { for (const sl of t.slots) { const r = sl.runas.find(x => norm(x.nome) === norm(n)); if (r) return r.id; } return null; };
+      result.runas = result.runas || { primaria: "", assinatura: "", slots: ["", "", ""], secundaria: "", secundarios: [], fragmentos: [] };
+      // Em cada trilha, toda runa mora num slot só: dá para reconhecer o slot
+      // pelo nome, sem depender da posição no texto. Serve para o texto antigo
+      // (que espremia os vazios) e para texto escrito à mão ou por IA.
+      const achaNoSlot = (n) => { for (let si = 0; si < t.slots.length; si++) { const r = t.slots[si].runas.find(x => norm(x.nome) === norm(n)); if (r) return { id: r.id, si }; } return null; };
+      const acha = (n) => { const a = achaNoSlot(n); return a ? a.id : null; };
       if (secundaria) {
         result.runas.secundaria = t.id;
         lista.forEach(n => { const id = acha(n); if (id) result.runas.secundarios.push(id); else result.unknown.push(n); });
       } else {
         result.runas.primaria = t.id;
-        lista.forEach((n, i) => {
-          const id = acha(n);
-          if (!id) { result.unknown.push(n); return; }
-          if (i === 0) result.runas.assinatura = id; else result.runas.slots.push(id);
+        lista.forEach(n => {
+          const a = achaNoSlot(n);
+          if (!a) { result.unknown.push(n); return; }
+          if (a.si === 0) result.runas.assinatura = a.id; else result.runas.slots[a.si - 1] = a.id;
         });
       }
       return;
@@ -6677,12 +6690,36 @@ function textToBuild(text) {
     const mFrag = line.match(/^FRAGMENTOS\s*:\s*(.+)$/i);
     if (mFrag) {
       if (!runasOk()) { result.ignored++; return; }
-      result.runas = result.runas || { primaria: "", assinatura: "", slots: [], secundaria: "", secundarios: [], fragmentos: [] };
-      mFrag[1].split("|").map(x => x.trim()).filter(Boolean).forEach((n, i) => {
-        const f = (RUNAS.fragmentos || [])[i];
-        const r = f && f.runas.find(x => norm(x.nome) === norm(n));
-        if (r) result.runas.fragmentos[i] = r.id; else result.unknown.push(n);
-      });
+      result.runas = result.runas || { primaria: "", assinatura: "", slots: ["", "", ""], secundaria: "", secundarios: [], fragmentos: [] };
+      // F13-T12: os grupos de fragmento repetem runas (Força Adaptativa está no
+      // 1º e no 2º; Escalamento de Vida no 2º e no 3º), então a posição conta.
+      // Com as três vagas escritas ("-" = vazia) é só ler em ordem. Com menos
+      // (texto antigo, que espremia os vazios, ou escrito à mão), procura a
+      // primeira distribuição em ordem em que cada nome cabe no seu grupo —
+      // assim uma runa que existe nunca é acusada de "não encontrada".
+      const G = RUNAS.fragmentos || [];
+      const noGrupo = (gi, n) => G[gi] && G[gi].runas.find(x => norm(x.nome) === norm(n));
+      const nomes = mFrag[1].split("|").map(x => x.trim()).filter(Boolean);
+      if (nomes.length === G.length) {
+        nomes.forEach((n, i) => {
+          if (n === "-") return;
+          const r = noGrupo(i, n);
+          if (r) result.runas.fragmentos[i] = r.id; else result.unknown.push(n);
+        });
+      } else {
+        const reais = nomes.filter(n => n !== "-");
+        const tenta = (i, desde, acc) => {
+          if (i === reais.length) return acc;
+          for (let g = desde; g < G.length; g++) if (noGrupo(g, reais[i])) { const r = tenta(i + 1, g + 1, acc.concat(g)); if (r) return r; }
+          return null;
+        };
+        const lugar = tenta(0, 0, []);
+        if (lugar) reais.forEach((n, i) => { result.runas.fragmentos[lugar[i]] = noGrupo(lugar[i], n).id; });
+        else reais.forEach(n => {
+          const g = G.findIndex((_, gi) => noGrupo(gi, n));
+          if (g >= 0 && !result.runas.fragmentos[g]) result.runas.fragmentos[g] = noGrupo(g, n).id; else if (g < 0) result.unknown.push(n);
+        });
+      }
       return;
     }
     const mDesc = line.match(/^DESCRI[ÇC][ÃA]O\s*:\s*(.+)$/i);
