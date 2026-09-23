@@ -8,7 +8,25 @@ Fica fora daqui o que já foi decidido no Capítulo 1 (`docs/decisoes_capitulo1.
 
 ## Resumo
 
-| # | Pendência | Tipo | O que o app mostra hoje | Prioridade |
+**23/09/2026: o Leo entregou o Capítulo 1 corrigido** (seção "Ajustes — sessão de correção de 23/09/2026" no fim do catálogo). O lado do Capítulo 1 está resolvido. O que falta é o app usar os campos novos: tarefas F13-T20 a T23, do Forjador.
+
+| # | Pendência | No Capítulo 1 | No app |
+|---|---|---|---|
+| A1 | Atma: eficiência sobre o preço errado | ✔ 91,95% | ✔ automático (F13-T19) |
+| A2 | Redenção: eficiência sobre o preço errado | ✔ 97,83% | ✔ automático (F13-T19) |
+| B1 | `goldValueTotal` com dois sentidos | ✔ "Valor de Ouro (atributos)" e "(base)" nos 225 | F13-T20: a eficiência usa `goldValueBase` e o contorno da T15 sai |
+| B2 | Biscoito: nota de pesquisa no atributo | ✔ nota movida para Notas | ✔ automático (F13-T19) |
+| C1, C2 | Atlas Mundial e Bússola Rúnica no 26.19 | sem mudança: o Data Dragon ainda é 16.18.1 | nada a fazer até o patch do catálogo subir |
+| D1 | Ápice em números | ✔ "Ápice numérico" em 102 itens | F13-T21: sai a extração de texto (o Atma passa a 50%); F13-T22: eficiência no ápice |
+| D2 | Ouro do Mestre Forjador | ✔ tabelas de preço + "Mestre Forjador (ouro)" (1.000g nos 109) | F13-T22: eficiência com o Mestre Forjador |
+| D3 | Fragmentos do Atributo adicional | ✔ bloco `Fragmentos[]` (34) | F13-T23: escolher o fragmento na build |
+| E1 | Lentidão do Garrabrasa | ✔ 3s (cliente) | ✔ automático (F13-T19) |
+
+O gerador (`data/gerar_catalog_json.py`) passou a ler o esquema novo na F13-T19, com o aprovado do Leo: `costAnalysis.goldValueStats` e `goldValueBase`, `apexNumeric`, `fragments`, `masterwork.bonusGold`, `meta.statPrices` e `meta.masterworkPrices` (ver `docs/esquema_catalog.md`). Relatório: 6 avisos (todos casos já decididos) e 0 linhas não reconhecidas.
+
+O registro de cada pendência, como foi aberta, continua abaixo. A tabela como estava antes da entrega:
+
+| # | Pendência | Tipo | O que o app mostrava | Prioridade |
 |---|---|---|---|---|
 | A1 | Acerto de Contas de Atma: eficiência calculada sobre 2.500g, com o item custando 2.900g | dado errado | 106,67% (deveria ser 91,95%) | alta |
 | A2 | Redenção: eficiência calculada sobre 2.250g, com o item custando 2.300g | dado errado | 100% (deveria ser 97,83%) | alta |
@@ -25,7 +43,7 @@ Fica fora daqui o que já foi decidido no Capítulo 1 (`docs/decisoes_capitulo1.
 
 ## A. Dado errado
 
-### A1. Acerto de Contas de Atma: preço de um modo, eficiência de outro
+### A1. ✔ Acerto de Contas de Atma: preço de um modo, eficiência de outro
 - **No catálogo:** `priceGold` 2.900 (ARAM: Mayhem, V25.21, receita do Data Dragon: Cinto do Gigante + Capa da Agilidade + Cinto do Gigante + 500g). A Análise de custo diz 2.666,67g e **106,67%**.
 - **A conta:** 2.666,67 ÷ 2.500 = 106,67%. Os 2.500g são o custo da **Arena** na infobox da wiki, e a Cost Analysis do artigo usa esse preço. O catálogo copiou a porcentagem sem refazer a divisão pelo preço dele.
 - **Com o preço do catálogo:** 2.666,67 ÷ 2.900 = **91,95%**.
@@ -33,7 +51,7 @@ Fica fora daqui o que já foi decidido no Capítulo 1 (`docs/decisoes_capitulo1.
 - **No app hoje:** 106,67%, e o item vale 3.093,43g na soma da build (a eficiência do catálogo × o preço, que é a regra da F13-T15).
 - **O que o Capítulo 1 faz:** refaz `efficiency`/`efficiencyBase` sobre 2.900g. O app segue sozinho depois de regerar o `catalog.js`.
 
-### A2. Redenção: preço de um patch, eficiência de outro
+### A2. ✔ Redenção: preço de um patch, eficiência de outro
 - **No catálogo:** `priceGold` 2.300 (Data Dragon 16.18.1, combinação de 850g). A Análise de custo diz 2.250g e **100%**.
 - **A conta:** 2.250 ÷ 2.250 = 100%. O artigo da wiki dá o custo como 2.250g (combinação de 800g), e o catálogo dividiu pelo preço do artigo, não pelo dele.
 - **Com o preço do catálogo:** 2.250 ÷ 2.300 = **97,83%**.
@@ -42,7 +60,7 @@ Fica fora daqui o que já foi decidido no Capítulo 1 (`docs/decisoes_capitulo1.
 
 ## B. Forma do dado: o número está certo, o campo não
 
-### B1. `goldValueTotal` não significa a mesma coisa em todos os itens
+### B1. ✔ (dado) `goldValueTotal` não significa a mesma coisa em todos os itens — o app usa na F13-T20
 Na wiki, "eficiência base" tem **dois sentidos**, e o catálogo mistura os dois:
 - a **tabela** "Gold efficiency" conta **só os atributos**;
 - o **artigo** de cada item diz que "os atributos base são X% eficientes", mas o X muitas vezes **inclui a passiva** (o Fascínio, a Mordida Icathiana, o Duelo, a Drenar...).
@@ -59,7 +77,7 @@ O `efficiencyBase` do catálogo segue o **artigo** em todos os itens conferidos.
 
   Com isso o app tira o contorno e pode mostrar as duas leituras lado a lado ("só atributos 84,17% · com Duelo 118,99%").
 
-### B2. Biscoito Total da Determinação Eterna: nota de pesquisa dentro do atributo
+### B2. ✔ Biscoito Total da Determinação Eterna: nota de pesquisa dentro do atributo
 - **No catálogo:** o `attributes[0].raw` tem 262 caracteres. Junto do atributo ("+30 de Vida máxima permanente por biscoito consumido ou vendido") vem a nota de onde ele veio (a captura do tooltip de 12/09/2026, e que a wiki atribui o bônus à runa).
 - **No app hoje:** a faixa de atributos da build quebra o texto em várias linhas. Antes da F13-T11 ela estourava a página em 1280 px (caçada de bugs, nº 34).
 - **O que o Capítulo 1 faz:** passa a nota para `notes` ou para as Divergências e deixa no `raw` só o atributo.
@@ -80,12 +98,12 @@ O catálogo está no 16.18.1, e a wiki já traz o **V26.19**. A conta do catálo
 
 Estes dados existem hoje só como texto. O Forjador não os digita. Até o Capítulo 1 fornecer, a tela mostra o texto como está.
 
-### D1. Ápice em campos numéricos
+### D1. ✔ (dado) Ápice em campos numéricos — o app usa nas F13-T21 e T22
 - **Hoje:** `apex` é texto (102 itens com Ápice diferente do base). O app extrai dele só os "+N de <atributo>" com sinal e nome conhecido, e desde a F13-T9 só **substitui** o número do item quando a grandeza é a mesma e o número do Ápice é maior. Assim 9 itens deixaram de sair errados, mas ainda tem caso que nenhuma regra acerta sem adivinhar.
 - **O caso que prova:** Acerto de Contas de Atma. O texto diz "+30% de Chance de Acerto Crítico (50% no total com o atributo do item)", e o app mostra **30%**. O certo é 50%.
 - **O que o Capítulo 1 faz:** `apexStats[] = {stat, value, unit, soma: "total" | "a mais"}`, mais `apexGoldValueTotal` (ou `apexEfficiencyBase`). Com isso o app desliga a extração de texto e a eficiência passa a mudar com o interruptor Ápice.
 
-### D2. Valor em ouro do bônus do Mestre Forjador
+### D2. ✔ (dado) Valor em ouro do bônus do Mestre Forjador — o app usa na F13-T22
 - **Hoje:** `masterwork.stats[].bonus` tem o número do bônus de cada atributo (109 itens). O valor em ouro dele está só no texto `masterwork.raw` ("3 categorias upgradáveis (333,33g cada)"), e a conta dá 1.000g nos 109 (51 × 2 de 500g, 28 × 1 de 1.000g, 25 × 3 de 333,33g, 5 × 4 de 250g). Por isso a eficiência não muda com o Mestre Forjador.
 - **O que o Capítulo 1 faz, com uma das três formas:**
   1. `masterwork.bonusGoldTotal`, um número por item;
@@ -93,13 +111,13 @@ Estes dados existem hoje só como texto. O Forjador não os digita. Até o Capí
   3. uma tabela de preço por atributo no topo do catálogo (`statPrices`), copiada da "Base Statistic Prices" da wiki (DdA 35g, PdH 20g, Vida 2,666667g...), para o app valorar o bônus sozinho.
 - **A regra que fica pronta para usar:** eficiência = (valor base + bônus do Mestre Forjador, ou valor no Ápice) ÷ (preço, ou preço líquido com Reembolso). O Reembolso já funciona (`cashback.netGold`, 109 itens; outros 11 têm o reembolso só em texto).
 
-### D3. Fragmentos do Atributo adicional (Stat Bonus)
+### D3. ✔ (dado) Fragmentos do Atributo adicional (Stat Bonus) — o app usa na F13-T23
 - **Hoje:** os fragmentos estão em texto no `mechanics` da habilidade.
 - **O que o Capítulo 1 faz:** `fragments[] = {tier: "Prata" | "Ouro" | "Prismático", stat, value, unit, gold}`. Com isso a build pode escolher qual fragmento o item dá.
 
 ## E. Dúvida de fonte aberta
 
-### E1. Filhote de Garrabrasa (Scorchclaw Pup): lentidão de 2s ou 3s
+### E1. ✔ Filhote de Garrabrasa (Scorchclaw Pup): lentidão de 2s ou 3s — 3s, pelo cliente
 A wiki diz 2s e o tooltip do cliente diz 3s. O catálogo marca "[A CONFIRMAR]" e o app mostra como está. Entra aqui só para a lista ficar completa: isso já está nas Divergências do catálogo e no `docs/decisoes_capitulo1.md`.
 
 ---
@@ -156,3 +174,4 @@ A wiki diz 2s e o tooltip do cliente diz 3s. O catálogo marca "[A CONFIRMAR]" e
 - 13/09/2026: D1, D2 e D3 abertas (eram o `docs/propostas_capitulo1.md`, que virou ponteiro para cá).
 - 22/09/2026: B2 achada na caçada de bugs (nº 34). O app passou a quebrar o texto (F13-T11). O caso do Atma no D1 veio da F13-T9.
 - 23/09/2026: A1, A2, B1, C1 e C2 saíram da conferência com a wiki (tabela e 28 artigos). Arquivo único criado a pedido do Leo.
+- 23/09/2026 (tarde): o Leo entregou o Capítulo 1 corrigido. A1, A2, B2 e E1 resolvidos no dado; B1, D1, D2 e D3 entregues como campos novos, que o app passa a usar nas F13-T20 a T23. C1 e C2 ficam para quando o catálogo subir de patch.

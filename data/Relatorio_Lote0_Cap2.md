@@ -45,12 +45,11 @@ Assassino (17), Atirador (32), Lutador (31), Mago (47), Suporte (32), Tanque (35
 
 Bandle City, Bilgewater, Demacia, Freljord, Ionia, Ixtal, Noxus, Piltover, Runeterra, Shadow Isles, Shurima, Targon, The Void, Zaun
 
-## Avisos de parse — 7
+## Avisos de parse — 6
 
 - Gustwalker Hatchling: sem Atributo[]
 - Mosstomper Seedling: sem Atributo[]
 - Scorchclaw Pup: sem Atributo[]
-- Scorchclaw Pup: contém [A CONFIRMAR]
 - Slightly Magical Footwear: Eficiência sem % base
 - Total Biscuit of Everlasting Will: Valor de Ouro sem 'total Xg'
 - Total Biscuit of Everlasting Will: Eficiência sem % base

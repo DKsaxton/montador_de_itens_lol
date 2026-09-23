@@ -1,9 +1,10 @@
 # Catálogo de Itens LoL — Capítulo 1 (completo)
-Patch: 16.18.1   ·   Modelo: Claude Opus 5   ·   Itens: 225 (Lista_Piloto_v2, 225 itens)   ·   Concluído em 12/09/2026
+Patch: 16.18.1   ·   Modelo: Claude Opus 5   ·   Itens: 225 (Lista_Piloto_v2, 225 itens)   ·   Concluído em 12/09/2026   ·   Ajustes: 23/09/2026 (Claude Opus 5.5)
 
-> Consolidação dos 16 arquivos de lote, sem alteração de conteúdo. Fontes: módulo raiz `Module:ItemData/data` e páginas completas da wiki oficial EN, Data Dragon pt_BR 16.18.1, capturas do cliente fornecidas pelo usuário (12/09/2026). Regras: Guia_de_Campos_v2 (listas v5), CLASSES_DE_ITENS_v2, Regras_de_Fonte. Pendência única: lentidão do Arranhão do Garrabrasa (wiki 2s vs cliente 3s), marcada [A CONFIRMAR] no bloco.
+> Consolidação dos 16 arquivos de lote, sem alteração de conteúdo. Fontes: módulo raiz `Module:ItemData/data` e páginas completas da wiki oficial EN, Data Dragon pt_BR 16.18.1, capturas do cliente fornecidas pelo usuário (12/09/2026). Regras: Guia_de_Campos_v2 (listas v5), CLASSES_DE_ITENS_v2, Regras_de_Fonte. Pendência única da consolidação (lentidão do Arranhão do Garrabrasa, wiki 2s vs cliente 3s): resolvida em 23/09/2026 com 3s (ver Ajustes).
 
 ## Índice
+- Preços de atributo (tabela de referência)
 - Catálogo de Itens LoL — Lote 01: Starter (1–16) — 16 itens
 - Catálogo de Itens LoL — Lote 02: Consumíveis + Trinkets + Distribuídos (15) — 15 itens
 - Catálogo de Itens LoL — Lote 03: Botas (8) — 8 itens
@@ -20,6 +21,48 @@ Patch: 16.18.1   ·   Modelo: Claude Opus 5   ·   Itens: 225 (Lista_Piloto_v2, 
 - Catálogo de Itens LoL — Lote 14: Lendários (91–105 de 114) — 15 itens
 - Catálogo de Itens LoL — Lote 15: Lendários (106–114 de 114) — 9 itens
 - Catálogo de Itens LoL — Lote 16: Únicos/Evolução (1–13 de 13) — 13 itens
+
+## Preços de atributo
+
+Fonte: https://wiki.leagueoflegends.com/en-us/Gold_efficiency (seções "Basic reference items" e "Secondary stat reference items"), consultada em 23/09/2026. Valor em ouro de 1 unidade de cada atributo, usado pela wiki na Cost Analysis de cada item. Nos itens de referência secundária, o preço é o do atributo principal, já descontado o valor dos outros atributos do item.
+
+| Categoria de Atributo | Unidade | Ouro por unidade | Item de referência |
+|---|---|---|---|
+| Dano de Ataque | 1 ponto | 35g | Espada Longa (350g ÷ 10) |
+| Aceleração de Habilidade | 1 ponto | 50g | Partícula Brilhante (250g ÷ 5) |
+| Poder de Habilidade | 1 ponto | 20g | Tomo Amplificador (400g ÷ 20) |
+| Armadura | 1 ponto | 20g | Couraça de Pano (300g ÷ 15) |
+| Resistência Mágica | 1 ponto | 20g | Manto Anula-Magia (400g ÷ 20) |
+| Vida | 1 ponto | 2,666667g | Cristal de Rubi (400g ÷ 150) |
+| Mana | 1 ponto | 1g | Cristal de Safira (300g ÷ 300) |
+| Regeneração de Vida | 1% da base | 3g | Pérola do Rejuvenescimento (300g ÷ 100%) |
+| Regeneração de Mana | 1% da base | 4g | Amuleto da Fada (200g ÷ 50%) |
+| Acerto Crítico | 1% | 40g | Capa da Agilidade (600g ÷ 15%) |
+| Velocidade de Ataque | 1% | 25g | Adaga (250g ÷ 10%) |
+| Movimento (fixo) | 1 ponto | 12g | Botas (300g ÷ 25) |
+| Penetração de Armadura | 1% | 41,666667g | Último Sussurro (1.450g; 20 DdA a 35g) |
+| Poder de Cura e Escudo | 1% | 50g | Ídolo Proibido (600g; 50% de Regeneração de Mana base a 4g) |
+| Letalidade | 1 ponto | 30g | Punhal Serrilhado (1.000g; 20 DdA a 35g) |
+| Roubo de Vida | 1% | 53,55g | Cetro Vampírico (900g; 15 DdA a 35g) |
+| Penetração Mágica | 1 ponto | 46,666667g | Sapatos do Feiticeiro (1.100g; 45 de Movimento a 12g) |
+| Penetração Mágica Percentual | 1% | 46,15g | Joia da Ruína (1.100g; 25 PdH a 20g) |
+| Vampirismo | 1% | 46g | Grevas Vorazes (1.000g; 45 de Movimento a 12g) |
+| Efeitos ao Contato | 1 ponto de dano | 21,666666g | Arco Recurvo (700g; 15% de VdA a 25g) |
+| Tenacidade | 1% | 10,333334g | Passos de Mercúrio (1.250g; 45 de Movimento a 12g, 20 RM a 20g) |
+
+### Preços do Mestre Forjador (Ornn#Notes)
+
+O bônus do Mestre Forjador usa uma tabela própria, diferente da de cima, e soma sempre exatamente 1.000g por item (linha "Mestre Forjador (ouro)" de cada Lendário). Fonte: https://wiki.leagueoflegends.com/en-us/Ornn (Notes), reconferida em 23/09/2026.
+
+| Categoria de Atributo | Ouro por unidade |
+|---|---|
+| Aceleração de Habilidade | 31,25g |
+| Poder de Habilidade | 20g |
+| Dano de Ataque | 35g |
+| Velocidade de Ataque | 30g por 1% |
+| Armadura | 20g |
+| Resistência Mágica | 18g |
+| Vida | variável: +375 se for o único atributo upgradável; +185 com mais 1; +125 com mais 2; +90 com mais 3 |
 
 # Catálogo de Itens LoL — Lote 01: Starter (1–16)
 
@@ -44,9 +87,15 @@ Abatedora: Cull[
     Análise de custo[
         Valor de Ouro: 7 DdA = 245g; total 245g
         Eficiência de Ouro: 54,44% (base); +0,22% por 1 de ouro recebido de Ceifar, até 76,67% com +100g; após o máximo, +350g → 154,44% (sem contar a cura ao contato). Obter os 450g máximos de Ceifar e vender a Abatedora resulta em lucro de 180g.
+        Valor de Ouro (atributos): 245g
+        Valor de Ouro (base): 245g
     ]
     Ápice[
         100 tropas abatidas: +450g recebidos no total (100g + 350g); Ceifar desativada. Atributos iguais ao base.
+    ]
+    Ápice numérico[
+        Valor de Ouro no ápice: 695g (calculado: 245g de atributos + 450g recebidos de Ceifar)
+        Eficiência de Ouro no ápice: 154,44% (wiki, sem contar a cura ao contato)
     ]
     Notas: O contador de Ceifar não é reiniciado ao vender a Abatedora. Abates de tropa compartilhados por um aliado com Atlas Mundial ou Bússola Rúnica via Riquezas Compartilhadas contam para Ceifar.
     Notas de ARAM: none
@@ -79,9 +128,16 @@ Lacre Sombrio: Dark Seal[
     Análise de custo[
         Valor de Ouro: 15 PdH = 300g; 50 Vida = 133,33g; total 433,33g. Glória por acúmulo: 80g; com 10 acúmulos: 800g; total no ápice 1.233,33g
         Eficiência de Ouro: 123,81% (base); +22,86% por acúmulo de Glória; 352,38% no ápice
+        Valor de Ouro (atributos): 433,33g
+        Valor de Ouro (base): 433,33g
     ]
     Ápice[
         10 acúmulos de Glória: +55 de Poder de Habilidade, +50 de Vida.
+    ]
+    Ápice numérico[
+        Poder de Habilidade · 55 · pt · total
+        Valor de Ouro no ápice: 1.233,33g
+        Eficiência de Ouro no ápice: 352,38%
     ]
     Notas: none
     Notas de ARAM: none
@@ -114,6 +170,8 @@ Lâmina de Doran: Doran's Blade[
     Análise de custo[
         Valor de Ouro: 10 DdA = 350g; 80 Vida = 213,33g; 2,5% Vampirismo = 115g; total 678,33g
         Eficiência de Ouro: 150,74% (base)
+        Valor de Ouro (atributos): 678,33g
+        Valor de Ouro (base): 678,33g
     ]
     Ápice[
         igual ao base
@@ -149,6 +207,8 @@ Arco de Doran: Doran's Bow[
     Análise de custo[
         Valor de Ouro: 8 DdA = 280g; 15% VdA = 375g; 1,5% Vampirismo = 69g; total 724g
         Eficiência de Ouro: 181% (base)
+        Valor de Ouro (atributos): 724g
+        Valor de Ouro (base): 724g
     ]
     Ápice[
         igual ao base
@@ -185,6 +245,8 @@ Elmo de Doran: Doran's Helm[
     Análise de custo[
         Valor de Ouro: 150 Vida = 400g; 8 Armadura = 160g; 8 RM = 160g; total 720g
         Eficiência de Ouro: 160% (base)
+        Valor de Ouro (atributos): 720g
+        Valor de Ouro (base): 720g
     ]
     Ápice[
         igual ao base
@@ -222,9 +284,15 @@ Anel de Doran: Doran's Ring[
     Análise de custo[
         Valor de Ouro: 18 PdH = 360g; 90 Vida = 240g; total 600g. Drenar: 5–10 de Regeneração de Mana fixa = 300–600g → total 900–1.200g. Sem Mana/Mana cheia: 2,25–4,5 de Regeneração de Vida fixa = 164,25–328,5g → total 681–762g (valores da wiki; ver Divergências)
         Eficiência de Ouro: 225% (base, conforme a wiki); 300% com Drenar ao causar dano a campeão; 170,25% em campeões sem Mana ou com Mana cheia fora de combate; 190,5% sem Mana/Mana cheia causando dano a campeão
+        Valor de Ouro (atributos): 600g
+        Valor de Ouro (base): 900g
     ]
     Ápice[
         Drenar intensificado (dano a campeão nos últimos 5s): 2 de Mana por segundo (0,9 de Vida por segundo se não puder receber Mana). Atributos iguais ao base.
+    ]
+    Ápice numérico[
+        Valor de Ouro no ápice: 1.200g (Drenar ao causar dano a campeão)
+        Eficiência de Ouro no ápice: 300%
     ]
     Notas: Drenar cura em vez de restaurar Mana se o usuário não usa Mana ou está com Mana cheia.
     Notas de ARAM: none
@@ -259,9 +327,15 @@ Escudo de Doran: Doran's Shield[
     Análise de custo[
         Valor de Ouro: 110 Vida = 293,33g; 4 Regeneração de Vida = 144g; total 437,33g. Foco Definitivo: 25 de Regeneração de Vida = 900g → total 1.337,33g; valores reduzidos/à distância: 18,75 de Regeneração de Vida = 675g → total 1.112,33g
         Eficiência de Ouro: 97,18% (base); até 297,18% / 247,18% com a Regeneração de Vida aumentada de Foco Definitivo
+        Valor de Ouro (atributos): 437,33g
+        Valor de Ouro (base): 437,33g
     ]
     Ápice[
         75% ou mais de Vida perdida após dano de campeão: +5 de Regeneração de Vida bônus por segundo (3,75 nos valores reduzidos) por 8s → até 40 (30) de Vida restaurada.
+    ]
+    Ápice numérico[
+        Valor de Ouro no ápice: 1.337,33g (valores reduzidos/à distância: 1.112,33g)
+        Eficiência de Ouro no ápice: 297,18% (valores reduzidos/à distância: 247,18%)
     ]
     Notas: none
     Notas de ARAM: none
@@ -294,6 +368,8 @@ Lâmina do Guardião: Guardian's Blade[
     Análise de custo[
         Valor de Ouro: 30 DdA = 1.050g; 15 AdH = 750g; 150 Vida = 400g; total 2.200g
         Eficiência de Ouro: 231,58% (base)
+        Valor de Ouro (atributos): 2.200g
+        Valor de Ouro (base): 2.200g
     ]
     Ápice[
         igual ao base
@@ -329,6 +405,8 @@ Martelo do Guardião: Guardian's Hammer[
     Análise de custo[
         Valor de Ouro: 25 DdA = 875g; 150 Vida = 400g; 5% Roubo de Vida = 267,75g; total 1.542,75g
         Eficiência de Ouro: 162,39% (base)
+        Valor de Ouro (atributos): 1.542,75g
+        Valor de Ouro (base): 1.542,75g
     ]
     Ápice[
         igual ao base
@@ -366,6 +444,8 @@ Berrante do Guardião: Guardian's Horn[
     Análise de custo[
         Valor de Ouro: 150 Vida = 400g; 20 Regeneração de Vida = 720g; total 1.120g
         Eficiência de Ouro: 117,89% (base)
+        Valor de Ouro (atributos): 1.120g
+        Valor de Ouro (base): 1.120g
     ]
     Ápice[
         igual ao base
@@ -401,6 +481,8 @@ Orbe do Guardião: Guardian's Orb[
     Análise de custo[
         Valor de Ouro: 50 PdH = 1.000g; 150 Vida = 400g; total 1.400g. Recuperação: 10 de Regeneração de Mana fixa = 600g → total 2.000g; sem Mana: 15 de Regeneração de Vida fixa = 540g → total 1.940g
         Eficiência de Ouro: 210,53% (base, conforme a wiki); 204,21% em campeões sem Mana
+        Valor de Ouro (atributos): 1.400g
+        Valor de Ouro (base): 2.000g
     ]
     Ápice[
         igual ao base
@@ -437,9 +519,15 @@ Cria de Andabrisas: Gustwalker Hatchling[
     Análise de custo[
         Valor de Ouro: none (sem atributos; a wiki não traz Cost Analysis)
         Eficiência de Ouro: none
+        Valor de Ouro (atributos): none
+        Valor de Ouro (base): none
     ]
     Ápice[
         35 tratos: Primal Smite; item consumido; buff permanente Gustwalker's Gait ativo.
+    ]
+    Ápice numérico[
+        Valor de Ouro no ápice: none
+        Eficiência de Ouro no ápice: none
     ]
     Notas: Efeitos de item de selva listados em Notes: +10% de dano contra monstros não épicos (não se aplica a dano verdadeiro, inclusive Golpear); sofre 50% do dano de monstros não épicos (redução de 50%; confirmado pelo tooltip do cliente — "sofra 50% de dano contra monstros" — captura do usuário em 12/09/2026); na selva ou no rio, Regeneração de Mana bônus igual a 8,62%–19,08% (por nível) da Mana perdida; abater monstro grande concede 80 de experiência bônus (+150 no primeiro), +50 por nível inteiro de desvantagem se estiver mais de 1,1 nível abaixo da média da partida, cura entre 0 e 90–250 (pelo nível médio dos campeões) após 0,3s (+1,25% por 1% de Vida perdida), restaura 19–87 de Mana (pelo nível médio) após 0,3s (+1,25% por 1% de Mana perdida) → 67 de Mana com nível médio 13 (reconferido na wiki em 12/09/2026: 19–87 é a base; com 100% de Mana perdida, +125% → 43–196, que é o "até 43-196 de Mana" do tooltip do cliente — sem divergência), e restaura 15 de Energia. Experiência de tropas de rota reduzida em 70%–0% (por minutos), exceto se 1,5 nível abaixo da média. Monster Hunter: se o ouro de tropas superar 40% do ouro de monstros, abater tropa de rota concede 13 de ouro a menos e 50% menos experiência; penalidade removida aos 14 min. Abater Sentinela Azul Dracônica ou Brutamontes Vermelho deixa um fogo-fátuo por 60s que concede o buff Crest of Insight / Crest of Cinders ao ser coletado (se um aliado abateu, só você coleta; se você abateu, um aliado pode coletar).
     Notas de ARAM: none
@@ -473,9 +561,15 @@ Broto de Esmagamusgo: Mosstomper Seedling[
     Análise de custo[
         Valor de Ouro: none (sem atributos; a wiki não traz Cost Analysis)
         Eficiência de Ouro: none
+        Valor de Ouro (atributos): none
+        Valor de Ouro (base): none
     ]
     Ápice[
         35 tratos: Primal Smite; item consumido; buff permanente Mosstomper's Courage ativo (escudo de 312,94 no nível 13).
+    ]
+    Ápice numérico[
+        Valor de Ouro no ápice: none
+        Eficiência de Ouro no ápice: none
     ]
     Notas: Efeitos de item de selva listados em Notes: +10% de dano contra monstros não épicos (não se aplica a dano verdadeiro, inclusive Golpear); sofre 50% do dano de monstros não épicos (redução de 50%; confirmado pelo tooltip do cliente — "sofra 50% de dano contra monstros" — captura do usuário em 12/09/2026); na selva ou no rio, Regeneração de Mana bônus igual a 8,62%–19,08% (por nível) da Mana perdida; abater monstro grande concede 80 de experiência bônus (+150 no primeiro), +50 por nível inteiro de desvantagem se estiver mais de 1,1 nível abaixo da média da partida, cura entre 0 e 90–250 (pelo nível médio dos campeões) após 0,3s (+1,25% por 1% de Vida perdida), restaura 19–87 de Mana (pelo nível médio) após 0,3s (+1,25% por 1% de Mana perdida) → 67 de Mana com nível médio 13 (reconferido na wiki em 12/09/2026: 19–87 é a base; com 100% de Mana perdida, +125% → 43–196, que é o "até 43-196 de Mana" do tooltip do cliente — sem divergência), e restaura 15 de Energia. Experiência de tropas de rota reduzida em 70%–0% (por minutos), exceto se 1,5 nível abaixo da média. Monster Hunter: se o ouro de tropas superar 40% do ouro de monstros, abater tropa de rota concede 13 de ouro a menos e 50% menos experiência; penalidade removida aos 14 min. Abater Sentinela Azul Dracônica ou Brutamontes Vermelho deixa um fogo-fátuo por 60s que concede o buff Crest of Insight / Crest of Cinders ao ser coletado (se um aliado abateu, só você coleta; se você abateu, um aliado pode coletar).
     Notas de ARAM: none
@@ -504,14 +598,20 @@ Filhote de Garrabrasa: Scorchclaw Pup[
         [Companheiros da Selva (Jungle Companions) — passiva única][Invoca um Garrabrasa para ajudar você contra monstros. O companheiro cresce conforme você caça mais monstros, fortalecendo seu Golpear. Ao crescer completamente, ele cumpre a missão da selva e imbui esporadicamente seu próximo Ataque ou Habilidade para queimar inimigos e causar Lentidão a eles. Abater monstros grandes ativa esse efeito imediatamente.]
         Mecânica (wiki): o companheiro ataca todos os monstros que estejam atacando você num raio de 650, 1 ataque por segundo, causando 20–150 (por nível) (+10% do DdA bônus) (+16% do PdH) (+25% da Armadura bônus) (+25% da RM bônus) (+4% da Vida bônus) de dano verdadeiro a cada monstro → 111,76 + 4 + 32 + 7,5 + 5 + 24 = 184,26 de dano verdadeiro por ataque no nível 13 com 40 de DdA bônus, 200 de PdH, 30 de Armadura bônus, 20 de RM bônus e 600 de Vida bônus. Enquanto o companheiro ataca, cura você em 6–36 (por nível) por segundo → 27,18 por segundo no nível 13. O dano conta como área independentemente do número de alvos e NÃO é afetado por Vampirismo Universal. Após você parar de atacar o acampamento, o companheiro ataca mais 2 vezes. Se estiver longe, salta até o acampamento danificado. NÃO causa dano letal a monstros épicos.
         [Arranhão do Garrabrasa (Scorchclaw's Slash) — passiva única][sem texto próprio no Data Dragon; nome PT-BR e texto conforme o tooltip do cliente (captura do usuário, 12/09/2026): "Ao crescer completamente, ele imbui periodicamente seu próximo Ataque ou Habilidade para queimar inimigos e causar 5% da Vida Máxima como Dano Verdadeiro ao longo de 4s e 30% de Lentidão, que decai ao longo de 3s. Abater monstros grandes ativa esse efeito imediatamente."]
-        Mecânica (wiki): evolução por tratos. 1 trato por monstro grande abatido. 1 trato bônus armazenado a cada 60s (90s após a evolução final), exibido na barra de buffs; abater monstro grande com trato bônus armazenado consome 1 acúmulo (2 após a evolução final) e concede 20g ao alimentar. 15 tratos: Golpear vira Unleashed Smite. 35 tratos (evolução final): Unleashed Smite vira Primal Smite, o item é consumido. Tooltip do cliente (captura de 12/09/2026): tratos = "Petiscos"; até 35; "20 Petiscos: seu Golpear causa 1000 de dano. Pode ser conjurado em Campeões inimigos para causar dano reduzido e Lentidão. 35 Petiscos: seu Golpear causa 1400 de dano a monstros próximos". O item é consumido e concede o buff permanente Scorchclaw's Slash. Os efeitos e a limitação de grupo do item persistem após o consumo. Scorchclaw's Slash: +3 acúmulos de Brasa (Ember) a cada 0,5s, até 100; abater monstro grande concede o máximo. Com o máximo, o próximo ataque básico que cause dano ou instância de dano de habilidade contra campeão inimigo consome todos os acúmulos e queima o alvo e todos os inimigos a até 250 unidades dele: dano verdadeiro bônus de 5% da Vida máxima do alvo ao longo de 4s (1,25% por segundo) → 100 de dano (25 por segundo) contra alvo com 2.000 de Vida máxima; lentidão de 30% decaindo em 2s (wiki, reconferida em 12/09/2026) [A CONFIRMAR: o tooltip do cliente diz "que decai ao longo de 3s"]. Dano classificado como proc, marcado como periódico, NÃO aplica efeitos de habilidade.
+        Mecânica (wiki): evolução por tratos. 1 trato por monstro grande abatido. 1 trato bônus armazenado a cada 60s (90s após a evolução final), exibido na barra de buffs; abater monstro grande com trato bônus armazenado consome 1 acúmulo (2 após a evolução final) e concede 20g ao alimentar. 15 tratos: Golpear vira Unleashed Smite. 35 tratos (evolução final): Unleashed Smite vira Primal Smite, o item é consumido. Tooltip do cliente (captura de 12/09/2026): tratos = "Petiscos"; até 35; "20 Petiscos: seu Golpear causa 1000 de dano. Pode ser conjurado em Campeões inimigos para causar dano reduzido e Lentidão. 35 Petiscos: seu Golpear causa 1400 de dano a monstros próximos". O item é consumido e concede o buff permanente Scorchclaw's Slash. Os efeitos e a limitação de grupo do item persistem após o consumo. Scorchclaw's Slash: +3 acúmulos de Brasa (Ember) a cada 0,5s, até 100; abater monstro grande concede o máximo. Com o máximo, o próximo ataque básico que cause dano ou instância de dano de habilidade contra campeão inimigo consome todos os acúmulos e queima o alvo e todos os inimigos a até 250 unidades dele: dano verdadeiro bônus de 5% da Vida máxima do alvo ao longo de 4s (1,25% por segundo) → 100 de dano (25 por segundo) contra alvo com 2.000 de Vida máxima; lentidão de 30% decaindo em 3s (tooltip do cliente, capturas de 12/09/2026 e da loja em partida de 23/09/2026: "30% de Lentidão, que decai ao longo de 3s"; a wiki diz 2s). Dano classificado como proc, marcado como periódico, NÃO aplica efeitos de habilidade.
     ]
     Análise de custo[
         Valor de Ouro: none (sem atributos; a wiki não traz Cost Analysis)
         Eficiência de Ouro: none
+        Valor de Ouro (atributos): none
+        Valor de Ouro (base): none
     ]
     Ápice[
         35 tratos: Primal Smite; item consumido; buff permanente Scorchclaw's Slash ativo.
+    ]
+    Ápice numérico[
+        Valor de Ouro no ápice: none
+        Eficiência de Ouro no ápice: none
     ]
     Notas: Efeitos de item de selva listados em Notes: +10% de dano contra monstros não épicos (não se aplica a dano verdadeiro, inclusive Golpear); sofre 50% do dano de monstros não épicos (redução de 50%; confirmado pelo tooltip do cliente — "sofra 50% de dano contra monstros" — captura do usuário em 12/09/2026); na selva ou no rio, Regeneração de Mana bônus igual a 8,62%–19,08% (por nível) da Mana perdida; abater monstro grande concede 80 de experiência bônus (+150 no primeiro), +50 por nível inteiro de desvantagem se estiver mais de 1,1 nível abaixo da média da partida, cura entre 0 e 90–250 (pelo nível médio dos campeões) após 0,3s (+1,25% por 1% de Vida perdida), restaura 19–87 de Mana (pelo nível médio) após 0,3s (+1,25% por 1% de Mana perdida) → 67 de Mana com nível médio 13 (reconferido na wiki em 12/09/2026: 19–87 é a base; com 100% de Mana perdida, +125% → 43–196, que é o "até 43-196 de Mana" do tooltip do cliente — sem divergência), e restaura 15 de Energia. Experiência de tropas de rota reduzida em 70%–0% (por minutos), exceto se 1,5 nível abaixo da média. Monster Hunter: se o ouro de tropas superar 40% do ouro de monstros, abater tropa de rota concede 13 de ouro a menos e 50% menos experiência; penalidade removida aos 14 min. Abater Sentinela Azul Dracônica ou Brutamontes Vermelho deixa um fogo-fátuo por 60s que concede o buff Crest of Insight / Crest of Cinders ao ser coletado (se um aliado abateu, só você coleta; se você abateu, um aliado pode coletar).
     Notas de ARAM: none
@@ -545,9 +645,16 @@ Lágrima da Deusa: Tear of the Goddess[
     Análise de custo[
         Valor de Ouro: 240 Mana = 240g; total 240g. Por carga: 3g (não campeão) / 6g (campeão); com 360 de Mana bônus: 360g; total no ápice 600g
         Eficiência de Ouro: 60% (base); +0,75% por carga obtida de não campeões, +1,5% por carga obtida de campeões; 100% com 160 de Mana bônus; 150% no ápice
+        Valor de Ouro (atributos): 240g
+        Valor de Ouro (base): 240g
     ]
     Ápice[
         360 de Mana bônus de Fluxo de Mana: +600 de Mana.
+    ]
+    Ápice numérico[
+        Mana · 600 · pt · total
+        Valor de Ouro no ápice: 600g
+        Eficiência de Ouro no ápice: 150%
     ]
     Notas: Vender um item do grupo Fluxo de Mana remove a Mana bônus obtida, mas os acúmulos são mantidos se um item do grupo for comprado de novo, independentemente de qual item os gerou.
     Notas de ARAM: Cada carga consumida de Fluxo de Mana gera 50% mais Mana.
@@ -584,9 +691,15 @@ Atlas Mundial: World Atlas[
     Análise de custo[
         Valor de Ouro: 30 Vida = 80g; 25% Regeneração de Vida base = 75g; 25% Regeneração de Mana base = 100g; total 255g
         Eficiência de Ouro: 63,75% (base)
+        Valor de Ouro (atributos): 255g
+        Valor de Ouro (base): 255g
     ]
     Ápice[
         400g obtidos pela Missão de Suporte: transforma-se em Bússola Rúnica.
+    ]
+    Ápice numérico[
+        Valor de Ouro no ápice: none
+        Eficiência de Ouro no ápice: none
     ]
     Notas: Vinculação de Função (Role Binding): em filas permanentes com matchmaking de Summoner's Rift, o item inicial de Suporte (Atlas Mundial) é comprado automaticamente com o ouro inicial pelo jogador escolhido como Suporte e fica inacessível aos demais. Bug: o Suporte do lado azul vê o item no inventário do Suporte do lado vermelho mesmo sem visão dele. Não pode ser vendido.
     Notas de ARAM: none
@@ -622,6 +735,8 @@ Sentinela de Controle: Control Ward[
     Análise de custo[
         Valor de Ouro: none (a wiki não traz seção Cost Analysis)
         Eficiência de Ouro: none
+        Valor de Ouro (atributos): none
+        Valor de Ouro (base): none
     ]
     Ápice[
         igual ao base
@@ -656,9 +771,17 @@ Elixir de Ferro: Elixir of Iron[
     Análise de custo[
         Valor de Ouro: 300 Vida = 800,0001g; total 800,0001g
         Eficiência de Ouro: 160% após consumido
+        Valor de Ouro (atributos): 0g
+        Valor de Ouro (base): 800,0001g
     ]
     Ápice[
         Efeito ativo (180s): +300 de Vida, 25% de Tenacidade, +15% de tamanho, rastro de +15% de Velocidade de Movimento para aliados.
+    ]
+    Ápice numérico[
+        Vida · 300 · pt · total
+        Tenacidade · 25 · % · total
+        Valor de Ouro no ápice: 800,0001g (a wiki não valora a Tenacidade)
+        Eficiência de Ouro no ápice: 160%
     ]
     Notas: Comprar um Elixir impede a compra de outro Elixir por 5s. Não há limite de quantos Elixires podem estar no inventário (respeitando os espaços). Só um efeito de Elixir fica ativo por vez: consumir outro substitui o buff existente, ou o renova se for o mesmo Elixir. Elixires são consumidos automaticamente se o inventário estiver cheio ao comprá-los, inclusive com o usuário morto. Consumir um Elixir enquanto morto renova a duração do buff até o renascimento. A duração não pausa se o usuário morrer com o buff ativo.
     Notas de ARAM: none
@@ -690,9 +813,17 @@ Elixir da Feitiçaria: Elixir of Sorcery[
     Análise de custo[
         Valor de Ouro: 50 PdH = 1.000g; 15 Regeneração de Mana fixa = 900g; total 1.900g
         Eficiência de Ouro: 380% após consumido
+        Valor de Ouro (atributos): 0g
+        Valor de Ouro (base): 1.900g
     ]
     Ápice[
         Efeito ativo (180s): +50 de Poder de Habilidade, +15 de Regeneração de Mana, 25 de dano verdadeiro bônus por instância de dano a campeão/torre.
+    ]
+    Ápice numérico[
+        Poder de Habilidade · 50 · pt · total
+        Regeneração de Mana · 15 · pt · total
+        Valor de Ouro no ápice: 1.900g
+        Eficiência de Ouro no ápice: 380%
     ]
     Notas: O dano bônus é dano de proc e NÃO ativa efeitos de habilidade. "Causar dano" inclui efeitos que causam 0 de dano. Torres só recebem o dano verdadeiro bônus de dano que aplique efeitos ao contato ou efeitos de habilidade (exceto dano de pets). Habilidades que afetam torres e causam dano em várias instâncias que apliquem esses efeitos (ex.: Escolha uma Carta, do Twisted Fate) ativam o dano verdadeiro mais de uma vez. Comprar um Elixir impede a compra de outro Elixir por 5s. Não há limite de quantos Elixires podem estar no inventário (respeitando os espaços). Só um efeito de Elixir fica ativo por vez: consumir outro substitui o buff existente, ou o renova se for o mesmo Elixir. Elixires são consumidos automaticamente se o inventário estiver cheio ao comprá-los, inclusive com o usuário morto. Consumir um Elixir enquanto morto renova a duração do buff até o renascimento. A duração não pausa se o usuário morrer com o buff ativo.
     Notas de ARAM: none
@@ -724,9 +855,16 @@ Elixir da Ira: Elixir of Wrath[
     Análise de custo[
         Valor de Ouro: 30 DdA = 1.050g; total 1.050g
         Eficiência de Ouro: 210% após consumido
+        Valor de Ouro (atributos): 0g
+        Valor de Ouro (base): 1.050g
     ]
     Ápice[
         Efeito ativo (180s): +30 de Dano de Ataque, cura de 12% do dano físico causado a campeões.
+    ]
+    Ápice numérico[
+        Dano de Ataque · 30 · pt · total
+        Valor de Ouro no ápice: 1.050g
+        Eficiência de Ouro no ápice: 210%
     ]
     Notas: O Elixir da Ira é um efeito de dreno (drain). Comprar um Elixir impede a compra de outro Elixir por 5s. Não há limite de quantos Elixires podem estar no inventário (respeitando os espaços). Só um efeito de Elixir fica ativo por vez: consumir outro substitui o buff existente, ou o renova se for o mesmo Elixir. Elixires são consumidos automaticamente se o inventário estiver cheio ao comprá-los, inclusive com o usuário morto. Consumir um Elixir enquanto morto renova a duração do buff até o renascimento. A duração não pausa se o usuário morrer com o buff ativo.
     Notas de ARAM: none
@@ -758,6 +896,8 @@ Poção de Vida: Health Potion[
     Análise de custo[
         Valor de Ouro: none (a wiki não traz seção Cost Analysis)
         Eficiência de Ouro: none
+        Valor de Ouro (atributos): none
+        Valor de Ouro (base): none
     ]
     Ápice[
         igual ao base
@@ -794,9 +934,15 @@ Poção com Refil: Refillable Potion[
     Análise de custo[
         Valor de Ouro: none (a wiki não traz seção Cost Analysis)
         Eficiência de Ouro: none
+        Valor de Ouro (atributos): none
+        Valor de Ouro (base): none
     ]
     Ápice[
         2 cargas consumidas: 200 de Vida restaurada no total por visita à loja.
+    ]
+    Ápice numérico[
+        Valor de Ouro no ápice: none
+        Eficiência de Ouro no ápice: none
     ]
     Notas: O Data Dragon lista `into: 2033` (Poção de Corrupção), item removido do jogo — desconsiderado. O efeito concede 41,666… de Regeneração de Vida bônus durante a duração. NÃO pode ser consumida com a Vida cheia nem na base aliada; entrar no centro da base encerra o efeito ativo antes do fim. Várias Poções com Refil podem ser consumidas com uma já ativa, entrando em fila (até 2 por vez) e sendo consumidas mesmo com a Vida cheia. Vender a Poção com Refil encerra imediatamente todos os efeitos ativos dela.
     Notas de ARAM: none
@@ -826,12 +972,54 @@ Atributo adicional: Stat Bonus[
         [— (Consume) — consumir][Ativo – Consumir: Oferece automaticamente uma seleção semialeatória de atributos adicionais permanentes. Ah! E um chapéu!]
         Mecânica (wiki): abre uma seleção semialeatória de Fragmentos de Atributo (Stat Shards) de um mesmo nível aleatório — Prata, Ouro ou Prismático. Os bônus são permanentes e independem de itens, augments ou nível do campeão. Item consumido automaticamente na compra. Prata (13): Aceleração de Habilidade 11 (550g); Poder de Habilidade 15 (300g); Armadura 12 (240g); Dano de Ataque 11 (385g); Velocidade de Ataque 11% (275g); Acerto Crítico 8% (320g); Vida 110 (293,33g); Letalidade 8 (240g); Penetração Mágica fixa 8 (369,2g); Resistência Mágica 14 (280g); Might 8 de DdA + 12 de PdH (520g); Swiftness 10% de VdA + 8 de AdH (650g); Unbreakable 10 de Armadura + 10 de RM (400g). Ouro (13): Aceleração de Habilidade 35 (1.750g); Poder de Habilidade 50 (1.000g); Armadura 45 (900g); Dano de Ataque 35 (1.225g); Velocidade de Ataque 35% (875g); Acerto Crítico 25% (1.000g); Vida 375 (1.000g); Letalidade 20 (600g); Penetração Mágica fixa 18 (830,7g); Resistência Mágica 45 (900g); Might 25 de DdA + 25 de PdH (1.375g); Swiftness 25% de VdA + 20 de AdH (1.625g); Unbreakable 30 de Armadura + 30 de RM (1.200g). Prismático (8): Penetração de Armadura 17,5% (729,17g; fragmentos de penetração percentual acumulam multiplicativamente entre si); Dano Crítico +25%; Vida e Tamanho +15% de Vida máxima de todas as fontes e +10% de tamanho; Penetração Mágica 17,5% (807,63g); Velocidade de Movimento +18% (1.171,89g) e −10% de tamanho; Vampirismo Universal 20% / 10% (920g / 460g); Spirit 25% de Poder de Cura e Escudo (1.250g); Tenacidade 30% (310g; Grupo B — acumula aditivamente com a Tenacidade de itens e multiplicativamente consigo mesmo).
     ]
+    Fragmentos[
+        Prata · Aceleração de Habilidade 11 · 550g
+        Prata · Poder de Habilidade 15 · 300g
+        Prata · Armadura 12 · 240g
+        Prata · Dano de Ataque 11 · 385g
+        Prata · Velocidade de Ataque 11% · 275g
+        Prata · Acerto Crítico 8% · 320g
+        Prata · Vida 110 · 293,33g
+        Prata · Letalidade 8 · 240g
+        Prata · Penetração Mágica 8 · 369,2g
+        Prata · Resistência Mágica 14 · 280g
+        Prata · Might: Dano de Ataque 8 + Poder de Habilidade 12 · 520g
+        Prata · Swiftness: Velocidade de Ataque 10% + Aceleração de Habilidade 8 · 650g
+        Prata · Unbreakable: Armadura 10 + Resistência Mágica 10 · 400g
+        Ouro · Aceleração de Habilidade 35 · 1.750g
+        Ouro · Poder de Habilidade 50 · 1.000g
+        Ouro · Armadura 45 · 900g
+        Ouro · Dano de Ataque 35 · 1.225g
+        Ouro · Velocidade de Ataque 35% · 875g
+        Ouro · Acerto Crítico 25% · 1.000g
+        Ouro · Vida 375 · 1.000g
+        Ouro · Letalidade 20 · 600g
+        Ouro · Penetração Mágica 18 · 830,7g
+        Ouro · Resistência Mágica 45 · 900g
+        Ouro · Might: Dano de Ataque 25 + Poder de Habilidade 25 · 1.375g
+        Ouro · Swiftness: Velocidade de Ataque 25% + Aceleração de Habilidade 20 · 1.625g
+        Ouro · Unbreakable: Armadura 30 + Resistência Mágica 30 · 1.200g
+        Prismático · Penetração de Armadura 17,5% · 729,17g (fragmentos de penetração percentual acumulam multiplicativamente entre si)
+        Prismático · Dano Crítico 25% · none
+        Prismático · Health and Size: Vida 15% (Vida máxima adicional de todas as fontes) · none (e +10% de tamanho)
+        Prismático · Penetração Mágica Percentual 17,5% · 807,63g (fragmentos de penetração percentual acumulam multiplicativamente entre si)
+        Prismático · Movimento 18% · 1.171,89g (e −10% de tamanho)
+        Prismático · Vampirismo 20% / 10% · 920g / 460g
+        Prismático · Spirit: Poder de Cura e Escudo 25% · 1.250g
+        Prismático · Tenacidade 30% · 310g (Grupo B: acumula aditivamente com a Tenacidade de itens e multiplicativamente consigo mesmo)
+    ]
     Análise de custo[
-        Valor de Ouro: none (a wiki não traz seção Cost Analysis; os valores por fragmento estão em Habilidade)
+        Valor de Ouro: none (a wiki não traz seção Cost Analysis; os valores por fragmento estão em Fragmentos)
         Eficiência de Ouro: none
+        Valor de Ouro (atributos): none
+        Valor de Ouro (base): none
     ]
     Ápice[
         Seleção de nível Prismático: maior valor por fragmento (ex.: Velocidade de Movimento +18% = 1.171,89g).
+    ]
+    Ápice numérico[
+        Valor de Ouro no ápice: none
+        Eficiência de Ouro no ápice: none
     ]
     Notas: none
     Notas de ARAM: none
@@ -863,6 +1051,8 @@ Alteração Vidente: Farsight Alteration[
     Análise de custo[
         Valor de Ouro: none (a wiki não traz seção Cost Analysis)
         Eficiência de Ouro: none
+        Valor de Ouro (atributos): none
+        Valor de Ouro (base): none
     ]
     Ápice[
         igual ao base
@@ -897,9 +1087,15 @@ Lente do Oráculo: Oracle Lens[
     Análise de custo[
         Valor de Ouro: none (a wiki não traz seção Cost Analysis)
         Eficiência de Ouro: none
+        Valor de Ouro (atributos): none
+        Valor de Ouro (base): none
     ]
     Ápice[
         2 cargas disponíveis: até 2 usos consecutivos (recarga de 5s entre eles).
+    ]
+    Ápice numérico[
+        Valor de Ouro no ápice: none
+        Eficiência de Ouro no ápice: none
     ]
     Notas: Drone Varredor: concede visão obscurecida das unidades inimigas próximas que não estejam visíveis. Sentinelas e armadilhas furtivas são reveladas; sentinelas furtivas também são desativadas, permanecendo assim por 2s após deixarem de ser reveladas. Cada tipo de unidade detectada tem uma silhueta de cor diferente: campeões em vermelho, não campeões em roxo escuro, sentinelas em azul claro. Com a Lente do Oráculo ativa, o usuário revela por 2s as sentinelas que atingir com ataques. O alcance é medido da borda a partir do centro do usuário; sentinelas têm raio 1, portanto ainda têm 149 de alcance de visão a mais do que a distância em que são detectadas e desativadas. Detecta unidades mesmo que estejam inalvejáveis. Trinkets contam como itens ativos e suas recargas são afetadas por Aceleração de Itens.
     Notas de ARAM: none
@@ -931,9 +1127,15 @@ Sentinela Invisível: Stealth Ward[
     Análise de custo[
         Valor de Ouro: none (a wiki não traz seção Cost Analysis)
         Eficiência de Ouro: none
+        Valor de Ouro (atributos): none
+        Valor de Ouro (base): none
     ]
     Ápice[
         2 cargas disponíveis: até 2 sentinelas posicionadas em sequência (limite de 3 no mapa, compartilhado com Sentinelas Totem).
+    ]
+    Ápice numérico[
+        Valor de Ouro no ápice: none
+        Eficiência de Ouro no ápice: none
     ]
     Notas: Sentinelas Totem e Invisíveis: ficam visíveis por alguns segundos ao serem posicionadas e depois entram em furtividade; têm raio de visão de 900 e 3 de Vida; concedem 10g ao inimigo que as destruir; são limitadas a 3 posicionadas por vez (limite compartilhado entre elas) e têm vida útil curta. A Sentinela Invisível é adicionada automaticamente ao inventário se o usuário sair da base sem nenhum trinket. Trinkets contam como itens ativos e suas recargas são afetadas por Aceleração de Itens.
     Notas de ARAM: none
@@ -965,9 +1167,15 @@ Elixir da Avareza: Elixir of Avarice[
     Análise de custo[
         Valor de Ouro: none (a wiki não traz seção Cost Analysis)
         Eficiência de Ouro: none
+        Valor de Ouro (atributos): none
+        Valor de Ouro (base): none
     ]
     Ápice[
         Efeito consumido e expirado: 60g recebidos.
+    ]
+    Ápice numérico[
+        Valor de Ouro no ápice: 60g (calculado: ouro recebido quando o efeito expira)
+        Eficiência de Ouro no ápice: none (Preço 0g)
     ]
     Notas: Data Dragon registra 50g com `purchasable: false`; campo Preço usa o 0g da wiki. O dano bônus vale tanto contra tropas de rota quanto contra invocações que tenham o tipo tropa.
     Notas de ARAM: none
@@ -999,9 +1207,17 @@ Elixir da Força: Elixir of Force[
     Análise de custo[
         Valor de Ouro: none (a wiki não traz seção Cost Analysis)
         Eficiência de Ouro: none
+        Valor de Ouro (atributos): none
+        Valor de Ouro (base): none
     ]
     Ápice[
         Efeito ativo (60s): +15 de Dano de Ataque ou +25 de Poder de Habilidade, conforme a adaptação.
+    ]
+    Ápice numérico[
+        Dano de Ataque · 15 · pt · total (adaptativo: ou esta linha ou a seguinte)
+        Poder de Habilidade · 25 · pt · total (adaptativo: ou esta linha ou a anterior)
+        Valor de Ouro no ápice: 525g se Dano de Ataque; 500g se Poder de Habilidade (calculado)
+        Eficiência de Ouro no ápice: none (Preço 0g)
     ]
     Notas: none
     Notas de ARAM: none
@@ -1033,6 +1249,8 @@ Elixir da Habilidade: Elixir of Skill[
     Análise de custo[
         Valor de Ouro: none (a wiki não traz seção Cost Analysis)
         Eficiência de Ouro: none
+        Valor de Ouro (atributos): none
+        Valor de Ouro (base): none
     ]
     Ápice[
         igual ao base
@@ -1068,6 +1286,8 @@ Botas Levemente Mágicas: Slightly Magical Footwear[
     Análise de custo[
         Valor de Ouro: 25 Velocidade de Movimento = 300g; 10 de Velocidade de Movimento fixa da passiva = 120g; total 420g
         Eficiência de Ouro: valem 420g e custam 0g — infinitamente eficientes (conforme a wiki)
+        Valor de Ouro (atributos): 300g
+        Valor de Ouro (base): 420g
     ]
     Ápice[
         igual ao base
@@ -1093,7 +1313,7 @@ Biscoito Total da Determinação Eterna: Total Biscuit of Everlasting Will[
     Componentes: none
     Ingrediente: none
     Atributo[
-        +30 de Vida máxima permanente por biscoito consumido ou vendido (tooltip do cliente, captura do usuário em 12/09/2026: "Consumir ou vender um biscoito concede 30 de Vida máxima permanentemente"; a wiki atribui o bônus à runa Entrega de Biscoitos sem dar o valor)
+        +30 de Vida máxima permanente por biscoito consumido ou vendido
     ]
     Habilidade[
         [— (Consume) — consumir][Ativo – Consumir: Coma o biscoito para restaurar Vida ao longo de 5s, aumentado com base na Vida perdida. Consumir ou vender um biscoito concede 30 de Vida máxima permanentemente.]
@@ -1102,11 +1322,17 @@ Biscoito Total da Determinação Eterna: Total Biscuit of Everlasting Will[
     Análise de custo[
         Valor de Ouro: none (a wiki não traz seção Cost Analysis)
         Eficiência de Ouro: none
+        Valor de Ouro (atributos): none
+        Valor de Ouro (base): none
     ]
     Ápice[
         Vida perdida no máximo: 40 (+3% da Vida máxima) de Vida restaurada ao longo de 5s → 100 de Vida com 2.000 de Vida máxima.
     ]
-    Notas: Data Dragon registra 50g com `purchasable: false`; campo Preço usa o 0g da wiki; valor de venda 5g (10%, tooltip do cliente). O tooltip do cliente descreve a cura como "30 = (1,5% da Vida máxima + 20) ao longo de 5s, aumentado em até 100% com base na Vida perdida" e "cura máxima obtida com 30% de Vida". Consumir Biscoitos Totais concedidos pela Entrega de Biscoitos faz com que eles concedam Vida bônus. Podem ser consumidos mesmo com a Vida cheia. Vários podem ser consumidos com um já ativo, entrando em fila (até 3 por vez) e sendo consumidos após o anterior terminar. A regeneração é calculada pela Vida perdida no momento do consumo; para os biscoitos em fila, o cálculo é refeito após o anterior terminar. Pode regenerar um tique adicional de Vida no fim da duração (comportamento inesperado).
+    Ápice numérico[
+        Valor de Ouro no ápice: none
+        Eficiência de Ouro no ápice: none
+    ]
+    Notas: Atributo registrado pelo tooltip do cliente (captura do usuário em 12/09/2026: "Consumir ou vender um biscoito concede 30 de Vida máxima permanentemente"); a wiki atribui o bônus à runa Entrega de Biscoitos sem dar o valor. Data Dragon registra 50g com `purchasable: false`; campo Preço usa o 0g da wiki; valor de venda 5g (10%, tooltip do cliente). O tooltip do cliente descreve a cura como "30 = (1,5% da Vida máxima + 20) ao longo de 5s, aumentado em até 100% com base na Vida perdida" e "cura máxima obtida com 30% de Vida". Consumir Biscoitos Totais concedidos pela Entrega de Biscoitos faz com que eles concedam Vida bônus. Podem ser consumidos mesmo com a Vida cheia. Vários podem ser consumidos com um já ativo, entrando em fila (até 3 por vez) e sendo consumidos após o anterior terminar. A regeneração é calculada pela Vida perdida no momento do consumo; para os biscoitos em fila, o cálculo é refeito após o anterior terminar. Pode regenerar um tique adicional de Vida no fim da duração (comportamento inesperado).
     Notas de ARAM: none
     Notas de ARAM: Mayhem: none
     Categoria de Atributo: Vida
@@ -1140,6 +1366,8 @@ Grevas do Berserker: Berserker's Greaves[
     Análise de custo[
         Valor de Ouro: 30% VdA = 750g; 45 Velocidade de Movimento = 540g; total 1.290g
         Eficiência de Ouro: 117,27% (base)
+        Valor de Ouro (atributos): 1.290g
+        Valor de Ouro (base): 1.290g
     ]
     Ápice[
         igual ao base
@@ -1173,6 +1401,8 @@ Botas: Boots[
     Análise de custo[
         Valor de Ouro: 25 Velocidade de Movimento = 300g; total 300g
         Eficiência de Ouro: 100% (calculada: 300g ÷ 300g; a wiki não declara porcentagem — item de referência da Velocidade de Movimento, ≈12g por ponto)
+        Valor de Ouro (atributos): 300g
+        Valor de Ouro (base): 300g
     ]
     Ápice[
         igual ao base
@@ -1208,6 +1438,8 @@ Botas da Rapidez: Boots of Swiftness[
     Análise de custo[
         Valor de Ouro: 55 Velocidade de Movimento = 660g; total 660g (a wiki não atribui valor de ouro à Resistência a Lentidão)
         Eficiência de Ouro: 66% (base)
+        Valor de Ouro (atributos): 660g
+        Valor de Ouro (base): 660g
     ]
     Ápice[
         igual ao base
@@ -1243,9 +1475,16 @@ Grevas Vorazes: Gluttonous Greaves[
     Análise de custo[
         Valor de Ouro: 45 Velocidade de Movimento = 540g; 4% Vampirismo Universal = 184g; total 724g. Eliminar por acúmulo: 0,6%–6% de Vampirismo = 27,6g–276g; total 751,6g–1.000g
         Eficiência de Ouro: 72,4% (calculada: 724g ÷ 1.000g; a wiki não declara porcentagem base — item de referência do Vampirismo Universal, ≈46g por 1%); de 75,16% a 100% com os acúmulos de Eliminar (wiki)
+        Valor de Ouro (atributos): 724g
+        Valor de Ouro (base): 724g
     ]
     Ápice[
         10 acúmulos de Eliminar: +45 de Velocidade de Movimento, +10% de Vampirismo Universal.
+    ]
+    Ápice numérico[
+        Vampirismo · 10 · % · total
+        Valor de Ouro no ápice: 1.000g
+        Eficiência de Ouro no ápice: 100%
     ]
     Notas: Com a Missão do Meio concluída, esta Bota é aprimorada para a variante de tier 3 sem custo; a transformação também ocorre de forma proativa ao equipar qualquer Bota de tier 2 e bloqueia o usuário da função Desfazer (bug). Com a Missão da Rota Inferior concluída, esta Bota passa a ocupar exclusivamente o espaço da Missão de Função, separado do inventário, liberando um espaço; se estiver no inventário na conclusão da missão, é movida para lá. A troca de espaço também ocorre de forma proativa ao equipar qualquer Bota.
     Notas de ARAM: none
@@ -1279,6 +1518,8 @@ Botas Ionianas da Lucidez: Ionian Boots of Lucidity[
     Análise de custo[
         Valor de Ouro: 10 AdH = 500g; 45 Velocidade de Movimento = 540g; total 1.040g (a wiki não atribui valor de ouro à Aceleração de Feitiços de Invocador)
         Eficiência de Ouro: 115,56% (base)
+        Valor de Ouro (atributos): 1.040g
+        Valor de Ouro (base): 1.040g
     ]
     Ápice[
         igual ao base
@@ -1314,6 +1555,8 @@ Passos de Mercúrio: Mercury's Treads[
     Análise de custo[
         Valor de Ouro: 20 RM = 400g; 45 Velocidade de Movimento = 540g; 30% Tenacidade = 310g; total 1.250g
         Eficiência de Ouro: 100% (calculada: 1.250g ÷ 1.250g; a wiki não declara porcentagem — item de referência da Tenacidade, ≈10,33g por 1%)
+        Valor de Ouro (atributos): 1.250g
+        Valor de Ouro (base): 1.250g
     ]
     Ápice[
         igual ao base
@@ -1350,6 +1593,8 @@ Botas Galvanizadas de Aço: Plated Steelcaps[
     Análise de custo[
         Valor de Ouro: 25 Armadura = 500g; 45 Velocidade de Movimento = 540g; total 1.040g
         Eficiência de Ouro: 86,67% (base)
+        Valor de Ouro (atributos): 1.040g
+        Valor de Ouro (base): 1.040g
     ]
     Ápice[
         igual ao base
@@ -1384,6 +1629,8 @@ Sapatos do Feiticeiro: Sorcerer's Shoes[
     Análise de custo[
         Valor de Ouro: 45 Velocidade de Movimento = 540g; 12 Penetração Mágica = 560g; total 1.100g
         Eficiência de Ouro: 100% (calculada: 1.100g ÷ 1.100g; a wiki não declara porcentagem — item de referência da Penetração Mágica fixa, ≈46,67g por ponto)
+        Valor de Ouro (atributos): 1.100g
+        Valor de Ouro (base): 1.100g
     ]
     Ápice[
         igual ao base
@@ -1421,6 +1668,8 @@ Tomo Amplificador: Amplifying Tome[
     Análise de custo[
         Valor de Ouro: 20 PdH = 400g; total 400g
         Eficiência de Ouro: 100% (calculada: valor ÷ preço; a wiki não declara porcentagem — item básico de referência de Poder de Habilidade ≈20g por ponto)
+        Valor de Ouro (atributos): 400g
+        Valor de Ouro (base): 400g
     ]
     Ápice[
         igual ao base
@@ -1454,6 +1703,8 @@ Espada G. p. C.: B. F. Sword[
     Análise de custo[
         Valor de Ouro: 40 DdA = 1.400g; total 1.400g
         Eficiência de Ouro: 107,69% (base)
+        Valor de Ouro (atributos): 1.400g
+        Valor de Ouro (base): 1.400g
     ]
     Ápice[
         igual ao base
@@ -1487,6 +1738,8 @@ Varinha Explosiva: Blasting Wand[
     Análise de custo[
         Valor de Ouro: 45 PdH = 900g; total 900g
         Eficiência de Ouro: 105,88% (base)
+        Valor de Ouro (atributos): 900g
+        Valor de Ouro (base): 900g
     ]
     Ápice[
         igual ao base
@@ -1520,6 +1773,8 @@ Capa da Agilidade: Cloak of Agility[
     Análise de custo[
         Valor de Ouro: 15% Acerto Crítico = 600g; total 600g
         Eficiência de Ouro: 100% (calculada: valor ÷ preço; a wiki não declara porcentagem — item básico de referência de Chance de Acerto Crítico ≈40g por 1%)
+        Valor de Ouro (atributos): 600g
+        Valor de Ouro (base): 600g
     ]
     Ápice[
         igual ao base
@@ -1553,6 +1808,8 @@ Couraça de Pano: Cloth Armor[
     Análise de custo[
         Valor de Ouro: 15 Armadura = 300g; total 300g
         Eficiência de Ouro: 100% (calculada: valor ÷ preço; a wiki não declara porcentagem — item básico de referência de Armadura ≈20g por ponto)
+        Valor de Ouro (atributos): 300g
+        Valor de Ouro (base): 300g
     ]
     Ápice[
         igual ao base
@@ -1586,6 +1843,8 @@ Adaga: Dagger[
     Análise de custo[
         Valor de Ouro: 10% VdA = 250g; total 250g
         Eficiência de Ouro: 100% (calculada: valor ÷ preço; a wiki não declara porcentagem — item básico de referência de Velocidade de Ataque ≈25g por 1%)
+        Valor de Ouro (atributos): 250g
+        Valor de Ouro (base): 250g
     ]
     Ápice[
         igual ao base
@@ -1619,6 +1878,8 @@ Amuleto da Fada: Faerie Charm[
     Análise de custo[
         Valor de Ouro: 50% Regeneração de Mana base = 200g; total 200g
         Eficiência de Ouro: 100% (calculada: valor ÷ preço; a wiki não declara porcentagem — item básico de referência de Regeneração de Mana base ≈4g por 1%)
+        Valor de Ouro (atributos): 200g
+        Valor de Ouro (base): 200g
     ]
     Ápice[
         igual ao base
@@ -1652,6 +1913,8 @@ Partícula Brilhante: Glowing Mote[
     Análise de custo[
         Valor de Ouro: 5 AdH = 250g; total 250g
         Eficiência de Ouro: 100% (calculada: valor ÷ preço; a wiki não declara porcentagem — item básico de referência de Aceleração de Habilidade ≈50g por ponto)
+        Valor de Ouro (atributos): 250g
+        Valor de Ouro (base): 250g
     ]
     Ápice[
         igual ao base
@@ -1685,6 +1948,8 @@ Espada Longa: Long Sword[
     Análise de custo[
         Valor de Ouro: 10 DdA = 350g; total 350g
         Eficiência de Ouro: 100% (calculada: valor ÷ preço; a wiki não declara porcentagem — item básico de referência de Dano de Ataque ≈35g por ponto)
+        Valor de Ouro (atributos): 350g
+        Valor de Ouro (base): 350g
     ]
     Ápice[
         igual ao base
@@ -1718,6 +1983,8 @@ Bastão Desnecessariamente Grande: Needlessly Large Rod[
     Análise de custo[
         Valor de Ouro: 65 PdH = 1.300g; total 1.300g
         Eficiência de Ouro: 108,33% (base)
+        Valor de Ouro (atributos): 1.300g
+        Valor de Ouro (base): 1.300g
     ]
     Ápice[
         igual ao base
@@ -1751,6 +2018,8 @@ Manto Anula-Magia: Null-Magic Mantle[
     Análise de custo[
         Valor de Ouro: 20 RM = 400g; total 400g
         Eficiência de Ouro: 100% (calculada: valor ÷ preço; a wiki não declara porcentagem — item básico de referência de Resistência Mágica ≈20g por ponto)
+        Valor de Ouro (atributos): 400g
+        Valor de Ouro (base): 400g
     ]
     Ápice[
         igual ao base
@@ -1784,6 +2053,8 @@ Picareta: Pickaxe[
     Análise de custo[
         Valor de Ouro: 25 DdA = 875g; total 875g
         Eficiência de Ouro: 100% (base)
+        Valor de Ouro (atributos): 875g
+        Valor de Ouro (base): 875g
     ]
     Ápice[
         igual ao base
@@ -1817,6 +2088,8 @@ Pérola do Rejuvenescimento: Rejuvenation Bead[
     Análise de custo[
         Valor de Ouro: 100% Regeneração de Vida base = 300g; total 300g
         Eficiência de Ouro: 100% (calculada: valor ÷ preço; a wiki não declara porcentagem — item básico de referência de Regeneração de Vida base ≈3g por 1%)
+        Valor de Ouro (atributos): 300g
+        Valor de Ouro (base): 300g
     ]
     Ápice[
         igual ao base
@@ -1850,6 +2123,8 @@ Cristal de Rubi: Ruby Crystal[
     Análise de custo[
         Valor de Ouro: 150 Vida = 400g; total 400g
         Eficiência de Ouro: 100% (calculada: valor ÷ preço; a wiki não declara porcentagem — item básico de referência de Vida ≈2,67g por ponto)
+        Valor de Ouro (atributos): 400g
+        Valor de Ouro (base): 400g
     ]
     Ápice[
         igual ao base
@@ -1883,6 +2158,8 @@ Cristal de Safira: Sapphire Crystal[
     Análise de custo[
         Valor de Ouro: 300 Mana = 300g; total 300g
         Eficiência de Ouro: 100% (calculada: valor ÷ preço; a wiki não declara porcentagem — item básico de referência de Mana ≈1g por ponto)
+        Valor de Ouro (atributos): 300g
+        Valor de Ouro (base): 300g
     ]
     Ápice[
         igual ao base
@@ -1921,6 +2198,8 @@ Cintilação Etérea: Aether Wisp[
     Análise de custo[
         Valor de Ouro: 30 PdH = 600g; 4% Velocidade de Movimento = 260,42g; total 860,42g
         Eficiência de Ouro: 95,6% (base)
+        Valor de Ouro (atributos): 860,42g
+        Valor de Ouro (base): 860,42g
     ]
     Ápice[
         igual ao base
@@ -1956,6 +2235,8 @@ Brasa de Bami: Bami's Cinder[
     Análise de custo[
         Valor de Ouro: 5 AdH = 250g; 150 Vida = 400g; total 650g
         Eficiência de Ouro: 72,22% (base)
+        Valor de Ouro (atributos): 650g
+        Valor de Ouro (base): 650g
     ]
     Ápice[
         igual ao base (Imolar não acumula)
@@ -1991,6 +2272,8 @@ Espelho de Bandópolis: Bandleglass Mirror[
     Análise de custo[
         Valor de Ouro: 20 PdH = 400g; 10 AdH = 500g; 100% Regeneração de Mana base = 400g; total 1.300g
         Eficiência de Ouro: 144,44% (base)
+        Valor de Ouro (atributos): 1.300g
+        Valor de Ouro (base): 1.300g
     ]
     Ápice[
         igual ao base
@@ -2025,6 +2308,8 @@ Joia da Ruína: Blighting Jewel[
     Análise de custo[
         Valor de Ouro: 25 PdH = 500g; 13% Penetração Mágica = 599,95g; total 1.099,95g
         Eficiência de Ouro: 99,995% (calculada: 1.099,95g ÷ 1.100g; a wiki não declara porcentagem — item de referência da Penetração Mágica percentual, ≈46,15g por 1%)
+        Valor de Ouro (atributos): 1.099,95g
+        Valor de Ouro (base): 1.099,95g
     ]
     Ápice[
         igual ao base
@@ -2059,6 +2344,8 @@ Colete Espinhoso: Bramble Vest[
     Análise de custo[
         Valor de Ouro: 30 Armadura = 600g; total 600g
         Eficiência de Ouro: 75% (base)
+        Valor de Ouro (atributos): 600g
+        Valor de Ouro (base): 600g
     ]
     Ápice[
         igual ao base
@@ -2094,6 +2381,8 @@ Catalisador das Eras: Catalyst of Aeons[
     Análise de custo[
         Valor de Ouro: 300 Vida = 800g; 375 Mana = 375g; total 1.175g
         Eficiência de Ouro: 90,38% (base)
+        Valor de Ouro (atributos): 1.175g
+        Valor de Ouro (base): 1.175g
     ]
     Ápice[
         igual ao base
@@ -2128,6 +2417,8 @@ Martelo de Guerra de Caulfield: Caulfield's Warhammer[
     Análise de custo[
         Valor de Ouro: 20 DdA = 700g; 10 AdH = 500g; total 1.200g
         Eficiência de Ouro: 114,29% (base)
+        Valor de Ouro (atributos): 1.200g
+        Valor de Ouro (base): 1.200g
     ]
     Ápice[
         igual ao base
@@ -2161,6 +2452,8 @@ Cota de Malha: Chain Vest[
     Análise de custo[
         Valor de Ouro: 40 Armadura = 800g; total 800g
         Eficiência de Ouro: 100% (base)
+        Valor de Ouro (atributos): 800g
+        Valor de Ouro (base): 800g
     ]
     Ápice[
         igual ao base
@@ -2195,6 +2488,8 @@ Braçadeira Cristalina: Crystalline Bracer[
     Análise de custo[
         Valor de Ouro: 200 Vida = 533,33g; 100% Regeneração de Vida base = 300g; total 833,33g
         Eficiência de Ouro: 104,17% (base)
+        Valor de Ouro (atributos): 833,33g
+        Valor de Ouro (base): 833,33g
     ]
     Ápice[
         igual ao base
@@ -2229,6 +2524,8 @@ Chamado do Carrasco: Executioner's Calling[
     Análise de custo[
         Valor de Ouro: 15 DdA = 525g; total 525g
         Eficiência de Ouro: 65,63% (base)
+        Valor de Ouro (atributos): 525g
+        Valor de Ouro (base): 525g
     ]
     Ápice[
         igual ao base
@@ -2263,6 +2560,8 @@ Cinzas do Destino: Fated Ashes[
     Análise de custo[
         Valor de Ouro: 30 PdH = 600g; total 600g
         Eficiência de Ouro: 66,67% (base)
+        Valor de Ouro (atributos): 600g
+        Valor de Ouro (base): 600g
     ]
     Ápice[
         igual ao base
@@ -2297,6 +2596,8 @@ Códex Demoníaco: Fiendish Codex[
     Análise de custo[
         Valor de Ouro: 25 PdH = 500g; 10 AdH = 500g; total 1.000g
         Eficiência de Ouro: 117,65% (base)
+        Valor de Ouro (atributos): 1.000g
+        Valor de Ouro (base): 1.000g
     ]
     Ápice[
         igual ao base
@@ -2331,6 +2632,8 @@ Códex Demoníaco: Fiendish Codex[
     Análise de custo[
         Valor de Ouro: 50% Regeneração de Mana base = 200g; 8% Poder de Cura e Escudo = 400g; total 600g
         Eficiência de Ouro: 100% (calculada: 600g ÷ 600g; a wiki não declara porcentagem — item de referência do Poder de Cura e Escudo, ≈50g por 1%)
+        Valor de Ouro (atributos): 600g
+        Valor de Ouro (base): 600g
     ]
     Ápice[
         igual ao base
@@ -2364,6 +2667,8 @@ Cinto do Gigante: Giant's Belt[
     Análise de custo[
         Valor de Ouro: 350 Vida = 933,33g; total 933,33g
         Eficiência de Ouro: 103,7% (base)
+        Valor de Ouro (atributos): 933,33g
+        Valor de Ouro (base): 933,33g
     ]
     Ápice[
         igual ao base
@@ -2399,6 +2704,8 @@ Broquel Glacial: Glacial Buckler[
     Análise de custo[
         Valor de Ouro: 10 AdH = 500g; 300 Mana = 300g; 25 Armadura = 500g; total 1.300g
         Eficiência de Ouro: 144,44% (base)
+        Valor de Ouro (atributos): 1.300g
+        Valor de Ouro (base): 1.300g
     ]
     Ápice[
         igual ao base
@@ -2438,9 +2745,15 @@ Máscara Assustadora: Haunting Guise[
     Análise de custo[
         Valor de Ouro: 30 PdH = 600g; 200 Vida = 533,33g; total 1.133,33g
         Eficiência de Ouro: 87,18% (base)
+        Valor de Ouro (atributos): 1.133,33g
+        Valor de Ouro (base): 1.133,33g
     ]
     Ápice[
         3 acúmulos de Loucura (3s em combate com campeões): +6% de dano causado.
+    ]
+    Ápice numérico[
+        Valor de Ouro no ápice: none
+        Eficiência de Ouro no ápice: none
     ]
     Notas: none
     Notas de ARAM: none
@@ -2472,6 +2785,8 @@ Machado Termestre: Hearthbound Axe[
     Análise de custo[
         Valor de Ouro: 20 DdA = 700g; 20% VdA = 500g; total 1.200g
         Eficiência de Ouro: 100% (base)
+        Valor de Ouro (atributos): 1.200g
+        Valor de Ouro (base): 1.200g
     ]
     Ápice[
         igual ao base
@@ -2507,6 +2822,8 @@ Hexdrinker: Hexdrinker[
     Análise de custo[
         Valor de Ouro: 25 DdA = 875g; 25 RM = 500g; total 1.375g
         Eficiência de Ouro: 105,77% (base)
+        Valor de Ouro (atributos): 1.375g
+        Valor de Ouro (base): 1.375g
     ]
     Ápice[
         igual ao base (Salva-Vidas é gatilho de recarga, sem acúmulos)
@@ -2541,6 +2858,8 @@ Alternador Hextec: Hextech Alternator[
     Análise de custo[
         Valor de Ouro: 45 PdH = 900g; total 900g
         Eficiência de Ouro: 81,82% (base)
+        Valor de Ouro (atributos): 900g
+        Valor de Ouro (base): 900g
     ]
     Ápice[
         igual ao base
@@ -2575,6 +2894,8 @@ Gema Ardente: Kindlegem[
     Análise de custo[
         Valor de Ouro: 10 AdH = 500g; 200 Vida = 533,33g; total 1.033,33g
         Eficiência de Ouro: 129,17% (base)
+        Valor de Ouro (atributos): 1.033,33g
+        Valor de Ouro (base): 1.033,33g
     ]
     Ápice[
         igual ao base
@@ -2609,6 +2930,8 @@ Gema Ardente: Kindlegem[
     Análise de custo[
         Valor de Ouro: 20 DdA = 700g; 18% Penetração de Armadura = 750g; total 1.450g
         Eficiência de Ouro: 100% (calculada: 1.450g ÷ 1.450g; a wiki não declara porcentagem — item de referência da Penetração de Armadura, ≈41,67g por 1%)
+        Valor de Ouro (atributos): 1.450g
+        Valor de Ouro (base): 1.450g
     ]
     Ápice[
         igual ao base
@@ -2645,6 +2968,8 @@ Salva-Vidas: Lifeline[
     Análise de custo[
         Valor de Ouro: 25 DdA = 875g; 4% Velocidade de Movimento = 260,42g; 5 Letalidade = 150g; total 1.285,42g
         Eficiência de Ouro: 80,34% (base)
+        Valor de Ouro (atributos): 1.285,42g
+        Valor de Ouro (base): 1.285,42g
     ]
     Ápice[
         igual ao base
@@ -2681,6 +3006,8 @@ Capítulo Perdido: Lost Chapter[
     Análise de custo[
         Valor de Ouro: 40 PdH = 800g; 10 AdH = 500g; 300 Mana = 300g; total 1.600g
         Eficiência de Ouro: 133,33% (base)
+        Valor de Ouro (atributos): 1.600g
+        Valor de Ouro (base): 1.600g
     ]
     Ápice[
         igual ao base
@@ -2714,6 +3041,8 @@ Capa Negatron: Negatron Cloak[
     Análise de custo[
         Valor de Ouro: 45 RM = 900g; total 900g
         Eficiência de Ouro: 105,88% (base)
+        Valor de Ouro (atributos): 900g
+        Valor de Ouro (base): 900g
     ]
     Ápice[
         igual ao base
@@ -2748,6 +3077,8 @@ Aljava Vespertina: Noonquiver[
     Análise de custo[
         Valor de Ouro: 15 DdA = 525g; 20% Acerto Crítico = 800g; total 1.325g
         Eficiência de Ouro: 101,92% (base)
+        Valor de Ouro (atributos): 1.325g
+        Valor de Ouro (base): 1.325g
     ]
     Ápice[
         igual ao base
@@ -2782,6 +3113,8 @@ Orbe do Oblívio: Oblivion Orb[
     Análise de custo[
         Valor de Ouro: 25 PdH = 500g; total 500g
         Eficiência de Ouro: 62,5% (base)
+        Valor de Ouro (atributos): 500g
+        Valor de Ouro (base): 500g
     ]
     Ápice[
         igual ao base
@@ -2817,9 +3150,16 @@ Fago: Phage[
     Análise de custo[
         Valor de Ouro: 15 DdA = 525g; 200 Vida = 533,33g; total 1.058,33g. Fúria: 20 de Velocidade de Movimento = 240g; total 1.298,33g
         Eficiência de Ouro: 96,21% (base); 118,03% com Fúria ativa
+        Valor de Ouro (atributos): 1.058,33g
+        Valor de Ouro (base): 1.058,33g
     ]
     Ápice[
         Fúria ativa: +20 de Velocidade de Movimento (10 à distância) por 2s após cada ataque.
+    ]
+    Ápice numérico[
+        Movimento · 20 · pt · total (à distância: 10; por 2s após cada ataque)
+        Valor de Ouro no ápice: 1.298,33g
+        Eficiência de Ouro no ápice: 118,03%
     ]
     Notas: none
     Notas de ARAM: none
@@ -2851,6 +3191,8 @@ Bandana de Mercúrio: Quicksilver Sash[
     Análise de custo[
         Valor de Ouro: 30 RM = 600g; total 600g
         Eficiência de Ouro: 46,15% (base)
+        Valor de Ouro (atributos): 600g
+        Valor de Ouro (base): 600g
     ]
     Ápice[
         igual ao base
@@ -2885,6 +3227,8 @@ Retriz: Rectrix[
     Análise de custo[
         Valor de Ouro: 15 DdA = 525g; 4% Velocidade de Movimento = 260,42g; total 785,42g
         Eficiência de Ouro: 101,34% (base)
+        Valor de Ouro (atributos): 785,42g
+        Valor de Ouro (base): 785,42g
     ]
     Ápice[
         igual ao base
@@ -2920,6 +3264,8 @@ Arco Recurvo: Recurve Bow[
     Análise de custo[
         Valor de Ouro: 15% VdA = 375g; 15 de dano ao contato = 325g; total 700g
         Eficiência de Ouro: 100% (calculada: 700g ÷ 700g; a wiki não declara porcentagem — item de referência do dano ao contato, ≈21,67g por ponto)
+        Valor de Ouro (atributos): 375g
+        Valor de Ouro (base): 700g
     ]
     Ápice[
         igual ao base
@@ -2958,6 +3304,8 @@ Estilingue do Patrulheiro: Scout's Slingshot[
     Análise de custo[
         Valor de Ouro: 20% VdA = 500g; total 500g
         Eficiência de Ouro: 83,33% (base)
+        Valor de Ouro (atributos): 500g
+        Valor de Ouro (base): 500g
     ]
     Ápice[
         igual ao base
@@ -2993,6 +3341,8 @@ Armaguarda da Caçadora: Seeker's Armguard[
     Análise de custo[
         Valor de Ouro: 40 PdH = 800g; 25 Armadura = 500g; total 1.300g
         Eficiência de Ouro: 81,25% (base)
+        Valor de Ouro (atributos): 1.300g
+        Valor de Ouro (base): 1.300g
     ]
     Ápice[
         igual ao base (após usar a ativa, o item passa a ser Armaguarda Despedaçada)
@@ -3027,6 +3377,8 @@ Punhal Serrilhado: Serrated Dirk[
     Análise de custo[
         Valor de Ouro: 20 DdA = 700g; 10 Letalidade = 300g; total 1.000g
         Eficiência de Ouro: 100% (calculada: 1.000g ÷ 1.000g; a wiki não declara porcentagem — item de referência da Letalidade, ≈30g por ponto)
+        Valor de Ouro (atributos): 1.000g
+        Valor de Ouro (base): 1.000g
     ]
     Ápice[
         igual ao base
@@ -3061,6 +3413,8 @@ Fulgor: Sheen[
     Análise de custo[
         Valor de Ouro: 10 AdH = 500g; total 500g
         Eficiência de Ouro: 55,56% (base)
+        Valor de Ouro (atributos): 500g
+        Valor de Ouro (base): 500g
     ]
     Ápice[
         igual ao base
@@ -3096,6 +3450,8 @@ Capuz do Espectro: Spectre's Cowl[
     Análise de custo[
         Valor de Ouro: 200 Vida = 533,33g; 100% Regeneração de Vida base = 300g; 35 RM = 700g; total 1.533,33g
         Eficiência de Ouro: 122,67% (base)
+        Valor de Ouro (atributos): 1.533,33g
+        Valor de Ouro (base): 1.533,33g
     ]
     Ápice[
         igual ao base
@@ -3130,6 +3486,8 @@ Sigilo de Aço: Steel Sigil[
     Análise de custo[
         Valor de Ouro: 15 DdA = 525g; 30 Armadura = 600g; total 1.125g
         Eficiência de Ouro: 102,27% (base)
+        Valor de Ouro (atributos): 1.125g
+        Valor de Ouro (base): 1.125g
     ]
     Ápice[
         igual ao base
@@ -3165,6 +3523,8 @@ Brutalizador: The Brutalizer[
     Análise de custo[
         Valor de Ouro: 25 DdA = 875g; 10 AdH = 500g; 5 Letalidade = 150g; total 1.525g
         Eficiência de Ouro: 114,06% (base)
+        Valor de Ouro (atributos): 1.525g
+        Valor de Ouro (base): 1.525g
     ]
     Ápice[
         igual ao base
@@ -3201,6 +3561,8 @@ Tiamat: Tiamat[
     Análise de custo[
         Valor de Ouro: 25 DdA = 875g; total 875g
         Eficiência de Ouro: 72,92% (base)
+        Valor de Ouro (atributos): 875g
+        Valor de Ouro (base): 875g
     ]
     Ápice[
         igual ao base
@@ -3235,6 +3597,8 @@ Tunelizador: Tunneler[
     Análise de custo[
         Valor de Ouro: 15 DdA = 525g; 250 Vida = 666,67g; total 1.191,67g
         Eficiência de Ouro: 103,62% (base)
+        Valor de Ouro (atributos): 1.191,67g
+        Valor de Ouro (base): 1.191,67g
     ]
     Ápice[
         igual ao base
@@ -3269,6 +3633,8 @@ Cetro Vampírico: Vampiric Scepter[
     Análise de custo[
         Valor de Ouro: 15 DdA = 525g; 7% Roubo de Vida = 374,85g; total 899,85g
         Eficiência de Ouro: 99,98% (calculada: 899,85g ÷ 900g; a wiki não declara porcentagem — item de referência do Roubo de Vida, ≈53,55g por 1%)
+        Valor de Ouro (atributos): 899,85g
+        Valor de Ouro (base): 899,85g
     ]
     Ápice[
         igual ao base
@@ -3304,6 +3670,8 @@ Barreira Verdejante: Verdant Barrier[
     Análise de custo[
         Valor de Ouro: 40 PdH = 800g; 25 RM = 500g; total 1.300g
         Eficiência de Ouro: 81,25% (base)
+        Valor de Ouro (atributos): 1.300g
+        Valor de Ouro (base): 1.300g
     ]
     Ápice[
         igual ao base (Anular pronto)
@@ -3338,6 +3706,8 @@ Carapaça do Vigia: Warden's Mail[
     Análise de custo[
         Valor de Ouro: 40 Armadura = 800g; total 800g
         Eficiência de Ouro: 80% (base)
+        Valor de Ouro (atributos): 800g
+        Valor de Ouro (base): 800g
     ]
     Ápice[
         igual ao base
@@ -3372,6 +3742,8 @@ Couraça Lunar Alada: Winged Moonplate[
     Análise de custo[
         Valor de Ouro: 200 Vida = 533,33g; 4% Velocidade de Movimento = 260,42g; total 793,75g
         Eficiência de Ouro: 99,22% (base)
+        Valor de Ouro (atributos): 793,75g
+        Valor de Ouro (base): 793,75g
     ]
     Ápice[
         igual ao base
@@ -3407,6 +3779,8 @@ Zelo: Zeal[
     Análise de custo[
         Valor de Ouro: 15% VdA = 375g; 15% Acerto Crítico = 600g; 4% Velocidade de Movimento = 260,42g; total 1.235,42g
         Eficiência de Ouro: 102,95% (base)
+        Valor de Ouro (atributos): 1.235,42g
+        Valor de Ouro (base): 1.235,42g
     ]
     Ápice[
         igual ao base
@@ -3447,6 +3821,8 @@ Máscara Abissal: Abyssal Mask[
     Análise de custo[
         Valor de Ouro: 15 AdH = 750g; 350 Vida = 933,33g; 45 RM = 900g; total 2.583,33g
         Eficiência de Ouro: 97,48% (base)
+        Valor de Ouro (atributos): 2.583,33g
+        Valor de Ouro (base): 2.583,33g
     ]
     Ápice[
         igual ao base (aura sempre ativa)
@@ -3460,6 +3836,7 @@ Máscara Abissal: Abyssal Mask[
     Efeitos Especiais: Aura, Vulnerabilidade Mágica
     Região: Shadow Isles
     Mestre Forjador: Elegível — 3 categorias upgradáveis (333,33g cada): Vida 350(+125)=475; Resistência Mágica 45(+18,52)=63,52; Aceleração de Habilidade 15(+10,67)=25,67
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 2.650g = 198,75g (líquido: 2.451,25g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Abyssal Mask") · https://wiki.leagueoflegends.com/en-us/Abyssal_Mask · Data Dragon pt_BR 16.18.1
 ]
@@ -3485,9 +3862,15 @@ Atualizador: Actualizer[
     Análise de custo[
         Valor de Ouro: 90 PdH = 1.800g; 10 AdH = 500g; 300 Mana = 300g; total 2.600g
         Eficiência de Ouro: 92,86% (base)
+        Valor de Ouro (atributos): 2.600g
+        Valor de Ouro (base): 2.600g
     ]
     Ápice[
         Mana Concretizado ativa (8s): +17,5% de dano de habilidade/pet, cura e escudo com 500 de Mana bônus; recargas básicas 30% mais rápidas; custo de Mana dobrado.
+    ]
+    Ápice numérico[
+        Valor de Ouro no ápice: none
+        Eficiência de Ouro no ápice: none
     ]
     Notas: O texto oficial pt_BR exibe "0 de dano de habilidade" e recarga "(0s)" (placeholders); valores reais em Mecânica. Pode ser comprado por campeões sem Mana, que não conseguem ativar Mana Concretizado.
     Notas de ARAM: none
@@ -3498,6 +3881,7 @@ Atualizador: Actualizer[
     Efeitos Especiais: Ativa, Amplificação de Dano, Poder de Cura e Escudo, Redução de Recarga
     Região: Shurima
     Mestre Forjador: Elegível — 2 categorias upgradáveis (500g cada; Mana não conta): Poder de Habilidade 90(+25)=115; Aceleração de Habilidade 10(+16)=26
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 2.800g = 210g (líquido: 2.590g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Actualizer") · https://wiki.leagueoflegends.com/en-us/Actualizer · Data Dragon pt_BR 16.18.1
 ]
@@ -3527,9 +3911,17 @@ Cajado do Arcanjo: Archangel's Staff[
     Análise de custo[
         Valor de Ouro: 70 PdH = 1.400g; 25 AdH = 1.250g; 600 Mana = 600g; total 3.250g; 6 PdH de Fascínio = 120g; total 3.370g. Por 100 de Mana bônus de outras fontes: 1 PdH = 20g. Por carga: 5 Mana + 0,05 PdH = 6g (não campeão) / 10 Mana + 0,1 PdH = 12g (campeão)
         Eficiência de Ouro: 116,21% (base); +0,21% por carga obtida de não campeões, +0,41% por carga de campeões; +0,69% por 100 de Mana bônus de outras fontes
+        Valor de Ouro (atributos): 3.250g
+        Valor de Ouro (base): 3.370g
     ]
     Ápice[
         360 de Mana bônus de Fluxo de Mana: +960 de Mana, +9,6 de PdH de Fascínio (só do item); transforma-se em Abraço de Seraph.
+    ]
+    Ápice numérico[
+        Mana · 960 · pt · total
+        Poder de Habilidade · 79,6 · pt · total
+        Valor de Ouro no ápice: 3.802g (calculado: 3.370g + 360 de Mana = 360g + 3,6 de PdH de Fascínio = 72g)
+        Eficiência de Ouro no ápice: 131,1% (calculado)
     ]
     Notas: none
     Notas de ARAM: Cada carga consumida de Fluxo de Mana gera 50% mais Mana.
@@ -3540,6 +3932,7 @@ Cajado do Arcanjo: Archangel's Staff[
     Efeitos Especiais: Acúmulos, Missão/Evolução
     Região: Runeterra (sem brasão na página)
     Mestre Forjador: Não elegível (linha da Lágrima da Deusa)
+    Mestre Forjador (ouro): none
     Reembolso (runa Cash Back): 7,5% de 2.900g = 217,5g (líquido: 2.682,5g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Archangel's Staff") · https://wiki.leagueoflegends.com/en-us/Archangel's_Staff · Data Dragon pt_BR 16.18.1
 ]
@@ -3566,9 +3959,17 @@ Turíbulo Ardente: Ardent Censer[
     Análise de custo[
         Valor de Ouro: 45 PdH = 900g; 125% Regeneração de Mana base = 500g; 4% Velocidade de Movimento = 260,42g; 10% Poder de Cura e Escudo = 500g; total 2.160,42g. Santificar por unidade: 25% VdA = 625g + 20 de dano ao contato = 433,33g = 1.058,33g; total com 1 aliado + conjurador 4.277,08g
         Eficiência de Ouro: 98,2% (base); 146,31% no conjurador com Santificar ativo; 194,41%–338,73% com 2–4 aliados (e o conjurador) fortalecidos
+        Valor de Ouro (atributos): 2.160,42g
+        Valor de Ouro (base): 2.160,42g
     ]
     Ápice[
         Santificar em 4 aliados e no conjurador: +25% de Velocidade de Ataque e 20 de dano mágico ao contato em 5 campeões por 6s.
+    ]
+    Ápice numérico[
+        Velocidade de Ataque · 25 · % · total
+        Efeitos ao Contato · 20 · pt · total
+        Valor de Ouro no ápice: 7.452,07g (calculado: 2.160,42g + 5 unidades fortalecidas × 1.058,33g)
+        Eficiência de Ouro no ápice: 338,73%
     ]
     Notas: O cliente pt_BR grafa "Cura e Resistência do Escudo"; catálogo adota "Poder de Cura e Escudo". O dano ao contato de Santificar aparece como acerto crítico para o portador e como dano mágico comum para o aliado fortalecido.
     Notas de ARAM: none
@@ -3579,6 +3980,7 @@ Turíbulo Ardente: Ardent Censer[
     Efeitos Especiais: Dano Mágico, Efeitos ao Contato, Velocidade de Ataque
     Região: Ionia
     Mestre Forjador: Elegível — 1 categoria upgradável (1.000g): Poder de Habilidade 45(+50)=95
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 2.200g = 165g (líquido: 2.035g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Ardent Censer") · https://wiki.leagueoflegends.com/en-us/Ardent_Censer · Data Dragon pt_BR 16.18.1
 ]
@@ -3603,12 +4005,19 @@ Acerto de Contas de Atma: Atma's Reckoning[
     ]
     Análise de custo[
         Valor de Ouro: 20% Acerto Crítico = 800g; 700 Vida = 1.866,67g; total 2.666,67g
-        Eficiência de Ouro: 106,67% (base)
+        Eficiência de Ouro: 91,95% (base)
+        Valor de Ouro (atributos): 2.666,67g
+        Valor de Ouro (base): 2.666,67g
     ]
     Ápice[
         3.000 de Vida bônus: +30% de Chance de Acerto Crítico de Monumental (50% no total com o atributo do item).
     ]
-    Notas: Atributos confirmados por captura do cliente em ARAM (usuário, 12/09/2026): 700 de Vida, 20% de Chance de Acerto Crítico, 10 de Aceleração de Habilidade; o tooltip do cliente descreve Monumental como "Recebe 1% de Chance de Acerto Crítico a cada 100 de Vida adicional, até 30%". O módulo e a Cost Analysis da wiki não listam a Aceleração de Habilidade. Valor de venda: 50% do custo (sellratio 0,5). Componentes registrados pelo Data Dragon (Cinto do Gigante, Capa da Agilidade, Cinto do Gigante, +500g); o módulo da wiki não traz receita.
+    Ápice numérico[
+        Acerto Crítico · 50 · % · total
+        Valor de Ouro no ápice: 3.866,67g (calculado: 1.866,67g de Vida + 50% de Acerto Crítico = 2.000g; Aceleração de Habilidade fora, como na base)
+        Eficiência de Ouro no ápice: 133,33% (calculado)
+    ]
+    Notas: Eficiência de Ouro recalculada sobre o preço de ARAM: Mayhem (2.666,67g ÷ 2.900g = 91,95%); a Cost Analysis da wiki divide o mesmo Valor de Ouro pelo preço de Arena da infobox (2.500g) e publica 106,67%. Atributos confirmados por captura do cliente em ARAM (usuário, 12/09/2026): 700 de Vida, 20% de Chance de Acerto Crítico, 10 de Aceleração de Habilidade; o tooltip do cliente descreve Monumental como "Recebe 1% de Chance de Acerto Crítico a cada 100 de Vida adicional, até 30%". O módulo e a Cost Analysis da wiki não listam a Aceleração de Habilidade. Valor de venda: 50% do custo (sellratio 0,5). Componentes registrados pelo Data Dragon (Cinto do Gigante, Capa da Agilidade, Cinto do Gigante, +500g); o módulo da wiki não traz receita.
     Notas de ARAM: none
     Notas de ARAM: Mayhem: Item exclusivo do modo (a wiki também o lista em Arena, ignorado).
     Categoria de Atributo: Vida, Acerto Crítico, Aceleração de Habilidade
@@ -3617,6 +4026,7 @@ Acerto de Contas de Atma: Atma's Reckoning[
     Efeitos Especiais: Acerto Crítico (condicional pela Vida bônus)
     Região: Noxus
     Mestre Forjador: Elegível — 1 categoria upgradável (1.000g; Acerto Crítico não conta): Vida 700(+375)=1.075
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 2.900g = 217,5g (líquido: 2.682,5g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Atma's Reckoning") · https://wiki.leagueoflegends.com/en-us/Atma's_Reckoning · Data Dragon pt_BR 16.18.1 · captura do cliente (ARAM) fornecida pelo usuário em 12/09/2026
 ]
@@ -3642,6 +4052,8 @@ Arco do Axioma: Axiom Arc[
     Análise de custo[
         Valor de Ouro: 55 DdA = 1.925g; 20 AdH = 1.000g; 18 Letalidade = 540g; total 3.465g
         Eficiência de Ouro: 126% (base)
+        Valor de Ouro (atributos): 3.465g
+        Valor de Ouro (base): 3.465g
     ]
     Ápice[
         igual ao base (Fluxo é gatilho por abate; reembolso cresce com Letalidade de outras fontes)
@@ -3655,6 +4067,7 @@ Arco do Axioma: Axiom Arc[
     Efeitos Especiais: Redução de Recarga
     Região: Ixtal
     Mestre Forjador: Elegível — 2 categorias upgradáveis (500g cada; Letalidade não conta): Dano de Ataque 55(+14,29)=69,29; Aceleração de Habilidade 20(+16)=36
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 2.750g = 206,25g (líquido: 2.543,75g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Axiom Arc") · https://wiki.leagueoflegends.com/en-us/Axiom_Arc · Data Dragon pt_BR 16.18.1
 ]
@@ -3681,9 +4094,17 @@ Bandocanos: Bandlepipes[
     Análise de custo[
         Valor de Ouro: 15 AdH = 750g; 200 Vida = 533,33g; 20 Armadura = 400g; 20 RM = 400g; total 2.083,33g. Fanfarra: 20 de Velocidade de Movimento = 240g; 30% / 20% VdA = 750g / 500g; total 3.073,33g / 2.823,33g
         Eficiência de Ouro: 90,58% (base); 133,62% / 122,75% com Fanfarra ativa (corpo a corpo / à distância)
+        Valor de Ouro (atributos): 2.083,33g
+        Valor de Ouro (base): 2.083,33g
     ]
     Ápice[
         Fanfarra ativa: +20 de Velocidade de Movimento e +30% (20%) de Velocidade de Ataque para você e aliados próximos por 8s (4s).
+    ]
+    Ápice numérico[
+        Movimento · 20 · pt · total
+        Velocidade de Ataque · 30 · % · total (à distância: 20)
+        Valor de Ouro no ápice: 3.073,33g (à distância: 2.823,33g)
+        Eficiência de Ouro no ápice: 133,62% (à distância: 122,75%)
     ]
     Notas: O texto oficial pt_BR exibe "por 0s" e "0 de Velocidade de Ataque" (placeholders); valores reais em Mecânica.
     Notas de ARAM: none
@@ -3694,6 +4115,7 @@ Bandocanos: Bandlepipes[
     Efeitos Especiais: Aura, Movimento, Velocidade de Ataque
     Região: Bandle City
     Mestre Forjador: Elegível — 4 categorias upgradáveis (250g cada): Vida 200(+90)=290; Aceleração de Habilidade 15(+8)=23; Armadura 20(+12,5)=32,5; Resistência Mágica 20(+13,89)=33,89
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 2.300g = 172,5g (líquido: 2.127,5g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Bandlepipes") · https://wiki.leagueoflegends.com/en-us/Bandlepipes · Data Dragon pt_BR 16.18.1
 ]
@@ -3718,6 +4140,8 @@ Véu da Banshee: Banshee's Veil[
     Análise de custo[
         Valor de Ouro: 105 PdH = 2.100g; 40 RM = 800g; total 2.900g
         Eficiência de Ouro: 96,67% (base)
+        Valor de Ouro (atributos): 2.900g
+        Valor de Ouro (base): 2.900g
     ]
     Ápice[
         igual ao base (Anular pronto)
@@ -3731,6 +4155,7 @@ Véu da Banshee: Banshee's Veil[
     Efeitos Especiais: Escudo de Feitiço
     Região: Runeterra (sem brasão na página)
     Mestre Forjador: Elegível — 2 categorias upgradáveis (500g cada): Poder de Habilidade 105(+25)=130; Resistência Mágica 40(+27,78)=67,78
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 3.000g = 225g (líquido: 2.775g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Banshee's Veil") · https://wiki.leagueoflegends.com/en-us/Banshee's_Veil · Data Dragon pt_BR 16.18.1
 ]
@@ -3758,9 +4183,15 @@ Quebra-Bastião: Bastionbreaker[
     Análise de custo[
         Valor de Ouro: 55 DdA = 1.925g; 15 AdH = 750g; 22 Letalidade = 660g; total 3.335g
         Eficiência de Ouro: 111,17% (base)
+        Valor de Ouro (atributos): 3.335g
+        Valor de Ouro (base): 3.335g
     ]
     Ápice[
         Sabotagem ativa: próximo ataque a torre/monstro épico causa 850 (680) de dano verdadeiro em 3s com 22 de Letalidade.
+    ]
+    Ápice numérico[
+        Valor de Ouro no ápice: none
+        Eficiência de Ouro no ápice: none
     ]
     Notas: O texto oficial pt_BR exibe "0 de Dano Verdadeiro" nas duas passivas e "(0s)" (placeholders); valores reais em Mecânica.
     Notas de ARAM: none
@@ -3771,6 +4202,7 @@ Quebra-Bastião: Bastionbreaker[
     Efeitos Especiais: Dano Verdadeiro, Dano a Estruturas, Dano a Monstros, Dano ao Longo do Tempo
     Região: Noxus
     Mestre Forjador: Elegível — 2 categorias upgradáveis (500g cada; Letalidade não conta): Dano de Ataque 55(+14,29)=69,29; Aceleração de Habilidade 15(+16)=31
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 3.000g = 225g (líquido: 2.775g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Bastionbreaker") · https://wiki.leagueoflegends.com/en-us/Bastionbreaker · Data Dragon pt_BR 16.18.1
 ]
@@ -3798,9 +4230,16 @@ Cutelo Negro: Black Cleaver[
     Análise de custo[
         Valor de Ouro: 45 DdA = 1.575g; 20 AdH = 1.000g; 400 Vida = 1.066,67g; total 3.641,67g. Fervor: 20 de Velocidade de Movimento = 240g; total 3.881,67g
         Eficiência de Ouro: 121,39% (base); 129,39% com Fervor ativo
+        Valor de Ouro (atributos): 3.641,67g
+        Valor de Ouro (base): 3.641,67g
     ]
     Ápice[
         5 acúmulos de Talhar no alvo: −30% de Armadura por 6s; Fervor ativo: +20 (10) de Velocidade de Movimento.
+    ]
+    Ápice numérico[
+        Movimento · 20 · pt · total (à distância: 10)
+        Valor de Ouro no ápice: 3.881,67g
+        Eficiência de Ouro no ápice: 129,39%
     ]
     Notas: O texto oficial pt_BR exibe "0 de Velocidade de Movimento" (placeholder); valor real em Mecânica. Talhar ativa também com 0 de dano físico de ataques básicos. Fervor pode conceder a Velocidade de Movimento a partir de clones; acúmulos de Talhar são transferidos a clones. Talhar por si NÃO é bloqueado por escudo de feitiço. Ativa na maioria dos casos de dano físico, inclusive pets e efeitos que aplicam várias instâncias. A primeira instância de dano físico NÃO se beneficia da redução de Armadura: o dano é calculado antes e o debuff aplicado depois — cada instância só aproveita a redução dos acúmulos anteriores. NÃO acumula mais de uma vez por frame nos seguintes efeitos (EN, como na wiki) — parte de uma instância de conjuração: Aphelios — Sentry; Camille — Tactical Sweep (dano adicional); Illaoi — múltiplos ataques de Tentacle; Naafiri — Packmates; Qiyana — Royal Privilege (dano adicional de habilidades); Yorick — múltiplos golpes de Mist Walkers; Zed — Razor Shurikens dele e das Shadows; Eclipse — Ever Rising Moon se vários acúmulos forem gerados no mesmo frame. Instância de dano básico seguida de instâncias não básicas: Ambessa — Drakehound's Step; Briar — Snack Attack; Aphelios — Chakram; Illaoi — Harsh Lesson; Jarvan IV — Martial Cadence; K'Sante — Dauntless Instinct; Riven — Runic Blade; Vayne — Tumble; Viego — Blade of the Ruined King (ao contato); Xin Zhao — Determination; itens Blade of the Ruined King, Hullbreaker, Muramana, Recurve Bow, Titanic Hydra (passiva/ativa); runa Dark Harvest. Dano em instância única embrulhada no ataque básico principal. Exclusões especiais (comportamento inesperado): Kindred — Mounting Dread; Miss Fortune — Love Tap; Udyr — Wilding Claw (ao contato permanente). ACUMULA mais de uma vez por frame nos seguintes efeitos — múltiplas instâncias de dano básico: Aphelios — marcas de Calibrum; Graves — New Destiny; Ivern — Daisy!; Kled — Violent Tendencies; Malphite — Thunderclap; Rengar — Savagery e Thrill of the Hunt; Viego — marca de possessão de Blade of the Ruined King; itens Heartsteel, Kraken Slayer. Instância não básica seguida de instâncias básicas: Qiyana — Royal Privilege (de ataques básicos); Senna — Absolution; Sion — Glory in Death; Udyr — Wilding Claw (ao contato temporário); Urgot — Echoing Flames; Vi — Denting Blows; itens Dead Man's Plate, Eclipse, Runaan's Hurricane (0 de dano físico ao contato no alvo primário), Sheen e outros efeitos Lâmina Arcana, Voltaic Cyclosword; runas Press the Attack, Shield Bash. Aleatoriamente, acúmulos podem deixar de ser aplicados mais de uma vez (inesperado). Inclusões especiais: Kled — Pocket Pistol; Xayah — Bladecaller.
     Notas de ARAM: none
@@ -3811,6 +4250,7 @@ Cutelo Negro: Black Cleaver[
     Efeitos Especiais: Acúmulos, Redução de Armadura, Movimento
     Região: Noxus
     Mestre Forjador: Elegível — 3 categorias upgradáveis (333,33g cada): Dano de Ataque 45(+9,52)=54,52; Vida 400(+125)=525; Aceleração de Habilidade 20(+10,67)=30,67
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 3.000g = 225g (líquido: 2.775g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Black Cleaver") · https://wiki.leagueoflegends.com/en-us/Black_Cleaver · Data Dragon pt_BR 16.18.1
 ]
@@ -3838,9 +4278,16 @@ Tocha de Chamas Negras: Blackfire Torch[
     Análise de custo[
         Valor de Ouro: 80 PdH = 1.600g; 20 AdH = 1.000g; 600 Mana = 600g; total 3.200g
         Eficiência de Ouro: 114,29% (base)
+        Valor de Ouro (atributos): 3.200g
+        Valor de Ouro (base): 3.200g
     ]
     Ápice[
         5 campeões queimando: +20% de Poder de Habilidade (sem teto documentado além do número de alvos).
+    ]
+    Ápice numérico[
+        Poder de Habilidade · 20 · % · a mais (multiplicador do PdH total: 4% por campeão queimando, 5 campeões)
+        Valor de Ouro no ápice: none (depende do PdH total; com o PdH 200 de referência: +40 de PdH = 800g → 4.000g)
+        Eficiência de Ouro no ápice: none (com o PdH 200 de referência: 142,86%)
     ]
     Notas: none
     Notas de ARAM: none
@@ -3851,6 +4298,7 @@ Tocha de Chamas Negras: Blackfire Torch[
     Efeitos Especiais: Dano Mágico, Dano ao Longo do Tempo, Dano a Monstros, Amplificação de Dano
     Região: Shadow Isles
     Mestre Forjador: Elegível — 2 categorias upgradáveis (500g cada; Mana não conta): Poder de Habilidade 80(+25)=105; Aceleração de Habilidade 20(+16)=36
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 2.800g = 210g (líquido: 2.590g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Blackfire Torch") · https://wiki.leagueoflegends.com/en-us/Blackfire_Torch · Data Dragon pt_BR 16.18.1
 ]
@@ -3879,9 +4327,15 @@ Espada do Rei Destruído: Blade of The Ruined King[
     Análise de custo[
         Valor de Ouro: 40 DdA = 1.400g; 25% VdA = 625g; 10% Roubo de Vida = 535,5g; total 2.560,5g
         Eficiência de Ouro: 80,02% (base); +0,68% por dano ao contato de Gume da Névoa a cada 11 / 17 de Vida atual do alvo
+        Valor de Ouro (atributos): 2.560,5g
+        Valor de Ouro (base): 2.560,5g
     ]
     Ápice[
         3 acúmulos de Sombras da Tirania: lentidão de 30% por 1s (recarga 15s).
+    ]
+    Ápice numérico[
+        Valor de Ouro no ápice: none
+        Eficiência de Ouro no ápice: none
     ]
     Notas: none
     Notas de ARAM: none
@@ -3892,6 +4346,7 @@ Espada do Rei Destruído: Blade of The Ruined King[
     Efeitos Especiais: Dano Físico, Dano Percentual, Efeitos ao Contato, Acúmulos, Lentidão
     Região: Shadow Isles
     Mestre Forjador: Elegível — 2 categorias upgradáveis (500g cada; Roubo de Vida não conta): Dano de Ataque 40(+14,29)=54,29; Velocidade de Ataque 25%(+16,67%)=41,67%
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 3.200g = 240g (líquido: 2.960g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Blade of The Ruined King") · https://wiki.leagueoflegends.com/en-us/Blade_of_the_Ruined_King · Data Dragon pt_BR 16.18.1
 ]
@@ -3917,9 +4372,15 @@ Maldição Sanguinária: Bloodletter's Curse[
     Análise de custo[
         Valor de Ouro: 65 PdH = 1.300g; 15 AdH = 750g; 400 Vida = 1.066,67g; total 3.116,67g
         Eficiência de Ouro: 107,47% (base)
+        Valor de Ouro (atributos): 3.116,67g
+        Valor de Ouro (base): 3.116,67g
     ]
     Ápice[
         4 acúmulos de Decadência Vil no alvo: −30% de Resistência Mágica por 6s.
+    ]
+    Ápice numérico[
+        Valor de Ouro no ápice: none
+        Eficiência de Ouro no ápice: none
     ]
     Notas: none
     Notas de ARAM: none
@@ -3930,6 +4391,7 @@ Maldição Sanguinária: Bloodletter's Curse[
     Efeitos Especiais: Acúmulos, Redução de Resistência Mágica
     Região: Bilgewater
     Mestre Forjador: Elegível — 3 categorias upgradáveis (333,33g cada): Poder de Habilidade 65(+16,67)=81,67; Vida 400(+125)=525; Aceleração de Habilidade 15(+10,67)=25,67
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 2.900g = 217,5g (líquido: 2.682,5g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Bloodletter's Curse") · https://wiki.leagueoflegends.com/en-us/Bloodletter's_Curse · Data Dragon pt_BR 16.18.1
 ]
@@ -3958,9 +4420,15 @@ Canção de Sangue: Bloodsong[
     Análise de custo[
         Valor de Ouro: 200 Vida = 533,33g; 75% Regeneração de Vida base = 225g; 75% Regeneração de Mana base = 300g; total 1.058,33g (a wiki não atribui valor à geração de ouro)
         Eficiência de Ouro: 264,58% (base)
+        Valor de Ouro (atributos): 1.058,33g
+        Valor de Ouro (base): 1.058,33g
     ]
     Ápice[
         Fraqueza Exposta ativa no alvo: +8% (5%) de dano sofrido por 4s; 4 sentinelas disponíveis.
+    ]
+    Ápice numérico[
+        Valor de Ouro no ápice: none
+        Eficiência de Ouro no ápice: none
     ]
     Notas: Item final da linha de Suporte (Atlas Mundial → Bússola Rúnica → Dádiva dos Mundos → Canção de Sangue); custo de combinação 0g. Valor de venda: 40% do custo (sellratio 0,4).
     Notas de ARAM: none
@@ -3971,6 +4439,7 @@ Canção de Sangue: Bloodsong[
     Efeitos Especiais: Ataque Fortalecido, Dano Físico, Efeitos ao Contato, Vulnerabilidade a Dano, Ativa, Visão, Acúmulos, Dano a Estruturas
     Região: Shurima
     Mestre Forjador: Não elegível (classe Legendary Support Item)
+    Mestre Forjador (ouro): none
     Reembolso (runa Cash Back): none (item Lendário da linha de Suporte, obtido gratuitamente por transformação — sem compra, sem reembolso; confirmado pelo usuário em 12/09/2026)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Bloodsong") · https://wiki.leagueoflegends.com/en-us/Bloodsong · Data Dragon pt_BR 16.18.1
 ]
@@ -3995,9 +4464,15 @@ Sedenta por Sangue: Bloodthirster[
     Análise de custo[
         Valor de Ouro: 80 DdA = 2.800g; 15% Roubo de Vida = 803,25g; total 3.603,25g
         Eficiência de Ouro: 105,98% (base)
+        Valor de Ouro (atributos): 3.603,25g
+        Valor de Ouro (base): 3.603,25g
     ]
     Ápice[
         Ícor-escudo cheio: 225 de escudo no nível 13 (315 no máximo).
+    ]
+    Ápice numérico[
+        Valor de Ouro no ápice: none
+        Eficiência de Ouro no ápice: none
     ]
     Notas: none
     Notas de ARAM: none
@@ -4008,6 +4483,7 @@ Sedenta por Sangue: Bloodthirster[
     Efeitos Especiais: Escudo
     Região: Shurima
     Mestre Forjador: Elegível — 1 categoria upgradável (1.000g; Roubo de Vida não conta): Dano de Ataque 80(+28,57)=108,57
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 3.400g = 255g (líquido: 3.145g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Bloodthirster") · https://wiki.leagueoflegends.com/en-us/Bloodthirster · Data Dragon pt_BR 16.18.1
 ]
@@ -4040,9 +4516,15 @@ Oposição Celestial: Celestial Opposition[
     Análise de custo[
         Valor de Ouro: 200 Vida = 533,33g; 75% Regeneração de Vida base = 225g; 75% Regeneração de Mana base = 300g; total 1.058,33g (a wiki não atribui valor à geração de ouro)
         Eficiência de Ouro: 264,58% (base)
+        Valor de Ouro (atributos): 1.058,33g
+        Valor de Ouro (base): 1.058,33g
     ]
     Ápice[
         Bênção ativa: −35% (25%) de dano de campeões; ao expirar, lentidão de 50% em área por 1,5s.
+    ]
+    Ápice numérico[
+        Valor de Ouro no ápice: none
+        Eficiência de Ouro no ápice: none
     ]
     Notas: Item final da linha de Suporte (Atlas Mundial → Bússola Rúnica → Dádiva dos Mundos); custo de combinação 0g. Valor de venda: 40% do custo (sellratio 0,4). Sacrifício do Juramento do Cavaleiro tem tratamento especial: o dano redirecionado ao usuário NÃO ativa a Bênção.
     Notas de ARAM: none
@@ -4053,6 +4535,7 @@ Oposição Celestial: Celestial Opposition[
     Efeitos Especiais: Redução de Dano, Lentidão, Dano em Área, Ativa, Visão, Acúmulos
     Região: Targon (nome e tema: bênção da Montanha)
     Mestre Forjador: Não elegível (classe Legendary Support Item)
+    Mestre Forjador (ouro): none
     Reembolso (runa Cash Back): none (item Lendário da linha de Suporte, obtido gratuitamente por transformação — sem compra, sem reembolso; decisão de 12/09/2026)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Celestial Opposition") · https://wiki.leagueoflegends.com/en-us/Celestial_Opposition · Data Dragon pt_BR 16.18.1
 ]
@@ -4078,6 +4561,8 @@ Serrespada Quimiopunk: Chempunk Chainsword[
     Análise de custo[
         Valor de Ouro: 45 DdA = 1.575g; 15 AdH = 750g; 450 Vida = 1.200g; total 3.525g
         Eficiência de Ouro: 117,5% (base)
+        Valor de Ouro (atributos): 3.525g
+        Valor de Ouro (base): 3.525g
     ]
     Ápice[
         igual ao base
@@ -4091,6 +4576,7 @@ Serrespada Quimiopunk: Chempunk Chainsword[
     Efeitos Especiais: Anti-Cura
     Região: Zaun (nome: Quimiopunk)
     Mestre Forjador: Elegível — 3 categorias upgradáveis (333,33g cada): Dano de Ataque 45(+9,52)=54,52; Vida 450(+125)=575; Aceleração de Habilidade 15(+10,67)=25,67
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 3.000g = 225g (líquido: 2.775g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Chempunk Chainsword") · https://wiki.leagueoflegends.com/en-us/Chempunk_Chainsword · Data Dragon pt_BR 16.18.1
 ]
@@ -4117,9 +4603,16 @@ Serrespada Quimiopunk: Chempunk Chainsword[
     Análise de custo[
         Valor de Ouro: 70 PdH = 1.400g; 25 AdH = 1.250g; 350 Vida = 933,33g; 4% Velocidade de Movimento = 260,42g; total 3.843,75g. Dança Enfeitiçada: 20 de Velocidade de Movimento = 240g; total 4.083,75g
         Eficiência de Ouro: 128,13% (base); 136,13% com Dança Enfeitiçada ativa
+        Valor de Ouro (atributos): 3.843,75g
+        Valor de Ouro (base): 3.843,75g
     ]
     Ápice[
         Dança Enfeitiçada ativa: +20 de Velocidade de Movimento por 4s.
+    ]
+    Ápice numérico[
+        Movimento · 20 · pt · a mais (fixo, somado aos 4% do item)
+        Valor de Ouro no ápice: 4.083,75g
+        Eficiência de Ouro no ápice: 136,13%
     ]
     Notas: none
     Notas de ARAM: none
@@ -4130,6 +4623,7 @@ Serrespada Quimiopunk: Chempunk Chainsword[
     Efeitos Especiais: Movimento
     Região: Targon
     Mestre Forjador: Elegível — 3 categorias upgradáveis (333,33g cada; Velocidade de Movimento não conta): Poder de Habilidade 70(+16,67)=86,67; Vida 350(+125)=475; Aceleração de Habilidade 25(+10,67)=35,67
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 3.000g = 225g (líquido: 2.775g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Cosmic Drive") · https://wiki.leagueoflegends.com/en-us/Cosmic_Drive · Data Dragon pt_BR 16.18.1
 ]
@@ -4155,6 +4649,8 @@ Criptoflora: Cryptbloom[
     Análise de custo[
         Valor de Ouro: 75 PdH = 1.500g; 20 AdH = 1.000g; 30% Penetração Mágica = 1.384,5g; total 3.884,5g
         Eficiência de Ouro: 129,48% (base)
+        Valor de Ouro (atributos): 3.884,5g
+        Valor de Ouro (base): 3.884,5g
     ]
     Ápice[
         igual ao base (Vida na Morte é gatilho por abate)
@@ -4168,6 +4664,7 @@ Criptoflora: Cryptbloom[
     Efeitos Especiais: Cura, Dano em Área
     Região: Shadow Isles
     Mestre Forjador: Elegível — 2 categorias upgradáveis (500g cada; Penetração Mágica não conta): Poder de Habilidade 75(+25)=100; Aceleração de Habilidade 20(+16)=36
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 3.000g = 225g (líquido: 2.775g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Cryptbloom") · https://wiki.leagueoflegends.com/en-us/Cryptbloom · Data Dragon pt_BR 16.18.1
 ]
@@ -4193,9 +4690,15 @@ Auronúcleo: Dawncore[
     Análise de custo[
         Valor de Ouro: 45 PdH = 900g; 100% Regeneração de Mana base = 400g; 16% Poder de Cura e Escudo = 800g; total 2.100g. Primeira Luz (dos atributos base): 10 PdH = 200g + 2% Poder de Cura e Escudo = 100g; total 2.400g. Por 100% de Regeneração de Mana base: 300g
         Eficiência de Ouro: 96% (base); +12% por 100% de Regeneração de Mana base de outras fontes
+        Valor de Ouro (atributos): 2.100g
+        Valor de Ouro (base): 2.400g
     ]
     Ápice[
         Sem teto documentado: cresce com a Regeneração de Mana base de outras fontes (ex.: +200% de outras fontes → 75 de PdH, 22% de Poder de Cura e Escudo).
+    ]
+    Ápice numérico[
+        Valor de Ouro no ápice: none (sem teto: +300g por 100% de Regeneração de Mana base de outras fontes)
+        Eficiência de Ouro no ápice: none (sem teto: +12% por 100% de Regeneração de Mana base de outras fontes)
     ]
     Notas: O cliente pt_BR grafa "Cura e Resistência do Escudo"; catálogo adota "Poder de Cura e Escudo".
     Notas de ARAM: none
@@ -4206,6 +4709,7 @@ Auronúcleo: Dawncore[
     Efeitos Especiais: Acúmulos, Poder de Cura e Escudo
     Região: Targon
     Mestre Forjador: Elegível — 1 categoria upgradável (1.000g): Poder de Habilidade 45(+50)=95
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 2.500g = 187,5g (líquido: 2.312,5g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Dawncore") · https://wiki.leagueoflegends.com/en-us/Dawncore · Data Dragon pt_BR 16.18.1
 ]
@@ -4234,9 +4738,16 @@ Couraça do Defunto: Dead Man's Plate[
     Análise de custo[
         Valor de Ouro: 350 Vida = 933,33g; 55 Armadura = 1.100g; 4% Velocidade de Movimento = 260,42g; total 2.293,75g. Ímpeto máximo: 20 de Velocidade de Movimento fixa = 240g; total 2.533,75g
         Eficiência de Ouro: 79,09% (base); 87,37% com Ímpeto máximo
+        Valor de Ouro (atributos): 2.293,75g
+        Valor de Ouro (base): 2.293,75g
     ]
     Ápice[
         100 acúmulos de Ímpeto: +20 de Velocidade de Movimento; próximo ataque causa 100 de dano físico bônus (DdA base 60).
+    ]
+    Ápice numérico[
+        Movimento · 20 · pt · a mais (fixo, somado aos 4% do item)
+        Valor de Ouro no ápice: 2.533,75g
+        Eficiência de Ouro no ápice: 87,37%
     ]
     Notas: none
     Notas de ARAM: none
@@ -4247,6 +4758,7 @@ Couraça do Defunto: Dead Man's Plate[
     Efeitos Especiais: Acúmulos, Movimento, Dano Físico, Efeitos ao Contato, Dano a Estruturas
     Região: Bilgewater (Trivia: modo Black Market Brawlers / evento de Bilgewater)
     Mestre Forjador: Elegível — 2 categorias upgradáveis (500g cada; Velocidade de Movimento não conta): Vida 350(+185)=535; Armadura 55(+25)=80
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 2.900g = 217,5g (líquido: 2.682,5g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Dead Man's Plate") · https://wiki.leagueoflegends.com/en-us/Dead_Man's_Plate · Data Dragon pt_BR 16.18.1
 ]
@@ -4274,6 +4786,8 @@ Dança da Morte: Death's Dance[
     Análise de custo[
         Valor de Ouro: 60 DdA = 2.100g; 15 AdH = 750g; 50 Armadura = 1.000g; total 3.850g
         Eficiência de Ouro: 116,67% (base)
+        Valor de Ouro (atributos): 3.850g
+        Valor de Ouro (base): 3.850g
     ]
     Ápice[
         igual ao base (Dor Ignorada é contínua; Desafiar é gatilho por abate)
@@ -4287,6 +4801,7 @@ Dança da Morte: Death's Dance[
     Efeitos Especiais: Redução de Dano, Dano ao Longo do Tempo, Dano Verdadeiro, Cura
     Região: Shurima
     Mestre Forjador: Elegível — 3 categorias upgradáveis (333,33g cada): Dano de Ataque 60(+9,52)=69,52; Armadura 50(+16,67)=66,67; Aceleração de Habilidade 15(+10,67)=25,67
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 3.300g = 247,5g (líquido: 3.052,5g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Death's Dance") · https://wiki.leagueoflegends.com/en-us/Death's_Dance · Data Dragon pt_BR 16.18.1
 ]
@@ -4315,9 +4830,15 @@ Criassonhos: Dream Maker[
     Análise de custo[
         Valor de Ouro: 200 Vida = 533,33g; 75% Regeneração de Vida base = 225g; 75% Regeneração de Mana base = 300g; total 1.058,33g (a wiki não atribui valor à geração de ouro)
         Eficiência de Ouro: 264,58% (base)
+        Valor de Ouro (atributos): 1.058,33g
+        Valor de Ouro (base): 1.058,33g
     ]
     Ápice[
         Aliado com as duas bolhas (nível 13): −122 de dano na próxima instância recebida e +100 de dano mágico no próximo ataque/habilidade.
+    ]
+    Ápice numérico[
+        Valor de Ouro no ápice: none
+        Eficiência de Ouro no ápice: none
     ]
     Notas: Item final da linha de Suporte (Atlas Mundial → Bússola Rúnica → Dádiva dos Mundos); custo de combinação 0g. Valor de venda: 40% do custo (sellratio 0,4). 
     Notas de ARAM: none
@@ -4328,6 +4849,7 @@ Criassonhos: Dream Maker[
     Efeitos Especiais: Redução de Dano, Dano Mágico, Efeitos ao Contato, Ativa, Visão, Acúmulos
     Região: Bandle City
     Mestre Forjador: Não elegível (classe Legendary Support Item)
+    Mestre Forjador (ouro): none
     Reembolso (runa Cash Back): none (item Lendário da linha de Suporte, obtido gratuitamente por transformação — sem compra, sem reembolso; decisão de 12/09/2026)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Dream Maker") · https://wiki.leagueoflegends.com/en-us/Dream_Maker · Data Dragon pt_BR 16.18.1
 ]
@@ -4354,6 +4876,8 @@ Aurora e Crepúsculo: Dusk and Dawn[
     Análise de custo[
         Valor de Ouro: 60 PdH = 1.200g; 20 AdH = 1.000g; 20% VdA = 500g; 300 Vida = 800g; total 3.500g
         Eficiência de Ouro: 112,9% (base)
+        Valor de Ouro (atributos): 3.500g
+        Valor de Ouro (base): 3.500g
     ]
     Ápice[
         igual ao base (Lâmina Arcana é gatilho por habilidade)
@@ -4367,6 +4891,7 @@ Aurora e Crepúsculo: Dusk and Dawn[
     Efeitos Especiais: Ataque Fortalecido, Dano Mágico, Cura, Efeitos ao Contato, Dano a Estruturas
     Região: Targon
     Mestre Forjador: Elegível — 4 categorias upgradáveis (250g cada): Vida 300(+90)=390; Poder de Habilidade 60(+12,5)=72,5; Aceleração de Habilidade 20(+8)=28; Velocidade de Ataque 20%(+8,33%)=28,33%
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 3.100g = 232,5g (líquido: 2.867,5g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Dusk and Dawn") · https://wiki.leagueoflegends.com/en-us/Dusk_and_Dawn · Data Dragon pt_BR 16.18.1
 ]
@@ -4393,9 +4918,15 @@ Ecos de Helia: Echoes of Helia[
     Análise de custo[
         Valor de Ouro: 35 PdH = 700g; 20 AdH = 1.000g; 200 Vida = 533,33g; 125% Regeneração de Mana base = 500g; total 2.733,33g
         Eficiência de Ouro: 124,24% (base)
+        Valor de Ouro (atributos): 2.733,33g
+        Valor de Ouro (base): 2.733,33g
     ]
     Ápice[
         Cargas de Alma no máximo (nível 13): próxima cura/escudo a um aliado cura 200 a mais.
+    ]
+    Ápice numérico[
+        Valor de Ouro no ápice: none
+        Eficiência de Ouro no ápice: none
     ]
     Notas: none
     Notas de ARAM: none
@@ -4406,6 +4937,7 @@ Ecos de Helia: Echoes of Helia[
     Efeitos Especiais: Acúmulos, Cura
     Região: Shadow Isles (nome: Helia, cidade das Ilhas Abençoadas)
     Mestre Forjador: Elegível — 3 categorias upgradáveis (333,33g cada; Regeneração de Mana não conta): Poder de Habilidade 35(+16,67)=51,67; Vida 200(+125)=325; Aceleração de Habilidade 20(+10,67)=30,67
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 2.200g = 165g (líquido: 2.035g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Echoes of Helia") · https://wiki.leagueoflegends.com/en-us/Echoes_of_Helia · Data Dragon pt_BR 16.18.1
 ]
@@ -4430,9 +4962,15 @@ Eclipse: Eclipse[
     Análise de custo[
         Valor de Ouro: 60 DdA = 2.100g; 15 AdH = 750g; total 2.850g
         Eficiência de Ouro: 98,28% (base)
+        Valor de Ouro (atributos): 2.850g
+        Valor de Ouro (base): 2.850g
     ]
     Ápice[
         2 acúmulos em 2s: 160 (100) de dano físico bônus contra 2.000 de Vida máxima e escudo de 166 (83) por 2s.
+    ]
+    Ápice numérico[
+        Valor de Ouro no ápice: none
+        Eficiência de Ouro no ápice: none
     ]
     Notas: none
     Notas de ARAM: none
@@ -4443,6 +4981,7 @@ Eclipse: Eclipse[
     Efeitos Especiais: Acúmulos, Dano Físico, Dano Percentual, Escudo
     Região: Targon
     Mestre Forjador: Elegível — 2 categorias upgradáveis (500g cada): Dano de Ataque 60(+14,29)=74,29; Aceleração de Habilidade 15(+16)=31
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 2.900g = 217,5g (líquido: 2.682,5g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Eclipse") · https://wiki.leagueoflegends.com/en-us/Eclipse · Data Dragon pt_BR 16.18.1
 ]
@@ -4468,6 +5007,8 @@ Limiar da Noite: Edge of Night[
     Análise de custo[
         Valor de Ouro: 50 DdA = 1.750g; 250 Vida = 666,67g; 15 Letalidade = 450g; total 2.866,67g
         Eficiência de Ouro: 95,56% (base)
+        Valor de Ouro (atributos): 2.866,67g
+        Valor de Ouro (base): 2.866,67g
     ]
     Ápice[
         igual ao base (Anular pronto)
@@ -4481,6 +5022,7 @@ Limiar da Noite: Edge of Night[
     Efeitos Especiais: Escudo de Feitiço
     Região: Noxus
     Mestre Forjador: Elegível — 2 categorias upgradáveis (500g cada; Letalidade não conta): Dano de Ataque 50(+14,29)=64,29; Vida 250(+185)=435
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 3.000g = 225g (líquido: 2.775g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Edge of Night") · https://wiki.leagueoflegends.com/en-us/Edge_of_Night · Data Dragon pt_BR 16.18.1
 ]
@@ -4508,9 +5050,17 @@ Fome Eterna: Endless Hunger[
     Análise de custo[
         Valor de Ouro: 65 DdA = 2.275g; 5% Vampirismo = 230g; 20% Tenacidade = 206,67g; total 2.711,67g. Fome (dos atributos base): 13 / 11 AdH = 650g / 550g; total 3.361,67g / 3.261,67g; por 10 de DdA bônus de outras fontes: 1,3 / 1 AdH = 65g / 50g. Banquete: 15% Vampirismo = 690g
         Eficiência de Ouro: 87,47% (base); 108,44% / 105,22% com a Aceleração de Fome só do item; +1,61% por 7,69 / 10 de DdA bônus de outras fontes; 130,7% / 127,47% com Banquete ativo
+        Valor de Ouro (atributos): 2.711,67g
+        Valor de Ouro (base): 2.711,67g
     ]
     Ápice[
         Banquete ativo (8s após abate): 20% de Vampirismo Universal no total; Aceleração de Fome cresce com DdA bônus de outras fontes.
+    ]
+    Ápice numérico[
+        Vampirismo · 20 · % · total
+        Aceleração de Habilidade · 13 · pt · total (à distância: 11; Fome só com o DdA do item)
+        Valor de Ouro no ápice: 4.051,67g (calculado: 3.361,67g + 690g de Banquete; à distância: 3.951,67g)
+        Eficiência de Ouro no ápice: 130,7% (à distância: 127,47%)
     ]
     Notas: none
     Notas de ARAM: none
@@ -4521,6 +5071,7 @@ Fome Eterna: Endless Hunger[
     Efeitos Especiais: Acúmulos
     Região: Shurima
     Mestre Forjador: Elegível — 1 categoria upgradável (1.000g; Vampirismo e Tenacidade não contam): Dano de Ataque 65(+28,57)=93,57
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 3.100g = 232,5g (líquido: 2.867,5g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Endless Hunger") · https://wiki.leagueoflegends.com/en-us/Endless_Hunger · Data Dragon pt_BR 16.18.1
 ]
@@ -4546,9 +5097,15 @@ Colhedor de Essência: Essence Reaver[
     Análise de custo[
         Valor de Ouro: 50 DdA = 1.750g; 20 AdH = 1.000g; 25% Acerto Crítico = 1.000g; total 3.750g
         Eficiência de Ouro: 122,95% (base)
+        Valor de Ouro (atributos): 3.750g
+        Valor de Ouro (base): 3.750g
     ]
     Ápice[
         100% de Acerto Crítico: 125 de dano bônus com DdA base 60 (75 + 50) e 62,5 de Mana por ataque fortalecido.
+    ]
+    Ápice numérico[
+        Valor de Ouro no ápice: none
+        Eficiência de Ouro no ápice: none
     ]
     Notas: none
     Notas de ARAM: none
@@ -4559,6 +5116,7 @@ Colhedor de Essência: Essence Reaver[
     Efeitos Especiais: Ataque Fortalecido, Dano Físico, Efeitos ao Contato, Restauração de Mana, Dano a Estruturas
     Região: Shadow Isles
     Mestre Forjador: Elegível — 2 categorias upgradáveis (500g cada; Acerto Crítico não conta): Dano de Ataque 50(+14,29)=64,29; Aceleração de Habilidade 20(+16)=36
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 3.050g = 228,75g (líquido: 2.821,25g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Essence Reaver") · https://wiki.leagueoflegends.com/en-us/Essence_Reaver · Data Dragon pt_BR 16.18.1
 ]
@@ -4587,9 +5145,17 @@ Hexoplaca Experimental: Experimental Hexplate[
     Análise de custo[
         Valor de Ouro: 40 DdA = 1.400g; 20% VdA = 500g; 450 Vida = 1.200g; total 3.100g. Turbo: 50% / 35% VdA = 1.250g / 875g; 20% / 14% Velocidade de Movimento = 1.302,1g / 911,47g; total 5.652,1g / 4.886,47g
         Eficiência de Ouro: 103,33% (base); 188,4% / 162,88% com Turbo ativo
+        Valor de Ouro (atributos): 3.100g
+        Valor de Ouro (base): 3.100g
     ]
     Ápice[
         Turbo ativo (8s): +50% (35%) de Velocidade de Ataque e +20% (14%) de Velocidade de Movimento.
+    ]
+    Ápice numérico[
+        Velocidade de Ataque · 70 · % · total (à distância: 55)
+        Movimento · 20 · % · total (à distância: 14)
+        Valor de Ouro no ápice: 5.652,1g (à distância: 4.886,47g)
+        Eficiência de Ouro no ápice: 188,4% (à distância: 162,88%)
     ]
     Notas: O texto oficial pt_BR exibe "0%" nos dois valores de Turbo (placeholders); valores reais em Mecânica.
     Notas de ARAM: none
@@ -4600,6 +5166,7 @@ Hexoplaca Experimental: Experimental Hexplate[
     Efeitos Especiais: Movimento, Velocidade de Ataque
     Região: Piltover (nome: Hextec)
     Mestre Forjador: Elegível — 3 categorias upgradáveis (333,33g cada): Dano de Ataque 40(+9,52)=49,52; Velocidade de Ataque 20%(+11,11%)=31,11%; Vida 450(+125)=575
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 3.000g = 225g (líquido: 2.775g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Experimental Hexplate") · https://wiki.leagueoflegends.com/en-us/Experimental_Hexplate · Data Dragon pt_BR 16.18.1
 ]
@@ -4632,9 +5199,16 @@ Dardos de Caça-Demônios: Fiendhunter Bolts[
     Análise de custo[
         Valor de Ouro: 45% VdA = 1.125g; 25% Acerto Crítico = 1.000g; 4% Velocidade de Movimento = 260,42g; total 2.385,42g
         Eficiência de Ouro: 90,02% (base)
+        Valor de Ouro (atributos): 2.385,42g
+        Valor de Ouro (base): 2.385,42g
     ]
     Ápice[
         Barragem de Abertura ativa: 3 ataques com +50% de VdA e crítico de 80% (100% + 15% de dano verdadeiro se já crítico).
+    ]
+    Ápice numérico[
+        Velocidade de Ataque · 95 · % · total (só nos 3 ataques de Barragem de Abertura)
+        Valor de Ouro no ápice: none (a wiki não valora; bônus limitado a 3 ataques)
+        Eficiência de Ouro no ápice: none
     ]
     Notas: none
     Notas de ARAM: none
@@ -4645,6 +5219,7 @@ Dardos de Caça-Demônios: Fiendhunter Bolts[
     Efeitos Especiais: Velocidade de Ataque, Dano Crítico, Dano Verdadeiro
     Região: Demacia
     Mestre Forjador: Elegível — 1 categoria upgradável (1.000g; Acerto Crítico e Velocidade de Movimento não contam): Velocidade de Ataque 45%(+33,33%)=78,33%
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 2.650g = 198,75g (líquido: 2.451,25g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Fiendhunter Bolts") · https://wiki.leagueoflegends.com/en-us/Fiendhunter_Bolts · Data Dragon pt_BR 16.18.1
 ]
@@ -4670,9 +5245,17 @@ Força da Natureza: Force of Nature[
     Análise de custo[
         Valor de Ouro: 400 Vida = 1.066,67g; 55 RM = 1.100g; 4% Velocidade de Movimento = 260,42g; total 2.427,09g. Impassível: 6% Velocidade de Movimento = 390,63g; 70 RM = 1.400g; total 4.217,72g
         Eficiência de Ouro: 86,68% (base); 150,63% com Impassível no máximo
+        Valor de Ouro (atributos): 2.427,09g
+        Valor de Ouro (base): 2.427,09g
     ]
     Ápice[
         8 acúmulos de Impassível: +125 de Resistência Mágica no total e +10% de Velocidade de Movimento (4% + 6%).
+    ]
+    Ápice numérico[
+        Resistência Mágica · 125 · pt · total
+        Movimento · 10 · % · total
+        Valor de Ouro no ápice: 4.217,72g
+        Eficiência de Ouro no ápice: 150,63%
     ]
     Notas: none
     Notas de ARAM: none
@@ -4683,6 +5266,7 @@ Força da Natureza: Force of Nature[
     Efeitos Especiais: Acúmulos, Movimento
     Região: Ixtal
     Mestre Forjador: Elegível — 2 categorias upgradáveis (500g cada; Velocidade de Movimento não conta): Vida 400(+185)=585; Resistência Mágica 55(+27,78)=82,78
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 2.800g = 210g (líquido: 2.590g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Force of Nature") · https://wiki.leagueoflegends.com/en-us/Force_of_Nature · Data Dragon pt_BR 16.18.1
 ]
@@ -4708,6 +5292,8 @@ Coração Congelado: Frozen Heart[
     Análise de custo[
         Valor de Ouro: 20 AdH = 1.000g; 400 Mana = 400g; 75 Armadura = 1.500g; total 2.900g
         Eficiência de Ouro: 116% (base)
+        Valor de Ouro (atributos): 2.900g
+        Valor de Ouro (base): 2.900g
     ]
     Ápice[
         igual ao base (aura sempre ativa)
@@ -4721,6 +5307,7 @@ Coração Congelado: Frozen Heart[
     Efeitos Especiais: Aura, Redução de Velocidade de Ataque
     Região: Freljord (tema: inverno)
     Mestre Forjador: Elegível — 2 categorias upgradáveis (500g cada; Mana não conta): Armadura 75(+25)=100; Aceleração de Habilidade 20(+16)=36
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 2.500g = 187,5g (líquido: 2.312,5g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Frozen Heart") · https://wiki.leagueoflegends.com/en-us/Frozen_Heart · Data Dragon pt_BR 16.18.1
 ]
@@ -4745,6 +5332,8 @@ Anjo Guardião: Guardian Angel[
     Análise de custo[
         Valor de Ouro: 55 DdA = 1.925g; 45 Armadura = 900g; total 2.825g
         Eficiência de Ouro: 88,28% (base)
+        Valor de Ouro (atributos): 2.825g
+        Valor de Ouro (base): 2.825g
     ]
     Ápice[
         igual ao base (Renascimento é gatilho de recarga)
@@ -4758,6 +5347,7 @@ Anjo Guardião: Guardian Angel[
     Efeitos Especiais: Ressurreição, Invulnerabilidade, Inalvejável, Cura, Restauração de Mana
     Região: Targon
     Mestre Forjador: Elegível — 2 categorias upgradáveis (500g cada): Dano de Ataque 55(+14,29)=69,29; Armadura 45(+25)=70
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 3.200g = 240g (líquido: 2.960g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Guardian Angel") · https://wiki.leagueoflegends.com/en-us/Guardian_Angel · Data Dragon pt_BR 16.18.1
 ]
@@ -4786,9 +5376,16 @@ Lâmina da Fúria de Guinsoo: Guinsoo's Rageblade[
     Análise de custo[
         Valor de Ouro: 30 PdH = 600g; 30 DdA = 1.050g; 25% VdA = 625g; total 2.275g. Ira: 30 de dano ao contato = 650g; total 2.925g. Golpe Fervente: 8% VdA = 200g por acúmulo; 32% VdA = 800g no máximo; total 3.725g
         Eficiência de Ouro: 97,5% (base); +6,67% por acúmulo de Golpe Fervente; 124,17% no máximo, quando toda fonte de dano ao contato passa a ser aumentada em 33,33%
+        Valor de Ouro (atributos): 2.275g
+        Valor de Ouro (base): 2.925g
     ]
     Ápice[
         4 acúmulos de Golpe Fervente: +57% de Velocidade de Ataque no total; a cada 3º ataque, Golpe Fantasma aplica efeitos ao contato de novo.
+    ]
+    Ápice numérico[
+        Velocidade de Ataque · 57 · % · total
+        Valor de Ouro no ápice: 3.725g
+        Eficiência de Ouro no ápice: 124,17% (e todo dano ao contato aumentado em 33,33%)
     ]
     Notas: none
     Notas de ARAM: none
@@ -4799,6 +5396,7 @@ Lâmina da Fúria de Guinsoo: Guinsoo's Rageblade[
     Efeitos Especiais: Acúmulos, Velocidade de Ataque, Dano Mágico, Efeitos ao Contato
     Região: Runeterra (sem brasão na página)
     Mestre Forjador: Elegível — 3 categorias upgradáveis (333,33g cada): Dano de Ataque 30(+9,52)=39,52; Poder de Habilidade 30(+16,67)=46,67; Velocidade de Ataque 25%(+11,11%)=36,11%
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 3.000g = 225g (líquido: 2.775g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Guinsoo's Rageblade") · https://wiki.leagueoflegends.com/en-us/Guinsoo's_Rageblade · Data Dragon pt_BR 16.18.1
 ]
@@ -4825,9 +5423,15 @@ Coração de Aço: Heartsteel[
     Análise de custo[
         Valor de Ouro: 900 Vida = 2.400g; 100% Regeneração de Vida base = 300g; total 2.700g
         Eficiência de Ouro: 90% (base); +8,89% por 100 de Vida obtida de Consumo Colossal
+        Valor de Ouro (atributos): 2.700g
+        Valor de Ouro (base): 2.700g
     ]
     Ápice[
         Sem teto de Vida permanente por Consumo Colossal; Golias no máximo (+30%) com 10.000 de Vida máxima.
+    ]
+    Ápice numérico[
+        Valor de Ouro no ápice: none (sem teto: +266,67g por 100 de Vida de Consumo Colossal)
+        Eficiência de Ouro no ápice: none (sem teto: +8,89% por 100 de Vida de Consumo Colossal)
     ]
     Notas: O texto oficial pt_BR exibe recarga "(0s) por alvo" (placeholder); valor real 30s por alvo.
     Notas de ARAM: Vida bônus permanente alterada para 5% do dano.
@@ -4838,6 +5442,7 @@ Coração de Aço: Heartsteel[
     Efeitos Especiais: Acúmulos, Dano Físico, Dano Percentual, Efeitos ao Contato
     Região: Ixtal
     Mestre Forjador: Elegível — 1 categoria upgradável (1.000g): Vida 900(+375)=1.275
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 3.000g = 225g (líquido: 2.775g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Heartsteel") · https://wiki.leagueoflegends.com/en-us/Heartsteel · Data Dragon pt_BR 16.18.1
 ]
@@ -4864,9 +5469,16 @@ Hexótica C44: Hexoptics C44[
     Análise de custo[
         Valor de Ouro: 55 DdA = 1.925g; 25% Acerto Crítico = 1.000g; total 2.925g
         Eficiência de Ouro: 104,46% (base)
+        Valor de Ouro (atributos): 2.925g
+        Valor de Ouro (base): 2.925g
     ]
     Ápice[
         Alvo a 500+ unidades: +10% de dano básico; Mira Arcana ativa: +100 de alcance por 8s.
+    ]
+    Ápice numérico[
+        Alcance de Ataque · 100 · pt · a mais (8s de Mira Arcana)
+        Valor de Ouro no ápice: none (a wiki não valora Alcance de Ataque)
+        Eficiência de Ouro no ápice: none
     ]
     Notas: none
     Notas de ARAM: none
@@ -4877,6 +5489,7 @@ Hexótica C44: Hexoptics C44[
     Efeitos Especiais: Amplificação de Dano, Alcance de Ataque
     Região: Piltover (nome: Hexótica)
     Mestre Forjador: Elegível — 1 categoria upgradável (1.000g; Acerto Crítico não conta): Dano de Ataque 55(+28,57)=83,57
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 2.800g = 210g (líquido: 2.590g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Hexoptics C44") · https://wiki.leagueoflegends.com/en-us/Hexoptics_C44 · Data Dragon pt_BR 16.18.1
 ]
@@ -4902,6 +5515,8 @@ Pistola Laminar Hextec: Hextech Gunblade[
     Análise de custo[
         Valor de Ouro: 80 PdH = 1.600g; 40 DdA = 1.400g; 10% Vampirismo = 460g; total 3.460g
         Eficiência de Ouro: 115,33% (base)
+        Valor de Ouro (atributos): 3.460g
+        Valor de Ouro (base): 3.460g
     ]
     Ápice[
         igual ao base
@@ -4915,6 +5530,7 @@ Pistola Laminar Hextec: Hextech Gunblade[
     Efeitos Especiais: Ativa, Dano Mágico, Lentidão
     Região: Piltover (nome: Hextec)
     Mestre Forjador: Elegível — 2 categorias upgradáveis (500g cada; Vampirismo não conta): Poder de Habilidade 80(+25)=105; Dano de Ataque 40(+14,29)=54,29
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 3.000g = 225g (líquido: 2.775g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Hextech Gunblade") · https://wiki.leagueoflegends.com/en-us/Hextech_Gunblade · Data Dragon pt_BR 16.18.1
 ]
@@ -4940,6 +5556,8 @@ Explocinturão Hextec: Hextech Rocketbelt[
     Análise de custo[
         Valor de Ouro: 60 PdH = 1.200g; 20 AdH = 1.000g; 350 Vida = 933,33g; total 3.133,33g
         Eficiência de Ouro: 118,24% (base)
+        Valor de Ouro (atributos): 3.133,33g
+        Valor de Ouro (base): 3.133,33g
     ]
     Ápice[
         igual ao base
@@ -4953,6 +5571,7 @@ Explocinturão Hextec: Hextech Rocketbelt[
     Efeitos Especiais: Ativa, Investida, Dano Mágico, Dano em Área
     Região: Piltover (nome: Hextec)
     Mestre Forjador: Elegível — 3 categorias upgradáveis (333,33g cada): Poder de Habilidade 60(+16,67)=76,67; Vida 350(+125)=475; Aceleração de Habilidade 20(+10,67)=30,67
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 2.650g = 198,75g (líquido: 2.451,25g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Hextech Rocketbelt") · https://wiki.leagueoflegends.com/en-us/Hextech_Rocketbelt · Data Dragon pt_BR 16.18.1
 ]
@@ -4981,6 +5600,8 @@ Resplendor Vazio: Hollow Radiance[
     Análise de custo[
         Valor de Ouro: 10 AdH = 500g; 400 Vida = 1.066,67g; 100% Regeneração de Vida base = 300g; 40 RM = 800g; total 2.666,67g
         Eficiência de Ouro: 95,24% (base)
+        Valor de Ouro (atributos): 2.666,67g
+        Valor de Ouro (base): 2.666,67g
     ]
     Ápice[
         igual ao base (Imolar contínuo; Desolar por abate)
@@ -4994,6 +5615,7 @@ Resplendor Vazio: Hollow Radiance[
     Efeitos Especiais: Aura, Dano Mágico, Dano em Área, Dano ao Longo do Tempo, Dano a Tropas, Dano a Monstros, Execução
     Região: The Void
     Mestre Forjador: Elegível — 3 categorias upgradáveis (333,33g cada): Vida 400(+125)=525; Resistência Mágica 40(+18,52)=58,52; Aceleração de Habilidade 10(+10,67)=20,67
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 2.800g = 210g (líquido: 2.590g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Hollow Radiance") · https://wiki.leagueoflegends.com/en-us/Hollow_Radiance · Data Dragon pt_BR 16.18.1
 ]
@@ -5020,9 +5642,15 @@ Foco do Horizonte: Horizon Focus[
     Análise de custo[
         Valor de Ouro: 75 PdH = 1.500g; 25 AdH = 1.250g; total 2.750g
         Eficiência de Ouro: 101,85% (base)
+        Valor de Ouro (atributos): 2.750g
+        Valor de Ouro (base): 2.750g
     ]
     Ápice[
         Alvo marcado: +10% de dano seu contra ele por 6s; Foco marca os demais por 3s.
+    ]
+    Ápice numérico[
+        Valor de Ouro no ápice: none
+        Eficiência de Ouro no ápice: none
     ]
     Notas: none
     Notas de ARAM: none
@@ -5033,6 +5661,7 @@ Foco do Horizonte: Horizon Focus[
     Efeitos Especiais: Amplificação de Dano, Revelação, Visão
     Região: Piltover
     Mestre Forjador: Elegível — 2 categorias upgradáveis (500g cada): Poder de Habilidade 75(+25)=100; Aceleração de Habilidade 25(+16)=41
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 2.700g = 202,5g (líquido: 2.497,5g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Horizon Focus") · https://wiki.leagueoflegends.com/en-us/Horizon_Focus · Data Dragon pt_BR 16.18.1
 ]
@@ -5058,9 +5687,15 @@ Húbris: Hubris[
     Análise de custo[
         Valor de Ouro: 55 DdA = 1.925g; 10 AdH = 500g; 18 Letalidade = 540g; total 2.965g. Eminência: 12 DdA = 420g; por acúmulo: 3 DdA = 105g
         Eficiência de Ouro: 105,89% (base); +15% com Eminência ativa, +3,75% por acúmulo
+        Valor de Ouro (atributos): 2.965g
+        Valor de Ouro (base): 2.965g
     ]
     Ápice[
         Sem teto documentado de acúmulos. Com Eminência ativa e N acúmulos: 55 + 12 + 3N de DdA (ex.: 97 com 10 acúmulos).
+    ]
+    Ápice numérico[
+        Valor de Ouro no ápice: none (sem teto: 420g com Eminência ativa + 105g por acúmulo)
+        Eficiência de Ouro no ápice: none (sem teto: +15% com Eminência ativa, +3,75% por acúmulo)
     ]
     Notas: none
     Notas de ARAM: Variante própria (ID 126697). Preço 2.950g; Dano de Ataque 55; Aceleração de Habilidade 10; Eminência base 15 (corpo a corpo) / 10 (à distância); por acúmulo 2 / 1; duração 90s / 45s.
@@ -5071,6 +5706,7 @@ Húbris: Hubris[
     Efeitos Especiais: Acúmulos
     Região: Runeterra (sem brasão na página)
     Mestre Forjador: Elegível — 2 categorias upgradáveis (500g cada; Letalidade não conta): Dano de Ataque 55(+14,29)=69,29; Aceleração de Habilidade 10(+16)=26
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 2.800g = 210g (líquido: 2.590g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Hubris") · https://wiki.leagueoflegends.com/en-us/Hubris · Data Dragon pt_BR 16.18.1
 ]
@@ -5098,9 +5734,15 @@ Quebracascos: Hullbreaker[
     Análise de custo[
         Valor de Ouro: 40 DdA = 1.400g; 500 Vida = 1.333,33g; 4% Velocidade de Movimento = 260,42g; total 2.993,75g
         Eficiência de Ouro: 99,79% (base)
+        Valor de Ouro (atributos): 2.993,75g
+        Valor de Ouro (base): 2.993,75g
     ]
     Ápice[
         5 acúmulos de Marujo: próximo ataque causa 172 (120,4) contra campeão/monstro épico ou 380 (266) contra estrutura, com DdA base 60 e 2.000 de Vida máxima.
+    ]
+    Ápice numérico[
+        Valor de Ouro no ápice: none
+        Eficiência de Ouro no ápice: none
     ]
     Notas: none
     Notas de ARAM: none
@@ -5111,6 +5753,7 @@ Quebracascos: Hullbreaker[
     Efeitos Especiais: Acúmulos, Dano Físico, Dano Percentual, Efeitos ao Contato, Dano a Estruturas, Dano a Monstros, Aura
     Região: Bilgewater (tema: marujo, invasão pirata)
     Mestre Forjador: Elegível — 2 categorias upgradáveis (500g cada; Velocidade de Movimento não conta): Dano de Ataque 40(+14,29)=54,29; Vida 500(+185)=685
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 3.000g = 225g (líquido: 2.775g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Hullbreaker") · https://wiki.leagueoflegends.com/en-us/Hullbreaker · Data Dragon pt_BR 16.18.1
 ]
@@ -5136,6 +5779,8 @@ Manopla dos Glacinatas: Iceborn Gauntlet[
     Análise de custo[
         Valor de Ouro: 15 AdH = 750g; 300 Vida = 800g; 50 Armadura = 1.000g; total 2.550g
         Eficiência de Ouro: 87,93% (base)
+        Valor de Ouro (atributos): 2.550g
+        Valor de Ouro (base): 2.550g
     ]
     Ápice[
         igual ao base (Lâmina Arcana é gatilho por habilidade)
@@ -5149,6 +5794,7 @@ Manopla dos Glacinatas: Iceborn Gauntlet[
     Efeitos Especiais: Ataque Fortalecido, Dano Físico, Efeitos ao Contato, Lentidão, Dano em Área, Dano a Estruturas
     Região: Freljord (Trivia: Glacinatas)
     Mestre Forjador: Elegível — 3 categorias upgradáveis (333,33g cada): Vida 300(+125)=425; Armadura 50(+16,67)=66,67; Aceleração de Habilidade 15(+10,67)=25,67
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 2.900g = 217,5g (líquido: 2.682,5g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Iceborn Gauntlet") · https://wiki.leagueoflegends.com/en-us/Iceborn_Gauntlet · Data Dragon pt_BR 16.18.1
 ]
@@ -5173,6 +5819,8 @@ Arco-escudo Imortal: Immortal Shieldbow[
     Análise de custo[
         Valor de Ouro: 55 DdA = 1.925g; 25% Acerto Crítico = 1.000g; total 2.925g
         Eficiência de Ouro: 97,5% (base)
+        Valor de Ouro (atributos): 2.925g
+        Valor de Ouro (base): 2.925g
     ]
     Ápice[
         igual ao base (Salva-Vidas é gatilho de recarga)
@@ -5186,6 +5834,7 @@ Arco-escudo Imortal: Immortal Shieldbow[
     Efeitos Especiais: Gatilho de Vida Baixa, Escudo
     Região: Noxus
     Mestre Forjador: Elegível — 1 categoria upgradável (1.000g; Acerto Crítico não conta): Dano de Ataque 55(+28,57)=83,57
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 3.000g = 225g (líquido: 2.775g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Immortal Shieldbow") · https://wiki.leagueoflegends.com/en-us/Immortal_Shieldbow · Data Dragon pt_BR 16.18.1
 ]
@@ -5217,9 +5866,15 @@ Mandato Imperial: Imperial Mandate[
     Análise de custo[
         Valor de Ouro: 60 PdH = 1.200g; 15 AdH = 750g; 150% Regeneração de Mana base = 600g; total 2.550g
         Eficiência de Ouro: 106,25% (base)
+        Valor de Ouro (atributos): 2.550g
+        Valor de Ouro (base): 2.550g
     ]
     Ápice[
         Alvo Vulnerável: +7% de dano sofrido de todas as fontes por 4s (renovável).
+    ]
+    Ápice numérico[
+        Valor de Ouro no ápice: none
+        Eficiência de Ouro no ápice: none
     ]
     Notas: none
     Notas de ARAM: none
@@ -5230,6 +5885,7 @@ Mandato Imperial: Imperial Mandate[
     Efeitos Especiais: Vulnerabilidade a Dano, Redução de Recarga
     Região: Noxus (nome: Mandato Imperial)
     Mestre Forjador: Elegível — 2 categorias upgradáveis (500g cada; Regeneração de Mana não conta): Poder de Habilidade 60(+25)=85; Aceleração de Habilidade 15(+16)=31
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 2.400g = 180g (líquido: 2.220g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Imperial Mandate") · https://wiki.leagueoflegends.com/en-us/Imperial_Mandate · Data Dragon pt_BR 16.18.1
 ]
@@ -5254,6 +5910,8 @@ Gume do Infinito: Infinity Edge[
     Análise de custo[
         Valor de Ouro: 75 DdA = 2.625g; 25% Acerto Crítico = 1.000g; total 3.625g (a wiki não atribui valor ao Dano de Acerto Crítico)
         Eficiência de Ouro: 103,57% (base)
+        Valor de Ouro (atributos): 3.625g
+        Valor de Ouro (base): 3.625g
     ]
     Ápice[
         igual ao base
@@ -5267,6 +5925,7 @@ Gume do Infinito: Infinity Edge[
     Efeitos Especiais: none
     Região: Shurima
     Mestre Forjador: Elegível — 1 categoria upgradável (1.000g; Acerto Crítico e Dano Crítico não contam): Dano de Ataque 75(+28,57)=103,57
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 3.500g = 262,5g (líquido: 3.237,5g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Infinity Edge") · https://wiki.leagueoflegends.com/en-us/Infinity_Edge · Data Dragon pt_BR 16.18.1
 ]
@@ -5292,9 +5951,17 @@ Jak'Sho, o Inconstante: Jak'Sho, The Protean[
     Análise de custo[
         Valor de Ouro: 350 Vida = 933,33g; 45 Armadura = 900g; 45 RM = 900g; total 2.733,33g. Resiliência do Vazio (do próprio item): 13,5 Armadura = 270g; 13,5 RM = 270g; total 3.273,33g
         Eficiência de Ouro: 85,42% (base); 102,29% com Resiliência ativa pelos próprios bônus, +0,19% por 1 de Armadura bônus e +0,19% por 1 de RM bônus de outras fontes
+        Valor de Ouro (atributos): 2.733,33g
+        Valor de Ouro (base): 2.733,33g
     ]
     Ápice[
         5 acúmulos (5s em combate): +30% de Armadura e RM bônus até o fim do combate.
+    ]
+    Ápice numérico[
+        Armadura · 58,5 · pt · total (só com os bônus do próprio item)
+        Resistência Mágica · 58,5 · pt · total (só com os bônus do próprio item)
+        Valor de Ouro no ápice: 3.273,33g
+        Eficiência de Ouro no ápice: 102,29% (+0,19% por 1 de Armadura ou RM bônus de outras fontes)
     ]
     Notas: none
     Notas de ARAM: none
@@ -5305,6 +5972,7 @@ Jak'Sho, o Inconstante: Jak'Sho, The Protean[
     Efeitos Especiais: Acúmulos
     Região: The Void (nome: Resiliência do Vazio)
     Mestre Forjador: Elegível — 3 categorias upgradáveis (333,33g cada): Vida 350(+125)=475; Armadura 45(+16,67)=61,67; Resistência Mágica 45(+18,52)=63,52
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 3.200g = 240g (líquido: 2.960g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Jak'Sho, The Protean") · https://wiki.leagueoflegends.com/en-us/Jak'Sho,_The_Protean · Data Dragon pt_BR 16.18.1
 ]
@@ -5330,9 +5998,15 @@ Rookern Lamúrico: Kaenic Rookern[
     Análise de custo[
         Valor de Ouro: 400 Vida = 1.066,67g; 100% Regeneração de Vida base = 300g; 80 RM = 1.600g; total 2.966,67g
         Eficiência de Ouro: 102,3% (base)
+        Valor de Ouro (atributos): 2.966,67g
+        Valor de Ouro (base): 2.966,67g
     ]
     Ápice[
         Escudo pronto: 300 de absorção de dano mágico com 2.000 de Vida máxima.
+    ]
+    Ápice numérico[
+        Valor de Ouro no ápice: none
+        Eficiência de Ouro no ápice: none
     ]
     Notas: none
     Notas de ARAM: none
@@ -5343,6 +6017,7 @@ Rookern Lamúrico: Kaenic Rookern[
     Efeitos Especiais: Escudo
     Região: Noxus
     Mestre Forjador: Elegível — 2 categorias upgradáveis (500g cada): Vida 400(+185)=585; Resistência Mágica 80(+27,78)=107,78
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 2.900g = 217,5g (líquido: 2.682,5g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Kaenic Rookern") · https://wiki.leagueoflegends.com/en-us/Kaenic_Rookern · Data Dragon pt_BR 16.18.1
 ]
@@ -5371,6 +6046,8 @@ Juramento do Cavaleiro: Knight's Vow[
     Análise de custo[
         Valor de Ouro: 10 AdH = 500g; 200 Vida = 533,33g; 100% Regeneração de Vida base = 300g; 40 Armadura = 800g; total 2.133,33g
         Eficiência de Ouro: 92,75% (base)
+        Valor de Ouro (atributos): 2.133,33g
+        Valor de Ouro (base): 2.133,33g
     ]
     Ápice[
         igual ao base (Sacrifício é contínuo com o Digno vinculado)
@@ -5384,6 +6061,7 @@ Juramento do Cavaleiro: Knight's Vow[
     Efeitos Especiais: Ativa, Redirecionamento de Dano, Cura
     Região: Demacia (nome: cavaleiro / juramento)
     Mestre Forjador: Elegível — 3 categorias upgradáveis (333,33g cada; Regeneração de Vida não conta): Vida 200(+125)=325; Armadura 40(+16,67)=56,67; Aceleração de Habilidade 10(+10,67)=20,67
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 2.300g = 172,5g (líquido: 2.127,5g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Knight's Vow") · https://wiki.leagueoflegends.com/en-us/Knight's_Vow · Data Dragon pt_BR 16.18.1
 ]
@@ -5409,9 +6087,15 @@ Mata-Cráquens: Kraken Slayer[
     Análise de custo[
         Valor de Ouro: 45 DdA = 1.575g; 40% VdA = 1.000g; 4% Velocidade de Movimento = 260,42g; total 2.835,42g
         Eficiência de Ouro: 94,51% (base)
+        Valor de Ouro (atributos): 2.835,42g
+        Valor de Ouro (base): 2.835,42g
     ]
     Ápice[
         2 acúmulos: 3º ataque causa até 297,5 (238) de dano físico bônus no nível 13 contra alvo com Vida perdida no máximo.
+    ]
+    Ápice numérico[
+        Valor de Ouro no ápice: none
+        Eficiência de Ouro no ápice: none
     ]
     Notas: none
     Notas de ARAM: Dano de Derrubar alterado para 262,5–350 (por nível) para todos os usuários.
@@ -5422,6 +6106,7 @@ Mata-Cráquens: Kraken Slayer[
     Efeitos Especiais: Acúmulos, Dano Físico, Efeitos ao Contato, Dano Percentual
     Região: Bilgewater (nome: cráquen)
     Mestre Forjador: Elegível — 2 categorias upgradáveis (500g cada; Velocidade de Movimento não conta): Dano de Ataque 45(+14,29)=59,29; Velocidade de Ataque 40%(+16,67%)=56,67%
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 3.000g = 225g (líquido: 2.775g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Kraken Slayer") · https://wiki.leagueoflegends.com/en-us/Kraken_Slayer · Data Dragon pt_BR 16.18.1
 ]
@@ -5448,9 +6133,15 @@ Tormento de Liandry: Liandry's Torment[
     Análise de custo[
         Valor de Ouro: 60 PdH = 1.200g; 300 Vida = 800g; total 2.000g
         Eficiência de Ouro: 66,67% (base)
+        Valor de Ouro (atributos): 2.000g
+        Valor de Ouro (base): 2.000g
     ]
     Ápice[
         3 acúmulos de Sofrimento: +6% de dano causado; Tormento causa 6,36% da Vida máxima do alvo em 3s.
+    ]
+    Ápice numérico[
+        Valor de Ouro no ápice: none
+        Eficiência de Ouro no ápice: none
     ]
     Notas: none
     Notas de ARAM: Dano por segundo de Sofrimento [sic, na wiki] alterado para 1,8% da Vida máxima do alvo.
@@ -5461,6 +6152,7 @@ Tormento de Liandry: Liandry's Torment[
     Efeitos Especiais: Dano Mágico, Dano ao Longo do Tempo, Dano Percentual, Acúmulos, Amplificação de Dano
     Região: Shadow Isles
     Mestre Forjador: Elegível — 2 categorias upgradáveis (500g cada): Poder de Habilidade 60(+25)=85; Vida 300(+185)=485
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 3.000g = 225g (líquido: 2.775g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Liandry's Torment") · https://wiki.leagueoflegends.com/en-us/Liandry's_Torment · Data Dragon pt_BR 16.18.1
 ]
@@ -5486,6 +6178,8 @@ Perdição de Lich: Lich Bane[
     Análise de custo[
         Valor de Ouro: 100 PdH = 2.000g; 10 AdH = 500g; 6% Velocidade de Movimento = 390,63g; total 2.890,63g
         Eficiência de Ouro: 99,68% (base)
+        Valor de Ouro (atributos): 2.890,63g
+        Valor de Ouro (base): 2.890,63g
     ]
     Ápice[
         igual ao base (Lâmina Arcana é gatilho por habilidade)
@@ -5499,6 +6193,7 @@ Perdição de Lich: Lich Bane[
     Efeitos Especiais: Ataque Fortalecido, Dano Mágico, Efeitos ao Contato, Velocidade de Ataque, Dano a Estruturas
     Região: Demacia (Trivia: lâmina de petricita)
     Mestre Forjador: Elegível — 2 categorias upgradáveis (500g cada; Velocidade de Movimento não conta): Poder de Habilidade 100(+25)=125; Aceleração de Habilidade 10(+16)=26
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 2.900g = 217,5g (líquido: 2.682,5g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Lich Bane") · https://wiki.leagueoflegends.com/en-us/Lich_Bane · Data Dragon pt_BR 16.18.1
 ]
@@ -5525,9 +6220,15 @@ Medalhão dos Solari de Ferro: Locket of the Iron Solari[
     Análise de custo[
         Valor de Ouro: 10 AdH = 500g; 200 Vida = 533,33g; 30 Armadura = 600g; 30 RM = 600g; total 2.233,33g
         Eficiência de Ouro: 101,52% (base)
+        Valor de Ouro (atributos): 2.233,33g
+        Valor de Ouro (base): 2.233,33g
     ]
     Ápice[
         Devoção em 5 campeões no nível 13: 321,11 de escudo cada, decaindo em 2,5s.
+    ]
+    Ápice numérico[
+        Valor de Ouro no ápice: none
+        Eficiência de Ouro no ápice: none
     ]
     Notas: none
     Notas de ARAM: Recarga de Devoção alterada para 75s.
@@ -5538,6 +6239,7 @@ Medalhão dos Solari de Ferro: Locket of the Iron Solari[
     Efeitos Especiais: Ativa, Escudo
     Região: Targon (nome: Solari)
     Mestre Forjador: Elegível — 4 categorias upgradáveis (250g cada): Vida 200(+90)=290; Armadura 30(+12,5)=42,5; Resistência Mágica 30(+13,89)=43,89; Aceleração de Habilidade 10(+8)=18
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 2.200g = 165g (líquido: 2.035g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Locket of the Iron Solari") · https://wiki.leagueoflegends.com/en-us/Locket_of_the_Iron_Solari · Data Dragon pt_BR 16.18.1
 ]
@@ -5563,9 +6265,15 @@ Lembranças do Lorde Dominik: Lord Dominik's Regards[
     Análise de custo[
         Valor de Ouro: 35 DdA = 1.225g; 25% Acerto Crítico = 1.000g; 35% Penetração de Armadura = 1.458,33g; total 3.683,33g
         Eficiência de Ouro: 111,62% (base)
+        Valor de Ouro (atributos): 3.683,33g
+        Valor de Ouro (base): 3.683,33g
     ]
     Ápice[
         Alvo com 1.500+ de Vida bônus: +15% de dano.
+    ]
+    Ápice numérico[
+        Valor de Ouro no ápice: none
+        Eficiência de Ouro no ápice: none
     ]
     Notas: none
     Notas de ARAM: none
@@ -5576,6 +6284,7 @@ Lembranças do Lorde Dominik: Lord Dominik's Regards[
     Efeitos Especiais: Amplificação de Dano
     Região: Noxus
     Mestre Forjador: Elegível — 1 categoria upgradável (1.000g; Penetração de Armadura e Acerto Crítico não contam): Dano de Ataque 35(+28,57)=63,57
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 3.300g = 247,5g (líquido: 3.052,5g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Lord Dominik's Regards") · https://wiki.leagueoflegends.com/en-us/Lord_Dominik's_Regards · Data Dragon pt_BR 16.18.1
 ]
@@ -5601,9 +6310,15 @@ Eco de Luden: Luden's Echo[
     Análise de custo[
         Valor de Ouro: 100 PdH = 2.000g; 10 AdH = 500g; 600 Mana = 600g; total 3.100g
         Eficiência de Ouro: 112,73% (base)
+        Valor de Ouro (atributos): 3.100g
+        Valor de Ouro (base): 3.100g
     ]
     Ápice[
         Alvo isolado com 200 de PdH: 170 de dano mágico total (85 + 5 ecos restantes de 17).
+    ]
+    Ápice numérico[
+        Valor de Ouro no ápice: none
+        Eficiência de Ouro no ápice: none
     ]
     Notas: none
     Notas de ARAM: none
@@ -5614,6 +6329,7 @@ Eco de Luden: Luden's Echo[
     Efeitos Especiais: Dano Mágico, Dano em Área, Acúmulos
     Região: The Void
     Mestre Forjador: Elegível — 2 categorias upgradáveis (500g cada; Mana não conta): Poder de Habilidade 100(+25)=125; Aceleração de Habilidade 10(+16)=26
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 2.750g = 206,25g (líquido: 2.543,75g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Luden's Echo") · https://wiki.leagueoflegends.com/en-us/Luden's_Echo · Data Dragon pt_BR 16.18.1
 ]
@@ -5642,9 +6358,15 @@ Malevolência: Malignance[
     Análise de custo[
         Valor de Ouro: 90 PdH = 1.800g; 15 AdH = 750g; 600 Mana = 600g; total 3.150g
         Eficiência de Ouro: 116,67% (base)
+        Valor de Ouro (atributos): 3.150g
+        Valor de Ouro (base): 3.150g
     ]
     Ápice[
         Zona ativa: 210 de dano mágico em 3s (200 de PdH) e −10 de RM nos alvos amaldiçoados.
+    ]
+    Ápice numérico[
+        Valor de Ouro no ápice: none
+        Eficiência de Ouro no ápice: none
     ]
     Notas: none
     Notas de ARAM: Dano base por tique de Névoa Odiosa alterado para 40; razão de PdH por tique alterada para 2,8%.
@@ -5655,6 +6377,7 @@ Malevolência: Malignance[
     Efeitos Especiais: Dano Mágico, Dano em Área, Dano ao Longo do Tempo, Redução de Resistência Mágica
     Região: Zaun (Trivia: produto da Glasc Industries)
     Mestre Forjador: Elegível — 2 categorias upgradáveis (500g cada; Mana não conta): Poder de Habilidade 90(+25)=115; Aceleração de Habilidade 15(+16)=31
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 2.700g = 202,5g (líquido: 2.497,5g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Malignance") · https://wiki.leagueoflegends.com/en-us/Malignance · Data Dragon pt_BR 16.18.1
 ]
@@ -5684,9 +6407,17 @@ Manamune: Manamune[
     Análise de custo[
         Valor de Ouro: 35 DdA = 1.225g; 15 AdH = 750g; 500 Mana = 500g; total 2.475g; 10 DdA de Fascínio = 350g; total 2.825g. Por 100 de Mana de outras fontes: 2 DdA = 70g. Por carga: 3 Mana + 0,06 DdA = 5,1g (não campeão) / 6 Mana + 0,12 DdA = 10,2g (campeão)
         Eficiência de Ouro: 97,41% (base); +0,18% por carga de não campeões, +0,35% por carga de campeões; +2,41% por 100 de Mana máxima de outras fontes
+        Valor de Ouro (atributos): 2.475g
+        Valor de Ouro (base): 2.825g
     ]
     Ápice[
         360 de Mana bônus: +860 de Mana, +17,2 de DdA de Fascínio (só do item); transforma-se em Muramana.
+    ]
+    Ápice numérico[
+        Mana · 860 · pt · total
+        Dano de Ataque · 52,2 · pt · total
+        Valor de Ouro no ápice: 3.437g (calculado: 2.825g + 360 de Mana = 360g + 7,2 de DdA de Fascínio = 252g)
+        Eficiência de Ouro no ápice: 118,52% (calculado)
     ]
     Notas: O texto oficial pt_BR exibe "0 de Dano de Ataque adicional" (placeholder); valor real em Mecânica.
     Notas de ARAM: Cada carga consumida de Fluxo de Mana gera 50% mais Mana.
@@ -5697,6 +6428,7 @@ Manamune: Manamune[
     Efeitos Especiais: Acúmulos, Missão/Evolução
     Região: Ionia (Trivia: referência a Masamune)
     Mestre Forjador: Não elegível (linha da Lágrima da Deusa)
+    Mestre Forjador (ouro): none
     Reembolso (runa Cash Back): 7,5% de 2.900g = 217,5g (líquido: 2.682,5g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Manamune") · https://wiki.leagueoflegends.com/en-us/Manamune · Data Dragon pt_BR 16.18.1
 ]
@@ -5722,9 +6454,16 @@ Mandíbula de Malmortius: Maw of Malmortius[
     Análise de custo[
         Valor de Ouro: 60 DdA = 2.100g; 15 AdH = 750g; 40 RM = 800g; total 3.650g. Vampirismo de Salva-Vidas: 10% = 460g; total 4.110g
         Eficiência de Ouro: 117,74% (base); 132,58% com Salva-Vidas ativado
+        Valor de Ouro (atributos): 3.650g
+        Valor de Ouro (base): 3.650g
     ]
     Ápice[
         Salva-Vidas ativado: escudo mágico de 260 (195) com 40 de DdA bônus + 10% de Vampirismo Universal até o fim do combate.
+    ]
+    Ápice numérico[
+        Vampirismo · 10 · % · total (até o fim do combate)
+        Valor de Ouro no ápice: 4.110g
+        Eficiência de Ouro no ápice: 132,58%
     ]
     Notas: none
     Notas de ARAM: Recarga de Salva-Vidas alterada para 75s.
@@ -5735,6 +6474,7 @@ Mandíbula de Malmortius: Maw of Malmortius[
     Efeitos Especiais: Gatilho de Vida Baixa, Escudo
     Região: Runeterra (sem brasão na página)
     Mestre Forjador: Elegível — 3 categorias upgradáveis (333,33g cada): Dano de Ataque 60(+9,52)=69,52; Aceleração de Habilidade 15(+10,67)=25,67; Resistência Mágica 40(+18,52)=58,52
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 3.100g = 232,5g (líquido: 2.867,5g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Maw of Malmortius") · https://wiki.leagueoflegends.com/en-us/Maw_of_Malmortius · Data Dragon pt_BR 16.18.1
 ]
@@ -5759,9 +6499,17 @@ Ladrão de Almas de Mejai: Mejai's Soulstealer[
     Análise de custo[
         Valor de Ouro: 20 PdH = 400g; 100 Vida = 266,67g; total 666,67g. Glória por acúmulo: 5 PdH = 100g; 10 acúmulos: 50 PdH = 1.000g + 10% Velocidade de Movimento = 651,05g → total 2.317,72g; 25 acúmulos: 125 PdH = 2.500g + 651,05g → total 3.817,72g
         Eficiência de Ouro: 44,44% (base); +6,67% por acúmulo; 100% com 9 acúmulos; 154,51% com 10; 254,51% no ápice
+        Valor de Ouro (atributos): 666,67g
+        Valor de Ouro (base): 666,67g
     ]
     Ápice[
         25 acúmulos: +145 de Poder de Habilidade, +100 de Vida, +10% de Velocidade de Movimento.
+    ]
+    Ápice numérico[
+        Poder de Habilidade · 145 · pt · total
+        Movimento · 10 · % · total
+        Valor de Ouro no ápice: 3.817,72g
+        Eficiência de Ouro no ápice: 254,51%
     ]
     Notas: none
     Notas de ARAM: Item desativado em ARAM.
@@ -5772,6 +6520,7 @@ Ladrão de Almas de Mejai: Mejai's Soulstealer[
     Efeitos Especiais: Acúmulos, Movimento
     Região: Noxus
     Mestre Forjador: Não elegível (Ladrão de Almas de Mejai)
+    Mestre Forjador (ouro): none
     Reembolso (runa Cash Back): 7,5% de 1.500g = 112,5g (líquido: 1.387,5g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Mejai's Soulstealer") · https://wiki.leagueoflegends.com/en-us/Mejai's_Soulstealer · Data Dragon pt_BR 16.18.1
 ]
@@ -5801,6 +6550,8 @@ Cimitarra Mercurial: Mercurial Scimitar[
     Análise de custo[
         Valor de Ouro: 50 DdA = 1.750g; 35 RM = 700g; 10% Roubo de Vida = 535,5g; total 2.985,5g
         Eficiência de Ouro: 93,3% (base)
+        Valor de Ouro (atributos): 2.985,5g
+        Valor de Ouro (base): 2.985,5g
     ]
     Ápice[
         igual ao base
@@ -5814,6 +6565,7 @@ Cimitarra Mercurial: Mercurial Scimitar[
     Efeitos Especiais: Ativa, Remoção de Controle, Movimento, Atravessar Unidades
     Região: Shadow Isles
     Mestre Forjador: Elegível — 2 categorias upgradáveis (500g cada; Roubo de Vida não conta): Dano de Ataque 50(+14,29)=64,29; Resistência Mágica 35(+27,78)=62,78
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 3.200g = 240g (líquido: 2.960g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Mercurial Scimitar") · https://wiki.leagueoflegends.com/en-us/Mercurial_Scimitar · Data Dragon pt_BR 16.18.1
 ]
@@ -5840,6 +6592,8 @@ Bênção de Mikael: Mikael's Blessing[
     Análise de custo[
         Valor de Ouro: 15 AdH = 750g; 250 Vida = 666,67g; 100% Regeneração de Mana base = 400g; 12% Poder de Cura e Escudo = 600g; total 2.416,67g
         Eficiência de Ouro: 105,07% (base)
+        Valor de Ouro (atributos): 2.416,67g
+        Valor de Ouro (base): 2.416,67g
     ]
     Ápice[
         igual ao base
@@ -5853,6 +6607,7 @@ Bênção de Mikael: Mikael's Blessing[
     Efeitos Especiais: Ativa, Remoção de Controle, Cura
     Região: Demacia (nome: Mikael, bênção)
     Mestre Forjador: Elegível — 2 categorias upgradáveis (500g cada; Regeneração de Mana e Poder de Cura e Escudo não contam): Vida 250(+185)=435; Aceleração de Habilidade 15(+16)=31
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 2.300g = 172,5g (líquido: 2.127,5g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Mikael's Blessing") · https://wiki.leagueoflegends.com/en-us/Mikael's_Blessing · Data Dragon pt_BR 16.18.1
 ]
@@ -5879,6 +6634,8 @@ Regenerador de Pedra Lunar: Moonstone Renewer[
     Análise de custo[
         Valor de Ouro: 25 PdH = 500g; 20 AdH = 1.000g; 200 Vida = 533,33g; 125% Regeneração de Mana base = 500g; total 2.533,33g
         Eficiência de Ouro: 115,15% (base)
+        Valor de Ouro (atributos): 2.533,33g
+        Valor de Ouro (base): 2.533,33g
     ]
     Ápice[
         igual ao base (Graça Estrelada é contínua)
@@ -5892,6 +6649,7 @@ Regenerador de Pedra Lunar: Moonstone Renewer[
     Efeitos Especiais: Cura, Escudo
     Região: Targon (nome: Pedra Lunar / estrelada)
     Mestre Forjador: Elegível — 3 categorias upgradáveis (333,33g cada; Regeneração de Mana não conta): Poder de Habilidade 25(+16,67)=41,67; Vida 200(+125)=325; Aceleração de Habilidade 20(+10,67)=30,67
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 2.200g = 165g (líquido: 2.035g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Moonstone Renewer") · https://wiki.leagueoflegends.com/en-us/Moonstone_Renewer · Data Dragon pt_BR 16.18.1
 ]
@@ -5917,6 +6675,8 @@ Morellonomicon: Morellonomicon[
     Análise de custo[
         Valor de Ouro: 75 PdH = 1.500g; 15 AdH = 750g; 350 Vida = 933,33g; total 3.183,33g
         Eficiência de Ouro: 111,7% (base)
+        Valor de Ouro (atributos): 3.183,33g
+        Valor de Ouro (base): 3.183,33g
     ]
     Ápice[
         igual ao base
@@ -5930,6 +6690,7 @@ Morellonomicon: Morellonomicon[
     Efeitos Especiais: Anti-Cura
     Região: Shadow Isles
     Mestre Forjador: Elegível — 3 categorias upgradáveis (333,33g cada): Poder de Habilidade 75(+16,67)=91,67; Vida 350(+125)=475; Aceleração de Habilidade 15(+10,67)=25,67
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 2.850g = 213,75g (líquido: 2.636,25g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Morellonomicon") · https://wiki.leagueoflegends.com/en-us/Morellonomicon · Data Dragon pt_BR 16.18.1
 ]
@@ -5955,6 +6716,8 @@ Lembrete Mortal: Mortal Reminder[
     Análise de custo[
         Valor de Ouro: 35 DdA = 1.225g; 25% Acerto Crítico = 1.000g; 30% Penetração de Armadura = 1.250g; total 3.475g
         Eficiência de Ouro: 115,83% (base)
+        Valor de Ouro (atributos): 3.475g
+        Valor de Ouro (base): 3.475g
     ]
     Ápice[
         igual ao base
@@ -5968,6 +6731,7 @@ Lembrete Mortal: Mortal Reminder[
     Efeitos Especiais: Anti-Cura
     Região: Zaun
     Mestre Forjador: Elegível — 1 categoria upgradável (1.000g; Penetração de Armadura e Acerto Crítico não contam): Dano de Ataque 35(+28,57)=63,57
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 3.000g = 225g (líquido: 2.775g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Mortal Reminder") · https://wiki.leagueoflegends.com/en-us/Mortal_Reminder · Data Dragon pt_BR 16.18.1
 ]
@@ -5994,9 +6758,15 @@ Dente de Na'Shor: Nashor's Tooth[
     Análise de custo[
         Valor de Ouro: 80 PdH = 1.600g; 15 AdH = 750g; 50% VdA = 1.250g; total 3.600g. Mordida Icathiana (dos atributos base): 27 de dano ao contato = 585g; total 4.185g; por 100 de PdH de outras fontes: 15 de dano ao contato = 325g
         Eficiência de Ouro: 144,31% (base); +11,21% por 100 de PdH de outras fontes
+        Valor de Ouro (atributos): 3.600g
+        Valor de Ouro (base): 4.185g
     ]
     Ápice[
         Sem teto: dano ao contato cresce com o PdH (45 com 200 de PdH).
+    ]
+    Ápice numérico[
+        Valor de Ouro no ápice: none (sem teto: +325g por 100 de PdH de outras fontes)
+        Eficiência de Ouro no ápice: none (sem teto: +11,21% por 100 de PdH de outras fontes)
     ]
     Notas: none
     Notas de ARAM: none
@@ -6007,6 +6777,7 @@ Dente de Na'Shor: Nashor's Tooth[
     Efeitos Especiais: Dano Mágico, Efeitos ao Contato
     Região: The Void (nome: Icathia)
     Mestre Forjador: Elegível — 3 categorias upgradáveis (333,33g cada): Poder de Habilidade 80(+16,67)=96,67; Velocidade de Ataque 50%(+11,11%)=61,11%; Aceleração de Habilidade 15(+10,67)=25,67
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 2.900g = 217,5g (líquido: 2.682,5g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Nashor's Tooth") · https://wiki.leagueoflegends.com/en-us/Nashor's_Tooth · Data Dragon pt_BR 16.18.1
 ]
@@ -6032,6 +6803,8 @@ Adaga Oscilante Navori: Navori Flickerblade[
     Análise de custo[
         Valor de Ouro: 40% VdA = 1.000g; 25% Acerto Crítico = 1.000g; 4% Velocidade de Movimento = 260,42g; total 2.260,42g
         Eficiência de Ouro: 85,3% (base)
+        Valor de Ouro (atributos): 2.260,42g
+        Valor de Ouro (base): 2.260,42g
     ]
     Ápice[
         igual ao base
@@ -6045,6 +6818,7 @@ Adaga Oscilante Navori: Navori Flickerblade[
     Efeitos Especiais: Redução de Recarga
     Região: Ionia (nome: Navori)
     Mestre Forjador: Elegível — 1 categoria upgradável (1.000g; Acerto Crítico e Velocidade de Movimento não contam): Velocidade de Ataque 40%(+33,33%)=73,33%
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 2.650g = 198,75g (líquido: 2.451,25g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Navori Flickerblade") · https://wiki.leagueoflegends.com/en-us/Navori_Flickerblade · Data Dragon pt_BR 16.18.1
 ]
@@ -6071,9 +6845,16 @@ Armadura Sangrenta do Suserano: Overlord's Bloodmail[
     Análise de custo[
         Valor de Ouro: 30 DdA = 1.050g; 550 Vida = 1.466,67g; total 2.516,67g. Tirania (dos atributos base): 13,75 DdA = 481,25g; total 2.997,92g; por 100 de Vida bônus de outras fontes: 2,5 DdA = 87,5g
         Eficiência de Ouro: 90,85% (base); +2,65% por 100 de Vida bônus de outras fontes; 100% com 345 de Vida bônus de outras fontes
+        Valor de Ouro (atributos): 2.516,67g
+        Valor de Ouro (base): 2.997,92g
     ]
     Ápice[
         70%+ de Vida perdida: +12% do DdA total de outras fontes; Tirania cresce sem teto com a Vida bônus.
+    ]
+    Ápice numérico[
+        Dano de Ataque · 12 · % · a mais (multiplicador do DdA de outras fontes, com 70%+ de Vida perdida)
+        Valor de Ouro no ápice: none (sem teto: +87,5g por 100 de Vida bônus de outras fontes)
+        Eficiência de Ouro no ápice: none (sem teto: +2,65% por 100 de Vida bônus de outras fontes)
     ]
     Notas: none
     Notas de ARAM: none
@@ -6084,6 +6865,7 @@ Armadura Sangrenta do Suserano: Overlord's Bloodmail[
     Efeitos Especiais: Gatilho de Vida Baixa
     Região: Noxus (nome: Suserano)
     Mestre Forjador: Elegível — 2 categorias upgradáveis (500g cada): Dano de Ataque 30(+14,29)=44,29; Vida 550(+185)=735
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 3.300g = 247,5g (líquido: 3.052,5g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Overlord's Bloodmail") · https://wiki.leagueoflegends.com/en-us/Overlord's_Bloodmail · Data Dragon pt_BR 16.18.1
 ]
@@ -6109,6 +6891,8 @@ Dançarina Fantasma: Phantom Dancer[
     Análise de custo[
         Valor de Ouro: 65% VdA = 1.625g; 25% Acerto Crítico = 1.000g; 10% Velocidade de Movimento = 651,05g; total 3.276,05g
         Eficiência de Ouro: 123,62% (base)
+        Valor de Ouro (atributos): 3.276,05g
+        Valor de Ouro (base): 3.276,05g
     ]
     Ápice[
         igual ao base
@@ -6122,6 +6906,7 @@ Dançarina Fantasma: Phantom Dancer[
     Efeitos Especiais: Atravessar Unidades
     Região: Shadow Isles
     Mestre Forjador: Elegível — 1 categoria upgradável (1.000g; Acerto Crítico e Velocidade de Movimento não contam): Velocidade de Ataque 65%(+33,33%)=98,33%
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 2.650g = 198,75g (líquido: 2.451,25g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Phantom Dancer") · https://wiki.leagueoflegends.com/en-us/Phantom_Dancer · Data Dragon pt_BR 16.18.1
 ]
@@ -6149,6 +6934,8 @@ Hidra Profana: Profane Hydra[
     Análise de custo[
         Valor de Ouro: 55 DdA = 1.925g; 10 AdH = 500g; 18 Letalidade = 540g; total 2.965g
         Eficiência de Ouro: 104,04% (base)
+        Valor de Ouro (atributos): 2.965g
+        Valor de Ouro (base): 2.965g
     ]
     Ápice[
         igual ao base
@@ -6162,6 +6949,7 @@ Hidra Profana: Profane Hydra[
     Efeitos Especiais: Ativa, Dano Físico, Dano em Área, Efeitos ao Contato
     Região: Bilgewater
     Mestre Forjador: Elegível — 2 categorias upgradáveis (500g cada; Letalidade não conta): Dano de Ataque 55(+14,29)=69,29; Aceleração de Habilidade 10(+16)=26
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 2.850g = 213,75g (líquido: 2.636,25g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Profane Hydra") · https://wiki.leagueoflegends.com/en-us/Profane_Hydra · Data Dragon pt_BR 16.18.1
 ]
@@ -6186,9 +6974,18 @@ Couraça Protoplasmática: Protoplasm Harness[
     Análise de custo[
         Valor de Ouro: 20 AdH = 1.000g; 600 Vida = 1.600g; total 2.600g. Salva-Vidas: 100–311,76 Vida = 266,67–831,36g; 25% Tenacidade = 258,33g; 10% Velocidade de Movimento = 651,05g; total 3.776,05–4.340,74g
         Eficiência de Ouro: 100% (base); 145,23%–166,95% com Salva-Vidas ativado
+        Valor de Ouro (atributos): 2.600g
+        Valor de Ouro (base): 2.600g
     ]
     Ápice[
         Salva-Vidas ativado (nível 13): +241,18 de Vida máxima e 399,26 de cura em 5s, com +15% de tamanho, +10% de VdM e 25% de Tenacidade.
+    ]
+    Ápice numérico[
+        Vida · 841,18 · pt · total (nível 13; 700 a 911,76 pelo nível)
+        Tenacidade · 25 · % · total
+        Movimento · 10 · % · total
+        Valor de Ouro no ápice: 4.152,53g (calculado, nível 13; faixa da wiki 3.776,05g–4.340,74g)
+        Eficiência de Ouro no ápice: 159,71% (calculado, nível 13; faixa da wiki 145,23%–166,95%)
     ]
     Notas: O texto oficial pt_BR exibe "0 de Vida máxima", "cura 0 de Vida" e "(0s)" (placeholders); valores reais em Mecânica.
     Notas de ARAM: Recarga de Salva-Vidas alterada para 75s.
@@ -6199,6 +6996,7 @@ Couraça Protoplasmática: Protoplasm Harness[
     Efeitos Especiais: Gatilho de Vida Baixa, Cura, Movimento, Tenacidade
     Região: Zaun (nome: protoplasma)
     Mestre Forjador: Elegível — 2 categorias upgradáveis (500g cada): Vida 600(+185)=785; Aceleração de Habilidade 20(+16)=36
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 2.600g = 195g (líquido: 2.405g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Protoplasm Harness") · https://wiki.leagueoflegends.com/en-us/Protoplasm_Harness · Data Dragon pt_BR 16.18.1
 ]
@@ -6222,9 +7020,16 @@ Capuz da Morte de Rabadon: Rabadon's Deathcap[
     Análise de custo[
         Valor de Ouro: 130 PdH = 2.600g; 39 PdH da passiva = 780g; total 3.380g; por 100 de PdH de outras fontes: 30 PdH = 600g
         Eficiência de Ouro: 96,57% (base); +17,14% por 100 de PdH de outras fontes
+        Valor de Ouro (atributos): 2.600g
+        Valor de Ouro (base): 3.380g
     ]
     Ápice[
         Sem teto: +30% de todo o PdH.
+    ]
+    Ápice numérico[
+        Poder de Habilidade · 30 · % · a mais (multiplicador do PdH total)
+        Valor de Ouro no ápice: none (sem teto: +600g por 100 de PdH de outras fontes)
+        Eficiência de Ouro no ápice: none (sem teto: +17,14% por 100 de PdH de outras fontes)
     ]
     Notas: none
     Notas de ARAM: none
@@ -6235,6 +7040,7 @@ Capuz da Morte de Rabadon: Rabadon's Deathcap[
     Efeitos Especiais: Amplificação de Dano
     Região: Runeterra (sem brasão na página)
     Mestre Forjador: Elegível — 1 categoria upgradável (1.000g): Poder de Habilidade 130(+50)=180
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 3.500g = 262,5g (líquido: 3.237,5g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Rabadon's Deathcap") · https://wiki.leagueoflegends.com/en-us/Rabadon's_Deathcap · Data Dragon pt_BR 16.18.1
 ]
@@ -6261,6 +7067,8 @@ Presságio de Randuin: Randuin's Omen[
     Análise de custo[
         Valor de Ouro: 350 Vida = 933,33g; 75 Armadura = 1.500g; total 2.433,33g
         Eficiência de Ouro: 90,12% (base)
+        Valor de Ouro (atributos): 2.433,33g
+        Valor de Ouro (base): 2.433,33g
     ]
     Ápice[
         igual ao base
@@ -6274,6 +7082,7 @@ Presságio de Randuin: Randuin's Omen[
     Efeitos Especiais: Redução de Dano Crítico, Ativa, Lentidão, Dano em Área
     Região: Demacia (Trivia: brasão da dinastia Lightshield)
     Mestre Forjador: Elegível — 2 categorias upgradáveis (500g cada): Vida 350(+185)=535; Armadura 75(+25)=100
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 2.700g = 202,5g (líquido: 2.497,5g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Randuin's Omen") · https://wiki.leagueoflegends.com/en-us/Randuin's_Omen · Data Dragon pt_BR 16.18.1
 ]
@@ -6301,9 +7110,16 @@ Canhão Fumegante: Rapid Firecannon[
     Análise de custo[
         Valor de Ouro: 35% VdA = 875g; 25% Acerto Crítico = 1.000g; 4% Velocidade de Movimento = 260,42g; total 2.135,42g
         Eficiência de Ouro: 80,58% (base)
+        Valor de Ouro (atributos): 2.135,42g
+        Valor de Ouro (base): 2.135,42g
     ]
     Ápice[
         100 acúmulos de Energia: próximo ataque com +40 de dano mágico e +150 de alcance (com 428,57+ de alcance base).
+    ]
+    Ápice numérico[
+        Alcance de Ataque · 150 · pt · a mais (só no ataque energizado)
+        Valor de Ouro no ápice: none (a wiki não valora; bônus de 1 ataque)
+        Eficiência de Ouro no ápice: none
     ]
     Notas: none
     Notas de ARAM: none
@@ -6314,6 +7130,7 @@ Canhão Fumegante: Rapid Firecannon[
     Efeitos Especiais: Energizado, Dano Mágico, Efeitos ao Contato, Alcance de Ataque, Dano a Estruturas
     Região: Bilgewater
     Mestre Forjador: Elegível — 1 categoria upgradável (1.000g; Acerto Crítico e Velocidade de Movimento não contam): Velocidade de Ataque 35%(+33,33%)=68,33%
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 2.650g = 198,75g (líquido: 2.451,25g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Rapid Firecannon") · https://wiki.leagueoflegends.com/en-us/Rapid_Firecannon · Data Dragon pt_BR 16.18.1
 ]
@@ -6341,6 +7158,8 @@ Hidra Raivosa: Ravenous Hydra[
     Análise de custo[
         Valor de Ouro: 65 DdA = 2.275g; 15 AdH = 750g; 12% Roubo de Vida = 642,6g; total 3.667,6g
         Eficiência de Ouro: 111,14% (base)
+        Valor de Ouro (atributos): 3.667,6g
+        Valor de Ouro (base): 3.667,6g
     ]
     Ápice[
         igual ao base
@@ -6354,6 +7173,7 @@ Hidra Raivosa: Ravenous Hydra[
     Efeitos Especiais: Ativa, Dano Físico, Dano em Área, Efeitos ao Contato, Cura
     Região: Runeterra (sem brasão na página)
     Mestre Forjador: Elegível — 2 categorias upgradáveis (500g cada; Roubo de Vida não conta): Dano de Ataque 65(+14,29)=79,29; Aceleração de Habilidade 15(+16)=31
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 3.300g = 247,5g (líquido: 3.052,5g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Ravenous Hydra") · https://wiki.leagueoflegends.com/en-us/Ravenous_Hydra · Data Dragon pt_BR 16.18.1
 ]
@@ -6383,12 +7203,14 @@ Redenção: Redemption[
     ]
     Análise de custo[
         Valor de Ouro: 30 PdH = 600g; 15 AdH = 750g; 100% Regeneração de Mana base = 400g; 10% Poder de Cura e Escudo = 500g; total 2.250g
-        Eficiência de Ouro: 100% (base)
+        Eficiência de Ouro: 97,83% (base)
+        Valor de Ouro (atributos): 2.250g
+        Valor de Ouro (base): 2.250g
     ]
     Ápice[
         igual ao base
     ]
-    Notas: O cliente pt_BR grafa "Cura e Resistência do Escudo"; catálogo adota "Poder de Cura e Escudo".
+    Notas: Preço de 2.300g confirmado no cliente pelo usuário (23/09/2026), igual ao Data Dragon 16.18.1; a wiki registra 2.250g (combinação 800g). Eficiência de Ouro recalculada sobre 2.300g (2.250g ÷ 2.300g = 97,83%); a Cost Analysis da wiki divide pelo preço de 2.250g e publica 100%. O cliente pt_BR grafa "Cura e Resistência do Escudo"; catálogo adota "Poder de Cura e Escudo".
     Notas de ARAM: none
     Notas de ARAM: Mayhem: none
     Categoria de Atributo: Poder de Habilidade, Aceleração de Habilidade, Regeneração de Mana, Poder de Cura e Escudo
@@ -6397,6 +7219,7 @@ Redenção: Redemption[
     Efeitos Especiais: Ativa, Cura, Dano Verdadeiro, Dano em Área, Dano Percentual, Visão
     Região: Targon
     Mestre Forjador: Elegível — 2 categorias upgradáveis (500g cada; Regeneração de Mana e Poder de Cura e Escudo não contam): Poder de Habilidade 30(+25)=55; Aceleração de Habilidade 15(+16)=31
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 2.300g = 172,5g (líquido: 2.127,5g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Redemption") · https://wiki.leagueoflegends.com/en-us/Redemption · Data Dragon pt_BR 16.18.1
 ]
@@ -6425,9 +7248,16 @@ Criafendas: Riftmaker[
     Análise de custo[
         Valor de Ouro: 70 PdH = 1.400g; 15 AdH = 750g; 350 Vida = 933,33g; total 3.083,33g. Infusão do Vazio (dos atributos base): 7 PdH = 140g; total 3.223,33g; por 100 de Vida bônus de outras fontes: 2 PdH = 40g. Vampirismo de Corrupção do Vazio: 10% / 6% = 460g / 276g
         Eficiência de Ouro: 103,98% (base); +1,29% por 100 de Vida bônus de outras fontes; +14,84% / +8,9% com Corrupção do Vazio no máximo
+        Valor de Ouro (atributos): 3.083,33g
+        Valor de Ouro (base): 3.223,33g
     ]
     Ápice[
         4 acúmulos de Corrupção do Vazio: +8% de dano e +10% (6%) de Vampirismo Universal; Infusão cresce com a Vida bônus.
+    ]
+    Ápice numérico[
+        Vampirismo · 10 · % · total (à distância: 6)
+        Valor de Ouro no ápice: 3.683,33g (calculado: 3.223,33g + 460g de Vampirismo; à distância: 3.499,33g)
+        Eficiência de Ouro no ápice: 118,82% (calculado: 103,98% + 14,84%; à distância: 112,88%)
     ]
     Notas: none
     Notas de ARAM: none
@@ -6438,6 +7268,7 @@ Criafendas: Riftmaker[
     Efeitos Especiais: Acúmulos, Amplificação de Dano
     Região: The Void (nome: Vazio)
     Mestre Forjador: Elegível — 3 categorias upgradáveis (333,33g cada): Poder de Habilidade 70(+16,67)=86,67; Vida 350(+125)=475; Aceleração de Habilidade 15(+10,67)=25,67
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 3.100g = 232,5g (líquido: 2.867,5g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Riftmaker") · https://wiki.leagueoflegends.com/en-us/Riftmaker · Data Dragon pt_BR 16.18.1
 ]
@@ -6465,9 +7296,18 @@ Bastão das Eras: Rod of Ages[
     Análise de custo[
         Valor de Ouro: 45 PdH = 900g; 350 Vida = 933,33g; 500 Mana = 500g; total 2.333,33g. Passiva por acúmulo: 3 PdH = 60g + 10 Vida = 26,67g + 30 Mana = 30g = 116,67g; com 10 acúmulos: 1.166,67g; total no ápice 3.500g
         Eficiência de Ouro: 89,74% (base); +4,49% por acúmulo; 134,62% no ápice
+        Valor de Ouro (atributos): 2.333,33g
+        Valor de Ouro (base): 2.333,33g
     ]
     Ápice[
         10 acúmulos (10 minutos após a compra): +75 de Poder de Habilidade, +450 de Vida, +800 de Mana, +1 nível.
+    ]
+    Ápice numérico[
+        Poder de Habilidade · 75 · pt · total
+        Vida · 450 · pt · total
+        Mana · 800 · pt · total
+        Valor de Ouro no ápice: 3.500g
+        Eficiência de Ouro no ápice: 134,62%
     ]
     Notas: none
     Notas de ARAM: Intervalo de acúmulo de Atemporal alterado para 40s (ápice em 6 min 40 s).
@@ -6478,6 +7318,7 @@ Bastão das Eras: Rod of Ages[
     Efeitos Especiais: Acúmulos, Ganho de Nível, Cura, Restauração de Mana
     Região: Shadow Isles
     Mestre Forjador: Elegível — 2 categorias upgradáveis (500g cada; Mana não conta): Poder de Habilidade 45(+25)=70; Vida 350(+185)=535
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 2.600g = 195g (líquido: 2.405g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Rod of Ages") · https://wiki.leagueoflegends.com/en-us/Rod_of_Ages · Data Dragon pt_BR 16.18.1
 ]
@@ -6503,6 +7344,8 @@ Furacão de Runaan: Runaan's Hurricane[
     Análise de custo[
         Valor de Ouro: 40% VdA = 1.000g; 25% Acerto Crítico = 1.000g; 5% Velocidade de Movimento = 325,53g; total 2.325,53g
         Eficiência de Ouro: 87,76% (base)
+        Valor de Ouro (atributos): 2.325,53g
+        Valor de Ouro (base): 2.325,53g
     ]
     Ápice[
         igual ao base
@@ -6516,6 +7359,7 @@ Furacão de Runaan: Runaan's Hurricane[
     Efeitos Especiais: Dano Físico, Dano em Área, Efeitos ao Contato
     Região: Runeterra (sem brasão na página)
     Mestre Forjador: Elegível — 1 categoria upgradável (1.000g; Acerto Crítico e Velocidade de Movimento não contam): Velocidade de Ataque 40%(+33,33%)=73,33%
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 2.650g = 198,75g (líquido: 2.451,25g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Runaan's Hurricane") · https://wiki.leagueoflegends.com/en-us/Runaan's_Hurricane · Data Dragon pt_BR 16.18.1
 ]
@@ -6540,6 +7384,8 @@ Cetro de Cristal de Rylai: Rylai's Crystal Scepter[
     Análise de custo[
         Valor de Ouro: 65 PdH = 1.300g; 400 Vida = 1.066,67g; total 2.366,67g
         Eficiência de Ouro: 91,03% (base)
+        Valor de Ouro (atributos): 2.366,67g
+        Valor de Ouro (base): 2.366,67g
     ]
     Ápice[
         igual ao base
@@ -6553,6 +7399,7 @@ Cetro de Cristal de Rylai: Rylai's Crystal Scepter[
     Efeitos Especiais: Lentidão
     Região: Freljord (nome: Rylai, cristal de gelo)
     Mestre Forjador: Elegível — 2 categorias upgradáveis (500g cada): Poder de Habilidade 65(+25)=90; Vida 400(+185)=585
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 2.600g = 195g (líquido: 2.405g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Rylai's Crystal Scepter") · https://wiki.leagueoflegends.com/en-us/Rylai's_Crystal_Scepter · Data Dragon pt_BR 16.18.1
 ]
@@ -6577,6 +7424,8 @@ Presa da Serpente: Serpent's Fang[
     Análise de custo[
         Valor de Ouro: 55 DdA = 1.925g; 15 Letalidade = 450g; total 2.375g
         Eficiência de Ouro: 95% (base)
+        Valor de Ouro (atributos): 2.375g
+        Valor de Ouro (base): 2.375g
     ]
     Ápice[
         igual ao base
@@ -6590,6 +7439,7 @@ Presa da Serpente: Serpent's Fang[
     Efeitos Especiais: Redução de Escudo
     Região: Bilgewater (Águas de Sentina — decisão do usuário, 12/09/2026)
     Mestre Forjador: Elegível — 1 categoria upgradável (1.000g; Letalidade não conta): Dano de Ataque 55(+28,57)=83,57
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 2.500g = 187,5g (líquido: 2.312,5g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Serpent's Fang") · https://wiki.leagueoflegends.com/en-us/Serpent's_Fang · Data Dragon pt_BR 16.18.1
 ]
@@ -6615,6 +7465,8 @@ Rancor de Serylda: Serylda's Grudge[
     Análise de custo[
         Valor de Ouro: 45 DdA = 1.575g; 15 AdH = 750g; 35% Penetração de Armadura = 1.458,33g; total 3.783,33g
         Eficiência de Ouro: 126,11% (base)
+        Valor de Ouro (atributos): 3.783,33g
+        Valor de Ouro (base): 3.783,33g
     ]
     Ápice[
         igual ao base
@@ -6628,6 +7480,7 @@ Rancor de Serylda: Serylda's Grudge[
     Efeitos Especiais: Lentidão
     Região: Freljord (nome: Serylda, frio)
     Mestre Forjador: Elegível — 2 categorias upgradáveis (500g cada; Penetração de Armadura não conta): Dano de Ataque 45(+14,29)=59,29; Aceleração de Habilidade 15(+16)=31
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 3.000g = 225g (líquido: 2.775g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Serylda's Grudge") · https://wiki.leagueoflegends.com/en-us/Serylda's_Grudge · Data Dragon pt_BR 16.18.1
 ]
@@ -6652,9 +7505,15 @@ Chama Sombria: Shadowflame[
     Análise de custo[
         Valor de Ouro: 110 PdH = 2.200g; 15 Penetração Mágica = 700g; total 2.900g
         Eficiência de Ouro: 90,63% (base)
+        Valor de Ouro (atributos): 2.900g
+        Valor de Ouro (base): 2.900g
     ]
     Ápice[
         Alvo abaixo de 40% de Vida: dano mágico e verdadeiro +20% (crítico).
+    ]
+    Ápice numérico[
+        Valor de Ouro no ápice: none
+        Eficiência de Ouro no ápice: none
     ]
     Notas: none
     Notas de ARAM: none
@@ -6665,6 +7524,7 @@ Chama Sombria: Shadowflame[
     Efeitos Especiais: Dano Crítico, Amplificação de Dano
     Região: Runeterra (sem brasão na página)
     Mestre Forjador: Elegível — 1 categoria upgradável (1.000g; Penetração Mágica não conta): Poder de Habilidade 110(+50)=160
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 3.200g = 240g (líquido: 2.960g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Shadowflame") · https://wiki.leagueoflegends.com/en-us/Shadowflame · Data Dragon pt_BR 16.18.1
 ]
@@ -6691,6 +7551,8 @@ Hino Bélico de Shurelya: Shurelya's Battlesong[
     Análise de custo[
         Valor de Ouro: 50 PdH = 1.000g; 15 AdH = 750g; 125% Regeneração de Mana base = 500g; 4% Velocidade de Movimento = 260,42g; total 2.510,42g
         Eficiência de Ouro: 114,11% (base)
+        Valor de Ouro (atributos): 2.510,42g
+        Valor de Ouro (base): 2.510,42g
     ]
     Ápice[
         igual ao base
@@ -6704,6 +7566,7 @@ Hino Bélico de Shurelya: Shurelya's Battlesong[
     Efeitos Especiais: Ativa, Movimento
     Região: Shurima
     Mestre Forjador: Elegível — 2 categorias upgradáveis (500g cada; Velocidade de Movimento e Regeneração de Mana não contam): Poder de Habilidade 50(+25)=75; Aceleração de Habilidade 15(+16)=31
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 2.200g = 165g (líquido: 2.035g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Shurelya's Battlesong") · https://wiki.leagueoflegends.com/en-us/Shurelya's_Battlesong · Data Dragon pt_BR 16.18.1
 ]
@@ -6732,9 +7595,17 @@ Trenó do Solstício: Solstice Sleigh[
     Análise de custo[
         Valor de Ouro: 200 Vida = 533,33g; 75% Regeneração de Vida base = 225g; 75% Regeneração de Mana base = 300g; total 1.058,33g (a wiki não atribui valor à geração de ouro)
         Eficiência de Ouro: 264,58% (base)
+        Valor de Ouro (atributos): 1.058,33g
+        Valor de Ouro (base): 1.058,33g
     ]
     Ápice[
         Passeio de Trenó ativo: +20% de VdM decaindo e +140 de Vida bônus (nível 13) para você e o aliado mais ferido por 2,5s.
+    ]
+    Ápice numérico[
+        Movimento · 20 · % · total (decaindo em 2,5s)
+        Vida · 340 · pt · total (nível 13; 2,5s)
+        Valor de Ouro no ápice: none (a wiki não valora; bônus de 2,5s)
+        Eficiência de Ouro no ápice: none
     ]
     Notas: Item final da linha de Suporte (Atlas Mundial → Bússola Rúnica → Dádiva dos Mundos); custo de combinação 0g. Valor de venda: 40% do custo (sellratio 0,4). O texto oficial pt_BR diz "restaura Vida"; a wiki registra Vida bônus temporária, não cura.
     Notas de ARAM: none
@@ -6745,6 +7616,7 @@ Trenó do Solstício: Solstice Sleigh[
     Efeitos Especiais: Movimento, Ativa, Visão, Acúmulos
     Região: Freljord (nome: trenó, solstício)
     Mestre Forjador: Não elegível (classe Legendary Support Item)
+    Mestre Forjador (ouro): none
     Reembolso (runa Cash Back): none (item Lendário da linha de Suporte, obtido gratuitamente por transformação — sem compra, sem reembolso; decisão de 12/09/2026)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Solstice Sleigh") · https://wiki.leagueoflegends.com/en-us/Solstice_Sleigh · Data Dragon pt_BR 16.18.1
 ]
@@ -6772,9 +7644,15 @@ Lança de Shojin: Spear of Shojin[
     Análise de custo[
         Valor de Ouro: 45 DdA = 1.575g; 450 Vida = 1.200g; total 2.775g (a wiki não atribui valor à aceleração de habilidades básicas)
         Eficiência de Ouro: 89,52% (base)
+        Valor de Ouro (atributos): 2.775g
+        Valor de Ouro (base): 2.775g
     ]
     Ápice[
         4 acúmulos de Determinação Concentrada: +12% de dano de habilidade/proc/pet das suas conjurações.
+    ]
+    Ápice numérico[
+        Valor de Ouro no ápice: none
+        Eficiência de Ouro no ápice: none
     ]
     Notas: none
     Notas de ARAM: none
@@ -6785,6 +7663,7 @@ Lança de Shojin: Spear of Shojin[
     Efeitos Especiais: Acúmulos, Amplificação de Dano
     Região: Ionia (Trivia: Monastério Shojin)
     Mestre Forjador: Elegível — 2 categorias upgradáveis (500g cada): Dano de Ataque 45(+14,29)=59,29; Vida 450(+185)=635
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 3.100g = 232,5g (líquido: 2.867,5g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Spear of Shojin") · https://wiki.leagueoflegends.com/en-us/Spear_of_Shojin · Data Dragon pt_BR 16.18.1
 ]
@@ -6810,6 +7689,8 @@ Alfanje Espectral: Spectral Cutlass[
     Análise de custo[
         Valor de Ouro: 50 DdA = 1.750g; 4% Velocidade de Movimento = 260,42g; 15 Letalidade = 450g; total 2.460,42g
         Eficiência de Ouro: 87,87% (base)
+        Valor de Ouro (atributos): 2.460,42g
+        Valor de Ouro (base): 2.460,42g
     ]
     Ápice[
         igual ao base
@@ -6823,6 +7704,7 @@ Alfanje Espectral: Spectral Cutlass[
     Efeitos Especiais: Ativa, Investida
     Região: Bilgewater (nome: alfanje espectral)
     Mestre Forjador: Elegível — 1 categoria upgradável (1.000g; Letalidade e Velocidade de Movimento não contam): Dano de Ataque 50(+28,57)=78,57
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 2.800g = 210g (líquido: 2.590g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Spectral Cutlass") · https://wiki.leagueoflegends.com/en-us/Spectral_Cutlass · Data Dragon pt_BR 16.18.1
 ]
@@ -6849,6 +7731,8 @@ Semblante Espiritual: Spirit Visage[
     Análise de custo[
         Valor de Ouro: 10 AdH = 500g; 400 Vida = 1.066,67g; 100% Regeneração de Vida base = 300g; 50 RM = 1.000g; total 2.866,67g. Passiva: 25% de Regeneração de Vida base (do usuário) + 25% (do item) = 150g; total 3.016,67g
         Eficiência de Ouro: 111,73% (base, incluindo a passiva)
+        Valor de Ouro (atributos): 2.866,67g
+        Valor de Ouro (base): 3.016,67g
     ]
     Ápice[
         igual ao base
@@ -6862,6 +7746,7 @@ Semblante Espiritual: Spirit Visage[
     Efeitos Especiais: Poder de Cura e Escudo
     Região: Shadow Isles
     Mestre Forjador: Elegível — 3 categorias upgradáveis (333,33g cada; Regeneração de Vida não conta): Vida 400(+125)=525; Resistência Mágica 50(+18,52)=68,52; Aceleração de Habilidade 10(+10,67)=20,67
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 2.700g = 202,5g (líquido: 2.497,5g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Spirit Visage") · https://wiki.leagueoflegends.com/en-us/Spirit_Visage · Data Dragon pt_BR 16.18.1
 ]
@@ -6888,9 +7773,17 @@ Cajado Aquafluxo: Staff of Flowing Water[
     Análise de custo[
         Valor de Ouro: 35 PdH = 700g; 10 AdH = 500g; 125% Regeneração de Mana base = 500g; 10% Poder de Cura e Escudo = 500g; total 2.200g. Corredeira por unidade: 40 PdH = 900g + 15 AdH = 750g = 1.550g; total com 1 aliado + conjurador 5.300g
         Eficiência de Ouro: 97,78% (base); 166,67% no conjurador com Corredeira ativa; 235,56%–442,22% com 2–4 aliados (e o conjurador)
+        Valor de Ouro (atributos): 2.200g
+        Valor de Ouro (base): 2.200g
     ]
     Ápice[
         Corredeira em 4 aliados e no conjurador: +40 de PdH e +15 de AdH em 5 campeões por 6s.
+    ]
+    Ápice numérico[
+        Poder de Habilidade · 75 · pt · total
+        Aceleração de Habilidade · 25 · pt · total
+        Valor de Ouro no ápice: 9.950g (calculado: 2.200g + 5 unidades fortalecidas × 1.550g)
+        Eficiência de Ouro no ápice: 442,22%
     ]
     Notas: O cliente pt_BR grafa "Cura e Resistência do Escudo"; catálogo adota "Poder de Cura e Escudo".
     Notas de ARAM: none
@@ -6901,6 +7794,7 @@ Cajado Aquafluxo: Staff of Flowing Water[
     Efeitos Especiais: Redução de Recarga
     Região: Bilgewater
     Mestre Forjador: Elegível — 2 categorias upgradáveis (500g cada; Regeneração de Mana e Poder de Cura e Escudo não contam): Poder de Habilidade 35(+25)=60; Aceleração de Habilidade 10(+16)=26
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 2.250g = 168,75g (líquido: 2.081,25g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Staff of Flowing Water") · https://wiki.leagueoflegends.com/en-us/Staff_of_Flowing_Water · Data Dragon pt_BR 16.18.1
 ]
@@ -6931,9 +7825,15 @@ Faca de Statikk: Statikk Shiv[
     Análise de custo[
         Valor de Ouro: 45 PdH = 900g; 45 DdA = 1.575g; 30% VdA = 750g; 4% Velocidade de Movimento = 260,42g; total 3.485,42g
         Eficiência de Ouro: 116,18% (base)
+        Valor de Ouro (atributos): 3.485,42g
+        Valor de Ouro (base): 3.485,42g
     ]
     Ápice[
         100 acúmulos de Energia: cadeia de 60 (90 contra não campeões) de dano mágico em até 6 alvos no nível 13.
+    ]
+    Ápice numérico[
+        Valor de Ouro no ápice: none
+        Eficiência de Ouro no ápice: none
     ]
     Notas: none
     Notas de ARAM: Dano de Eletrocentelha contra campeões alterado para 70.
@@ -6944,6 +7844,7 @@ Faca de Statikk: Statikk Shiv[
     Efeitos Especiais: Energizado, Dano Mágico, Dano em Cadeia, Efeitos ao Contato, Dano a Estruturas
     Região: Runeterra (sem brasão na página)
     Mestre Forjador: Elegível — 3 categorias upgradáveis (333,33g cada; Velocidade de Movimento não conta): Dano de Ataque 45(+9,52)=54,52; Poder de Habilidade 45(+16,67)=61,67; Velocidade de Ataque 30%(+11,11%)=41,11%
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 3.000g = 225g (líquido: 2.775g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Statikk Shiv") · https://wiki.leagueoflegends.com/en-us/Statikk_Shiv · Data Dragon pt_BR 16.18.1
 ]
@@ -6975,9 +7876,15 @@ Sinal de Sterak: Sterak's Gage[
     Análise de custo[
         Valor de Ouro: 400 Vida = 1.066,67g; 20% Tenacidade = 206,67g; total 1.273,33g. Garras Caçadoras: 22 DdA (DdA base 44) = 770g → total 2.043,33g; 89,05 DdA (DdA base 178,09) = 3.116,59g → total 4.389,92g
         Eficiência de Ouro: 39,79% (base); 100% com 110,1 de DdA base (55,05 de DdA bônus); 63,85% numa Orianna nível 1 e 137,19% num Mega Gnar nível 20
+        Valor de Ouro (atributos): 1.273,33g
+        Valor de Ouro (base): 1.273,33g
     ]
     Ápice[
         Salva-Vidas ativado: escudo de 60% da Vida bônus decaindo em 4,5s; DdA bônus cresce com o DdA base do campeão.
+    ]
+    Ápice numérico[
+        Valor de Ouro no ápice: none
+        Eficiência de Ouro no ápice: none
     ]
     Notas: none
     Notas de ARAM: Razão de Garras Caçadoras alterada para 50% do DdA base [sic, igual ao base]. Escudo de Salva-Vidas alterado para 70% da Vida bônus. Recarga de Salva-Vidas alterada para 75s.
@@ -6988,6 +7895,7 @@ Sinal de Sterak: Sterak's Gage[
     Efeitos Especiais: Gatilho de Vida Baixa, Escudo
     Região: Bilgewater
     Mestre Forjador: Elegível — 1 categoria upgradável (1.000g; Tenacidade não conta; o DdA de Garras Caçadoras não é atributo do item): Vida 400(+375)=775
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 3.200g = 240g (líquido: 2.960g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Sterak's Gage") · https://wiki.leagueoflegends.com/en-us/Sterak's_Gage · Data Dragon pt_BR 16.18.1
 ]
@@ -7015,9 +7923,16 @@ Chuva de Canivete: Stormrazor[
     Análise de custo[
         Valor de Ouro: 50 DdA = 1.750g; 25% VdA = 625g; 25% Acerto Crítico = 1.000g; total 3.375g
         Eficiência de Ouro: 105,47% (base)
+        Valor de Ouro (atributos): 3.375g
+        Valor de Ouro (base): 3.375g
     ]
     Ápice[
         100 acúmulos de Energia: próximo ataque com +100 de dano mágico e +45% de VdM por 1,5s.
+    ]
+    Ápice numérico[
+        Movimento · 45 · % · total (1,5s após o ataque energizado)
+        Valor de Ouro no ápice: none (a wiki não valora; bônus de 1,5s)
+        Eficiência de Ouro no ápice: none
     ]
     Notas: O texto oficial pt_BR exibe "0 de Dano Mágico" (placeholder); valor real 100.
     Notas de ARAM: none
@@ -7028,6 +7943,7 @@ Chuva de Canivete: Stormrazor[
     Efeitos Especiais: Energizado, Dano Mágico, Efeitos ao Contato, Movimento, Dano a Estruturas
     Região: Ionia
     Mestre Forjador: Elegível — 2 categorias upgradáveis (500g cada; Acerto Crítico não conta): Dano de Ataque 50(+14,29)=64,29; Velocidade de Ataque 25%(+16,67%)=41,67%
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 3.200g = 240g (líquido: 2.960g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Stormrazor") · https://wiki.leagueoflegends.com/en-us/Stormrazor · Data Dragon pt_BR 16.18.1
 ]
@@ -7055,6 +7971,8 @@ Chuva de Canivete: Stormrazor[
     Análise de custo[
         Valor de Ouro: 90 PdH = 1.800g; 6% Velocidade de Movimento = 390,63g; 15 Penetração Mágica = 700g; total 2.890,63g
         Eficiência de Ouro: 103,24% (base)
+        Valor de Ouro (atributos): 2.890,63g
+        Valor de Ouro (base): 2.890,63g
     ]
     Ápice[
         igual ao base (gatilho por dano acumulado)
@@ -7068,6 +7986,7 @@ Chuva de Canivete: Stormrazor[
     Efeitos Especiais: Dano Mágico, Dano em Área
     Região: Freljord
     Mestre Forjador: Elegível — 1 categoria upgradável (1.000g; Penetração Mágica e Velocidade de Movimento não contam): Poder de Habilidade 90(+50)=140
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 2.800g = 210g (líquido: 2.590g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Stormsurge") · https://wiki.leagueoflegends.com/en-us/Stormsurge · Data Dragon pt_BR 16.18.1
 ]
@@ -7095,9 +8014,16 @@ Quebrapassos: Stridebreaker[
     Análise de custo[
         Valor de Ouro: 40 DdA = 1.400g; 25% VdA = 625g; 450 Vida = 1.200g; total 3.225g
         Eficiência de Ouro: 97,73% (base)
+        Valor de Ouro (atributos): 3.225g
+        Valor de Ouro (base): 3.225g
     ]
     Ápice[
         Sem acúmulos. Ativa com 5 campeões atingidos: 175% de VdM bônus decaindo em 3s (5 × 35%; teto lógico de 5 campeões, decisão do usuário em 12/09/2026). Clones com tipo de campeão podem exceder o teto — Illaoi (E, Teste do Espírito), Wukong (W, clone), LeBlanc (W/R, imagem) e Shaco (R, clone), e Neeko (W, Divisora de Formas) — confirmados pelo usuário em 12/09/2026.
+    ]
+    Ápice numérico[
+        Movimento · 175 · % · total (5 campeões atingidos; decai em 3s)
+        Valor de Ouro no ápice: none (a wiki não valora; bônus de 3s)
+        Eficiência de Ouro no ápice: none
     ]
     Notas: Substitui o antigo item Masterwork "Dreamshatter", removido (Trivia).
     Notas de ARAM: Dano de Onda de Choque alterado para 100% do DdA; Velocidade de Movimento alterada para 45% por campeão atingido.
@@ -7108,6 +8034,7 @@ Quebrapassos: Stridebreaker[
     Efeitos Especiais: Ativa, Lentidão, Dano em Área, Dano Físico, Efeitos ao Contato, Movimento
     Região: Demacia (Trivia: correntes do Sylas)
     Mestre Forjador: Elegível — 3 categorias upgradáveis (333,33g cada): Dano de Ataque 40(+9,52)=49,52; Velocidade de Ataque 25%(+11,11%)=36,11%; Vida 450(+125)=575
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 3.300g = 247,5g (líquido: 3.052,5g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Stridebreaker") · https://wiki.leagueoflegends.com/en-us/Stridebreaker · Data Dragon pt_BR 16.18.1
 ]
@@ -7133,9 +8060,15 @@ Céu Dividido: Sundered Sky[
     Análise de custo[
         Valor de Ouro: 40 DdA = 1.400g; 10 AdH = 500g; 400 Vida = 1.066,67g; total 2.966,67g
         Eficiência de Ouro: 95,7% (base)
+        Valor de Ouro (atributos): 2.966,67g
+        Valor de Ouro (base): 2.966,67g
     ]
     Ápice[
         5 acúmulos de Vida bônus por cura excedente (por 8s).
+    ]
+    Ápice numérico[
+        Valor de Ouro no ápice: none
+        Eficiência de Ouro no ápice: none
     ]
     Notas: none
     Notas de ARAM: none
@@ -7146,6 +8079,7 @@ Céu Dividido: Sundered Sky[
     Efeitos Especiais: Ataque Fortalecido, Dano Crítico, Cura, Acúmulos
     Região: Demacia (nome: Lumescudo / Lightshield)
     Mestre Forjador: Elegível — 3 categorias upgradáveis (333,33g cada): Dano de Ataque 40(+9,52)=49,52; Vida 400(+125)=525; Aceleração de Habilidade 10(+10,67)=20,67
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 3.100g = 232,5g (líquido: 2.867,5g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Sundered Sky") · https://wiki.leagueoflegends.com/en-us/Sundered_Sky · Data Dragon pt_BR 16.18.1
 ]
@@ -7171,6 +8105,8 @@ Céu Dividido: Sundered Sky[
     Análise de custo[
         Valor de Ouro: 10 AdH = 500g; 350 Vida = 933,33g; 50 Armadura = 1.000g; total 2.433,33g
         Eficiência de Ouro: 86,9% (base)
+        Valor de Ouro (atributos): 2.433,33g
+        Valor de Ouro (base): 2.433,33g
     ]
     Ápice[
         igual ao base (Imolar contínuo)
@@ -7184,6 +8120,7 @@ Céu Dividido: Sundered Sky[
     Efeitos Especiais: Aura, Dano Mágico, Dano em Área, Dano ao Longo do Tempo, Dano a Tropas, Dano a Monstros, Execução
     Região: Shurima
     Mestre Forjador: Elegível — 3 categorias upgradáveis (333,33g cada): Vida 350(+125)=475; Armadura 50(+16,67)=66,67; Aceleração de Habilidade 10(+10,67)=20,67
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 2.800g = 210g (líquido: 2.590g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Sunfire Aegis") · https://wiki.leagueoflegends.com/en-us/Sunfire_Aegis · Data Dragon pt_BR 16.18.1
 ]
@@ -7211,9 +8148,19 @@ Terminus: Terminus[
     Análise de custo[
         Valor de Ouro: 30 DdA = 1.050g; 35% VdA = 875g; total 1.925g. Sombra: 30 de dano ao contato = 650g; total 2.575g. Justaposição: por acúmulo de Luz 6–8 Armadura + 6–8 RM = 240–320g (720–960g com 3); por acúmulo de Sombra 10% Pen. Armadura + 10% Pen. Mágica = 878,17g (2.634,5g com 3); total no máximo dos dois 5.929,5–6.169,5g
         Eficiência de Ouro: 85,83% (base); +8%–10,67% por acúmulo de Luz (até 24%–32%); +29,27% por acúmulo de Sombra (até 87,82%); 197,65%–205,65% com 3 acúmulos de cada
+        Valor de Ouro (atributos): 1.925g
+        Valor de Ouro (base): 2.575g
     ]
     Ápice[
         3 acúmulos de Luz e 3 de Sombra: +21 de Armadura e RM (nível 13) e 30% de Penetração de Armadura e Mágica.
+    ]
+    Ápice numérico[
+        Armadura · 21 · pt · total (nível 13; 18 a 24 pelo nível)
+        Resistência Mágica · 21 · pt · total (nível 13; 18 a 24 pelo nível)
+        Penetração de Armadura · 30 · % · total
+        Penetração Mágica Percentual · 30 · % · total
+        Valor de Ouro no ápice: 6.049,5g (calculado, nível 13; faixa da wiki 5.929,5g–6.169,5g)
+        Eficiência de Ouro no ápice: 201,65% (calculado, nível 13; faixa da wiki 197,65%–205,65%)
     ]
     Notas: O texto oficial pt_BR exibe "0 de Dano Mágico" (placeholder); valor real em Mecânica.
     Notas de ARAM: none
@@ -7224,6 +8171,7 @@ Terminus: Terminus[
     Efeitos Especiais: Acúmulos, Dano Mágico, Efeitos ao Contato
     Região: Shadow Isles
     Mestre Forjador: Elegível — 2 categorias upgradáveis (500g cada): Dano de Ataque 30(+14,29)=44,29; Velocidade de Ataque 35%(+16,67%)=51,67%
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 3.000g = 225g (líquido: 2.775g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Terminus") · https://wiki.leagueoflegends.com/en-us/Terminus · Data Dragon pt_BR 16.18.1
 ]
@@ -7251,6 +8199,8 @@ A Coletora: The Collector[
     Análise de custo[
         Valor de Ouro: 50 DdA = 1.750g; 25% Acerto Crítico = 1.000g; 10 Letalidade = 300g; total 3.050g
         Eficiência de Ouro: 101,67% (base)
+        Valor de Ouro (atributos): 3.050g
+        Valor de Ouro (base): 3.050g
     ]
     Ápice[
         igual ao base
@@ -7264,6 +8214,7 @@ A Coletora: The Collector[
     Efeitos Especiais: Execução, Geração de Ouro
     Região: Bilgewater
     Mestre Forjador: Elegível — 1 categoria upgradável (1.000g; Letalidade e Acerto Crítico não contam): Dano de Ataque 50(+28,57)=78,57
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 3.000g = 225g (líquido: 2.775g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "The Collector") · https://wiki.leagueoflegends.com/en-us/The_Collector · Data Dragon pt_BR 16.18.1
 ]
@@ -7288,6 +8239,8 @@ Armadura de Espinhos: Thornmail[
     Análise de custo[
         Valor de Ouro: 150 Vida = 400g; 75 Armadura = 1.500g; total 1.900g
         Eficiência de Ouro: 77,55% (base)
+        Valor de Ouro (atributos): 1.900g
+        Valor de Ouro (base): 1.900g
     ]
     Ápice[
         igual ao base
@@ -7301,6 +8254,7 @@ Armadura de Espinhos: Thornmail[
     Efeitos Especiais: Reflexão de Dano, Dano Mágico, Anti-Cura
     Região: Noxus
     Mestre Forjador: Elegível — 2 categorias upgradáveis (500g cada): Vida 150(+185)=335; Armadura 75(+25)=100
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 2.450g = 183,75g (líquido: 2.266,25g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Thornmail") · https://wiki.leagueoflegends.com/en-us/Thornmail · Data Dragon pt_BR 16.18.1
 ]
@@ -7327,9 +8281,15 @@ Hidra Titânica: Titanic Hydra[
     Análise de custo[
         Valor de Ouro: 40 DdA = 1.400g; 600 Vida = 1.600g; total 3.000g. Fenda (dos atributos base): 6 / 3 de dano ao contato = 130g / 65g; total 3.130g / 3.065g; por 100 de Vida de qualquer fonte: 1 / 0,5 de dano ao contato = 21,67g / 10,83g
         Eficiência de Ouro: 90,91% (base); +0,66% / +0,33% por 100 de Vida máxima de todas as fontes
+        Valor de Ouro (atributos): 3.000g
+        Valor de Ouro (base): 3.000g
     ]
     Ápice[
         Crescente Titânica ativa: 80 (40) ao alvo e 180 (90) no cone com 2.000 de Vida máxima.
+    ]
+    Ápice numérico[
+        Valor de Ouro no ápice: none
+        Eficiência de Ouro no ápice: none
     ]
     Notas: none
     Notas de ARAM: none
@@ -7340,6 +8300,7 @@ Hidra Titânica: Titanic Hydra[
     Efeitos Especiais: Ativa, Ataque Fortalecido, Dano Físico, Dano em Área, Dano Percentual, Efeitos ao Contato, Dano a Estruturas
     Região: Noxus
     Mestre Forjador: Elegível — 2 categorias upgradáveis (500g cada): Dano de Ataque 40(+14,29)=54,29; Vida 600(+185)=785
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 3.300g = 247,5g (líquido: 3.052,5g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Titanic Hydra") · https://wiki.leagueoflegends.com/en-us/Titanic_Hydra · Data Dragon pt_BR 16.18.1
 ]
@@ -7368,9 +8329,16 @@ Força da Trindade: Trinity Force[
     Análise de custo[
         Valor de Ouro: 36 DdA = 1.260g; 15 AdH = 750g; 30% VdA = 750g; 333 Vida = 888g; total 3.648g. Apressar: 20 de Velocidade de Movimento = 240g; total 3.888g
         Eficiência de Ouro: 109,45% (base); 116,65% com Apressar ativo
+        Valor de Ouro (atributos): 3.648g
+        Valor de Ouro (base): 3.648g
     ]
     Ápice[
         Apressar ativo: +20 de VdM; Lâmina Arcana é gatilho por habilidade.
+    ]
+    Ápice numérico[
+        Movimento · 20 · pt · total
+        Valor de Ouro no ápice: 3.888g
+        Eficiência de Ouro no ápice: 116,65%
     ]
     Notas: Item com mais atributos de campeão num só item (Trivia).
     Notas de ARAM: none
@@ -7381,6 +8349,7 @@ Força da Trindade: Trinity Force[
     Efeitos Especiais: Ataque Fortalecido, Dano Físico, Efeitos ao Contato, Movimento, Dano a Estruturas
     Região: Ionia
     Mestre Forjador: Elegível — 4 categorias upgradáveis (250g cada): Dano de Ataque 36(+7,14)=43,14; Velocidade de Ataque 30%(+8,33%)=38,33%; Vida 333(+90)=423; Aceleração de Habilidade 15(+8)=23
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 3.333g = 249,97g (líquido: 3.083,03g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Trinity Force") · https://wiki.leagueoflegends.com/en-us/Trinity_Force · Data Dragon pt_BR 16.18.1
 ]
@@ -7408,9 +8377,15 @@ Glaive Sombria: Umbral Glaive[
     Análise de custo[
         Valor de Ouro: 60 DdA = 2.100g; 15 AdH = 750g; 18 Letalidade = 540g; total 3.390g
         Eficiência de Ouro: 121,07% (base)
+        Valor de Ouro (atributos): 3.390g
+        Valor de Ouro (base): 3.390g
     ]
     Ápice[
         Predador Noturno pronto: +77 de dano verdadeiro no próximo ataque a campeão (18 de Letalidade).
+    ]
+    Ápice numérico[
+        Valor de Ouro no ápice: none
+        Eficiência de Ouro no ápice: none
     ]
     Notas: none
     Notas de ARAM: none
@@ -7421,6 +8396,7 @@ Glaive Sombria: Umbral Glaive[
     Efeitos Especiais: Ataque Fortalecido, Dano Verdadeiro, Efeitos ao Contato, Revelação, Visão
     Região: Runeterra (sem brasão na página)
     Mestre Forjador: Elegível — 2 categorias upgradáveis (500g cada; Letalidade não conta): Dano de Ataque 60(+14,29)=74,29; Aceleração de Habilidade 15(+16)=31
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 2.800g = 210g (líquido: 2.590g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Umbral Glaive") · https://wiki.leagueoflegends.com/en-us/Umbral_Glaive · Data Dragon pt_BR 16.18.1
 ]
@@ -7446,6 +8422,8 @@ Desespero Eterno: Unending Despair[
     Análise de custo[
         Valor de Ouro: 15 AdH = 750g; 400 Vida = 1.066,67g; 50 Armadura = 1.000g; total 2.816,67g
         Eficiência de Ouro: 100,6% (base)
+        Valor de Ouro (atributos): 2.816,67g
+        Valor de Ouro (base): 2.816,67g
     ]
     Ápice[
         igual ao base (Angústia periódica em combate)
@@ -7459,6 +8437,7 @@ Desespero Eterno: Unending Despair[
     Efeitos Especiais: Aura, Dano Mágico, Dano em Área, Cura
     Região: Shadow Isles (decisão do usuário, 12/09/2026)
     Mestre Forjador: Elegível — 3 categorias upgradáveis (333,33g cada): Vida 400(+125)=525; Armadura 50(+16,67)=66,67; Aceleração de Habilidade 15(+10,67)=25,67
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 2.800g = 210g (líquido: 2.590g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Unending Despair") · https://wiki.leagueoflegends.com/en-us/Unending_Despair · Data Dragon pt_BR 16.18.1
 ]
@@ -7482,6 +8461,8 @@ Cajado do Vazio: Void Staff[
     Análise de custo[
         Valor de Ouro: 95 PdH = 1.900g; 40% Penetração Mágica = 1.846g; total 3.746g
         Eficiência de Ouro: 124,87% (base)
+        Valor de Ouro (atributos): 3.746g
+        Valor de Ouro (base): 3.746g
     ]
     Ápice[
         igual ao base
@@ -7495,6 +8476,7 @@ Cajado do Vazio: Void Staff[
     Efeitos Especiais: none
     Região: The Void (nome: Vazio)
     Mestre Forjador: Elegível — 1 categoria upgradável (1.000g; Penetração Mágica não conta): Poder de Habilidade 95(+50)=145
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 3.000g = 225g (líquido: 2.775g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Void Staff") · https://wiki.leagueoflegends.com/en-us/Void_Staff · Data Dragon pt_BR 16.18.1
 ]
@@ -7524,9 +8506,16 @@ Cicloespada Voltaica: Voltaic Cyclosword[
     Análise de custo[
         Valor de Ouro: 55 DdA = 1.925g; 10 AdH = 500g; 10 Letalidade = 300g; total 2.725g. Firmamento: 15 / 12 Letalidade = 450g / 360g; total 3.175g / 3.085g
         Eficiência de Ouro: 90,83% (base); 105,83% / 102,83% com Firmamento ativo
+        Valor de Ouro (atributos): 2.725g
+        Valor de Ouro (base): 2.725g
     ]
     Ápice[
         100 acúmulos de Energia: 180 (140) de dano físico contra 2.000 de Vida atual e +15 (12) de Letalidade por 4s.
+    ]
+    Ápice numérico[
+        Letalidade · 25 · pt · total (à distância: 22; por 4s)
+        Valor de Ouro no ápice: 3.175g (à distância: 3.085g)
+        Eficiência de Ouro no ápice: 105,83% (à distância: 102,83%)
     ]
     Notas: O texto oficial pt_BR exibe "% da Vida atual" sem número (placeholder); valores reais em Mecânica.
     Notas de ARAM: none
@@ -7537,6 +8526,7 @@ Cicloespada Voltaica: Voltaic Cyclosword[
     Efeitos Especiais: Energizado, Dano Físico, Dano Percentual, Efeitos ao Contato, Dano a Estruturas
     Região: Zaun
     Mestre Forjador: Elegível — 2 categorias upgradáveis (500g cada; Letalidade não conta): Dano de Ataque 55(+14,29)=69,29; Aceleração de Habilidade 10(+16)=26
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 3.000g = 225g (líquido: 2.775g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Voltaic Cyclosword") · https://wiki.leagueoflegends.com/en-us/Voltaic_Cyclosword · Data Dragon pt_BR 16.18.1
 ]
@@ -7570,9 +8560,16 @@ Armadura de Warmog: Warmog's Armor[
     Análise de custo[
         Valor de Ouro: 1.000 Vida = 2.666,67g; 100% Regeneração de Vida base = 300g; total 2.966,67g. Vitalidade de Warmog (dos atributos base): 120 Vida = 320g; total 3.286,67g; por 100 de Vida bônus de outros itens: 12 Vida = 32g. Coração de Warmog com 2.000 de Vida bônus: 300 de Regeneração de Vida = 10.800g; total 14.086,67g; por 100 de Vida bônus: 15 de Regeneração = 540g
         Eficiência de Ouro: 106,02% (base); +1,03% por 100 de Vida bônus de outros itens; pelo menos 454,41% com Coração de Warmog ativo, +17,42% por 100 de Vida bônus de outras fontes
+        Valor de Ouro (atributos): 2.966,67g
+        Valor de Ouro (base): 3.286,67g
     ]
     Ápice[
         Coração de Warmog ativo (2.000+ de Vida bônus, 8s sem dano): 15% da Vida máxima regenerada a cada 5s.
+    ]
+    Ápice numérico[
+        Regeneração de Vida · 300 · pt · a mais (a cada 5s, com 2.000 de Vida bônus; 15% da Vida máxima)
+        Valor de Ouro no ápice: 14.086,67g (com 2.000 de Vida bônus; +540g por 100 de Vida bônus)
+        Eficiência de Ouro no ápice: 454,41% (mínimo, com 2.000 de Vida bônus; +17,42% por 100 de Vida bônus de outras fontes)
     ]
     Notas: O texto oficial pt_BR exibe "restaura 0 de Vida por segundo" e "(0)" (placeholders); valores reais em Mecânica.
     Notas de ARAM: Recarga após dano de campeões alterada para 8s [sic, igual ao base]; após dano de não campeões, 4s.
@@ -7583,6 +8580,7 @@ Armadura de Warmog: Warmog's Armor[
     Efeitos Especiais: Cura
     Região: Bandle City
     Mestre Forjador: Elegível — 1 categoria upgradável (1.000g; Regeneração de Vida não conta): Vida 1.000(+375)=1.375
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 3.100g = 232,5g (líquido: 2.867,5g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Warmog's Armor") · https://wiki.leagueoflegends.com/en-us/Warmog's_Armor · Data Dragon pt_BR 16.18.1
 ]
@@ -7613,9 +8611,17 @@ Tiara Sussurrante: Whispering Circlet[
     Análise de custo[
         Valor de Ouro: 200 Vida = 533,33g; 300 Mana = 300g; 75% Regeneração de Mana base = 300g; 8% Poder de Cura e Escudo = 400g; total 1.533,33g; 1,5% de Poder de Cura e Escudo de Harmonia = 75g; total 1.608,33g. Por 100 de Mana bônus de outras fontes: 0,5% = 25g. Por carga: 4 Mana + 0,02% = 5g (não campeão) / 8 Mana + 0,04% = 10g (campeão)
         Eficiência de Ouro: 71,48% (base); +0,22% por carga de não campeões, +0,44% por carga de campeões; +1,11% por 100 de Mana bônus de outras fontes
+        Valor de Ouro (atributos): 1.533,33g
+        Valor de Ouro (base): 1.608,33g
     ]
     Ápice[
         360 de Mana bônus: +660 de Mana, +3,3% de Poder de Cura e Escudo de Harmonia (só do item); transforma-se em Diadema de Canções.
+    ]
+    Ápice numérico[
+        Mana · 660 · pt · total
+        Poder de Cura e Escudo · 11,3 · % · total
+        Valor de Ouro no ápice: 2.058,33g (calculado: 1.608,33g + 360 de Mana = 360g + 1,8% de Harmonia = 90g)
+        Eficiência de Ouro no ápice: 91,48% (calculado)
     ]
     Notas: O texto oficial pt_BR exibe "0% de Potência de Escudo e Cura" (placeholder) e grafa "Cura e Resistência do Escudo"; catálogo adota "Poder de Cura e Escudo".
     Notas de ARAM: none
@@ -7626,6 +8632,7 @@ Tiara Sussurrante: Whispering Circlet[
     Efeitos Especiais: Acúmulos, Missão/Evolução
     Região: Demacia
     Mestre Forjador: Elegível — 1 categoria upgradável (1.000g; Mana, Regeneração de Mana e Poder de Cura e Escudo não contam): Vida 200(+375)=575 (confirmado em jogo pelo usuário em 12/09/2026: só a Vida é aprimorada)
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 2.250g = 168,75g (líquido: 2.081,25g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Whispering Circlet") · https://wiki.leagueoflegends.com/en-us/Whispering_Circlet · Data Dragon pt_BR 16.18.1
 ]
@@ -7655,9 +8662,17 @@ Aproximação Invernal: Winter's Approach[
     Análise de custo[
         Valor de Ouro: 15 AdH = 750g; 550 Vida = 1.466,67g; 500 Mana = 500g; total 2.716,67g; 75 de Vida de Fascínio = 200g; total 2.916,67g. Por 100 de Mana bônus de outras fontes: 15 Vida = 40g. Por carga: 3 Mana + 0,45 Vida = 4,2g (não campeão) / 6 Mana + 0,9 Vida = 8,4g (campeão)
         Eficiência de Ouro: 121,53% (base); +0,18% por carga de não campeões, +0,35% por carga de campeões; +1,67% por 100 de Mana bônus de outras fontes
+        Valor de Ouro (atributos): 2.716,67g
+        Valor de Ouro (base): 2.916,67g
     ]
     Ápice[
         360 de Mana bônus: +860 de Mana, +129 de Vida de Fascínio (só do item); transforma-se em Fimbulwinter.
+    ]
+    Ápice numérico[
+        Mana · 860 · pt · total
+        Vida · 679 · pt · total
+        Valor de Ouro no ápice: 3.420,67g (calculado: 2.916,67g + 360 de Mana = 360g + 54 de Vida de Fascínio = 144g)
+        Eficiência de Ouro no ápice: 142,53% (calculado)
     ]
     Notas: O texto oficial pt_BR exibe "Recebe 0 de Vida" (placeholder); valor real em Mecânica.
     Notas de ARAM: Cada carga consumida de Fluxo de Mana gera 50% mais Mana.
@@ -7668,6 +8683,7 @@ Aproximação Invernal: Winter's Approach[
     Efeitos Especiais: Acúmulos, Missão/Evolução
     Região: Freljord (nome: inverno / Fimbulwinter)
     Mestre Forjador: Não elegível (linha da Lágrima da Deusa)
+    Mestre Forjador (ouro): none
     Reembolso (runa Cash Back): 7,5% de 2.400g = 180g (líquido: 2.220g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Winter's Approach") · https://wiki.leagueoflegends.com/en-us/Winter's_Approach · Data Dragon pt_BR 16.18.1
 ]
@@ -7694,6 +8710,8 @@ Limite da Razão: Wit's End[
     Análise de custo[
         Valor de Ouro: 50% VdA = 1.250g; 45 RM = 900g; 20% Tenacidade = 206,67g; total 2.356,67g. Duelo: 45 de dano ao contato = 975g; total 3.331,67g
         Eficiência de Ouro: 118,99% (base, incluindo Duelo)
+        Valor de Ouro (atributos): 2.356,67g
+        Valor de Ouro (base): 3.331,67g
     ]
     Ápice[
         igual ao base
@@ -7707,6 +8725,7 @@ Limite da Razão: Wit's End[
     Efeitos Especiais: Dano Mágico, Efeitos ao Contato
     Região: The Void
     Mestre Forjador: Elegível — 2 categorias upgradáveis (500g cada; Tenacidade não conta): Velocidade de Ataque 50%(+16,67%)=66,67%; Resistência Mágica 45(+27,78)=72,78
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 2.800g = 210g (líquido: 2.590g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Wit's End") · https://wiki.leagueoflegends.com/en-us/Wit's_End · Data Dragon pt_BR 16.18.1
 ]
@@ -7734,9 +8753,17 @@ Lâmina Fantasma de Youmuu: Youmuu's Ghostblade[
     Análise de custo[
         Valor de Ouro: 55 DdA = 1.925g; 4% Velocidade de Movimento = 260,42g; 18 Letalidade = 540g; total 2.725,42g. Assombrar: 20 de Velocidade de Movimento fixa = 240g; total 2.965,42g. Passo Espectral: 20% / 15% de Velocidade de Movimento = 1.302,1g / 976,58g
         Eficiência de Ouro: 97,34% (base); 105,91% com Assombrar ativo; +46,5% / +34,88% com Passo Espectral ativo
+        Valor de Ouro (atributos): 2.725,42g
+        Valor de Ouro (base): 2.725,42g
     ]
     Ápice[
         Passo Espectral ativo: +20% (15%) de VdM e Fantasma por 6s (4s); Assombrar fora de combate: +20 (10) de VdM.
+    ]
+    Ápice numérico[
+        Movimento · 24 · % · total (à distância: 19; Passo Espectral, 6s / 4s)
+        Movimento · 20 · pt · a mais (à distância: 10; Assombrar, fora de combate)
+        Valor de Ouro no ápice: 4.267,52g (calculado: 2.725,42g + Assombrar 240g + Passo Espectral 1.302,1g; à distância: 3.822g)
+        Eficiência de Ouro no ápice: 152,41% (calculado: 97,34% + 8,57% + 46,5%; à distância: 136,5%)
     ]
     Notas: O texto oficial pt_BR exibe "0 de Velocidade de Movimento" e "por 0s" (placeholders); valores reais em Mecânica.
     Notas de ARAM: Velocidade de Movimento de Passo Espectral alterada para 40% / 35%; Velocidade de Movimento de Assombrar alterada para 30 / 15.
@@ -7747,6 +8774,7 @@ Lâmina Fantasma de Youmuu: Youmuu's Ghostblade[
     Efeitos Especiais: Ativa, Movimento, Atravessar Unidades
     Região: Ionia (nome: Youmuu)
     Mestre Forjador: Elegível — 1 categoria upgradável (1.000g; Letalidade e Velocidade de Movimento não contam): Dano de Ataque 55(+28,57)=83,57
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 2.800g = 210g (líquido: 2.590g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Youmuu's Ghostblade") · https://wiki.leagueoflegends.com/en-us/Youmuu's_Ghostblade · Data Dragon pt_BR 16.18.1
 ]
@@ -7774,9 +8802,17 @@ Flechatroz de Yun Tal: Yun Tal Wildarrows[
     Análise de custo[
         Valor de Ouro: 50 DdA = 1.750g; 45% VdA = 1.125g; 0% Acerto Crítico = 0g; total 2.875g. Praticar e Matar: 0%–25% Acerto Crítico = 0–1.000g; total 2.875–3.875g. Agitação: 30% VdA = 750g; total 3.625–4.625g
         Eficiência de Ouro: 95,83% (base); +0,27% por acúmulo de Praticar e Matar, até 129,17% no máximo; 120,83%–154,17% com Agitação ativa
+        Valor de Ouro (atributos): 2.875g
+        Valor de Ouro (base): 2.875g
     ]
     Ápice[
         63 (125) acúmulos: +25% de Chance de Acerto Crítico permanente; Agitação ativa: +30% de VdA por 6s.
+    ]
+    Ápice numérico[
+        Acerto Crítico · 25 · % · total
+        Velocidade de Ataque · 75 · % · total (Agitação, 6s)
+        Valor de Ouro no ápice: 4.625g
+        Eficiência de Ouro no ápice: 154,17%
     ]
     Notas: O item lista "+0% de Chance de Acerto Crítico" como atributo base (cresce com os acúmulos).
     Notas de ARAM: Chance de Acerto Crítico por acúmulo de Praticar e Matar alterada para 1% / 0,4%; máximo de acúmulos alterado para 25 / 63; teto de 25% inalterado.
@@ -7787,6 +8823,7 @@ Flechatroz de Yun Tal: Yun Tal Wildarrows[
     Efeitos Especiais: Acúmulos, Velocidade de Ataque
     Região: Ixtal
     Mestre Forjador: Elegível — 2 categorias upgradáveis (500g cada; Acerto Crítico não conta): Dano de Ataque 50(+14,29)=64,29; Velocidade de Ataque 45%(+16,67%)=61,67%
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 3.000g = 225g (líquido: 2.775g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Yun Tal Wildarrows") · https://wiki.leagueoflegends.com/en-us/Yun_Tal_Wildarrows · Data Dragon pt_BR 16.18.1
 ]
@@ -7815,6 +8852,8 @@ Invadomínio de Zaz'Zak: Zaz'Zak's Realmspike[
     Análise de custo[
         Valor de Ouro: 200 Vida = 533,33g; 75% Regeneração de Vida base = 225g; 75% Regeneração de Mana base = 300g; total 1.058,33g (a wiki não atribui valor à geração de ouro)
         Eficiência de Ouro: 264,58% (base)
+        Valor de Ouro (atributos): 1.058,33g
+        Valor de Ouro (base): 1.058,33g
     ]
     Ápice[
         igual ao base (Explosão do Vazio é gatilho com recarga)
@@ -7828,6 +8867,7 @@ Invadomínio de Zaz'Zak: Zaz'Zak's Realmspike[
     Efeitos Especiais: Dano Mágico, Dano em Área, Dano Percentual, Ativa, Visão, Acúmulos
     Região: The Void (nome: Zaz'Zak, Vazio)
     Mestre Forjador: Não elegível (classe Legendary Support Item)
+    Mestre Forjador (ouro): none
     Reembolso (runa Cash Back): none (item Lendário da linha de Suporte, obtido gratuitamente por transformação — sem compra, sem reembolso; decisão de 12/09/2026)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Zaz'Zak's Realmspike") · https://wiki.leagueoflegends.com/en-us/Zaz'Zak's_Realmspike · Data Dragon pt_BR 16.18.1
 ]
@@ -7857,9 +8897,15 @@ Convergência de Zeke: Zeke's Convergence[
     Análise de custo[
         Valor de Ouro: 10 AdH = 500g; 300 Vida = 800g; 25 Armadura = 500g; 25 RM = 500g; total 2.300g
         Eficiência de Ouro: 104,55% (base)
+        Valor de Ouro (atributos): 2.300g
+        Valor de Ouro (base): 2.300g
     ]
     Ápice[
         Tempestade ativa: 150 de dano mágico em 5s e 30% de lentidão em raio 350.
+    ]
+    Ápice numérico[
+        Valor de Ouro no ápice: none
+        Eficiência de Ouro no ápice: none
     ]
     Notas: O Data Dragon pt_BR 16.18.1 não traz o texto nem o nome da passiva Cryocombustion (só o efeito de Tempestade); Aceleração de Ultimate registrada pela wiki.
     Notas de ARAM: none
@@ -7870,6 +8916,7 @@ Convergência de Zeke: Zeke's Convergence[
     Efeitos Especiais: Aura, Dano Mágico, Dano em Área, Dano ao Longo do Tempo, Lentidão, Dano a Monstros
     Região: Piltover
     Mestre Forjador: Elegível — 4 categorias upgradáveis (250g cada): Vida 300(+90)=390; Armadura 25(+12,5)=37,5; Resistência Mágica 25(+13,89)=38,89; Aceleração de Habilidade 10(+8)=18
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 2.200g = 165g (líquido: 2.035g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Zeke's Convergence") · https://wiki.leagueoflegends.com/en-us/Zeke's_Convergence · Data Dragon pt_BR 16.18.1
 ]
@@ -7894,6 +8941,8 @@ Ampulheta de Zhonya: Zhonya's Hourglass[
     Análise de custo[
         Valor de Ouro: 105 PdH = 2.100g; 50 Armadura = 1.000g; total 3.100g
         Eficiência de Ouro: 95,38% (base)
+        Valor de Ouro (atributos): 3.100g
+        Valor de Ouro (base): 3.100g
     ]
     Ápice[
         igual ao base
@@ -7907,6 +8956,7 @@ Ampulheta de Zhonya: Zhonya's Hourglass[
     Efeitos Especiais: Ativa, Estase, Invulnerabilidade, Inalvejável
     Região: Shurima
     Mestre Forjador: Elegível — 2 categorias upgradáveis (500g cada): Poder de Habilidade 105(+25)=130; Armadura 50(+25)=75
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): 7,5% de 3.250g = 243,75g (líquido: 3.006,25g)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Zhonya's Hourglass") · https://wiki.leagueoflegends.com/en-us/Zhonya's_Hourglass · Data Dragon pt_BR 16.18.1
 ]
@@ -7937,9 +8987,15 @@ Mobilização Blindada: Armored Advance[
     Análise de custo[
         Valor de Ouro: 35 Armadura = 700g; 45 Velocidade de Movimento = 540g; total 1.240g
         Eficiência de Ouro: 103,33% (base)
+        Valor de Ouro (atributos): 1.240g
+        Valor de Ouro (base): 1.240g
     ]
     Ápice[
         Vigor Noxiano ativo: escudo físico de 218,59 (nível 13, 600 de Vida bônus) por 5s.
+    ]
+    Ápice numérico[
+        Valor de Ouro no ápice: none
+        Eficiência de Ouro no ápice: none
     ]
     Notas: O texto oficial pt_BR exibe "0 de Escudo" e "(0s)" (placeholders); valores reais em Mecânica.
     Notas de ARAM: none
@@ -7976,9 +9032,15 @@ Dádiva dos Mundos: Bounty of Worlds[
     Análise de custo[
         Valor de Ouro: 200 Vida = 533,33g; 75% Regeneração de Vida base = 225g; 75% Regeneração de Mana base = 300g; total 1.058,33g (a wiki não atribui valor à geração de ouro)
         Eficiência de Ouro: 264,58% (base)
+        Valor de Ouro (atributos): 1.058,33g
+        Valor de Ouro (base): 1.058,33g
     ]
     Ápice[
         Aprimorado para um dos 5 itens finais de Suporte.
+    ]
+    Ápice numérico[
+        Valor de Ouro no ápice: none
+        Eficiência de Ouro no ápice: none
     ]
     Notas: Etapa intermediária da linha de Suporte (Atlas Mundial → Bússola Rúnica → Dádiva dos Mundos → item final). Não pode ser vendido.
     Notas de ARAM: none
@@ -7989,6 +9051,7 @@ Dádiva dos Mundos: Bounty of Worlds[
     Efeitos Especiais: Missão/Evolução, Ativa, Visão, Acúmulos
     Região: Runeterra (sem brasão na página)
     Mestre Forjador: Não elegível (classe Legendary Support Item)
+    Mestre Forjador (ouro): none
     Reembolso (runa Cash Back): none (item obtido por transformação gratuita — sem compra, sem reembolso; regra de 12/09/2026)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Bounty of Worlds") · https://wiki.leagueoflegends.com/en-us/Bounty_of_Worlds · Data Dragon pt_BR 16.18.1
 ]
@@ -8014,9 +9077,15 @@ Esmagadores Acorrentados: Chainlaced Crushers[
     Análise de custo[
         Valor de Ouro: 25 RM = 500g; 45 Velocidade de Movimento = 540g; 30% Tenacidade = 310g; total 1.350g
         Eficiência de Ouro: 108% (base)
+        Valor de Ouro (atributos): 1.350g
+        Valor de Ouro (base): 1.350g
     ]
     Ápice[
         Persistência Noxiana ativa: escudo mágico de 218,59 (nível 13, 600 de Vida bônus) por 5s.
+    ]
+    Ápice numérico[
+        Valor de Ouro no ápice: none
+        Eficiência de Ouro no ápice: none
     ]
     Notas: O texto oficial pt_BR exibe "0 de Escudo" e "(0s)" (placeholders); valores reais em Mecânica.
     Notas de ARAM: none
@@ -8052,9 +9121,16 @@ Lucidez Escarlate: Crimson Lucidity[
     Análise de custo[
         Valor de Ouro: 20 AdH = 1.000g; 45 Velocidade de Movimento = 540g; total 1.540g. Aceleração Noxiana: 10% / 8% de Velocidade de Movimento = 651,05g / 520,84g; total 2.191,05g / 2.060,84g
         Eficiência de Ouro: 171,11% (base); 243,45% / 228,98% com Aceleração Noxiana ativa
+        Valor de Ouro (atributos): 1.540g
+        Valor de Ouro (base): 1.540g
     ]
     Ápice[
         Aceleração Noxiana ativa: +10% (8%) de VdM por 4s.
+    ]
+    Ápice numérico[
+        Movimento · 10 · % · total (à distância: 8; 4s, somado aos 45 fixos do item)
+        Valor de Ouro no ápice: 2.191,05g (à distância: 2.060,84g)
+        Eficiência de Ouro no ápice: 243,45% (à distância: 228,98%)
     ]
     Notas: O texto oficial pt_BR exibe "0 de Velocidade de Movimento" (placeholder); valores reais em Mecânica.
     Notas de ARAM: none
@@ -8092,9 +9168,15 @@ Diadema de Canções: Diadem of Songs[
     Análise de custo[
         Valor de Ouro: 200 Vida = 533,33g; 1.000 Mana = 1.000g; 100% Regeneração de Mana base = 400g; 8% Poder de Cura e Escudo = 400g; total 2.333,33g; 5% de Poder de Cura e Escudo de Harmonia = 250g; total 2.583,33g; por 100 de Mana bônus de outras fontes: 0,5% = 25g
         Eficiência de Ouro: 114,81% (base); +1,11% por 100 de Mana bônus de outras fontes
+        Valor de Ouro (atributos): 2.333,33g
+        Valor de Ouro (base): 2.583,33g
     ]
     Ápice[
         Forma final da Tiara Sussurrante; Harmonia cresce com Mana bônus de outras fontes.
+    ]
+    Ápice numérico[
+        Valor de Ouro no ápice: none (sem teto: +25g por 100 de Mana bônus de outras fontes)
+        Eficiência de Ouro no ápice: none (sem teto: +1,11% por 100 de Mana bônus de outras fontes)
     ]
     Notas: Não pertence ao grupo Fluxo de Mana (não é exclusivo com esses itens), exceto com a própria Tiara Sussurrante. O texto oficial pt_BR exibe "0% de Potência de Escudo e Cura" (placeholder) e grafa "Cura e Resistência do Escudo"; catálogo adota "Poder de Cura e Escudo".
     Notas de ARAM: none
@@ -8105,6 +9187,7 @@ Diadema de Canções: Diadem of Songs[
     Efeitos Especiais: Cura
     Região: Demacia
     Mestre Forjador: Elegível — 1 categoria upgradável (1.000g): Vida 200(+375)=575 (infobox da wiki; confirmado em jogo pelo usuário, 12/09/2026)
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): none (item obtido por transformação gratuita — sem compra, sem reembolso; regra de 12/09/2026)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Diadem of Songs") · https://wiki.leagueoflegends.com/en-us/Diadem_of_Songs · Data Dragon pt_BR 16.18.1
 ]
@@ -8133,9 +9216,15 @@ Fimbulwinter: Fimbulwinter[
     Análise de custo[
         Valor de Ouro: 15 AdH = 750g; 550 Vida = 1.466,67g; 1.000 Mana = 1.000g; total 3.216,67g; 150 de Vida de Fascínio = 400g; total 3.616,67g; por 100 de Mana bônus de outras fontes: 15 Vida = 40g
         Eficiência de Ouro: 150,69% (base); +1,67% por 100 de Mana bônus de outras fontes
+        Valor de Ouro (atributos): 3.216,67g
+        Valor de Ouro (base): 3.616,67g
     ]
     Ápice[
         Perpétuo com 2+ inimigos próximos: escudo de 261 (1.000 de Mana atual) por 3s.
+    ]
+    Ápice numérico[
+        Valor de Ouro no ápice: none (escudo sem preço; Fascínio sem teto: +40g por 100 de Mana bônus de outras fontes)
+        Eficiência de Ouro no ápice: none (sem teto: +1,67% por 100 de Mana bônus de outras fontes)
     ]
     Notas: Não pertence ao grupo Fluxo de Mana, exceto com a própria Aproximação Invernal. O texto oficial pt_BR exibe "Recebe 0 de Vida" e "(0s)" (placeholders); valores reais em Mecânica.
     Notas de ARAM: none
@@ -8146,6 +9235,7 @@ Fimbulwinter: Fimbulwinter[
     Efeitos Especiais: Escudo
     Região: Freljord (nome: Fimbulwinter)
     Mestre Forjador: Elegível — 2 categorias upgradáveis (500g cada; Mana não conta): Vida 550(+185)=735; Aceleração de Habilidade 15(+16)=31 (infobox da wiki; confirmado em jogo pelo usuário, 12/09/2026)
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): none (item obtido por transformação gratuita — sem compra, sem reembolso; regra de 12/09/2026)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Fimbulwinter") · https://wiki.leagueoflegends.com/en-us/Fimbulwinter · Data Dragon pt_BR 16.18.1
 ]
@@ -8170,6 +9260,8 @@ Grevas Bélicas: Gunmetal Greaves[
     Análise de custo[
         Valor de Ouro: 45% VdA = 1.125g; 45 Velocidade de Movimento = 540g; 5% Roubo de Vida = 267,75g; total 1.932,75g
         Eficiência de Ouro: 175,7% (base)
+        Valor de Ouro (atributos): 1.932,75g
+        Valor de Ouro (base): 1.932,75g
     ]
     Ápice[
         igual ao base
@@ -8207,9 +9299,16 @@ Caminho Imortal: Immortal Path[
     Análise de custo[
         Valor de Ouro: 45 Velocidade de Movimento = 540g; 4% Vampirismo Universal = 184g; total 724g. Eliminar: 0,6%–6% = 27,6–276g; total 751,6–1.000g
         Eficiência de Ouro: 72,4% (base); 75,16%–100% com acúmulos de Eliminar
+        Valor de Ouro (atributos): 724g
+        Valor de Ouro (base): 724g
     ]
     Ápice[
         10 acúmulos de Eliminar: 10% de Vampirismo Universal; Hoje e Sempre conforme a Vida atual.
+    ]
+    Ápice numérico[
+        Vampirismo · 10 · % · total
+        Valor de Ouro no ápice: 1.000g
+        Eficiência de Ouro no ápice: 100%
     ]
     Notas: none
     Notas de ARAM: none
@@ -8246,9 +9345,15 @@ Muramana: Muramana[
     Análise de custo[
         Valor de Ouro: 35 DdA = 1.225g; 15 AdH = 750g; 1.000 Mana = 1.000g; total 2.975g; 20 DdA de Fascínio = 700g; 12 de dano ao contato de Choque = 260g; total 3.935g; por 100 de Mana de outras fontes: 2 DdA = 70g + 1,2 de dano ao contato = 26g = 96g
         Eficiência de Ouro: 135,69% (base); +3,31% por 100 de Mana máxima de outras fontes (inclusive Mana base)
+        Valor de Ouro (atributos): 2.975g
+        Valor de Ouro (base): 3.935g
     ]
     Ápice[
         Forma final do Manamune; escala sem teto com a Mana máxima.
+    ]
+    Ápice numérico[
+        Valor de Ouro no ápice: none (sem teto: +96g por 100 de Mana máxima de outras fontes)
+        Eficiência de Ouro no ápice: none (sem teto: +3,31% por 100 de Mana máxima de outras fontes)
     ]
     Notas: Não pertence ao grupo Fluxo de Mana, exceto com o próprio Manamune. Visível na loja como aprimoramento não comprável do Manamune (Trivia).
     Notas de ARAM: none
@@ -8259,6 +9364,7 @@ Muramana: Muramana[
     Efeitos Especiais: Dano Físico, Efeitos ao Contato
     Região: Ionia (Trivia: Masamune)
     Mestre Forjador: Elegível — 2 categorias upgradáveis (500g cada; Mana não conta): Dano de Ataque 35(+14,29)=49,29; Aceleração de Habilidade 15(+16)=31 (infobox da wiki; confirmado em jogo pelo usuário, 12/09/2026)
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): none (item obtido por transformação gratuita — sem compra, sem reembolso; regra de 12/09/2026)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Muramana") · https://wiki.leagueoflegends.com/en-us/Muramana · Data Dragon pt_BR 16.18.1
 ]
@@ -8289,9 +9395,15 @@ Bússola Rúnica: Runic Compass[
     Análise de custo[
         Valor de Ouro: 100 Vida = 266,67g; 50% Regeneração de Vida base = 150g; 50% Regeneração de Mana base = 200g; total 616,67g (a wiki não atribui valor à geração de ouro)
         Eficiência de Ouro: 154,17% (base)
+        Valor de Ouro (atributos): 616,67g
+        Valor de Ouro (base): 616,67g
     ]
     Ápice[
         800g obtidos: transforma-se em Dádiva dos Mundos.
+    ]
+    Ápice numérico[
+        Valor de Ouro no ápice: none
+        Eficiência de Ouro no ápice: none
     ]
     Notas: Etapa intermediária da linha de Suporte. O texto oficial pt_BR exibe "0 de ouro", "(0s, máximo de 0 cargas)" (placeholders); valores reais em Mecânica. Não pode ser vendido.
     Notas de ARAM: none
@@ -8302,6 +9414,7 @@ Bússola Rúnica: Runic Compass[
     Efeitos Especiais: Missão/Evolução, Geração de Ouro, Execução, Ativa, Visão, Acúmulos
     Região: Runeterra (sem brasão na página)
     Mestre Forjador: Não elegível (item Épico da linha de Suporte)
+    Mestre Forjador (ouro): none
     Reembolso (runa Cash Back): none (item obtido por transformação gratuita — sem compra, sem reembolso; regra de 12/09/2026)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Runic Compass") · https://wiki.leagueoflegends.com/en-us/Runic_Compass · Data Dragon pt_BR 16.18.1
 ]
@@ -8330,9 +9443,15 @@ Abraço de Seraph: Seraph's Embrace[
     Análise de custo[
         Valor de Ouro: 70 PdH = 1.400g; 25 AdH = 1.250g; 1.000 Mana = 1.000g; total 3.650g; 20 PdH de Fascínio = 400g; total 4.050g; por 100 de Mana bônus de outras fontes: 2 PdH = 40g
         Eficiência de Ouro: 139,66% (base); +1,38% por 100 de Mana bônus de outras fontes
+        Valor de Ouro (atributos): 3.650g
+        Valor de Ouro (base): 4.050g
     ]
     Ápice[
         Forma final do Cajado do Arcanjo; Salva-Vidas pronto: escudo de 18% da Mana máxima.
+    ]
+    Ápice numérico[
+        Valor de Ouro no ápice: none (escudo sem preço; Fascínio sem teto: +40g por 100 de Mana bônus de outras fontes)
+        Eficiência de Ouro no ápice: none (sem teto: +1,38% por 100 de Mana bônus de outras fontes)
     ]
     Notas: Não pertence ao grupo Fluxo de Mana; é exclusivo com o Cajado do Arcanjo só pelo grupo Salva-Vidas. O texto oficial pt_BR exibe "0 de Poder de Habilidade", "0 de Escudo" e "(0s)" (placeholders); valores reais em Mecânica.
     Notas de ARAM: Recarga de Salva-Vidas alterada para 75s.
@@ -8343,6 +9462,7 @@ Abraço de Seraph: Seraph's Embrace[
     Efeitos Especiais: Gatilho de Vida Baixa, Escudo
     Região: Runeterra (sem brasão na página)
     Mestre Forjador: Elegível — 2 categorias upgradáveis (500g cada; Mana não conta): Poder de Habilidade 70(+25)=95; Aceleração de Habilidade 25(+16)=41 (infobox da wiki; confirmado em jogo pelo usuário, 12/09/2026)
+    Mestre Forjador (ouro): 1.000g
     Reembolso (runa Cash Back): none (item obtido por transformação gratuita — sem compra, sem reembolso; regra de 12/09/2026)
     Fontes: https://wiki.leagueoflegends.com/en-us/Module:ItemData/data (entrada "Seraph's Embrace") · https://wiki.leagueoflegends.com/en-us/Seraph's_Embrace · Data Dragon pt_BR 16.18.1
 ]
@@ -8367,6 +9487,8 @@ Sapatos Enfeitiçados: Spellslinger's Shoes[
     Análise de custo[
         Valor de Ouro: 45 Velocidade de Movimento = 540g; 8% Penetração Mágica = 369,2g; 20 Penetração Mágica = 933,33g; total 1.842,53g
         Eficiência de Ouro: 167,5% (base)
+        Valor de Ouro (atributos): 1.842,53g
+        Valor de Ouro (base): 1.842,53g
     ]
     Ápice[
         igual ao base
@@ -8405,9 +9527,15 @@ Marcha Célere: Swiftmarch[
     Análise de custo[
         Valor de Ouro: 65 Velocidade de Movimento = 780g; total 780g. Fervor Noxiano por 20 de VdM total: 0,6 DdA ou 1 PdH (adaptativo) = 21g ou 20g
         Eficiência de Ouro: 78% (base); +2% por 20 de VdM total; 100% com 209,52 (DdA) ou 220 (PdH) de VdM total
+        Valor de Ouro (atributos): 780g
+        Valor de Ouro (base): 780g
     ]
     Ápice[
         Cresce sem teto com a VdM total (ex.: 20 de Força Adaptativa com 400 de VdM).
+    ]
+    Ápice numérico[
+        Valor de Ouro no ápice: none (sem teto: +21g (DdA) ou +20g (PdH) por 20 de Velocidade de Movimento total)
+        Eficiência de Ouro no ápice: none (sem teto: +2% por 20 de Velocidade de Movimento total)
     ]
     Notas: none
     Notas de ARAM: none
@@ -8425,7 +9553,7 @@ Marcha Célere: Swiftmarch[
 
 ### Catálogo de Itens LoL — Lote 01: Starter (1–16)
 - Pets (3 blocos) · Notas: "Take 50% damage from non-epic monsters" = redução de 50% do dano de monstros não épicos, confirmada pelo tooltip do cliente (captura do usuário, 12/09/2026).
-- Pets (3 blocos) · Mecânica: a faixa de Mana do tooltip (43–196) é a base da wiki (19–87) com 100% de Mana perdida (+125%) — reconferido, sem divergência. Lentidão do Arranhão do Garrabrasa: wiki 2s (reconferida em 12/09/2026) vs tooltip do cliente 3s — [A CONFIRMAR] no bloco do Garrabrasa; a wiki e o cliente discordam.
+- Pets (3 blocos) · Mecânica: a faixa de Mana do tooltip (43–196) é a base da wiki (19–87) com 100% de Mana perdida (+125%) — reconferido, sem divergência. Lentidão do Arranhão do Garrabrasa: wiki 2s (reconferida em 12/09/2026) vs tooltip do cliente 3s — [A CONFIRMAR] no bloco do Garrabrasa; a wiki e o cliente discordam. Resolvida em 23/09/2026: 3s, confirmado pelo usuário (ver Ajustes).
 - Pets (3 blocos) · Habilidade: nomes PT-BR dos buffs finais lidos do tooltip do cliente (capturas do usuário, 12/09/2026): Marcha do Andabrisas, Coragem do Esmagamusgo, Arranhão do Garrabrasa.
 - Anel de Doran · Análise de custo: a wiki dá total sem Mana de 681–762g, mas 600 + 164,25–328,5 = 764,25–928,5g. A eficiência "base" do Anel (225%) e do Orbe do Guardião (210,53%) já inclui a regeneração da passiva. Transcrito como está; atributos e passivas dos dois itens confirmados pelo tooltip do cliente (capturas do usuário, 12/09/2026) — a inconsistência é só aritmética da wiki.
 - Abatedora · texto oficial: no Data Dragon as tags `<healing>` e `<OnHit>` ficam coladas ("Vidaao contato"); espaço inserido na remoção das tags.
@@ -8472,7 +9600,7 @@ Marcha Célere: Swiftmarch[
 - Serrated Dirk · Ingrediente: o `into` do Data Dragon inclui IDs fora da Lista (3131, 6691, 6693, 6701, 667666, 126697); usados só os 8 da wiki, todos na Lista.
 
 ### Catálogo de Itens LoL — Lote 08: Lendários (1–15 de 114)
-- Acerto de Contas de Atma (item "a confirmar" do Lote 0) · Tier/Modo: wiki confirma Lendário, exclusivo de ARAM: Mayhem (e Arena, ignorado); SR e ARAM = false. Registrado modo "ARAM: Mayhem". Atributo: +10 de Aceleração de Habilidade confirmado por captura do cliente (12/09/2026); a wiki não lista e sua Cost Analysis (2.666,67g / 106,67%) ignora esse atributo — transcrita como está. Componentes: só no Data Dragon (Cinto do Gigante, Capa da Agilidade, Cinto do Gigante, +500g); o módulo da wiki não traz receita.
+- Acerto de Contas de Atma (item "a confirmar" do Lote 0) · Tier/Modo: wiki confirma Lendário, exclusivo de ARAM: Mayhem (e Arena, ignorado); SR e ARAM = false. Registrado modo "ARAM: Mayhem". Atributo: +10 de Aceleração de Habilidade confirmado por captura do cliente (12/09/2026); a wiki não lista e sua Cost Analysis (2.666,67g / 106,67%) ignora esse atributo — transcrita como está. Em 23/09/2026 a Eficiência foi recalculada sobre 2.900g (91,95%): a wiki divide por 2.500g, preço de Arena (ver Ajustes). Componentes: só no Data Dragon (Cinto do Gigante, Capa da Agilidade, Cinto do Gigante, +500g); o módulo da wiki não traz receita.
 - Canção de Sangue · Reembolso (Cash Back): none — itens Lendários da linha de Suporte são gratuitos e não ativam a runa (confirmado pelo usuário, 12/09/2026; a wiki não cobre o caso). Modo: wiki confirma só SR (ARAM = false).
 - Quebra-Bastião · Modo de jogo: wiki confirma só SR (ARAM = false). Informativo.
 - Espada do Rei Destruído · Nome na wiki: "Blade of the Ruined King" (Lista/Data Dragon: "Blade of The Ruined King"). Cabeçalho inalterado.
@@ -8565,3 +9693,112 @@ Marcha Célere: Swiftmarch[
 - Placeholders no texto oficial pt_BR (Mobilização Blindada, Esmagadores, Lucidez Escarlate, Diadema, Fimbulwinter, Bússola Rúnica, Abraço de Seraph): valores reais em Mecânica.
 - Região por nome/tema (critério de 12/09/2026): botas de tier 3 com passivas "Noxianas" → Noxus; Fimbulwinter (Freljord); Muramana (Ionia, Trivia). Demais → Runeterra.
 - Bússola Rúnica · Riquezas Compartilhadas: 21g por carga e meta de 800g, contra 18g e 400g no Atlas Mundial (Lote 01) — reconferido no módulo raiz em 12/09/2026: os dois itens têm valores próprios. Informativo.
+
+# Ajustes — sessão de correção de 23/09/2026
+
+Origem: `pendencias_capitulo1.md` do Capítulo 2 (revisão de 23/09/2026). Patch conferido no início da sessão: `versions.json` = 16.18.1 (inalterado). Mestre Forjador (Ornn#Notes) e Cash Back (7,5%) reconferidos, sem mudança. As 225 páginas completas da wiki foram reabertas nesta sessão para B1.
+
+## Correções de dado
+
+| Pendência | Item · campo | Antes | Depois | Fonte |
+|---|---|---|---|---|
+| A1 | Acerto de Contas de Atma · Eficiência de Ouro | 106,67% (base) | 91,95% (base) | Valor de Ouro da Cost Analysis (2.666,67g) ÷ Preço do catálogo (2.900g, Data Dragon 16.18.1). A wiki divide por 2.500g (preço de Arena). Aceleração de Habilidade continua fora do Valor de Ouro (decisão do usuário, 23/09/2026). Nota em Notas. |
+| A2 | Redenção · Eficiência de Ouro | 100% (base) | 97,83% (base) | Preço de 2.300g confirmado no cliente pelo usuário (23/09/2026), igual ao Data Dragon; 2.250g ÷ 2.300g. Preço, Componentes (+850g) e Reembolso (172,5g) já estavam em 2.300g. Nota em Notas. |
+| B2 | Biscoito Total da Determinação Eterna · Atributo | atributo + nota de pesquisa (262 caracteres) | só o atributo | nota movida para o início de Notas, sem alteração de conteúdo |
+| C1, C2 | Atlas Mundial · Bússola Rúnica | valores de 16.18.1 | sem alteração | o Data Dragon ainda publica 16.18.1; as mudanças da wiki são do V26.19 |
+| E1 | Filhote de Garrabrasa · Mecânica (lentidão do Arranhão do Garrabrasa) | 30% decaindo em 2s (wiki) [A CONFIRMAR: cliente diz 3s] | 30% decaindo em 3s | tooltip do cliente (captura de 12/09/2026 e captura da loja em partida de 23/09/2026), confirmado pelo usuário; a wiki (item e página Smite, texto transcluído) diz 2s |
+
+## Linhas novas (formatos aprovados pelo usuário em 23/09/2026)
+
+As linhas antigas não mudaram. Todas as linhas novas têm rótulo fixo e número no formato do cliente (ponto de milhar, vírgula decimal, "g").
+
+**B1 — em todos os 225 itens, no fim de `Análise de custo[]`:**
+```
+        Valor de Ouro (atributos): <Xg | none>
+        Valor de Ouro (base): <Yg | none>
+```
+- `(atributos)`: só as linhas de Atributo[], igual à tabela "Gold efficiency" da wiki. Nos três Elixires (Ferro, Feitiçaria, Ira) vale 0g: o item não dá atributo enquanto está no inventário.
+- `(base)`: numerador da Eficiência de Ouro (base), igual ao artigo do item (atributos mais o que o artigo conta).
+- 25 itens com valores diferentes: Anel de Doran, Orbe do Guardião, Elixir de Ferro, Elixir da Feitiçaria, Elixir da Ira, Botas Levemente Mágicas, Arco Recurvo, Cajado do Arcanjo, Auronúcleo, Lâmina da Fúria de Guinsoo, Manamune, Dente de Na'Shor, Armadura Sangrenta do Suserano, Capuz da Morte de Rabadon, Criafendas, Semblante Espiritual, Terminus, Armadura de Warmog, Tiara Sussurrante, Aproximação Invernal, Limite da Razão, Diadema de Canções, Fimbulwinter, Muramana e Abraço de Seraph. (As Botas Levemente Mágicas custam 0g e não entram na lista do Capítulo 2: 300g de atributos, 420g com a passiva.)
+- 186 itens com as duas linhas iguais; 14 com `none` (a wiki não traz Cost Analysis).
+- Atlas Mundial e Bússola Rúnica: valores de 16.18.1 (255g e 616,67g); a página da Bússola ainda publica 616,67g, a do Atlas já publica 250g (V26.19).
+
+**D2 — duas partes:**
+- Tabela "Preços de atributo" no topo do catálogo (depois do Índice), com a tabela de preços do Mestre Forjador logo abaixo.
+- Linha nova logo abaixo de `Mestre Forjador:` nos 120 itens que têm o campo: `Mestre Forjador (ouro): 1.000g` (109 elegíveis) ou `Mestre Forjador (ouro): none` (11 não elegíveis).
+
+**D3 — bloco `Fragmentos[]` no Atributo adicional, depois de `Habilidade[]`:**
+```
+        <Prata | Ouro | Prismático> · [Nome EN do fragmento composto: ]<Categoria> <valor>[ + <Categoria> <valor>] · <ouro | none>[ (observação)]
+```
+34 linhas (13 Prata, 13 Ouro, 8 Prismático). Fonte: https://wiki.leagueoflegends.com/en-us/Stat_Bonus_(ARAM:_Mayhem), reaberta em 23/09/2026.
+
+**D1 — `Ápice numérico[]`, logo depois de `Ápice[]`:** 102 itens (os mesmos 102 contados pelo Capítulo 2). Os 23 itens cujo Ápice começa com "igual ao base (…)" não recebem o bloco: Brasa de Bami, Hexdrinker, Armaguarda da Caçadora, Barreira Verdejante, Máscara Abissal, Arco do Axioma, Véu da Banshee, Criptoflora, Dança da Morte, Aurora e Crepúsculo, Limiar da Noite, Coração Congelado, Anjo Guardião, Resplendor Vazio, Manopla dos Glacinatas, Arco-escudo Imortal, Juramento do Cavaleiro, Perdição de Lich, Regenerador de Pedra Lunar, Ápice da Tempestade, Égide de Fogo Solar, Desespero Eterno e Invadomínio de Zaz'Zak.
+```
+        <Categoria de Atributo> · <valor> · <pt | %> · <total | a mais>
+        Valor de Ouro no ápice: <Xg | none>[ (observação)]
+        Eficiência de Ouro no ápice: <Y% | none>[ (observação)]
+```
+Valores da Cost Analysis da wiki quando ela publica; "(calculado)" quando derivados. Ápice sem atributo que mude: sem linhas de atributo.
+
+| Sublote | Itens | Data | Situação |
+|---|---|---|---|
+| D1.1 | Abatedora, Lacre Sombrio, Anel de Doran, Escudo de Doran, Cria de Andabrisas, Broto de Esmagamusgo, Filhote de Garrabrasa, Lágrima da Deusa, Atlas Mundial, Elixir de Ferro, Elixir da Feitiçaria, Elixir da Ira, Poção com Refil, Atributo adicional, Lente do Oráculo | 23/09/2026 | entregue |
+| D1.2 | Sentinela Invisível, Elixir da Avareza, Elixir da Força, Biscoito Total da Determinação Eterna, Grevas Vorazes, Máscara Assustadora, Fago, Atualizador, Cajado do Arcanjo, Turíbulo Ardente | 23/09/2026 | entregue |
+| D1.3 | Acerto de Contas de Atma, Bandocanos, Quebra-Bastião, Cutelo Negro, Tocha de Chamas Negras, Espada do Rei Destruído, Maldição Sanguinária, Canção de Sangue, Sedenta por Sangue, Oposição Celestial, Ímpeto Cósmico, Auronúcleo, Couraça do Defunto | 23/09/2026 | entregue |
+| D1.4 | Criassonhos, Ecos de Helia, Eclipse, Fome Eterna, Colhedor de Essência, Hexoplaca Experimental, Dardos de Caça-Demônios, Força da Natureza, Lâmina da Fúria de Guinsoo, Coração de Aço, Hexótica C44, Foco do Horizonte, Húbris | 23/09/2026 | entregue |
+| D1.5 | Quebracascos, Mandato Imperial, Jak'Sho, o Inconstante, Rookern Lamúrico, Mata-Cráquens, Tormento de Liandry, Medalhão dos Solari de Ferro, Lembranças do Lorde Dominik, Eco de Luden, Malevolência, Manamune, Mandíbula de Malmortius, Ladrão de Almas de Mejai | 23/09/2026 | entregue |
+| D1.6 | Dente de Na'Shor, Armadura Sangrenta do Suserano, Couraça Protoplasmática, Capuz da Morte de Rabadon, Canhão Fumegante, Criafendas, Bastão das Eras, Chama Sombria, Trenó do Solstício, Lança de Shojin, Cajado Aquafluxo, Faca de Statikk, Sinal de Sterak | 23/09/2026 | entregue |
+| D1.7 | Chuva de Canivete, Quebrapassos, Céu Dividido, Terminus, Hidra Titânica, Força da Trindade, Glaive Sombria, Cicloespada Voltaica, Armadura de Warmog, Tiara Sussurrante, Aproximação Invernal, Lâmina Fantasma de Youmuu, Flechatroz de Yun Tal | 23/09/2026 | entregue |
+| D1.8 | Convergência de Zeke, Mobilização Blindada, Dádiva dos Mundos, Esmagadores Acorrentados, Lucidez Escarlate, Diadema de Canções, Fimbulwinter, Caminho Imortal, Muramana, Bússola Rúnica, Abraço de Seraph, Marcha Célere | 23/09/2026 | entregue |
+
+Notas do D1.1:
+- Com linhas de atributo: Lacre Sombrio (Poder de Habilidade 55), Lágrima da Deusa (Mana 600) e os três Elixires (efeito ativo por 180s: Ferro com Vida 300 e Tenacidade 25%; Feitiçaria com Poder de Habilidade 50 e Regeneração de Mana 15; Ira com Dano de Ataque 30).
+- Só valor em ouro, sem atributo novo: Abatedora (ouro recebido; 695g calculado, 154,44% da wiki), Anel de Doran (Drenar, 1.200g / 300%), Escudo de Doran (Foco Definitivo, 1.337,33g / 297,18%).
+- Ápice sem número (`none`): os três filhotes de selva (item consumido), Atlas Mundial (vira Bússola Rúnica), Poção com Refil, Atributo adicional, Lente do Oráculo.
+Notas do D1.2:
+- Com linhas de atributo: Elixir da Força (adaptativo: Dano de Ataque 15 ou Poder de Habilidade 25, duas linhas alternativas), Grevas Vorazes (Vampirismo 10%), Fago (Movimento 20 com Fúria; à distância 10), Cajado do Arcanjo (Mana 960 e Poder de Habilidade 79,6, com Fascínio sobre 960 de Mana bônus), Turíbulo Ardente (Velocidade de Ataque 25% e Efeitos ao Contato 20 com Santificar).
+- Cajado do Arcanjo: 3.802g e 131,1% calculados pelos valores por carga da própria Cost Analysis (360 de Mana = 360g; 3,6 de PdH de Fascínio = 72g). O ápice coincide com a transformação em Abraço de Seraph.
+- Turíbulo Ardente: 338,73% é da wiki (4 aliados e o conjurador); o Valor de Ouro de 7.452,07g é a soma calculada com o valor por unidade da wiki.
+- Elixir da Avareza e Elixir da Força: Preço 0g, eficiência `none`; valor em ouro calculado.
+- `none`: Sentinela Invisível, Biscoito Total (o atributo permanente já está em Atributo[]; o ápice é só a cura), Máscara Assustadora e Atualizador (amplificação de dano sem preço na tabela da wiki).
+Notas do D1.3:
+- Acerto de Contas de Atma: Acerto Crítico 50% no total (o caso-prova do D1); 3.866,67g e 133,33% calculados sem a Aceleração de Habilidade, como a base.
+- "Movimento · 20 · pt · a mais" (Ímpeto Cósmico, Couraça do Defunto): a Velocidade de Movimento do item é percentual (4%) e a do ápice é fixa; por isso "a mais", com unidades diferentes.
+- Tocha de Chamas Negras: o ápice multiplica o PdH total do campeão. Sem valor fixo; o texto traz a conta com o PdH 200 de referência do Guia.
+- Auronúcleo: sem teto; valores por 100% de Regeneração de Mana base de outras fontes (wiki).
+- `none` (efeito sem atributo do portador: redução de resistência no alvo, dano verdadeiro, lentidão, escudo, redução de dano): Quebra-Bastião, Espada do Rei Destruído, Maldição Sanguinária, Canção de Sangue, Sedenta por Sangue, Oposição Celestial.
+Notas do D1.4:
+- Fome Eterna: o valor no ápice soma a Aceleração de Fome (só com o DdA do item) e o Banquete; 4.051,67g é a soma dos valores da wiki, e 130,7% é da wiki.
+- Dardos de Caça-Demônios e Hexótica C44: bônus de duração curta sem valor na wiki (3 ataques; 8s de Alcance de Ataque). Linha de atributo registrada, valores `none`.
+- Coração de Aço e Húbris: sem teto; valores por unidade da wiki no texto.
+- `none` (efeito sem atributo do portador): Criassonhos, Ecos de Helia, Eclipse, Colhedor de Essência (o ápice depende de Acerto Crítico de outras fontes), Foco do Horizonte.
+Notas do D1.5:
+- Jak'Sho: Armadura e RM de 58,5 contam só os bônus do próprio item (45 + 30%); 102,29% é da wiki.
+- Manamune: 3.437g e 118,52% calculados com os valores por carga da própria Cost Analysis (360 de Mana; Fascínio sobre 860 de Mana = 17,2 de DdA). O ápice coincide com a transformação em Muramana.
+- `none` (efeito sem atributo do portador): Quebracascos, Mandato Imperial, Rookern Lamúrico, Mata-Cráquens, Tormento de Liandry, Medalhão dos Solari de Ferro, Lembranças do Lorde Dominik, Eco de Luden, Malevolência.
+Notas do D1.6:
+- Couraça Protoplasmática: Vida do Salva-Vidas no nível 13 (241,18, como no Ápice); o valor e a eficiência são calculados nesse nível, com a faixa da wiki entre parênteses.
+- Criafendas: 3.683,33g e 118,82% somam os valores da wiki (base + Vampirismo de Corrupção do Vazio); o +8% de dano não tem preço.
+- Cajado Aquafluxo: 442,22% é da wiki (4 aliados e o conjurador); 9.950g é a soma calculada com o valor por unidade da wiki.
+- Rabadon e Suserano: multiplicadores ("a mais", unidade %), sem teto; valores por unidade da wiki no texto. Dente de Na'Shor também sem teto.
+- Canhão Fumegante e Trenó do Solstício: bônus de 1 ataque ou 2,5s, sem valor na wiki.
+- `none` (efeito sem atributo do portador): Chama Sombria, Lança de Shojin, Faca de Statikk, Sinal de Sterak.
+Notas do D1.7:
+- Terminus: Armadura e RM de Luz no nível 13 (7 por acúmulo); valor e eficiência calculados nesse nível, faixa da wiki entre parênteses.
+- Tiara Sussurrante e Aproximação Invernal: valores calculados com os valores por carga da própria Cost Analysis; o ápice coincide com a transformação (Diadema de Canções, Fimbulwinter).
+- Lâmina Fantasma de Youmuu: soma Assombrar e Passo Espectral, como no texto do Ápice; valores da wiki por efeito, soma calculada. Duas linhas de Movimento (percentual e fixa).
+- Armadura de Warmog: valores da wiki com 2.000 de Vida bônus (condição mínima do Coração de Warmog).
+- Chuva de Canivete e Quebrapassos: bônus de Velocidade de Movimento de 1,5s / 3s, sem valor na wiki.
+- `none`: Céu Dividido (o Ápice não traz número), Hidra Titânica (dano da ativa), Glaive Sombria (dano verdadeiro).
+Notas do D1.8:
+- Lucidez Escarlate: Movimento percentual do ápice somado aos 45 fixos do item (unidades diferentes, por isso "total" em %).
+- Sem teto, com valores por unidade da wiki no texto: Diadema de Canções, Fimbulwinter, Muramana, Abraço de Seraph, Marcha Célere.
+- `none` (escudo, dano, transformação): Convergência de Zeke, Mobilização Blindada, Dádiva dos Mundos, Esmagadores Acorrentados, Bússola Rúnica.
+
+**D1 concluída:** 102 itens com `Ápice numérico[]`; 23 com Ápice "igual ao base (…)" sem bloco; 100 com Ápice "igual ao base" sem bloco.
+
+## Divergências da sessão
+- Atributo adicional · Ápice (texto antigo): diz que a seleção Prismática dá o "maior valor por fragmento (ex.: Velocidade de Movimento +18% = 1.171,89g)", mas o fragmento de maior valor em ouro é de nível Ouro (Aceleração de Habilidade 35 = 1.750g; Swiftness = 1.625g). O Ápice numérico ficou `none` (seleção aleatória, sem ápice fixo). **Resolvida (usuário, 23/09/2026): texto mantido como está.**
+- A2, A1 e E1: nenhuma em aberto. Catálogo sem marcas [A CONFIRMAR]. A2 resolvida pela confirmação do preço no cliente; a Aceleração de Habilidade do Atma segue fora do Valor de Ouro por decisão do usuário.
+- Informativo: a Lista_Piloto_v2 aponta Blade_of_The_Ruined_King, Slightly_Magical_Footwear e Stat_Bonus, e essas três páginas não existem ou são de desambiguação. As páginas corretas (as do campo Fontes de cada bloco) foram as usadas.

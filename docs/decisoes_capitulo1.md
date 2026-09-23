@@ -10,4 +10,4 @@ O que ainda é pendência do Capítulo 1 (dado errado, forma do dado, patch novo
 - **Slightly Magical Footwear** substitui as Botas e lista as 7 botas de tier 2 em "Vira em"; as botas não o listam como componente. Componente alternativo, não obrigatório.
 - **Atma's Reckoning** lista Giant's Belt duas vezes (qty 1 + 1): o app agrupa componentes repetidos ao exibir (×2). A soma da receita fecha.
 - **Giant's Belt e Cloak of Agility** não listam Atma's Reckoning em "Vira em" (fonte é a seção "Builds Into" da wiki). O app pode derivar o "Vira em" inverso a partir de `components` se precisar.
-- **Pets (Gustwalker, Mosstomper, Scorchclaw)** não têm `Atributo[]`; o app mostra as habilidades. Scorchclaw Pup carrega "[A CONFIRMAR]" (lentidão 2s vs 3s) — única dúvida de fonte aberta no Capítulo 1.
+- **Pets (Gustwalker, Mosstomper, Scorchclaw)** não têm `Atributo[]`; o app mostra as habilidades. A lentidão do Scorchclaw Pup, que estava "[A CONFIRMAR]" (2s vs 3s), foi resolvida em 23/09/2026 com 3s, pelo cliente. O Capítulo 1 não tem mais dúvida de fonte aberta.
