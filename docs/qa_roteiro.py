@@ -199,7 +199,10 @@ class Sessao:
         self.envia("Page.navigate", {"url": self.url + caminho})
         fim = time.time() + 30
         while time.time() < fim:
-            msg = json.loads(self.ws.recv())
+            try:
+                msg = json.loads(self.ws.recv())
+            except websocket.WebSocketTimeoutException:
+                raise RuntimeError("a página não carregou: %s" % (self.url + caminho)[:90])
             self._anota(msg)
             if msg.get("method") == "Page.loadEventFired":
                 return
@@ -624,6 +627,39 @@ def checar_texto(s, p):
     p.conta("texto", "texto antigo (vagas espremidas) e só fragmentos voltam inteiros",
             velho["slots"][1:] == ["lenda-espontaneidade", "golpe-de-misericordia"] and "vida" in velho["frag"] and not velho["unknown"],
             "slots %s, fragmentos %s, não encontrei %s" % (velho["slots"], velho["frag"], velho["unknown"]))
+
+    # F13-T13: o LINK da build é o outro jeito de mandá-la para alguém, e ele
+    # não levava runas, habilidades, layout nem Mestre Forjador — mas a placa
+    # promete "quem abrir recebe esta build". Aqui o link é aberto numa página
+    # nova, como quem recebe, e comparado campo a campo.
+    CAMPOS = """(() => JSON.stringify({ itens: build.cats.flatMap(c => c.items.map(i => [i.itemId, i.note || '', !!i.mf])),
+      runas: normRunas(build.runas), habilidades: normHabilidades(build.habilidades),
+      layout: layoutValido(build.layout), mestre: !!build.masterwork, modo: build.mode || '', desc: build.desc || '',
+      marcadores: build.markers }))()"""
+    s.js("""(() => { const t = RUNAS.trilhas[2];
+      build.runas = normRunas({ primaria: t.id, assinatura: t.slots[0].runas[1].id, slots: [t.slots[1].runas[0].id, '', t.slots[3].runas[1].id],
+        fragmentos: [RUNAS.fragmentos[0].runas[1].id, '', RUNAS.fragmentos[2].runas[0].id] });
+      build.habilidades = normHabilidades(['Q','E','W','Q','Q','R','Q','E','Q','E','R','E','E','W','W','R','W','W']);
+      build.layout = Object.keys(LAYOUTS).find(k => k !== 'tabuleiro');
+      build.masterwork = true; build.desc = 'descrição do link';
+      const c = build.cats.find(c => c.items.length); if (c) { c.items[0].note = 'observação'; c.items[0].mf = true; }
+      gravarBuild(); return 'ok'; })()""")
+    enviado = s.js(CAMPOS)
+    link = s.js("buildParaLink(library.builds.find(b => b.id === build.id))")
+    # página NOVA: trocar só o "#" não recarrega o documento, e aí ninguém "recebe"
+    s.abrir("?link=1#" + link.split("#", 1)[1])
+    time.sleep(1.2)
+    s.entrar()
+    recebido = s.js(CAMPOS)
+    veio_do_link = s.js("build.id.startsWith('l-')")
+    if not veio_do_link:
+        det = "a build ativa não é a recebida pelo link (id %s)" % s.js("build.id")
+    elif enviado == recebido:
+        det = "runas, habilidades, layout, Mestre Forjador, itens e observações; link de %d caracteres" % len(link)
+    else:
+        a, b = json.loads(enviado), json.loads(recebido)
+        det = "; ".join("%s: %s → %s" % (k, json.dumps(a[k], ensure_ascii=False)[:60], json.dumps(b[k], ensure_ascii=False)[:60]) for k in a if a[k] != b[k])
+    p.conta("texto", "o link leva a build inteira (quem abre recebe tudo)", veio_do_link and enviado == recebido, det)
 
     # F13-T8: importar tem de CRIAR uma build nova (senão a comparação acima
     # passa sem testar nada) e ela tem de nascer GRAVADA — com Mestre Forjador e

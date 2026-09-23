@@ -72,6 +72,8 @@ Status de cada um:
 
 ### 7. O link da build não leva runas nem habilidades, mas a mensagem promete a build inteira
 
+**CONSERTADO na F13-T13 (23/09/2026).** Era pior que o achado: o link também deixava de fora o **layout** e o **Mestre Forjador**. Os quatro entram como campos opcionais (`r`, `h`, `l`, `x`) — link antigo, sem eles, continua abrindo igual. O link cresce ~300 caracteres com a página de runas cheia e as 18 habilidades.
+
 `index.html:6287` · alta · achado por: Runas e habilidades · **passou pelos céticos**
 
 **Como quebra:** 1) Monte uma build com runas e ordem de habilidades. 2) Clique em "Copiar link" (botão link-btn na forja, ou o botão Link no detalhe da lista) — a placa diz "Link copiado — quem abrir recebe esta build na biblioteca". 3) Abra o link em outra aba/navegador: chega nome, modo, campeão, marcadores, descrição, layout e caixas, mas a página de runas e a ordem de habilidades vêm vazias. linkParaBuild (linha 6297) e receberBuildDoLink (linha 6315) também não têm campo para elas, então normRunas(undefined) devolve a página vazia. É o único caminho de exportação que ficou para trás: o texto (linhasDeRunas, linha 6148) e a publicação (p_runas/p_habilidades, linha 6393) levam os dois.
