@@ -632,6 +632,41 @@ def checar_runas(s, p):
             else "falta no " + " e no ".join(n for n, ok in (("Montar", rodape_montar), ("Ler", rodape_ler)) if not ok))
 
 
+def checar_fragmento(s, p):
+    """F13-T23: o Atributo adicional guarda o fragmento escolhido (entry.frag)."""
+    print("\n%sFRAGMENTO DO ATRIBUTO ADICIONAL%s" % (AMARELO, FIM))
+    s.nova_build()
+    if not s.js("document.body.classList.contains('editando')"):
+        s.clicar("#edit-switch", 0.8)
+    s.js("""(() => { const c = build.cats[3]; c.items = [{ itemId: 'stat-bonus', note: '' }, { itemId: 'stat-bonus', note: 'segundo' }];
+      switchTab('build'); showBuildScreen('forja'); renderBuildAll(); return 'ok'; })()""")
+    time.sleep(0.8)
+    sel = s.js("'.build-cat[data-cat-id=\"' + build.cats[3].id + '\"] .item-tile'")
+    s.clicar(sel + " .item-icon", 0.8)
+    n = s.js("document.getElementById('escolher-fragmento').hidden ? 0 : document.querySelectorAll('#fr-lista [data-frag]').length")
+    p.conta("fragmento", "clicar no ícone abre a escolha dos fragmentos", n > 30, "%s fragmentos na lista" % n)
+    if n:
+        s.clicar('#fr-lista [data-frag="Ouro · Vida"]', 0.8)
+    s.js("(() => { build.cats[3].items[1].frag = 'Prata · Swiftness'; renderBuildAll(); return 'ok'; })()")
+    t = s.js("""(() => { const cx = build.cats[3]; return { f: cx.items.map(e => e.frag || null),
+      attrs: sumAttributes(cx.items).map(x => x.stat + '|' + x.unit + '|' + x.value), ouro: goldEfficiency(cx.items).gold }; })()""")
+    p.conta("fragmento", "o fragmento entra nos atributos e no ouro",
+            t["f"] == ["Ouro · Vida", "Prata · Swiftness"] and "Vida|flat|375" in t["attrs"] and "Velocidade de Ataque|percent|10" in t["attrs"]
+            and abs(t["ouro"] - 1650) < 0.01, "%s · %sg" % (t["attrs"], t["ouro"]))
+    # Os caminhos que listam os campos da entrada um a um: texto, lote, link e servidor.
+    s.js("gravarBuild(); 'ok'")
+    v = s.js("""(() => { const quer = JSON.stringify(['Ouro · Vida', 'Prata · Swiftness']);
+      const deTexto = (txt) => JSON.stringify(textToBuild(txt).cats.flatMap(c => c.items).filter(e => e.itemId === 'stat-bonus').map(e => e.frag || null));
+      const b = library.builds.find(x => x.id === build.id);
+      const lk = linkParaBuild('#' + buildParaLink(b).split('#')[1]);
+      const sv = caixasDoServidor(caixasParaServidor(build.cats), []);
+      const so = (cats) => JSON.stringify(cats.flatMap(c => c.items).filter(e => e.itemId === 'stat-bonus').map(e => e.frag || null));
+      return { texto: deTexto(buildToText()) === quer, lote: deTexto(loteParaTexto([build.id]).split(String.fromCharCode(10) + String.fromCharCode(10) + '=====')[0]) === quer,
+               link: so(lk.cats) === quer, servidor: so(sv) === quer }; })()""")
+    p.conta("fragmento", "o fragmento viaja no texto, no lote, no link e na publicação", all(v.values()),
+            ", ".join(k for k, ok in v.items() if not ok) or "os quatro")
+
+
 def checar_habilidades(s, p):
     print("\n%sHABILIDADES%s" % (AMARELO, FIM))
     garantir_build_editavel(s)
@@ -1003,6 +1038,7 @@ GRUPOS = [
     ("runas", checar_runas),
     ("habilidades", checar_habilidades),
     ("texto", checar_texto),
+    ("fragmento", checar_fragmento),
     ("exclusão", checar_exclusao),
     ("acessibilidade", checar_acessibilidade),
     ("resoluções", checar_resolucoes),

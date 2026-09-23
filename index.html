@@ -4017,6 +4017,34 @@ body.editando .item-tile.mf-elegivel:not(.mf):hover .item-icon { border-color: #
 .item-tooltip .tt-mf div { font-size: 12px; }
 .item-tooltip .tt-mf b { color: #e7c46f; font-weight: 700; }
 .item-tooltip .tt-mf.off { opacity: .7; }
+/* F13-T23: o selo do fragmento do Atributo adicional e o seu diálogo */
+.item-tile .frag-badge {
+  position: absolute; top: 4px; left: 50%; transform: translateX(-50%); z-index: 3;
+  font-family: var(--loja-gravado); font-size: 7.5px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+  padding: 1px 5px; border-radius: 999px; box-shadow: 0 1px 2px rgba(0,0,0,.6); color: #1e140a;
+}
+.item-tile .frag-badge.prata { background: linear-gradient(160deg, #eef1f4, #9aa4ae); }
+.item-tile .frag-badge.ouro { background: linear-gradient(160deg, #f3d98a, #b8863b); }
+.item-tile .frag-badge.prismatico { background: linear-gradient(120deg, #f6a6d8, #a8c8ff 50%, #b9f3c9); }
+.item-tile .frag-badge.vazio { background: linear-gradient(180deg, #5a4d42, #3a312a); color: #c9b9a2; }
+body.editando .item-tile .frag-badge { cursor: pointer; }
+.item-tooltip .tt-frag { margin-top: 7px; padding-top: 7px; border-top: 1px dashed var(--forja-tracejado); }
+.item-tooltip .tt-frag .k { font-family: var(--loja-gravado); font-size: 8.5px; letter-spacing: .16em; text-transform: uppercase; color: #c9973f; display: block; margin-bottom: 2px; }
+.item-tooltip .tt-frag div { font-size: 12px; }
+#escolher-fragmento { z-index: 96; }
+.fr-panel { max-width: 760px; width: 100%; max-height: calc(100vh - 32px); overflow-y: auto; }
+.fr-lista .md-label { margin: 12px 0 6px; }
+.fr-nivel.prata { color: #c9d0d7; }
+.fr-nivel.ouro { color: #e7c46f; }
+.fr-nivel.prismatico { color: #d8b4fe; }
+.fr-grupo { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+.fr-op { padding: 6px 10px; font-size: 13px; line-height: 1.25; }
+.fr-op .ec-qtd { white-space: nowrap; }
+.fr-op .fr-obs { display: block; font-size: 11px; font-style: italic; color: var(--forja-texto-suave, #9a8778); margin-top: 2px; }
+.fr-op.ativo { border-color: #e7c46f; box-shadow: 0 0 0 1px #e7c46f; background: rgba(231,196,111,.12); }
+.fr-op.prata { --cat-color: #9aa4ae; }
+.fr-op.ouro { --cat-color: #c8aa6e; }
+.fr-op.prismatico { --cat-color: #b48ead; }
 
 /* ---- Fase 3, T8: Reembolso e Ápice na forja ---- */
 .item-tile .mf-badge { left: 4px; transform: none; }
@@ -5220,6 +5248,20 @@ body.forja .build-cat.drop-after  { transform: translateX(-5px); box-shadow: ins
     </div>
   </div>
 </div>
+<!-- F13-T23: o Atributo adicional abre fragmentos de um nível sorteado; aqui se
+     marca o que foi pego. Os 34 vêm do catálogo (item.fragments). -->
+<div id="escolher-fragmento" class="marker-dialog" role="dialog" aria-label="Qual fragmento" hidden>
+  <div class="md-panel ec-panel fr-panel">
+    <button type="button" class="md-close" id="fr-close" aria-label="Fechar">×</button>
+    <h3 class="md-title">Qual fragmento?</h3>
+    <p class="ec-sub" id="fr-sub"></p>
+    <div class="fr-lista" id="fr-lista"></div>
+    <div class="md-foot ec-foot">
+      <span class="ec-dica">O jogo sorteia o nível e mostra alguns fragmentos dele; marque o que você pegou.</span>
+      <button type="button" class="btn ghost" id="fr-limpar">Sem fragmento</button>
+    </div>
+  </div>
+</div>
 <!-- F13-T4: o rótulo da caixa era um botão que dava a volta olímpica
      (Comum → Prioridade → Opcional → Escolha 1, um clique de cada vez).
      Agora abre isto, com os quatro à vista e o atual marcado. -->
@@ -6371,7 +6413,7 @@ function buildToText() {
     cat.items.forEach(e => {
       const item = byId[e.itemId];
       if (!item) return;
-      lines.push(`- ${item.namePt}${e.note ? " * " + e.note : ""}`);
+      lines.push(`- ${item.namePt}${e.frag ? " [" + e.frag + "]" : ""}${e.note ? " * " + e.note : ""}`);
     });
   });
   return lines.join("\n");
@@ -6473,7 +6515,7 @@ function buildParaLink(b) {
     v: 1, n: d.name, m: d.mode || "", d: d.desc || "",
     c: d.champ ? { k: d.champ.key, i: d.champ.id, n: d.champ.name } : null,
     k: d.markers,
-    cats: d.cats.map(c => ({ n: c.name, d: c.desc || "", m: c.marco || "", k: c.kind, s: c.span, w: catCols(c), h: catRows(c), i: c.items.map(e => e.note ? [e.itemId, e.note, e.mf ? 1 : 0] : (e.mf ? [e.itemId, "", 1] : [e.itemId])) })),
+    cats: d.cats.map(c => ({ n: c.name, d: c.desc || "", m: c.marco || "", k: c.kind, s: c.span, w: catCols(c), h: catRows(c), i: c.items.map(e => e.frag ? [e.itemId, e.note || "", e.mf ? 1 : 0, e.frag] : (e.note ? [e.itemId, e.note, e.mf ? 1 : 0] : (e.mf ? [e.itemId, "", 1] : [e.itemId]))) })),
   };
   // F13-T13 (23/09/2026): a placa promete "quem abrir recebe esta build", e o
   // link deixava de fora runas, habilidades, layout e o Mestre Forjador. Campos
@@ -6497,7 +6539,7 @@ function linkParaBuild(hash) {
   const cats = o.cats.map((c, i) => ({
     id: "cat-" + (i + 1), name: String(c.n || `Caixa ${i + 1}`), desc: String(c.d || ""), marco: String(c.m || ""),
     kind: KINDS.includes(c.k) ? c.k : "comum", span: SPANS.includes(c.s) ? c.s : (build.defaultSpan || 2), cols: c.w, rows: c.h,
-    items: (Array.isArray(c.i) ? c.i : []).map(x => Array.isArray(x) ? { itemId: x[0], note: String(x[1] || ""), ...(x[2] ? { mf: true } : {}) } : { itemId: x, note: "" }),
+    items: (Array.isArray(c.i) ? c.i : []).map(x => Array.isArray(x) ? { itemId: x[0], note: String(x[1] || ""), ...(x[2] ? { mf: true } : {}), ...(x[3] ? { frag: String(x[3]) } : {}) } : { itemId: x, note: "" }),
   }));
   return {
     id, name: String(o.n || "Build recebida"), mode: ALL_MODES.includes(o.m) ? o.m : "", desc: String(o.d || ""),
@@ -6573,7 +6615,7 @@ function mostrarPub(titulo, texto, estado) {
 function fecharPub() { document.getElementById("pub-dialog").hidden = true; }
 
 function caixasParaServidor(cats) {
-  return cats.map(c => ({ name: c.name, desc: c.desc || "", marco: c.marco || "", kind: c.kind, span: c.span, cols: catCols(c), rows: catRows(c), items: c.items.map(e => ({ itemId: e.itemId, nome: byId[e.itemId] ? byId[e.itemId].namePt : (e.nome || e.itemId), note: e.note || "", ...(e.mf ? { mf: true } : {}) })) }));
+  return cats.map(c => ({ name: c.name, desc: c.desc || "", marco: c.marco || "", kind: c.kind, span: c.span, cols: catCols(c), rows: catRows(c), items: c.items.map(e => ({ itemId: e.itemId, nome: byId[e.itemId] ? byId[e.itemId].namePt : (e.nome || e.itemId), note: e.note || "", ...(e.mf ? { mf: true } : {}), ...(e.frag ? { frag: e.frag } : {}) })) }));
 }
 
 async function publicarBuild(id) {
@@ -6877,9 +6919,17 @@ function textToBuild(text) {
       let note = "";
       const mNote = body.split(/\s\*\s/);
       if (mNote.length > 1) { body = mNote[0].trim(); note = mNote.slice(1).join(" * ").trim(); }
+      // F13-T23: "- Atributo adicional [Ouro · Vida]" traz o fragmento escolhido.
+      let frag = "";
+      const mFrag = body.match(/^(.*?)\s*\[((?:Prata|Ouro|Prismático) · [^\]]+)\]$/);
+      if (mFrag) { body = mFrag[1].trim(); frag = mFrag[2].trim(); }
       const id = index.get(norm(body));
       if (!id) { result.unknown.push(body); return; }
-      current.items.push({ itemId: id, note });
+      if (frag && !(temFragmentos(byId[id]) && byId[id].fragments.some(f => fragKey(f) === frag))) {
+        result.unknown.push(`${frag} (fragmento de ${byId[id].namePt})`);
+        frag = "";
+      }
+      current.items.push({ itemId: id, note, ...(frag ? { frag } : {}) });
       return;
     }
 
@@ -6956,6 +7006,8 @@ function fmtNum(n) { return Number(n).toLocaleString("pt-BR", { maximumFractionD
 // atributo). Soma-se por atributo, separando fixos de percentuais.
 function effectiveAttributes(item, entry) {
   let list = mfAttributes(item, entry).map(a => ({ ...a, src: a.mfBase !== undefined ? "mf" : "" }));
+  const fr = fragmentoDe(item, entry);
+  if (fr) list = list.concat(fragAtributos(fr).map(a => ({ ...a, src: "frag" })));
   if (state.applyApex && hasApex(item)) {
     const ap = apexAttributes(item);
     if (ap) {
@@ -7431,6 +7483,8 @@ function renderCategories() {
           </span>` : ""}
           <span class="mf-badge" title="${build.masterwork && mfEligible(item) ? (entry.mf ? "Forjado pelo Mestre Forjador" : "Elegível ao Mestre Forjador") : ""}">MF</span>
           <span class="apex-badge">ÁPICE</span>
+          ${temFragmentos(item) ? (() => { const fr = fragmentoDe(item, entry);
+            return `<span class="frag-badge ${fragClasse(fr)}" title="${fr ? esc("Fragmento: " + fr.tier + " · " + fragRotulo(fr)) : (build.editing ? "Nenhum fragmento escolhido — clique no ícone" : "Nenhum fragmento escolhido")}">${fr ? esc(fr.tier) : "?"}</span>`; })() : ""}
           <span class="tile-name">${esc(item.namePt)}</span>
           ${cat.kind === "escolha" && index === 0 ? `<span class="padrao-badge" title="O de cima é o padrão; os de baixo são trocas para o mesmo slot">padrão</span>` : ""}
           <span class="tier-strip"></span>`;
@@ -7824,6 +7878,14 @@ function initCategoryUI() {
       }
     }
     if (tile) {
+      // F13-T23: no Atributo adicional, o ícone (ou o selo) escolhe o fragmento.
+      const cTile = getCat(tile.dataset.catId);
+      const eTile = cTile && cTile.items[Number(tile.dataset.index)];
+      if (build.editing && eTile && temFragmentos(byId[eTile.itemId]) && e.target.closest(".item-icon, .frag-badge")) {
+        hideTooltip();
+        abrirFragmentos(tile.dataset.catId, Number(tile.dataset.index));
+        return;
+      }
       if (build.editing && build.masterwork && e.target.closest(".item-icon")) {
         setForged(tile.dataset.catId, Number(tile.dataset.index));
       }
@@ -7945,6 +8007,10 @@ function showTooltip(tile) {
       <div class="tt-mf${mfApplies(item, entry) ? "" : " off"}"><span class="k">Mestre Forjador${mfApplies(item, entry) ? " — forjado" : (build.masterwork ? (build.editing ? " — elegível, clique no ícone para forjar" : " — elegível (ligue Editar e clique no ícone)") : " (desligado)")}</span>
         ${item.masterwork.stats.map(m => `<div>${esc(m.stat)}: ${fmtNum(m.base)} (+${fmtNum(m.bonus)}) = <b>${fmtNum(m.total)}</b></div>`).join("")}
       </div>` : ""}
+    ${temFragmentos(item) ? (() => { const fr = fragmentoDe(item, entry);
+      return `<div class="tt-frag"><span class="k">Fragmento</span>${fr
+        ? `<div><b>${esc(fr.tier)} · ${esc(fragRotulo(fr))}</b>${fr.goldRaw ? ` · ${esc(fr.goldRaw)}` : ""}</div>`
+        : `<div>nenhum escolhido${build.editing ? " — clique no ícone" : " (ligue Editar e clique no ícone)"}</div>`}</div>`; })() : ""}
     ${entry.note ? `<div class="tt-note">${esc(entry.note)}</div>` : ""}
     <div class="tt-hint">${build.editing ? "Arraste para outra caixa · os botões no topo escrevem a observação e tiram da caixa" : "Ligue \"Editar\" para mudar a build"}</div>`;
 
@@ -8464,6 +8530,51 @@ function initPerguntarCaixa() {
 }
 
 
+// ---------------- F13-T23: o fragmento do Atributo adicional ----------------
+let fragAlvo = null;   // {catId, index}
+function abrirFragmentos(catId, index) {
+  const cat = getCat(catId);
+  const entry = cat && cat.items[index];
+  const item = entry && byId[entry.itemId];
+  if (!temFragmentos(item)) return;
+  fragAlvo = { catId, index };
+  document.getElementById("fr-sub").innerHTML = `<img src="${item.iconUrl}" alt=""> Fragmento deste <b>${esc(item.namePt)}</b> (${fmtG(item.priceGold)})`;
+  const niveis = [...new Set(item.fragments.map(f => f.tier))];
+  document.getElementById("fr-lista").innerHTML = niveis.map(t => `<div class="md-label fr-nivel ${fragClasse({ tier: t })}">${esc(t)}</div>
+      <div class="fr-grupo">${item.fragments.filter(f => f.tier === t).map(f => `<button type="button" class="ec-caixa fr-op ${fragClasse(f)}${entry.frag === fragKey(f) ? " ativo" : ""}" data-frag="${esc(fragKey(f))}">
+        <span>${esc(fragRotulo(f))}${fragObs(f) ? `<small class="fr-obs">${esc(fragObs(f))}</small>` : ""}</span><span class="ec-qtd">${esc(fragOuro(f))}</span></button>`).join("")}</div>`).join("");
+  document.getElementById("escolher-fragmento").hidden = false;
+  Som.play("catalog:pergaminho");
+}
+function fecharFragmentos() {
+  document.getElementById("escolher-fragmento").hidden = true;
+  fragAlvo = null;
+}
+function marcarFragmento(chave) {
+  const cat = fragAlvo && getCat(fragAlvo.catId);
+  const entry = cat && cat.items[fragAlvo.index];
+  fecharFragmentos();
+  if (!entry || !build.editing) return;
+  if (chave) entry.frag = chave; else delete entry.frag;
+  saveBuild();
+  renderBuildAll();
+}
+function initEscolherFragmento() {
+  document.getElementById("fr-lista").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-frag]");
+    if (b) marcarFragmento(b.dataset.frag);
+  });
+  document.getElementById("fr-limpar").addEventListener("click", () => marcarFragmento(null));
+  document.getElementById("fr-close").addEventListener("click", fecharFragmentos);
+  document.getElementById("escolher-fragmento").addEventListener("click", (e) => {
+    if (e.target.id === "escolher-fragmento") fecharFragmentos();
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && !document.getElementById("escolher-fragmento").hidden) { e.stopPropagation(); fecharFragmentos(); }
+  });
+}
+
+
 // ---------------- F12-T4: a grade de habilidades ----------------
 // As regras conferidas aqui são as do jogo, iguais para todo campeão: um ponto
 // por nível, teto de 5 em Q/W/E e 3 no R, e o R só nos níveis 6, 11 e 16.
@@ -8900,7 +9011,7 @@ function toggleFavorito(id) {
 function caixasDoServidor(caixas, removidos) {
   return normalizeCats((Array.isArray(caixas) ? caixas : []).map((c, i) => ({
     id: "cat-" + (i + 1), name: String(c.name || `Caixa ${i + 1}`), desc: String(c.desc || ""), marco: String(c.marco || ""), kind: c.kind, span: c.span, cols: c.cols, rows: c.rows,
-    items: (Array.isArray(c.items) ? c.items : []).map(e => ({ itemId: e.itemId, nome: e.nome, note: String(e.note || ""), ...(e.mf ? { mf: true } : {}) })),
+    items: (Array.isArray(c.items) ? c.items : []).map(e => ({ itemId: e.itemId, nome: e.nome, note: String(e.note || ""), ...(e.mf ? { mf: true } : {}), ...(e.frag ? { frag: String(e.frag) } : {}) })),
   })), removidos);
 }
 // Resumo de uma build pública no mesmo formato de buildResumo (id prefixado com "pub:").
@@ -9195,7 +9306,7 @@ function loteParaTexto(ids) {
       linhas.push(`[${KIND_LABEL[cat.kind].toUpperCase()}] ${cat.name} | ${catCols(cat)}\u00d7${catRows(cat)}`);
       if (cat.desc) linhas.push(`# ${cat.desc}`);
       if (cat.marco) linhas.push(`= ${cat.marco}`);
-      cat.items.forEach(e => { const it = byId[e.itemId]; if (it) linhas.push(`- ${it.namePt}${e.note ? " * " + e.note : ""}`); });
+      cat.items.forEach(e => { const it = byId[e.itemId]; if (it) linhas.push(`- ${it.namePt}${e.frag ? " [" + e.frag + "]" : ""}${e.note ? " * " + e.note : ""}`); });
     });
     partes.push(linhas.join("\n"));
   });
@@ -10361,7 +10472,37 @@ function apiceSemValor(item) {
 // o bônus do Mestre Forjador no item forjado (masterwork.bonusGold: 1.000g nos
 // 109 elegíveis). O valor do ápice é contado sobre o item sem o Mestre
 // Forjador, por isso o bônus soma por cima.
+// F13-T23: o Atributo adicional (Stat Bonus, ARAM: Desordem) abre fragmentos de
+// um nível sorteado — Prata, Ouro ou Prismático — e o jogador escolhe um. A
+// entrada da build guarda a escolha em `frag`, pela chave legível "Ouro · Vida"
+// (o texto e o link continuam legíveis e não dependem da ordem do catálogo).
+// Atributos e valor em ouro vêm de item.fragments (Capítulo 1, 23/09/2026).
+function temFragmentos(item) { return !!(item && Array.isArray(item.fragments) && item.fragments.length); }
+function fragKey(f) { return f.tier + " · " + (f.name || f.stats.map(x => x.stat).join(" + ")); }
+function fragmentoDe(item, entry) {
+  if (!temFragmentos(item) || !entry || !entry.frag) return null;
+  return item.fragments.find(f => fragKey(f) === entry.frag) || null;
+}
+function fragValor(x) { return `${fmtNum(x.value)}${x.unit === "percent" ? "%" : ""}`; }
+function fragRotulo(f) {
+  return (f.name ? f.name + ": " : "") + f.stats.map(x => `${x.stat} ${fragValor(x)}${x.note ? " " + x.note : ""}`).join(" + ");
+}
+function fragAtributos(f) {
+  return f.stats.map(x => {
+    const stat = nomeDoAtributo(x.stat, x.unit);
+    return { stat, value: x.value, unit: x.unit, raw: `+${fragValor(x)} de ${stat}`, frag: true };
+  });
+}
+// O ouro do fragmento à direita; a observação dele ("… acumulam multiplicativamente")
+// vai embaixo do nome, em letra pequena.
+function fragOuro(f) { const r = f.goldRaw || ""; const i = r.indexOf(" ("); const v = i > 0 ? r.slice(0, i) : r; return v.toLowerCase() === "none" ? "—" : v; }
+function fragObs(f) { const r = f.goldRaw || ""; const i = r.indexOf(" ("); return i > 0 ? r.slice(i + 2).replace(/\)$/, "") : ""; }
+function fragClasse(f) { return f ? ({ "Prata": "prata", "Ouro": "ouro", "Prismático": "prismatico" }[f.tier] || "") : "vazio"; }
+
 function valorEfetivo(item, entry) {
+  // O fragmento escolhido é o valor do Atributo adicional (que não tem Análise de custo).
+  const fr = fragmentoDe(item, entry);
+  if (fr) return typeof fr.gold === "number" ? fr.gold : null;
   let v = valorEmOuro(item);
   if (v === null) return null;
   if (state.applyApex) { const ap = valorNoApice(item); if (ap !== null) v = ap; }
@@ -11758,6 +11899,7 @@ function init() {
   if (typeof initRunas === "function") initRunas();
   if (typeof initFaltaPublicar === "function") initFaltaPublicar();
   if (typeof initPerguntarCaixa === "function") initPerguntarCaixa();
+  if (typeof initEscolherFragmento === "function") initEscolherFragmento();
   if (typeof initAcessibilidade === "function") initAcessibilidade();
   if (typeof initMenuDeTipo === "function") initMenuDeTipo();
 

@@ -8,7 +8,7 @@ Fica fora daqui o que já foi decidido no Capítulo 1 (`docs/decisoes_capitulo1.
 
 ## Resumo
 
-**23/09/2026: o Leo entregou o Capítulo 1 corrigido** (seção "Ajustes — sessão de correção de 23/09/2026" no fim do catálogo). O lado do Capítulo 1 está resolvido. O que falta é o app usar os campos novos: tarefas F13-T20 a T23, do Forjador.
+**23/09/2026: o Leo entregou o Capítulo 1 corrigido** (seção "Ajustes — sessão de correção de 23/09/2026" no fim do catálogo), e o app passou a usar tudo nas F13-T19 a T23. **Não há pendência aberta do Capítulo 1**; C1 e C2 esperam o catálogo subir de patch.
 
 | # | Pendência | No Capítulo 1 | No app |
 |---|---|---|---|
@@ -19,7 +19,7 @@ Fica fora daqui o que já foi decidido no Capítulo 1 (`docs/decisoes_capitulo1.
 | C1, C2 | Atlas Mundial e Bússola Rúnica no 26.19 | sem mudança: o Data Dragon ainda é 16.18.1 | nada a fazer até o patch do catálogo subir |
 | D1 | Ápice em números | ✔ "Ápice numérico" em 102 itens | ✔ F13-T21 (atributos: Atma 50%, Couraça 841,18) e F13-T22 (valor e eficiência no ápice; sem valor fixo, o texto do catálogo) |
 | D2 | Ouro do Mestre Forjador | ✔ tabelas de preço + "Mestre Forjador (ouro)" (1.000g nos 109) | ✔ F13-T22: o item forjado soma os 1.000g na caixa e na build; a ficha mostra "Forjado" |
-| D3 | Fragmentos do Atributo adicional | ✔ bloco `Fragmentos[]` (34) | F13-T23: escolher o fragmento na build |
+| D3 | Fragmentos do Atributo adicional | ✔ bloco `Fragmentos[]` (34) | ✔ F13-T23: cada Atributo adicional da build guarda o fragmento escolhido, que entra nos atributos e no ouro |
 | E1 | Lentidão do Garrabrasa | ✔ 3s (cliente) | ✔ automático (F13-T19) |
 
 O gerador (`data/gerar_catalog_json.py`) passou a ler o esquema novo na F13-T19, com o aprovado do Leo: `costAnalysis.goldValueStats` e `goldValueBase`, `apexNumeric`, `fragments`, `masterwork.bonusGold`, `meta.statPrices` e `meta.masterworkPrices` (ver `docs/esquema_catalog.md`). Relatório: 6 avisos (todos casos já decididos) e 0 linhas não reconhecidas.

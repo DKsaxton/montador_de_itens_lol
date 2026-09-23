@@ -75,6 +75,7 @@ Dentro da caixa:
 | `# texto` | descrição da caixa |
 | `= texto` | marco ou teto, ex.: `= ~14min · 6.500g` |
 | `- Item` | um item; `- Item * observação` grava a nota que aparece ao passar o mouse |
+| `- Atributo adicional [Ouro · Vida]` | o fragmento escolhido do Atributo adicional (ARAM: Desordem): `[Nível · Fragmento]`, com o nível (Prata, Ouro ou Prismático) e o nome do fragmento como aparece em "Qual fragmento?" na forja (o composto pelo nome dele: `[Prata · Swiftness]`). Vem antes da observação: `- Atributo adicional [Ouro · Vida] * pegar cedo`. Fragmento que não existe vai para o aviso de "não encontrei", e o item entra sem ele. |
 
 ## Regras
 
