@@ -395,6 +395,21 @@ def checar_catalogo(s, p):
     p.conta("catálogo", "Ápice ainda sobe o que é máximo (Lacre 15 → 55)",
             "+55 de Poder de Habilidade" in ap["lacre"], str(ap["lacre"][:1]))
 
+    # F13-T15 (Leo, 23/09: eficiência "com a passiva"): duas regras que valem
+    # para o catálogo inteiro. O desconto do Reembolso nunca piora um item — a
+    # base antiga derrubava o Limite da Razão de 119% para 91% —, e a caixa com
+    # um item só mostra a mesma eficiência da ficha dele, com e sem Reembolso.
+    ef = s.js("""(() => { const piora = [], dif = [];
+      CATALOG.items.forEach(it => { const val = (on) => { state.applyCashback = on; return [itemEfficiency(it), goldEfficiency([{ itemId: it.slug }]).pct]; };
+        const [off, cxOff] = val(false), [on, cxOn] = val(true);
+        if (hasCashback(it) && off !== null && on !== null && on < off - 0.05) piora.push(it.namePt);
+        if ((off !== null && cxOff !== null && Math.abs(off - cxOff) > 0.06) || (on !== null && cxOn !== null && Math.abs(on - cxOn) > 0.06)) dif.push(it.namePt); });
+      state.applyCashback = false; return { piora, dif }; })()""")
+    p.conta("catálogo", "o Reembolso nunca piora a eficiência de um item", not ef["piora"],
+            ("pioram: " + ", ".join(ef["piora"][:4])) if ef["piora"] else "nenhum dos 225")
+    p.conta("catálogo", "caixa de um item só = eficiência da ficha dele", not ef["dif"],
+            ("diferem: " + ", ".join(ef["dif"][:4])) if ef["dif"] else "os 225, com e sem Reembolso")
+
 
 def checar_forja(s, p):
     print("\n%sFORJA%s" % (AMARELO, FIM))

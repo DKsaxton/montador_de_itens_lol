@@ -6963,15 +6963,16 @@ function sumAttributes(entries) {
   return [...totals.values()].sort((a, b) => b.value * (a.unit === "percent" ? 1 : 1) - a.value || a.stat.localeCompare(b.stat, "pt-BR"));
 }
 
-// Eficiência de ouro de um conjunto: soma de costAnalysis.goldValueTotal ÷ soma
-// dos preços efetivos (Reembolso). Itens sem goldValueTotal ficam de fora e são
-// contados em `sem`. (MF/Ápice não mudam o valor em ouro — sem dado no catálogo.)
+// Eficiência de ouro de um conjunto: soma dos valores em ouro (valorEmOuro — com
+// a passiva, como a ficha) ÷ soma dos preços efetivos (Reembolso). Itens sem
+// análise ficam de fora e são contados em `sem`. (MF/Ápice não mudam o valor em
+// ouro — sem dado no catálogo.)
 function goldEfficiency(entries) {
   let gold = 0, price = 0, n = 0, sem = 0;
   entries.forEach(e => {
     const it = byId[e.itemId];
     if (!it) return;
-    const gv = it.costAnalysis && typeof it.costAnalysis.goldValueTotal === "number" ? it.costAnalysis.goldValueTotal : null;
+    const gv = valorEmOuro(it);
     const p = effectivePrice(it);
     if (gv === null || !p) { sem++; return; }
     gold += gv; price += p; n++;
@@ -10288,15 +10289,32 @@ const EFF_BANDS = [
 // Tipo de dano: os valores de Efeitos Especiais do catálogo que nomeiam um tipo de dano.
 const DAMAGE_OPTIONS = (CATALOG.meta.specialEffects || []).filter(v => /^Dano (Físico|Mágico|Verdadeiro)$/.test(v));
 
-// Eficiência de ouro (%) = valor em ouro dos atributos ÷ preço pago.
-// Sem Reembolso: o número do próprio catálogo (costAnalysis.efficiencyBase).
-// Com Reembolso ligado: goldValueTotal ÷ cashback.netGold (regra do Leo, 13/09/2026).
-// null = o catálogo não tem análise para o item (pets, consumíveis, trinkets...).
+// F13-T15 (Leo, 23/09/2026: "com a passiva"). O valor em ouro de um item é o
+// que a eficiência base do catálogo usa — que em 21 itens inclui a passiva
+// avaliada pelo Capítulo 1 ("118,99% (base, incluindo Duelo)"). Antes o app
+// usava esse número na ficha e o valor SÓ dos atributos (goldValueTotal) com
+// Reembolso e nas caixas: ligar o desconto derrubava o Limite da Razão de 119%
+// para 91%, e a caixa com ele mostrava 84%. Onde os dois números do catálogo
+// concordam (item sem passiva), o goldValueTotal é o exato — a porcentagem vem
+// arredondada em duas casas; onde discordam, a diferença é a passiva, e vale a base.
+function valorEmOuro(item) {
+  const ca = item.costAnalysis;
+  if (!ca) return null;
+  const gv = typeof ca.goldValueTotal === "number" ? ca.goldValueTotal : null;
+  const eb = typeof ca.efficiencyBase === "number" ? ca.efficiencyBase : null;
+  if (eb === null || !(item.priceGold > 0)) return gv;
+  const daBase = eb / 100 * item.priceGold;
+  return gv !== null && Math.abs(daBase - gv) <= item.priceGold * 0.006 ? gv : daBase;
+}
+// Eficiência de ouro (%) = valor em ouro ÷ preço pago. Sem Reembolso, o número
+// do próprio catálogo (efficiencyBase); com Reembolso, o MESMO valor em ouro
+// sobre o preço com desconto. null = sem análise (pets, consumíveis, trinkets...).
 function itemEfficiency(item) {
   const ca = item.costAnalysis;
   if (!ca) return null;
-  if (state.applyCashback && hasCashback(item) && typeof ca.goldValueTotal === "number" && item.cashback.netGold > 0) {
-    return ca.goldValueTotal / item.cashback.netGold * 100;
+  const v = valorEmOuro(item);
+  if (state.applyCashback && hasCashback(item) && v !== null && item.cashback.netGold > 0) {
+    return v / item.cashback.netGold * 100;
   }
   return typeof ca.efficiencyBase === "number" ? ca.efficiencyBase : null;
 }
@@ -11434,7 +11452,9 @@ function openModal(id) {
       ${ca.goldValue ? `<div class="cost-line"><span class="k">Valor em ouro</span><span class="v">${ca.goldValue}</span></div>` : ""}
       ${ca.efficiency ? `<div class="cost-line eff"><span class="k">Eficiência</span><span class="v">${ca.efficiency}</span></div>` : ""}
       ${state.applyCashback && hasCashback(item) && itemEfficiency(item) !== null
-        ? `<div class="cost-line eff"><span class="k">Com Reembolso</span><span class="v">${fmtEff(itemEfficiency(item))} (${ca.goldValueTotal.toLocaleString("pt-BR")}g ÷ ${item.cashback.netGold.toLocaleString("pt-BR")}g)</span></div>` : ""}
+        ? `<div class="cost-line eff"><span class="k">Com Reembolso</span><span class="v">${fmtEff(itemEfficiency(item))} (${typeof ca.efficiencyBase === "number"
+            ? `${ca.efficiencyBase.toLocaleString("pt-BR", { maximumFractionDigits: 2 })}% × ${item.priceGold.toLocaleString("pt-BR")}g ÷ ${item.cashback.netGold.toLocaleString("pt-BR")}g`
+            : `${ca.goldValueTotal.toLocaleString("pt-BR")}g ÷ ${item.cashback.netGold.toLocaleString("pt-BR")}g`})</span></div>` : ""}
       ${(ca.extra || []).map(x => `<div class="cost-line"><span class="k">Extra</span><span class="v">${x}</span></div>`).join("")}
     </div>` : "";
 
