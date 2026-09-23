@@ -743,9 +743,25 @@ def checar_resolucoes(s, p):
       return { rolagem: document.documentElement.scrollWidth > innerWidth + 1,
                fora: [...new Set(mau)].slice(0, 4) }; })()"""
     # Até 22/09 só o catálogo era medido, e a forja em 1280 rolava de lado sem
-    # ninguém ver. Agora as três telas, em cada resolução.
-    if not s.js("typeof build !== 'undefined' && !!build"):
-        s.nova_build()
+    # ninguém ver. Agora as três telas, em cada resolução — e com a PIOR build
+    # que o catálogo permite, escolhida pelos dados: o item com o atributo mais
+    # longo (o Biscoito, 255 caracteres, estourava a faixa da build em 1280) e o
+    # de nome mais longo, mais alguns para encher as fileiras. Medir com uma
+    # build comportada é o jeito de não achar nada. E no pior ESTADO também: a
+    # faixa de atributos só aparece com o Editar ligado (F12), e a primeira
+    # versão desta checagem media em modo leitura — passou com o bug lá dentro.
+    s.nova_build()
+    if not s.js("document.body.classList.contains('editando')"):
+        s.clicar("#edit-switch", 0.8)
+    pior = s.js("""(() => {
+      const maiorAttr = (it) => Math.max(0, ...(it.attributes || []).map(a => (a.stat || '').length));
+      const porAttr = CATALOG.items.slice().sort((a, b) => maiorAttr(b) - maiorAttr(a))[0];
+      const porNome = CATALOG.items.slice().sort((a, b) => b.namePt.length - a.namePt.length)[0];
+      const lend = CATALOG.items.filter(i => i.tier === 'Lendário').slice(0, 5);
+      const c = build.cats[3];
+      c.items = [porAttr, porNome, ...lend].map(it => ({ itemId: it.slug, note: 'observação de teste' }));
+      renderBuildAll();
+      return porAttr === porNome ? porAttr.namePt : porAttr.namePt + ' / ' + porNome.namePt; })()""")
     for largura, altura in RESOLUCOES:
         s.tela(largura, altura)
         ruins = []
@@ -757,7 +773,7 @@ def checar_resolucoes(s, p):
             if r["rolagem"] or r["fora"]:
                 ruins.append("%s (%s)" % (tela, ", ".join(r["fora"]) or "rolagem"))
         p.conta("resoluções", "%dx%d sem nada fora da tela" % (largura, altura), not ruins,
-                "catálogo, forja e runas" if not ruins else "; ".join(ruins))
+                ("catálogo, forja e runas, com " + pior) if not ruins else "; ".join(ruins))
     s.js("switchTab('catalog'); 'ok'")
     s.tela_normal()
 

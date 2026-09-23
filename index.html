@@ -4175,6 +4175,12 @@ body:not(.editando) .build-totals.show { display: none; }
 .build-totals .bt-eff b { color: var(--forja-brasa-clara); font-style: normal; }
 .build-totals .bt-note { font-family: var(--loja-texto); font-style: italic; font-size: 11px; color: #7a6a5a; margin-top: 5px; }
 .build-totals .cs-list span { font-size: 13px; }
+/* F13-T11 (22/09/2026): a placa da caixa já deixava o atributo quebrar; a faixa
+   da build não. O "atributo" do Biscoito Total no catálogo tem 255 caracteres e
+   virava uma linha de 1.415px — a forja rolava de lado em 1280. Numa fila com
+   flex-wrap, o atributo curto desce inteiro para a linha de baixo; só o que é
+   mais largo que a faixa inteira quebra por dentro. */
+.build-totals .cs-list span { white-space: normal; overflow-wrap: anywhere; }
 
 /* ---- Fase 4, T1: controle de som (sino de balcão) ---- */
 .counts-wrap { display: flex; align-items: center; gap: 14px; }

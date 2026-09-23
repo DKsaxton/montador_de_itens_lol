@@ -284,6 +284,8 @@ Cinco pontos que nenhum dos oito leitores cobriu. Todas as linhas se referem a `
 
 ### 34. A forja em 1280×800 rola de lado quando a build tem o Biscoito Total da Determinação Eterna
 
+**CONSERTADO na F13-T11 (22/09/2026).** A faixa "Atributos da build" passa a deixar o atributo quebrar, como a placa da caixa já fazia. Em fila com quebra, o atributo curto desce inteiro para a linha de baixo; só o que é mais largo que a faixa quebra por dentro — conferido que nenhum atributo curto se parte, em 1280 e 1920.
+
 `index.html:6891` (`statsListHtml` na faixa "Atributos da build") · média · achado na F13-T10 · **REPRODUZIDO**
 
 O atributo do Biscoito no catálogo é uma frase longa ("+30 Vida máxima permanente por biscoito consumido ou vendido (tooltip do cliente, captura do usuário em 12/09/2026: …)"), e a faixa de atributos da build desenha cada atributo sem quebra de linha: um `span` de 1.415px deixa a página com 1.478px numa janela de 1.280. O roteiro de QA não pegou porque a build dele não tem o Biscoito. Conserto no app é deixar o atributo quebrar; o texto do atributo em si é do Capítulo 1.
