@@ -561,6 +561,23 @@ def checar_runas(s, p):
             s.js("""(() => { switchTab('build'); showBuildScreen('forja');
               const f = document.querySelector('.build-runas');
               return !!f && !f.hidden && getComputedStyle(f).display !== 'none'; })()"""))
+    # F13-T17: o bloco "Controle de grupo válido" do markdown sumia no leitor,
+    # calado — a ficha do Golpe Desleal nunca mostrou a lista.
+    s.js("switchTab('runas'); 'ok'")
+    time.sleep(0.6)
+    s.js("""(() => { const b = document.querySelector('.runas-modo[data-modo="ler"]'); if (b) b.click(); })()""")
+    time.sleep(0.5)
+    s.js("document.querySelector('.runas-vista[data-vista=completo]').click(); 'ok'")
+    time.sleep(0.4)
+    s.js("""(() => { const t = [...document.querySelectorAll('#runas-trilhas [data-trilha]')]
+      .find(b => b.dataset.trilha === 'dominacao'); if (t) t.click(); })()""")
+    time.sleep(0.6)
+    cg = s.js("""(() => { const a = [...document.querySelectorAll('article.runa')].find(e => e.title === 'Golpe Desleal');
+      const c = a && a.querySelector('.cg');
+      return { visivel: !!c && getComputedStyle(c).display !== 'none', texto: c ? c.textContent : '' }; })()""")
+    p.conta("runas", "a ficha mostra o controle de grupo válido",
+            cg["visivel"] and "Inclui" in cg["texto"] and "Cripple" in cg["texto"],
+            "Golpe Desleal, modo Completo" if cg["visivel"] else "o bloco não aparece")
 
 
 def checar_habilidades(s, p):
@@ -878,6 +895,14 @@ def checar_resolucoes(s, p):
       c.items = [porAttr, porNome, ...lend].map(it => ({ itemId: it.slug, note: 'observação de teste' }));
       renderBuildAll();
       return porAttr === porNome ? porAttr.namePt : porAttr.namePt + ' / ' + porNome.namePt; })()""")
+    # Runas no pior modo também: o Completo (etiquetas, notas, controle de grupo
+    # abertos), em cada trilha. Até a F13-T17 elas eram medidas em Ícones, e a
+    # etiqueta que estourava o card com a Leitura calma ficava escondida.
+    trilhas = s.js("RUNAS.trilhas.map(t => t.id)")
+    # E com a Leitura calma ligada, que é o texto maior que o app tem: medir com
+    # ela depender de um grupo anterior tê-la deixado ligada é medir por sorte.
+    tinha_leitura = s.js("document.body.classList.contains('ac-leitura')")
+    s.js("document.body.classList.add('ac-leitura'); 'ok'")
     for largura, altura in RESOLUCOES:
         s.tela(largura, altura)
         ruins = []
@@ -885,11 +910,24 @@ def checar_resolucoes(s, p):
                           ("runas", "switchTab('runas')")):
             s.js(cmd + "; 'ok'")
             time.sleep(0.4)
-            r = s.js(fora_js)
-            if r["rolagem"] or r["fora"]:
-                ruins.append("%s (%s)" % (tela, ", ".join(r["fora"]) or "rolagem"))
+            passos = [None]
+            if tela == "runas":
+                s.js("""(() => { const b = document.querySelector('.runas-modo[data-modo="ler"]'); if (b) b.click();
+                  document.querySelector('.runas-vista[data-vista=completo]').click(); })()""")
+                passos = trilhas
+            for t in passos:
+                if t:
+                    s.js("""(() => { const b = [...document.querySelectorAll('#runas-trilhas [data-trilha]')]
+                      .find(x => x.dataset.trilha === %s); if (b) b.click(); })()""" % json.dumps(t))
+                    time.sleep(0.3)
+                r = s.js(fora_js)
+                if r["rolagem"] or r["fora"]:
+                    ruins.append("%s%s (%s)" % (tela, " / " + t if t else "", ", ".join(r["fora"]) or "rolagem"))
+                    break
         p.conta("resoluções", "%dx%d sem nada fora da tela" % (largura, altura), not ruins,
-                ("catálogo, forja e runas, com " + pior) if not ruins else "; ".join(ruins))
+                ("catálogo, forja e runas (Completo, cinco trilhas), com Leitura calma e " + pior) if not ruins else "; ".join(ruins))
+    if not tinha_leitura:
+        s.js("document.body.classList.remove('ac-leitura'); 'ok'")
     s.js("switchTab('catalog'); 'ok'")
     s.tela_normal()
 

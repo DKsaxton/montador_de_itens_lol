@@ -23,7 +23,7 @@ python data/gerar_runas_json.py
 | F1–F8, F10 | Números, descrições, trocas automáticas, notas técnicas, nomes, `Atributos:`, lemas e as notas opcionais | Leo (fonte) | ✔ resolvido em 23/09/2026 (F13-T16) |
 | F9 | Cabeçalho: nota de Força Adaptativa | Leo | ✔ resolvido (F13-T16) |
 | F9b | Cabeçalho: o que é "movimento debilitado" (as páginas da wiki divergem entre si) | Leo | **aberto, é escolha sua** |
-| A1 | O leitor joga fora o bloco "Controle de grupo válido" de 5 runas, calado | Forjador | aberto (média) |
+| A1 | O leitor jogava fora o bloco "Controle de grupo válido" de 5 runas, calado | Forjador | ✔ resolvido em 23/09/2026 (F13-T17) |
 | A2 | Bug nº 35: o texto perde a primária e a secundária quando a primária está sem runa | Forjador | aberto (média) |
 | A3 | Bug nº 19: "Copiar como texto" do lote não leva runas | Forjador | aberto (média) |
 | A4 | Bug nº 29: build publicada aberta "só para ver" tem as runas editáveis | Forjador | aberto (baixa) |
@@ -108,7 +108,11 @@ Capturas de antes e depois: `docs/screenshots/fase13-t16-*.png`.
 
 Cada item vira uma tarefa com o seu aprovado, como sempre.
 
-### A1. O leitor joga fora o bloco "Controle de grupo válido"
+### A1. ✔ O leitor jogava fora o bloco "Controle de grupo válido" — resolvido na F13-T17
+**Como ficou:** o leitor lê o bloco (categoria, Inclui, Não inclui, Obs) e a ficha mostra, junto com as notas técnicas: no modo Completo aberto, no Resumido pelo botão "controle de grupo". O leitor também passou a **acusar toda linha que não entende**, em vez de pular calado, e a conferir nos dois sentidos se a linha "Substituição automática:" da ficha bate com a lista de substituições. As quatro falhas foram vistas numa cópia estragada do MD. Na tela apareceu um estouro antigo, o bug nº 36 (etiqueta da runa com a Leitura calma em 1280), consertado junto.
+
+O registro original:
+
 O `gerar_runas_json.py` só reconhece `Atributos:`, `Classes:`, `Força Adaptativa destrinchada` e notas que começam com "- ". As **13 linhas** dos blocos "Controle de grupo válido / Inclui / Não inclui / Obs" de 5 runas somem sem virar pendência:
 - Golpe Desleal (linhas 143–145);
 - Pós-choque (304–306);
@@ -133,7 +137,7 @@ O app **não aplica nenhuma** das 24 trocas: todas são só um aviso na ficha ("
 ### A6. Documentos desatualizados
 - **`docs/servidor/supabase.sql` e o README do servidor** não conhecem runas e habilidades. O README manda "colar o supabase.sql inteiro de novo" quando o SQL muda. Seguindo isso hoje, a view pública perde as colunas `runas` e `habilidades`, e as Públicas deixam de mostrar runas, caladas. Ainda ficariam duas versões de `publicar_build`. O `runas_e_habilidades.sql` precisa entrar no `supabase.sql`, ou o README precisa mandar rodá-lo depois. **É o único destes com risco real.**
 - **`docs/formato_de_importacao.md`**: a linha 86 diz "Runas ficam de fora", e as linhas 49–54 documentam `RUNAS:`, `RUNAS 2:` e `FRAGMENTOS:`. O prompt pronto para IA não pede runas, e os nomes válidos de runas não estão em nenhuma lista como a de `marcadores.md`.
-- **`docs/qa.md`**: não lista as checagens de runa que o roteiro ganhou nas F13-T8, T12 e T13. O roteiro está em dia, o documento não.
+- **`docs/qa.md`**: não lista as checagens de runa que o roteiro ganhou nas F13-T8, T12, T13 e T17 (controle de grupo na ficha; resoluções medindo as runas no Completo, nas cinco trilhas, com a Leitura calma). O roteiro está em dia, o documento não.
 - **`docs/direcao_de_arte.md`**: não tem a tela de Runas (cores das trilhas lidas do ícone, a lombada da ficha, a faixa na forja).
 - **`index.html`**, comentário do `vagaHtml`: ainda fala de "Absorvição Vital" e de fragmento sem arte. O código está certo, só o comentário é velho.
 - **`docs/prompts_claude_design.md`**: o Prompt C (tela de Runas) nunca foi usado e ainda diz "Domínio".

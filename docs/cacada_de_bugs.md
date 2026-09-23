@@ -306,3 +306,9 @@ O atributo do Biscoito no catálogo é uma frase longa ("+30 Vida máxima perman
 `index.html` (`linhasDeRunas` e `normRunas`) · média · achado pela varredura das runas em 23/09/2026 · **REPRODUZIDO**
 
 A linha `RUNAS:` só sai quando alguma runa da primária está escolhida. Com Precisão escolhida sem runa e Dominação com Golpe Desleal e Sexto Sentido, o texto saiu só com `RUNAS 2:` e `FRAGMENTOS:`. Na volta, o `normRunas` sem primária descarta a secundária, e a página voltou só com os fragmentos, sem aviso nenhum (`unknown` vazio). É da mesma família dos nºs 6 e 16. O link e a publicação não sofrem disso. Registrado também em `docs/pendencias_runas.md` (A2).
+
+### 36. Com a Leitura calma, a tela de Runas rola de lado em 1280 (modos Resumido e Completo)
+
+`index.html` (`body.ac-leitura .chip`) · média · achado na F13-T17 · **CONSERTADO na F13-T17 (23/09/2026)**
+
+A regra geral da Leitura calma subia toda etiqueta para 15px, e a etiqueta da runa parte de 9px: quase o dobro. "VELOCIDADE DE MOVIMENTO", da Agilidade nos Pés, ficava mais larga que o card em 1280, empurrava o texto dos cards da fileira para fora e a página rolava de lado. O roteiro de QA não via porque media as runas no modo Ícones, onde as etiquetas não aparecem; a checagem nova da T17 deixou o Completo ligado e o estouro apareceu. Conserto: a etiqueta da runa vai a 10,5px na Leitura calma (os ~15% da F13-T10), e o texto do card encolhe com o card (`min-width: 0`, a etiqueta quebra). A checagem de resoluções passou a medir as runas no Completo, nas cinco trilhas, com a Leitura calma ligada por ela mesma — vista falhando com o conserto revertido.

@@ -80,6 +80,11 @@ RE_FRAG_SLOT = re.compile(r"^\s{4}(?P<nome>Slot \d)\[\s*$")
 RE_FRAG_RUNA = re.compile(r"^\s{8}(?P<nome>[^\[]+?)\[(?P<resto>.*)$")
 RE_CAMPO = re.compile(r"^\s+(?P<campo>Atributos|Classes|Força Adaptativa destrinchada[^:]*):\s*(?P<valor>.+)$")
 RE_NOTA = re.compile(r"^\s+-\s+(?P<texto>.+)$")
+# Bloco "Controle de grupo válido (categoria oficial: ...):" e as linhas dele.
+RE_CG = re.compile(r"^\s+Controle de grupo válido \(categoria oficial:\s*(?P<cat>.+)\):\s*$")
+RE_CG_ITEM = re.compile(r"^\s+(?P<campo>Inclui|Não inclui|Obs):\s*(?P<valor>.+)$")
+# Cópia, dentro da ficha, de uma troca do bloco "Substituicoes Automaticas" (que é a fonte).
+RE_SUBST_RUNA = re.compile(r"^\s+Substituição automática:\s*(?P<texto>vira .+?)\s*$")
 
 
 def le_runas(linhas, re_runa, pendencias, onde):
@@ -138,8 +143,38 @@ def le_runas(linhas, re_runa, pendencias, onde):
                 i += 1
                 continue
             m = RE_NOTA.match(linha)
-            if m and "Notas técnicas" not in linha:
+            if m:
                 atual["notas"].append(m.group("texto").strip())
+                i += 1
+                continue
+            t = linha.strip()
+            if not t or t in ("]", "}") or t.startswith("--") or t.startswith("Notas técnicas"):
+                i += 1
+                continue
+            m = RE_CG.match(linha)
+            if m:
+                atual["cg"] = {"categoria": m.group("cat").strip(), "inclui": [], "naoInclui": "", "obs": ""}
+                i += 1
+                continue
+            m = RE_CG_ITEM.match(linha)
+            if m and "cg" in atual:
+                campo, valor = m.group("campo"), m.group("valor").strip()
+                if campo == "Inclui":
+                    atual["cg"]["inclui"] = [x.strip() for x in valor.rstrip(".").split(",") if x.strip()]
+                elif campo == "Não inclui":
+                    atual["cg"]["naoInclui"] = valor
+                else:
+                    atual["cg"]["obs"] = valor
+                i += 1
+                continue
+            m = RE_SUBST_RUNA.match(linha)
+            if m:
+                atual.setdefault("_trocas", []).append(m.group("texto"))
+                i += 1
+                continue
+            # Um leitor que ignora o que não entende mente por omissão
+            # (18/09/2026, e de novo o bloco de controle de grupo em 23/09).
+            pendencias.append("%s: %s tem uma linha que o leitor não entende: %r" % (onde, atual["nome"], t[:80]))
         i += 1
     for r in runas:
         if not r["atributos"] and id(r) not in vazios:
@@ -372,6 +407,24 @@ def main():
             if chave(sub[lado]) not in nomes:
                 pendencias.append("substituição \"%s -> %s\": %r não existe na lista de runas"
                                   % (sub["de"], sub["para"], sub[lado]))
+
+    # --- integridade 1b: a cópia da troca dentro da ficha bate com a lista? ---
+    # A lista "Substituicoes Automaticas" é a fonte (é ela que o app mostra); a
+    # linha "Substituição automática:" na ficha de cada runa é cópia. As duas
+    # divergiram em 23/09/2026 ("(exceto Yorick)" num lugar só), então a cópia
+    # é conferida nos dois sentidos.
+    todas = [r for t in trilhas for s in t["slots"] for r in s["runas"]]
+    for r in todas:
+        na_ficha = set(r.pop("_trocas", []))
+        na_lista = {("vira %s %s" % (x["para"], x["quando"])).strip()
+                    for x in substituicoes if chave(x["de"]) == chave(r["nome"])}
+        for texto in sorted(na_ficha - na_lista):
+            pendencias.append("%s: a ficha diz \"%s\", e a lista de substituições não" % (r["nome"], texto))
+        for texto in sorted(na_lista - na_ficha):
+            pendencias.append("%s: a lista de substituições diz \"%s\", e a ficha não" % (r["nome"], texto))
+    for f in fragmentos:
+        for r in f["runas"]:
+            r.pop("_trocas", None)
 
     # --- integridade 2: falta alguma runa que a Riot tem? ---
     # Esta é a checagem que teria pegado o leitor descartando as runas de

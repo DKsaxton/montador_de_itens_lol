@@ -2661,7 +2661,10 @@ body.nucleo .group-head::before {
 .runa .chip {
   font-family: var(--loja-gravado); font-size: 9px; letter-spacing: .1em; text-transform: uppercase;
   padding: 2px 6px; border: 1px solid var(--loja-tinta-suave); border-radius: 1px; color: var(--loja-tinta-suave);
+  max-width: 100%; overflow-wrap: anywhere;
 }
+/* o texto do card encolhe com o card: uma etiqueta comprida quebra, não empurra a página */
+.runa > div { min-width: 0; }
 .runa .chip.classe { border-style: dashed; }
 .runa .adapt { margin-top: 6px; font-style: italic; font-size: 11.5px; color: #6a4a2a; }
 .runa .aviso {
@@ -2671,6 +2674,17 @@ body.nucleo .group-head::before {
 .runa .notas { margin: 7px 0 0; padding: 0; list-style: none; font-size: 11.5px; color: var(--loja-tinta-suave); }
 .runa .notas li { padding-left: 11px; position: relative; line-height: 1.4; }
 .runa .notas li::before { content: "—"; position: absolute; left: 0; }
+.runa .cg {
+  margin-top: 7px; padding-top: 6px; font-size: 11.5px; color: var(--loja-tinta-suave);
+  border-top: 1px dotted color-mix(in srgb, var(--loja-tinta-suave) 50%, transparent);
+}
+.runa .cg p { font-size: 11.5px; line-height: 1.4; margin-top: 2px; }
+.runa .cg-titulo {
+  font-family: var(--loja-gravado); font-size: 9.5px; letter-spacing: .12em; text-transform: uppercase; color: #7a5c2a;
+}
+.runa .cg-titulo i { font-family: var(--loja-texto); font-size: 11.5px; letter-spacing: 0; text-transform: none; color: var(--loja-tinta-suave); }
+.runa .cg b { font-weight: 600; color: var(--loja-tinta); }
+.runa .cg-obs { font-style: italic; }
 .runa .abrir {
   margin-top: 6px; background: none; border: none; padding: 0; cursor: pointer;
   font-family: var(--loja-gravado); font-size: 9.5px; letter-spacing: .12em;
@@ -2744,8 +2758,8 @@ body.nucleo .group-head::before {
 .runas-vista.ativa { background: linear-gradient(180deg, #6b5535, #3d2f1c); color: #f0dcae; border-color: var(--loja-latao); }
 
 /* as notas nascem no HTML e só aparecem quando pedidas */
-.runa .notas { display: none; }
-.runa.aberta .notas { display: block; }
+.runa .notas, .runa .cg { display: none; }
+.runa.aberta .notas, .runa.aberta .cg { display: block; }
 
 /* Ícones: a arte e nada mais. O nome vai no title, que é o que o mouse pede. */
 .runas-view.v-icones .runas-grade { grid-template-columns: repeat(auto-fill, minmax(62px, 1fr)); gap: 8px; }
@@ -2754,11 +2768,11 @@ body.nucleo .group-head::before {
 .runas-view.v-icones .runa .runa-arte { width: 44px; height: 44px; }
 
 /* Resumido: o que o card já era — arte, nome, efeito, etiquetas e o link das notas. */
-.runas-view.v-resumido .runa .notas { display: none; }
-.runas-view.v-resumido .runa.aberta .notas { display: block; }
+.runas-view.v-resumido .runa .notas, .runas-view.v-resumido .runa .cg { display: none; }
+.runas-view.v-resumido .runa.aberta .notas, .runas-view.v-resumido .runa.aberta .cg { display: block; }
 
 /* Completo: tudo aberto, sem link para clicar. */
-.runas-view.v-completo .runa .notas { display: block; }
+.runas-view.v-completo .runa .notas, .runas-view.v-completo .runa .cg { display: block; }
 .runas-view.v-completo .runa .abrir { display: none; }
 
 
@@ -2997,6 +3011,8 @@ body.ac-leitura .attr-line, body.ac-leitura .attr-line b { font-size: 15px !impo
 body.ac-leitura .card-price { font-size: 16px !important; }
 body.ac-leitura .card .tag { font-size: 10px !important; }
 body.ac-leitura .chip { font-size: 15px !important; }
+/* a etiqueta da runa parte de 9px: 15px era quase o dobro e estourava o card em 1280 */
+body.ac-leitura .runa .chip { font-size: 10.5px !important; }
 body.ac-leitura .g-label, body.ac-leitura .g-count { font-size: 13.5px !important; }
 body.ac-leitura .toggle-row { font-size: 15.5px !important; }
 body.ac-leitura .toggle-row .count { font-size: 12.5px !important; }
@@ -7995,11 +8011,23 @@ function runaHtml(r, trilha, tipo) {
   const subs = runasSubstituicoes(r.nome).map(x =>
     `<p class="aviso">Vira <b>${esc(x.para)}</b>${x.quando ? " " + esc(x.quando) : ""}.${x.vigente ? "" : " (ainda não vale no app)"}</p>`).join("");
   const aberta = runasEstado.abertas.has(r.id);
+  // O controle de grupo que a runa aceita (bloco "Controle de grupo válido"
+  // do markdown) é detalhe técnico: aparece junto com as notas.
+  const cg = r.cg
+    ? `<div class="cg"><div class="cg-titulo">Controle de grupo válido <i>${esc(r.cg.categoria)}</i></div>`
+      + (r.cg.inclui && r.cg.inclui.length ? `<p><b>Inclui:</b> ${esc(r.cg.inclui.join(", "))}.</p>` : "")
+      + (r.cg.naoInclui ? `<p><b>Não inclui:</b> ${esc(r.cg.naoInclui)}</p>` : "")
+      + (r.cg.obs ? `<p class="cg-obs">${esc(r.cg.obs)}</p>` : "")
+      + `</div>`
+    : "";
+  const nNotas = (r.notas || []).length;
+  const rotulo = [r.cg ? "controle de grupo" : "",
+    nNotas ? nNotas + " " + (nNotas === 1 ? "nota técnica" : "notas técnicas") : ""].filter(Boolean).join(" e ");
   // A lista sai sempre no HTML; quem decide se ela aparece é o modo (CSS) ou
   // o clique no link. Trocar de modo não pode custar redesenho do dado.
-  const notas = (r.notas || []).length
-    ? `<button type="button" class="abrir" data-runa="${esc(r.id)}">${aberta ? "esconder as notas" : (r.notas.length + " " + (r.notas.length === 1 ? "nota técnica" : "notas técnicas"))}</button>`
-      + `<ul class="notas">${r.notas.map(n => `<li>${esc(n)}</li>`).join("")}</ul>`
+  const notas = rotulo
+    ? `<button type="button" class="abrir" data-runa="${esc(r.id)}">${aberta ? "esconder as notas" : rotulo}</button>`
+      + cg + (nNotas ? `<ul class="notas">${r.notas.map(n => `<li>${esc(n)}</li>`).join("")}</ul>` : "")
     : "";
   return `<article title="${esc(r.nome)}" class="runa${tipo === "keystone" ? " keystone" : ""}${aberta ? " aberta" : ""}" style="--cor:${esc(trilha.cor || "#b6873a")};--tex-pick:${paperFor(r.id)}">
     <span class="runa-arte" ${arte}>${inicial}</span>

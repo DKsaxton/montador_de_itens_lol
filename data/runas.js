@@ -370,6 +370,30 @@ window.RUNAS = {
         "Não ativa se o dano ocorrer no mesmo tick de jogo em que a própria debilitação foi aplicada pela mesma instância de conjuração (exceto se o alvo já estava debilitado por outra fonte antes).",
         "Debilitação aplicada on-hit (ex: Atropelar do Alistar) já conta antes dessa checagem; debilitação aplicada on-pre-apply (ex: Cetro de Cristal de Rylai) não conta."
        ],
+       "cg": {
+        "categoria": "\"movimento ou ações debilitadas\"",
+        "inclui": [
+         "Aéreo",
+         "Berserk",
+         "Encantamento",
+         "Fuga Forçada",
+         "Provocação",
+         "Enraizamento",
+         "Sono",
+         "Estase",
+         "Atordoamento",
+         "Supressão",
+         "Lentidão",
+         "Cegueira",
+         "Desarmamento",
+         "Ancoragem",
+         "Visão Reduzida",
+         "Metamorfose",
+         "Silenciamento"
+        ],
+        "naoInclui": "Debilitação de Velocidade de Ataque (Cripple).",
+        "obs": ""
+       },
        "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Domination/CheapShot/CheapShot.png"
       },
       {
@@ -830,6 +854,23 @@ window.RUNAS = {
         "Não ativa se o efeito de imobilização foi aplicado a um alvo imune a deslocamento (displacement immune).",
         "A resistência bônus não escala dinamicamente — só considera o valor de resistência que você tem no momento exato do gatilho."
        ],
+       "cg": {
+        "categoria": "\"imobilizar\" (categoria pura, sem Lentidão)",
+        "inclui": [
+         "Aéreo",
+         "Berserk",
+         "Encantamento",
+         "Fuga Forçada",
+         "Provocação",
+         "Enraizamento",
+         "Sono",
+         "Estase",
+         "Atordoamento",
+         "Supressão"
+        ],
+        "naoInclui": "Lentidão — diferente de Fonte da Vida, que inclui.",
+        "obs": ""
+       },
        "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Resolve/VeteranAftershock/VeteranAftershock.png"
       },
       {
@@ -896,6 +937,24 @@ window.RUNAS = {
         "Ativa mesmo com o usuário ou alvo já em 100% de vida (o dano/cura listado no total pode não refletir cura real aplicada).",
         "O texto oficial da Riot não traz o valor da cura; pelo dado do jogo e pela wiki, 10 – 50 (corpo a corpo) e 7 – 35 (à distância), do nível 1 ao 18."
        ],
+       "cg": {
+        "categoria": "\"debilitar o movimento\" (Imobiliza + Lentidão)",
+        "inclui": [
+         "Aéreo",
+         "Berserk",
+         "Encantamento",
+         "Fuga Forçada",
+         "Provocação",
+         "Enraizamento",
+         "Sono",
+         "Estase",
+         "Atordoamento",
+         "Supressão",
+         "Lentidão"
+        ],
+        "naoInclui": "",
+        "obs": ""
+       },
        "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Resolve/FontOfLife/FontOfLife.png"
       },
       {
@@ -1068,6 +1127,23 @@ window.RUNAS = {
        ],
        "adaptativa": "",
        "notas": [],
+       "cg": {
+        "categoria": "gatilho da substituição automática — \"efeito de imobilização\" (categoria pura)",
+        "inclui": [
+         "Aéreo",
+         "Berserk",
+         "Encantamento",
+         "Fuga Forçada",
+         "Provocação",
+         "Enraizamento",
+         "Sono",
+         "Estase",
+         "Atordoamento",
+         "Supressão"
+        ],
+        "naoInclui": "",
+        "obs": "Yorick é tratado como exceção e conta como se não tivesse imobilização, mesmo tendo uma no W (Procissão Sombria) (vale também para o Pós-choque)."
+       },
        "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Inspiration/GlacialAugment/GlacialAugment.png"
       },
       {
@@ -1264,6 +1340,25 @@ window.RUNAS = {
         "Alvos válidos precisam estar dentro de um ângulo de 180° na direção em que o usuário está virado.",
         "O bônus de velocidade é concedido mesmo que o usuário esteja parado."
        ],
+       "cg": {
+        "categoria": "\"imobilizado, ancorado ou lento\"",
+        "inclui": [
+         "Aéreo",
+         "Berserk",
+         "Encantamento",
+         "Fuga Forçada",
+         "Provocação",
+         "Enraizamento",
+         "Sono",
+         "Estase",
+         "Atordoamento",
+         "Supressão",
+         "Ancoragem",
+         "Lentidão"
+        ],
+        "naoInclui": "",
+        "obs": ""
+       },
        "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Resolve/ApproachVelocity/ApproachVelocity.png"
       },
       {
