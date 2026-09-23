@@ -427,6 +427,28 @@ def checar_catalogo(s, p):
       return { n: com.length, dif }; })()""")
     p.conta("catálogo", "valor em ouro = o do catálogo, sem conta por fora", vo["n"] > 200 and not vo["dif"],
             ("diferem: " + "; ".join(vo["dif"][:3])) if vo["dif"] else "%d itens com Valor de Ouro (base)" % vo["n"])
+    # F13-T22: o Ápice e o Mestre Forjador mudam o valor em ouro, com os números
+    # do catálogo. O Atma no ápice vale 3.866,67g (133,33%); forjado, qualquer
+    # Lendário elegível ganha os 1.000g do bônus. E a caixa com um item só
+    # continua igual à ficha dele com o Ápice ligado.
+    mx = s.js("""(() => { const atma = CATALOG.items.find(i => i.namePt === 'Acerto de Contas de Atma');
+      state.applyApex = true; const efAtma = itemEfficiency(atma);
+      const dif = [];
+      CATALOG.items.forEach(it => { const f = itemEfficiency(it), c = goldEfficiency([{ itemId: it.slug }]).pct;
+        if (f !== null && c !== null && Math.abs(f - c) > 0.06) dif.push(it.namePt); });
+      state.applyApex = false;
+      const alvo = CATALOG.items.find(i => mfEligible(i) && typeof i.costAnalysis.goldValueBase === 'number');
+      const antes = build.masterwork; build.masterwork = true;
+      const ouro = goldEfficiency([{ itemId: alvo.slug, mf: true }]).gold;
+      build.masterwork = antes;
+      return { efAtma, dif, alvo: alvo.namePt, ouro, base: alvo.costAnalysis.goldValueBase, bonus: alvo.masterwork.bonusGold }; })()""")
+    p.conta("catálogo", "o Ápice muda a eficiência (Atma 133,33%)", abs((mx["efAtma"] or 0) - 133.33) < 0.01,
+            "Atma no ápice: %s%%" % mx["efAtma"])
+    p.conta("catálogo", "o Mestre Forjador soma o bônus ao item forjado",
+            abs(mx["ouro"] - (mx["base"] + (mx["bonus"] or 0))) < 0.01 and (mx["bonus"] or 0) > 0,
+            "%s: %sg + %sg = %sg" % (mx["alvo"], mx["base"], mx["bonus"], mx["ouro"]))
+    p.conta("catálogo", "caixa de um item só = ficha, também no Ápice", not mx["dif"],
+            ("diferem: " + ", ".join(mx["dif"][:4])) if mx["dif"] else "os 225")
 
 
 def checar_forja(s, p):

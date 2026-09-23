@@ -6986,21 +6986,22 @@ function sumAttributes(entries) {
   return [...totals.values()].sort((a, b) => b.value * (a.unit === "percent" ? 1 : 1) - a.value || a.stat.localeCompare(b.stat, "pt-BR"));
 }
 
-// Eficiência de ouro de um conjunto: soma dos valores em ouro (valorEmOuro — com
-// a passiva, como a ficha) ÷ soma dos preços efetivos (Reembolso). Itens sem
-// análise ficam de fora e são contados em `sem`. (MF/Ápice ainda não mudam o
-// valor em ouro: F13-T22.)
+// Eficiência de ouro de um conjunto: soma dos valores em ouro (valorEfetivo — com
+// a passiva, no ápice se ligado, mais o Mestre Forjador no item forjado) ÷ soma
+// dos preços efetivos (Reembolso). Itens sem análise ficam de fora e são
+// contados em `sem`; os de ápice sem valor fixo entram com o base, em `semApice`.
 function goldEfficiency(entries) {
-  let gold = 0, price = 0, n = 0, sem = 0;
+  let gold = 0, price = 0, n = 0, sem = 0, semApice = 0;
   entries.forEach(e => {
     const it = byId[e.itemId];
     if (!it) return;
-    const gv = valorEmOuro(it);
+    const gv = valorEfetivo(it, e);
     const p = effectivePrice(it);
     if (gv === null || !p) { sem++; return; }
+    if (state.applyApex && apiceSemValor(it)) semApice++;
     gold += gv; price += p; n++;
   });
-  return { pct: n && price ? gold / price * 100 : null, n, sem, gold, price };
+  return { pct: n && price ? gold / price * 100 : null, n, sem, semApice, gold, price };
 }
 
 function statsListHtml(totals) {
@@ -7009,7 +7010,7 @@ function statsListHtml(totals) {
 }
 function effHtml(eff, cls) {
   if (eff.pct === null) return `<span class="${cls}"><span class="sem">sem análise de custo</span></span>`;
-  return `<span class="${cls}">Eficiência <b>${fmtEff(eff.pct)}</b>${eff.sem ? ` <span class="sem">(${eff.sem} sem análise)</span>` : ""}</span>`;
+  return `<span class="${cls}">Eficiência <b>${fmtEff(eff.pct)}</b>${eff.sem ? ` <span class="sem">(${eff.sem} sem análise)</span>` : ""}${eff.semApice ? ` <span class="sem" title="O ápice deles não tem valor fixo no catálogo (depende de outras fontes); entram com o valor base.">(${eff.semApice} sem valor fixo no ápice)</span>` : ""}</span>`;
 }
 
 function renderBuildTotals() {
@@ -10346,15 +10347,42 @@ function valorEmOuro(item) {
   const ca = item.costAnalysis;
   return ca && typeof ca.goldValueBase === "number" ? ca.goldValueBase : null;
 }
+// F13-T22: o valor em ouro no ápice é o do Capítulo 1 (apexNumeric.goldValue).
+// Onde o ápice não tem valor fixo ("sem teto: +325g por 100 de PdH", "525g se…"),
+// não há número: o app fica com o valor base e avisa, em vez de inventar.
+function valorNoApice(item) {
+  const an = item.apexNumeric;
+  return hasApex(item) && an && typeof an.goldValue === "number" ? an.goldValue : null;
+}
+function apiceSemValor(item) {
+  return !!(hasApex(item) && item.apexNumeric && valorNoApice(item) === null);
+}
+// Valor em ouro de uma entrada da build: base → no ápice (Ápice ligado) → mais
+// o bônus do Mestre Forjador no item forjado (masterwork.bonusGold: 1.000g nos
+// 109 elegíveis). O valor do ápice é contado sobre o item sem o Mestre
+// Forjador, por isso o bônus soma por cima.
+function valorEfetivo(item, entry) {
+  let v = valorEmOuro(item);
+  if (v === null) return null;
+  if (state.applyApex) { const ap = valorNoApice(item); if (ap !== null) v = ap; }
+  if (entry && mfApplies(item, entry) && typeof item.masterwork.bonusGold === "number") v += item.masterwork.bonusGold;
+  return v;
+}
 // Eficiência de ouro (%) = valor em ouro ÷ preço pago. Sem Reembolso, o número
 // do próprio catálogo (efficiencyBase); com Reembolso, o MESMO valor em ouro
 // sobre o preço com desconto. null = sem análise (pets, consumíveis, trinkets...).
 function itemEfficiency(item) {
   const ca = item.costAnalysis;
   if (!ca) return null;
-  const v = valorEmOuro(item);
+  // Com o Ápice ligado, o valor no máximo (F13-T22); sem ele, ou sem valor fixo, o base.
+  const ap = state.applyApex ? valorNoApice(item) : null;
+  const v = ap !== null ? ap : valorEmOuro(item);
   if (state.applyCashback && hasCashback(item) && v !== null && item.cashback.netGold > 0) {
     return v / item.cashback.netGold * 100;
+  }
+  if (ap !== null) {
+    if (typeof item.apexNumeric.efficiency === "number") return item.apexNumeric.efficiency;
+    return item.priceGold > 0 ? ap / item.priceGold * 100 : null;
   }
   return typeof ca.efficiencyBase === "number" ? ca.efficiencyBase : null;
 }
@@ -11368,6 +11396,7 @@ function cardFullHtml(item) {
   const ca = item.costAnalysis;
   const kv = [];
   if (ca && ca.efficiency) kv.push(["Eficiência", ca.efficiency, "cera"]);
+  if (state.applyApex && valorNoApice(item) !== null && !state.applyCashback) kv.push(["No ápice", fmtEff(itemEfficiency(item)), "cera"]);
   if (state.applyCashback && hasCashback(item) && itemEfficiency(item) !== null) kv.push(["Com Reembolso", fmtEff(itemEfficiency(item)), "cera"]);
   if (ca && ca.goldValue) kv.push(["Valor em ouro", ca.goldValue, ""]);
   if (hasCashback(item)) kv.push(["Reembolso", item.cashback.raw, ""]);
@@ -11513,6 +11542,19 @@ function openModal(id) {
   const fmtOuro = (g) => g.toLocaleString("pt-BR", { maximumFractionDigits: 2 }) + "g";
   const soAtributos = ca && typeof ca.goldValueStats === "number" && typeof ca.goldValueBase === "number"
     && ca.goldValueStats !== ca.goldValueBase && item.priceGold > 0 ? ca.goldValueStats / item.priceGold * 100 : null;
+  // F13-T22: com o Ápice ligado, o valor e a eficiência no máximo, do catálogo;
+  // sem valor fixo, o texto dele ("sem teto: …"). O Mestre Forjador soma o
+  // bônus em ouro dele (1.000g) ao valor base do item elegível.
+  const an = item.apexNumeric;
+  const noApice = state.applyApex && hasApex(item) && an
+    ? (valorNoApice(item) !== null
+        ? `<div class="cost-line eff"><span class="k">No ápice</span><span class="v">${an.efficiency !== null && an.efficiency !== undefined ? fmtEff(an.efficiency) + " (" : ""}${fmtOuro(an.goldValue)}${item.priceGold > 0 ? " ÷ " + fmtOuro(item.priceGold) : ""}${an.efficiency !== null && an.efficiency !== undefined ? ")" : ""}</span></div>`
+        : (an.goldValueRaw ? `<div class="cost-line"><span class="k">No ápice</span><span class="v">${esc(an.goldValueRaw.replace(/^none\s*\((.*)\)$/, "$1"))}</span></div>` : ""))
+    : "";
+  const bonusMF = item.masterwork && mfEligible(item) && typeof item.masterwork.bonusGold === "number" ? item.masterwork.bonusGold : null;
+  const forjado = bonusMF !== null && ca && typeof ca.goldValueBase === "number" && item.priceGold > 0
+    ? `<div class="cost-line"><span class="k">Forjado</span><span class="v">${fmtEff((ca.goldValueBase + bonusMF) / item.priceGold * 100)} (${fmtOuro(ca.goldValueBase)} + ${fmtOuro(bonusMF)} do Mestre Forjador ÷ ${fmtOuro(item.priceGold)})</span></div>`
+    : "";
   const costHtml = ca && (ca.goldValue || ca.efficiency) ? `
     <div class="modal-section">
       <div class="modal-section-title">Análise de custo</div>
@@ -11520,8 +11562,10 @@ function openModal(id) {
       ${ca.efficiency ? `<div class="cost-line eff"><span class="k">Eficiência</span><span class="v">${ca.efficiency}</span></div>` : ""}
       ${soAtributos !== null
         ? `<div class="cost-line"><span class="k">Só atributos</span><span class="v">${fmtEff(soAtributos)} (${fmtOuro(ca.goldValueStats)} ÷ ${fmtOuro(item.priceGold)}; a base conta ${fmtOuro(ca.goldValueBase - ca.goldValueStats)} de efeito)</span></div>` : ""}
+      ${noApice}
+      ${forjado}
       ${state.applyCashback && hasCashback(item) && itemEfficiency(item) !== null
-        ? `<div class="cost-line eff"><span class="k">Com Reembolso</span><span class="v">${fmtEff(itemEfficiency(item))} (${fmtOuro(valorEmOuro(item))} ÷ ${fmtOuro(item.cashback.netGold)})</span></div>` : ""}
+        ? `<div class="cost-line eff"><span class="k">Com Reembolso</span><span class="v">${fmtEff(itemEfficiency(item))} (${fmtOuro(state.applyApex && valorNoApice(item) !== null ? valorNoApice(item) : valorEmOuro(item))} ÷ ${fmtOuro(item.cashback.netGold)})</span></div>` : ""}
       ${(ca.extra || []).map(x => `<div class="cost-line"><span class="k">Extra</span><span class="v">${x}</span></div>`).join("")}
     </div>` : "";
 
