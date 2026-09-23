@@ -300,3 +300,9 @@ Cinco pontos que nenhum dos oito leitores cobriu. Todas as linhas se referem a `
 
 O atributo do Biscoito no catálogo é uma frase longa ("+30 Vida máxima permanente por biscoito consumido ou vendido (tooltip do cliente, captura do usuário em 12/09/2026: …)"), e a faixa de atributos da build desenha cada atributo sem quebra de linha: um `span` de 1.415px deixa a página com 1.478px numa janela de 1.280. O roteiro de QA não pegou porque a build dele não tem o Biscoito. Conserto no app é deixar o atributo quebrar; o texto do atributo em si é do Capítulo 1.
 
+
+### 35. O texto perde a trilha primária e a secundária quando a primária está sem runa
+
+`index.html` (`linhasDeRunas` e `normRunas`) · média · achado pela varredura das runas em 23/09/2026 · **REPRODUZIDO**
+
+A linha `RUNAS:` só sai quando alguma runa da primária está escolhida. Com Precisão escolhida sem runa e Dominação com Golpe Desleal e Sexto Sentido, o texto saiu só com `RUNAS 2:` e `FRAGMENTOS:`. Na volta, o `normRunas` sem primária descarta a secundária, e a página voltou só com os fragmentos, sem aviso nenhum (`unknown` vazio). É da mesma família dos nºs 6 e 16. O link e a publicação não sofrem disso. Registrado também em `docs/pendencias_runas.md` (A2).
