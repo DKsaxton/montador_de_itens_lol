@@ -10133,6 +10133,10 @@ function apexStatsOf(item) {
   const out = [];
   if (hasApex(item)) {
     let t = item.apex;
+    // F13-T9: "+15 de Dano de Ataque ou +25 de Poder de Habilidade" é uma coisa
+    // OU a outra, conforme a adaptação — somar as duas inventa um número. Os
+    // dois lados de um "ou" saem da leitura.
+    t = t.replace(/\+\d[\d.,]*\s*%?\s+de\s+[^,;:()]+?\s+ou\s+\+\d[\d.,]*\s*%?\s+de\s+[^,;:()]+/g, m => " ".repeat(m.length));
     KNOWN_STATS.forEach(st => {
       const re = new RegExp("\\+(\\d[\\d.,]*)\\s*(%?)\\s+de\\s+" + st.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "(?![\\wÀ-ú])", "g");
       t = t.replace(re, (m, num, pct) => {
@@ -10154,9 +10158,20 @@ function apexAttributes(item) {
   const ap = apexStatsOf(item);
   if (!ap.length) return null;
   const base = item.attributes || [];
+  // F13-T9 (22/09/2026): o texto livre do Ápice mistura três coisas — o total
+  // no máximo ("+55 de PdH" no Lacre Sombrio, que era 15), um tanto A MAIS sobre
+  // o do item ("+241 de Vida máxima" na Couraça Protoplasmática, que tem 600) e
+  // outra grandeza ("+20% de PdH" na Tocha, que tem +80 fixos). A leitura antiga
+  // trocava o número em todos os casos, e a Tocha perdia os 80. Sem o Ápice
+  // estruturado no Capítulo 1, a regra é humilde: só substitui quando é a MESMA
+  // grandeza e MAIOR (um máximo nunca é menor que o base). Na dúvida, fica o do
+  // item — o texto do Ápice continua na ficha.
   const list = base.map(a => {
     const x = ap.find(o => o.stat === a.stat);
-    return x && (x.value !== a.value || x.unit !== a.unit) ? { ...x, changed: true, baseRaw: a.raw } : a;
+    if (!x) return a;
+    const mesmaGrandeza = x.unit === a.unit;
+    const maior = typeof a.value !== "number" || x.value > a.value;
+    return mesmaGrandeza && maior ? { ...x, changed: true, baseRaw: a.raw } : a;
   });
   ap.forEach(x => { if (!base.some(a => a.stat === x.stat)) list.push({ ...x, changed: true, added: true }); });
   return list;

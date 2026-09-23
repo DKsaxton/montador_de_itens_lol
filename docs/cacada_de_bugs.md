@@ -239,6 +239,8 @@ Status de cada um:
 
 ## Fora da varredura — apontado pelo crítico de cobertura, NÃO verificado
 
+> **Ponto 2 (Ápice) conferido na F13-T9, 22/09/2026.** Os cinco exemplos do crítico estavam **errados**: Cinzas do Destino, Cota de Malha, Códex Demoníaco e Cinto do Gigante têm Ápice "igual ao base" no catálogo e o app não mexe neles; as Cinzas nem têm os 80 de PdH citados (têm 30). Só o Elixir da Força se sustentava. Mas passando o leitor em **todos** os 102 itens com Ápice, o problema era real e maior, em outros itens: 9 deles tinham o número do item apagado ou trocado por um menor — Tocha de Chamas Negras (perdia os +80 de PdH por "+20%"), Couraça Protoplasmática (600 → 241 de Vida), Aproximação Invernal (550 → 129 de Vida), Tiara Sussurrante, Jak'Sho, Ímpeto Cósmico, Couraça do Defunto, Trenó do Solstício e Elixir da Força (somava as duas pontas de um "ou"). **Consertado**: o número do Ápice só substitui o do item quando é da mesma grandeza e maior, e alternativas com "ou" não entram. Os outros 93 ficaram iguais. **Continua errado**: Acerto de Contas de Atma mostra 30% de crítico, e o texto diz "50% no total" — só o Ápice estruturado no Capítulo 1 resolve sem adivinhar.
+
 Um último agente leu a lista acima e disse o que nenhum dos oito subsistemas cobriu. Esses pontos não passaram pelos céticos: tratar como pista, não como bug.
 
 Cinco pontos que nenhum dos oito leitores cobriu. Todas as linhas se referem a `C:\Users\user\3D Objects\Captulo 2\montador_de_itens_lol\index.html`. Os casos marcados como conferidos foram lidos no código e no `data/catalog.js`. Os outros são o tipo de bug que tende a aparecer ali.

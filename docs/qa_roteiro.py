@@ -376,6 +376,22 @@ def checar_catalogo(s, p):
     p.conta("catálogo", "aba Todos volta a ser uma coluna só de grade",
             s.js("getComputedStyle(document.getElementById('oficina')).display") == "block")
 
+    # F13-T9: o Ápice não pode apagar número do item. A Tocha perdia os +80 de PdH
+    # (o texto diz "+20% de PdH"), a Couraça Protoplasmática ia de 600 para 241
+    # de Vida, e o Elixir da Força somava as duas alternativas de um "ou". E o
+    # caminho antigo: o Lacre Sombrio continua indo de 15 para 55 no Ápice.
+    ap = s.js("""(() => { const pega = (n) => CATALOG.items.find(i => i.namePt === n);
+      const le = (n) => { const it = pega(n); state.applyApex = true;
+        const r = effectiveAttributes(it, { itemId: it.slug }).map(a => a.raw); state.applyApex = false; return r; };
+      return { tocha: le('Tocha de Chamas Negras'), couraca: le('Couraça Protoplasmática'),
+               elixir: le('Elixir da Força'), lacre: le('Lacre Sombrio') }; })()""")
+    p.conta("catálogo", "Ápice não apaga número do item (Tocha, Couraça)",
+            "+80 de Poder de Habilidade" in ap["tocha"] and "+600 de Vida" in ap["couraca"],
+            "Tocha %s | Couraça %s" % (ap["tocha"][:1], ap["couraca"][:1]))
+    p.conta("catálogo", "Ápice não soma as duas pontas de um \"ou\"", ap["elixir"] == [], str(ap["elixir"]))
+    p.conta("catálogo", "Ápice ainda sobe o que é máximo (Lacre 15 → 55)",
+            "+55 de Poder de Habilidade" in ap["lacre"], str(ap["lacre"][:1]))
+
 
 def checar_forja(s, p):
     print("\n%sFORJA%s" % (AMARELO, FIM))
