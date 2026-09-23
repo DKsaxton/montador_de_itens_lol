@@ -409,6 +409,16 @@ def checar_catalogo(s, p):
             ("pioram: " + ", ".join(ef["piora"][:4])) if ef["piora"] else "nenhum dos 225")
     p.conta("catálogo", "caixa de um item só = eficiência da ficha dele", not ef["dif"],
             ("diferem: " + ", ".join(ef["dif"][:4])) if ef["dif"] else "os 225, com e sem Reembolso")
+    # F13-T20: o valor em ouro vem pronto do Capítulo 1 (goldValueBase). O
+    # contorno da T15 (efficiencyBase × preço) errava por arredondamento em 16
+    # itens — o Limite da Razão valia 3.331,72g em vez de 3.331,67g.
+    vo = s.js("""(() => { const dif = [], com = [];
+      CATALOG.items.forEach(it => { const b = it.costAnalysis && it.costAnalysis.goldValueBase;
+        if (typeof b !== 'number') return; com.push(it);
+        if (Math.abs(valorEmOuro(it) - b) > 0.001) dif.push(it.namePt + ' ' + valorEmOuro(it).toFixed(2) + '≠' + b); });
+      return { n: com.length, dif }; })()""")
+    p.conta("catálogo", "valor em ouro = o do catálogo, sem conta por fora", vo["n"] > 200 and not vo["dif"],
+            ("diferem: " + "; ".join(vo["dif"][:3])) if vo["dif"] else "%d itens com Valor de Ouro (base)" % vo["n"])
 
 
 def checar_forja(s, p):

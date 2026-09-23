@@ -6988,8 +6988,8 @@ function sumAttributes(entries) {
 
 // Eficiência de ouro de um conjunto: soma dos valores em ouro (valorEmOuro — com
 // a passiva, como a ficha) ÷ soma dos preços efetivos (Reembolso). Itens sem
-// análise ficam de fora e são contados em `sem`. (MF/Ápice não mudam o valor em
-// ouro — sem dado no catálogo.)
+// análise ficam de fora e são contados em `sem`. (MF/Ápice ainda não mudam o
+// valor em ouro: F13-T22.)
 function goldEfficiency(entries) {
   let gold = 0, price = 0, n = 0, sem = 0;
   entries.forEach(e => {
@@ -10336,22 +10336,15 @@ const EFF_BANDS = [
 // Tipo de dano: os valores de Efeitos Especiais do catálogo que nomeiam um tipo de dano.
 const DAMAGE_OPTIONS = (CATALOG.meta.specialEffects || []).filter(v => /^Dano (Físico|Mágico|Verdadeiro)$/.test(v));
 
-// F13-T15 (Leo, 23/09/2026: "com a passiva"). O valor em ouro de um item é o
-// que a eficiência base do catálogo usa — que em 21 itens inclui a passiva
-// avaliada pelo Capítulo 1 ("118,99% (base, incluindo Duelo)"). Antes o app
-// usava esse número na ficha e o valor SÓ dos atributos (goldValueTotal) com
-// Reembolso e nas caixas: ligar o desconto derrubava o Limite da Razão de 119%
-// para 91%, e a caixa com ele mostrava 84%. Onde os dois números do catálogo
-// concordam (item sem passiva), o goldValueTotal é o exato — a porcentagem vem
-// arredondada em duas casas; onde discordam, a diferença é a passiva, e vale a base.
+// O valor em ouro de um item é o que a eficiência base usa: "com a passiva"
+// (Leo, 23/09/2026), igual ao artigo da wiki — no Limite da Razão, os 975g do
+// Duelo entram. Desde o Capítulo 1 de 23/09 ele vem pronto no catálogo
+// (costAnalysis.goldValueBase); a F13-T15 o tirava de efficiencyBase × preço,
+// que errava por arredondamento (3.331,72g em vez de 3.331,67g). O valor só
+// dos atributos, como a tabela da wiki, é o goldValueStats.
 function valorEmOuro(item) {
   const ca = item.costAnalysis;
-  if (!ca) return null;
-  const gv = typeof ca.goldValueTotal === "number" ? ca.goldValueTotal : null;
-  const eb = typeof ca.efficiencyBase === "number" ? ca.efficiencyBase : null;
-  if (eb === null || !(item.priceGold > 0)) return gv;
-  const daBase = eb / 100 * item.priceGold;
-  return gv !== null && Math.abs(daBase - gv) <= item.priceGold * 0.006 ? gv : daBase;
+  return ca && typeof ca.goldValueBase === "number" ? ca.goldValueBase : null;
 }
 // Eficiência de ouro (%) = valor em ouro ÷ preço pago. Sem Reembolso, o número
 // do próprio catálogo (efficiencyBase); com Reembolso, o MESMO valor em ouro
@@ -11492,16 +11485,21 @@ function openModal(id) {
   const buildsIntoUnlinked = unlinked(item.buildsInto);
 
   // Análise de custo: os textos do catálogo; com Reembolso ligado, a eficiência recalculada.
+  // Quando o efeito entra na base (Duelo, Fascínio...), a leitura só dos
+  // atributos — a da tabela da wiki — aparece ao lado (goldValueStats, 23/09/2026).
   const ca = item.costAnalysis;
+  const fmtOuro = (g) => g.toLocaleString("pt-BR", { maximumFractionDigits: 2 }) + "g";
+  const soAtributos = ca && typeof ca.goldValueStats === "number" && typeof ca.goldValueBase === "number"
+    && ca.goldValueStats !== ca.goldValueBase && item.priceGold > 0 ? ca.goldValueStats / item.priceGold * 100 : null;
   const costHtml = ca && (ca.goldValue || ca.efficiency) ? `
     <div class="modal-section">
       <div class="modal-section-title">Análise de custo</div>
       ${ca.goldValue ? `<div class="cost-line"><span class="k">Valor em ouro</span><span class="v">${ca.goldValue}</span></div>` : ""}
       ${ca.efficiency ? `<div class="cost-line eff"><span class="k">Eficiência</span><span class="v">${ca.efficiency}</span></div>` : ""}
+      ${soAtributos !== null
+        ? `<div class="cost-line"><span class="k">Só atributos</span><span class="v">${fmtEff(soAtributos)} (${fmtOuro(ca.goldValueStats)} ÷ ${fmtOuro(item.priceGold)}; a base conta ${fmtOuro(ca.goldValueBase - ca.goldValueStats)} de efeito)</span></div>` : ""}
       ${state.applyCashback && hasCashback(item) && itemEfficiency(item) !== null
-        ? `<div class="cost-line eff"><span class="k">Com Reembolso</span><span class="v">${fmtEff(itemEfficiency(item))} (${typeof ca.efficiencyBase === "number"
-            ? `${ca.efficiencyBase.toLocaleString("pt-BR", { maximumFractionDigits: 2 })}% × ${item.priceGold.toLocaleString("pt-BR")}g ÷ ${item.cashback.netGold.toLocaleString("pt-BR")}g`
-            : `${ca.goldValueTotal.toLocaleString("pt-BR")}g ÷ ${item.cashback.netGold.toLocaleString("pt-BR")}g`})</span></div>` : ""}
+        ? `<div class="cost-line eff"><span class="k">Com Reembolso</span><span class="v">${fmtEff(itemEfficiency(item))} (${fmtOuro(valorEmOuro(item))} ÷ ${fmtOuro(item.cashback.netGold)})</span></div>` : ""}
       ${(ca.extra || []).map(x => `<div class="cost-line"><span class="k">Extra</span><span class="v">${x}</span></div>`).join("")}
     </div>` : "";
 

@@ -14,7 +14,7 @@ Fica fora daqui o que já foi decidido no Capítulo 1 (`docs/decisoes_capitulo1.
 |---|---|---|---|
 | A1 | Atma: eficiência sobre o preço errado | ✔ 91,95% | ✔ automático (F13-T19) |
 | A2 | Redenção: eficiência sobre o preço errado | ✔ 97,83% | ✔ automático (F13-T19) |
-| B1 | `goldValueTotal` com dois sentidos | ✔ "Valor de Ouro (atributos)" e "(base)" nos 225 | F13-T20: a eficiência usa `goldValueBase` e o contorno da T15 sai |
+| B1 | `goldValueTotal` com dois sentidos | ✔ "Valor de Ouro (atributos)" e "(base)" nos 225 | ✔ F13-T20: o valor em ouro é o `goldValueBase`, o contorno da T15 saiu, e a ficha mostra "Só atributos" quando o efeito conta |
 | B2 | Biscoito: nota de pesquisa no atributo | ✔ nota movida para Notas | ✔ automático (F13-T19) |
 | C1, C2 | Atlas Mundial e Bússola Rúnica no 26.19 | sem mudança: o Data Dragon ainda é 16.18.1 | nada a fazer até o patch do catálogo subir |
 | D1 | Ápice em números | ✔ "Ápice numérico" em 102 itens | F13-T21: sai a extração de texto (o Atma passa a 50%); F13-T22: eficiência no ápice |
