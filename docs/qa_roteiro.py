@@ -889,6 +889,140 @@ def checar_rascunho(s, p):
             "na forja %s, sujo %s, fav %s" % (e["na_forja"], e["sujo"], e["fav_a"]))
 
 
+def checar_troca(s, p):
+    """F13-T25 (bug nº 38): na forja, trocar de build, criar e duplicar perguntam
+    pelo rascunho; na lista e no Importar, os mesmos gestos gravavam o rascunho
+    calados. E o que só mexe em OUTRA build (excluir, a janela "Falta pouco para
+    publicar") gravava junto o rascunho da aberta. Cada checagem monta o próprio
+    estado (a build A aberta, suja, na lista) por JS; o gesto testado é o de
+    verdade. O diálogo só é respondido se apareceu: no código de antes ele não
+    aparece, e cada checagem tem de falhar por si, não o grupo parar na primeira."""
+    print("\n%sTROCA DE BUILD%s" % (AMARELO, FIM))
+    ids = []
+    for _ in range(3):
+        s.nova_build()
+        ids.append(s.js("build.id"))
+    id_c, id_b, id_a = ids
+    if not s.js("build.editing"):
+        s.clicar("#edit-switch", 0.8)
+
+    def preparar():
+        s.js("""(() => { rascunho.sujo = false; activateBuild(%s, true); renderBuildAll();
+          build.cats[3].items.push({ itemId: 'long-sword', note: 'rascunho' }); saveBuild(); renderBuildAll();
+          showBuildScreen('lista'); return 'ok'; })()""" % json.dumps(id_a))
+        time.sleep(0.5)
+
+    def estado():
+        return s.js("""(() => { const disco = JSON.parse(localStorage.getItem('lol-builds-v3') || '{"builds":[]}').builds;
+          const d = (id) => disco.find(b => b.id === id) || {};
+          return { ativa: build.id === %s ? 'A' : build.id === %s ? 'B' : build.name, sujo: rascunho.sujo,
+            dialogo: !document.getElementById('save-dialog').hidden,
+            a_disco: (d(%s).cats || []).some(c => c.items.some(e => e.note === 'rascunho')),
+            nome_a: d(%s).name || '', existe_c: library.builds.some(b => b.id === %s), n: library.builds.length }; })()"""
+                    % (json.dumps(id_a), json.dumps(id_b), json.dumps(id_a), json.dumps(id_a), json.dumps(id_c)))
+
+    def responder(sd):
+        if s.js("!document.getElementById('save-dialog').hidden"):
+            s.clicar('#save-dialog [data-sd="%s"]' % sd, 1.0)
+
+    def duplo(sel):
+        c = s.caixa(sel)
+        for n in (1, 2):
+            for tipo in ("mousePressed", "mouseReleased"):
+                s.envia("Input.dispatchMouseEvent", {"type": tipo, "x": c[0], "y": c[1], "button": "left", "clickCount": n})
+        time.sleep(1.0)
+
+    def limpar_a():   # tira da cópia salva de A o rascunho que um "Salvar" de propósito gravou
+        s.js("(() => { const a = library.builds.find(b => b.id === %s); a.cats.forEach(c => c.items = c.items.filter(x => x.note !== 'rascunho')); gravarBiblioteca(); return 'ok'; })()" % json.dumps(id_a))
+
+    preparar()
+    duplo('.bi-row[data-id="%s"]' % id_b)
+    e = estado()
+    responder("voltar")
+    e2 = estado()
+    p.conta("troca", "abrir outra build pela lista pergunta",
+            e["dialogo"] and e["ativa"] == "A" and not e["a_disco"] and e2["ativa"] == "A" and e2["sujo"],
+            "diálogo %s, ativa %s, rascunho no disco %s" % (e["dialogo"], e["ativa"], e["a_disco"]))
+    # pelo teclado: Enter na linha abre o diálogo com o foco nele, e o Enter
+    # seguinte responde "Continuar editando" em vez de acionar a lista por trás
+    preparar()
+    s.clicar('.bi-row[data-id="%s"]' % id_b, 0.4)
+    for tipo in ("keyDown", "keyUp"):
+        s.envia("Input.dispatchKeyEvent", {"type": tipo, "key": "Enter", "code": "Enter", "windowsVirtualKeyCode": 13, "text": chr(13)})
+    time.sleep(0.6)
+    foco = s.js("document.activeElement.dataset.sd || document.activeElement.className")
+    for tipo in ("keyDown", "keyUp"):
+        s.envia("Input.dispatchKeyEvent", {"type": tipo, "key": "Enter", "code": "Enter", "windowsVirtualKeyCode": 13, "text": chr(13)})
+    time.sleep(0.6)
+    e = estado()
+    p.conta("troca", "o diálogo recebe o foco (Enter responde nele)", foco == "voltar" and not e["dialogo"] and e["ativa"] == "A" and e["sujo"],
+            "foco em %r, diálogo aberto %s, ativa %s" % (foco, e["dialogo"], e["ativa"]))
+    responder("voltar")
+    preparar()
+    duplo('.bi-row[data-id="%s"]' % id_b)
+    viu = s.js("!document.getElementById('save-dialog').hidden")
+    responder("salvar")
+    e = estado()
+    p.conta("troca", "\"Salvar e sair\" grava e abre a outra", viu and e["ativa"] == "B" and e["a_disco"] and not e["sujo"],
+            "diálogo %s, ativa %s, rascunho de A no disco %s" % (viu, e["ativa"], e["a_disco"]))
+    limpar_a()
+    preparar()
+    n0 = s.js("library.builds.length")
+    s.clicar("#bi-new", 0.6)
+    e = estado()
+    responder("voltar")
+    p.conta("troca", "\"+ Nova build\" da lista pergunta", e["dialogo"] and e["n"] == n0 and not e["a_disco"],
+            "diálogo %s, builds %d → %d, rascunho no disco %s" % (e["dialogo"], n0, e["n"], e["a_disco"]))
+    preparar()
+    s.clicar('.bi-row[data-id="%s"]' % id_c, 0.5)
+    s.clicar('#bi-detail [data-act="del"]', 1.2)
+    e = estado()
+    p.conta("troca", "excluir outra build não grava o rascunho", not e["existe_c"] and e["sujo"] and not e["a_disco"],
+            "excluída %s, sujo %s, rascunho de A no disco %s" % (not e["existe_c"], e["sujo"], e["a_disco"]))
+    preparar()
+    s.clicar('.bi-row[data-id="%s"]' % id_a, 0.5)
+    s.clicar('#bi-detail [data-act="publish"]', 0.8)
+    aberta = s.js("!document.getElementById('pub-falta').hidden")
+    s.clicar("#pf-nome", 0.2)
+    s.envia("Input.insertText", {"text": "Nome da troca"})
+    time.sleep(0.6)
+    e = estado()
+    s.clicar("#pf-close", 0.4)
+    p.conta("troca", "\"Falta pouco para publicar\" grava o nome, não as caixas",
+            aberta and e["nome_a"] == "Nome da troca" and e["sujo"] and not e["a_disco"],
+            "janela %s, nome no disco %r, sujo %s, rascunho no disco %s" % (aberta, e["nome_a"], e["sujo"], e["a_disco"]))
+    # Achado pela revisão da T25: um Ctrl+S com a janela aberta troca o objeto da
+    # build na biblioteca, e o que se digitava depois ia para uma cópia solta.
+    preparar()
+    s.clicar('.bi-row[data-id="%s"]' % id_a, 0.5)
+    s.clicar('#bi-detail [data-act="publish"]', 0.8)
+    s.clicar("#pf-desc", 0.2)   # a janela só mostra o que falta: o nome já foi
+    for tipo in ("rawKeyDown", "keyUp"):
+        s.envia("Input.dispatchKeyEvent", {"type": tipo, "key": "s", "code": "KeyS", "windowsVirtualKeyCode": 83, "modifiers": 2})
+    time.sleep(0.6)
+    salvou = s.js("!rascunho.sujo")
+    s.clicar("#pf-desc", 0.2)
+    s.envia("Input.insertText", {"text": "Descrição depois do Ctrl+S"})
+    time.sleep(0.6)
+    desc = s.js("(JSON.parse(localStorage.getItem('lol-builds-v3')).builds.find(b => b.id === %s) || {}).desc || ''" % json.dumps(id_a))
+    s.clicar("#pf-close", 0.4)
+    p.conta("troca", "Ctrl+S com a janela aberta: o que vem depois grava", salvou and desc == "Descrição depois do Ctrl+S",
+            "Ctrl+S salvou %s, descrição no disco %r" % (salvou, desc))
+    limpar_a()
+    preparar()
+    s.js("showBuildScreen('forja'); 'ok'"); time.sleep(0.6)
+    if not s.js("document.getElementById('io-panel').classList.contains('show')"):
+        s.clicar("#toggle-io", 0.5)
+    s.js("document.getElementById('import-text').value = 'BUILD: Importada na troca\\n[COMUM] Core\\n- Gume do Infinito'; 'ok'")
+    s.clicar("#import-btn", 0.8)
+    e = estado()
+    responder("descartar")
+    e2 = estado()
+    p.conta("troca", "Importar pergunta (e Descartar não grava)",
+            e["dialogo"] and e["ativa"] == "A" and e2["ativa"] == "Importada na troca" and not e2["a_disco"],
+            "diálogo %s, depois: %s, rascunho de A no disco %s" % (e["dialogo"], e2["ativa"], e2["a_disco"]))
+
+
 def checar_acessibilidade(s, p):
     print("\n%sACESSIBILIDADE%s" % (AMARELO, FIM))
     s.js("switchTab('catalog')")
@@ -1101,6 +1235,7 @@ GRUPOS = [
     ("fragmento", checar_fragmento),
     ("exclusão", checar_exclusao),
     ("rascunho", checar_rascunho),
+    ("troca", checar_troca),
     ("acessibilidade", checar_acessibilidade),
     ("resoluções", checar_resolucoes),
     # Por último de propósito: com as 38 builds publicadas na tela, o navegador

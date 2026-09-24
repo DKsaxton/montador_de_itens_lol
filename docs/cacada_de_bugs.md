@@ -327,6 +327,10 @@ Revisão adversarial do conserto (três lentes: os chamadores, o coração, e te
 
 ### 38. Ações da lista de builds e o Importar gravam o rascunho sem perguntar
 
+**CONSERTADO na F13-T25 (24/09/2026).** Duas regras. O que TROCA de build fora da forja pergunta como a forja pergunta: abrir outra build pela lista (duplo clique, Enter, Editar), "Abrir na forja" da janela "Falta pouco para publicar", abrir uma pública, "+ Nova build", "Copiar e editar" (da lista, da pública e da visualização) e o Importar (texto e Arsenal.json; valida antes, pergunta depois). Publicar a build aberta com rascunho também pergunta antes, para não publicar o que não foi salvo. O que só mexe em OUTRA coisa grava sem levar o rascunho: excluir outra build, "Copiar para minhas builds", o resultado de publicar e despublicar, e o nome, a descrição e os marcadores da janela "Falta pouco para publicar" (`gravarMetadados`: o campo vai para a cópia salva e para a build aberta, e o rascunho continua rascunho). Grupo "troca de build" no roteiro (8 checagens), cada uma vista falhando sozinha no código de antes.
+
+A revisão adversarial achou uma **regressão da primeira versão** e ela foi consertada antes da entrega: com a janela "Falta pouco para publicar" aberta, um Ctrl+S troca o objeto da build em `library.builds`, e o que se digitava depois (descrição, marcadores) ia para a cópia guardada, já solta — aparecia na tela, saía na publicação e sumia do disco. Agora a janela e o `gravarMetadados` procuram a cópia viva a cada uso; checagem própria, vista falhando na primeira versão. E como o Enter da lista passou a abrir o diálogo "Alterações não salvas", ele recebe o foco (em "Continuar editando") e o Tab gira entre os três botões — antes o foco ficava na linha por trás da camada e o teclado acionava a lista.
+
 `index.html` (`initBuildIndex`, `createNewBuild`, `duplicateBuild`, `deleteBuild`, `#import-btn`, `gravarNaBuild`) · **média** (a versão salva antes se perde, mas nada some da tela) · achado na F13-T24 · **REPRODUZIDO** (abrir outra build pela lista, Importar)
 
 Na forja, trocar de build, "Nova build" e "Duplicar" passam por `confirmarSaida` e perguntam Salvar/Descartar. Na lista, não: abrir OUTRA build (duplo clique, Enter, Editar), "+ Nova build", "Copiar e editar", excluir outra build (lista, lote, fechar visualização), abrir ou copiar uma pública e "Copiar para minhas builds" chamam `gravarBuild()` direto, e o rascunho da ativa vira a versão salva sem o diálogo. O "Importar como nova build" da própria forja faz o mesmo (`createNewBuild` começa com `gravarBuild()`), e a janela "Falta pouco para publicar" grava a build ativa inteira (com o rascunho) na primeira tecla digitada no nome ou na descrição, ou ao escolher um marcador — mesmo quando a janela é de OUTRA build; o "Abrir na forja" depois mostra tudo como salvo. Reproduzido com clique de verdade: "Build 2" com rascunho de 9 caixas (salva com 8) → duplo clique em outra build → "Build 2" gravada com 9, sem diálogo; o mesmo pelo Enter e pelo Editar. Conserto provável: passar esses gestos por `confirmarSaida`, como na forja.
@@ -336,6 +340,8 @@ Na forja, trocar de build, "Nova build" e "Duplicar" passam por `confirmarSaida`
 `index.html` (`refletirSalvar`, faixa "Forjando em", `buildResumo`, `#escolher-caixa`) · **média** · achado na F13-T24 · **REPRODUZIDO**
 
 O único aviso é o "alterações não salvas" de dentro da forja. No Catálogo, "Em qual caixa?" → "criar uma e colocar aqui" liga o Editar (de propósito, F12-T2a), e dali em diante todo item clicado vira rascunho — inclusive escolher uma caixa existente, que antes gravava na hora. Nada no Catálogo, nas Runas ou na lista diz isso: a lista mostra o item novo no resumo, com "salvas neste navegador" no rodapé e a "Última atualização" antiga. Reproduzido: 3 itens pelo Catálogo, `#save-status` com o texto mas invisível, a lista sem marca de não salvo, e recarregar (aceitando o aviso genérico do navegador) apaga a build inteira num perfil novo. Precisa de decisão visual do Leo: onde e como mostrar o rascunho fora da forja.
+
+Da revisão da F13-T25: na lista, "Continuar editando" deixa a pessoa na lista — sem a forja e sem sinal do rascunho. É a mesma falta de aviso.
 
 ### 40. A visualização de uma build pública abre editável quando o Editar já estava ligado
 
@@ -355,6 +361,8 @@ O único aviso é o "alterações não salvas" de dentro da forja. No Catálogo,
 
 As duas guardam o objeto `b` antes do `await` do servidor. Se a build ativa troca durante a espera, o `pubId` vai para um objeto que não está mais na biblioteca.
 
+**Consertado junto na F13-T25**, porque era a mesma linha: o resultado procura a cópia de novo (`library.builds.find`) depois da espera.
+
 ### 43. Enter no coração da lista abre a build em vez de favoritar
 
 `index.html` (`initBuildIndex`, `keydown` de `#bi-rows`) · **baixa** (teclado) · achado na revisão da F13-T24 · **REPRODUZIDO**
@@ -366,3 +374,9 @@ O `keydown` da lista pega o Enter de qualquer coisa dentro da linha, faz `preven
 `index.html` (coração de `tmp:` na lista Minhas, `toggleFavorito`) · **baixa** · achado na revisão da F13-T24 · **REPRODUZIDO**
 
 A visualização aberta de uma pública aparece em Minhas com o coração. Clicar acende o coração da cópia temporária, que some ao recarregar; a pública não vira favorita (`favoritosIds()` continua vazio) e a aba Públicas mostra o coração apagado para a mesma build. Já era assim antes da F13-T24. Conserto provável: na linha `tmp:`, o coração favorita a pública de origem (`pub:`), ou não aparece.
+
+### 45. Na janela "Falta pouco para publicar", a build aberta com rascunho mostra o rascunho, e o que se escolhe ali vai para a cópia salva
+
+`index.html` (`donoDoPopup`, marcador "Itens no guia") · **baixa** · achado na revisão da F13-T25 · passou pela revisão, não reproduzido com gestos
+
+Para a build aberta, a janela lê os marcadores e os itens do rascunho (`build`), e o marcador escolhido grava a lista inteira na cópia salva: um marcador que só existia no rascunho, ou um "item no guia" que a versão salva não tem, vira versão salva sem o Salvar. A revisão só chegou lá montando o estado por JS — com gestos, sair da forja com rascunho pergunta, e o Catálogo muda itens mas não marcadores —, então o caso é o de um item do Catálogo escolhido como marcador na janela antes de salvar.

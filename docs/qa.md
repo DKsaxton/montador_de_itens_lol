@@ -73,6 +73,15 @@ rascunho; e o Descartar continua voltando à cópia salva. Olha o
 `rascunho.sujo` e o localStorage, não só a forja: um conserto que gravasse o
 rascunho calado também deixaria o item na tela.
 
+**Troca de build** (F13-T25, bug nº 38) — com o rascunho sujo, abrir outra
+build pela lista, "+ Nova build" e Importar perguntam Salvar/Descartar como a
+forja pergunta, e "Salvar e sair" grava e segue; excluir outra build e digitar
+o nome na janela "Falta pouco para publicar" gravam o que é deles sem gravar as
+caixas do rascunho; um Ctrl+S com essa janela aberta não solta a cópia (o
+que se digita depois ainda grava); e o Enter da lista abre o diálogo com o
+foco nele. Cada checagem monta o próprio estado e só responde o diálogo se ele
+apareceu, para falhar sozinha no código de antes.
+
 **Acessibilidade** — os quatro interruptores ligam, o "menos movimento" zera as
 transições de verdade, e tudo sobrevive ao recarregar.
 
