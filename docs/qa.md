@@ -66,6 +66,13 @@ supremo é recusado no nível 5 e aceito no 6.
 **Texto** — exportar e reimportar devolve a mesma build (itens, marcadores,
 habilidades e runas).
 
+**Rascunho** (F13-T24, bug nº 37) — com o Editar ligado e um item não salvo,
+reabrir a build que já está na forja (duplo clique na linha, o Editar do
+detalhe) mantém o rascunho; o coração da lista grava na hora sem gravar o
+rascunho; e o Descartar continua voltando à cópia salva. Olha o
+`rascunho.sujo` e o localStorage, não só a forja: um conserto que gravasse o
+rascunho calado também deixaria o item na tela.
+
 **Acessibilidade** — os quatro interruptores ligam, o "menos movimento" zera as
 transições de verdade, e tudo sobrevive ao recarregar.
 

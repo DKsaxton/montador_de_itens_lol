@@ -315,6 +315,54 @@ A regra geral da Leitura calma subia toda etiqueta para 15px, e a etiqueta da ru
 
 ### 37. Abrir de novo a build que já está na forja joga fora o que não foi salvo, calado
 
-`index.html` (`activateBuild`, chamado por `abrirOuCopiar` — duplo clique na lista ou "Abrir na forja") · **alta** (perde dado) · achado na F13-T23 · **REPRODUZIDO**
+**CONSERTADO na F13-T24 (23/09/2026).** `activateBuild` com o mesmo id e sem `skipSave` só mostra a forja; o Descartar, que recarrega de propósito, passa `skipSave`. O coração da lista, que ia para o rascunho com o Editar ligado e sumia no Descartar ou ao reabrir, grava na hora pela `gravarBiblioteca` (a gravação da biblioteca sem o rascunho por cima). Grupo "rascunho" no roteiro (4 checagens), visto falhando no código de antes e em dois consertos errados de propósito: sem o guarda do `skipSave` (o Descartar para de funcionar) e pulando a cópia mas gravando (a perda vira gravação calada).
+
+`index.html` (`activateBuild`) · **alta** (perde dado) · achado na F13-T23 · **REPRODUZIDO**
+
+Portas de entrada, todas pelo mesmo `activateBuild` (varredura da F13-T24): duplo clique e Enter na linha (`abrirOuCopiar`), o botão Editar/Abrir do detalhe, "Abrir na forja" da janela "Falta pouco para publicar" (`#pf-forja`) e duplo clique na pública cuja visualização já está aberta. Chega-se à lista com o rascunho sujo pela aba Builds, que não pergunta (de propósito, F10-T2).
+
+Revisão adversarial do conserto (três lentes: os chamadores, o coração, e tentar quebrar com clique de verdade): nenhuma regressão. Um efeito novo, pequeno: num **triplo clique** na linha, o terceiro clique cai no que estiver embaixo na forja, e em 1920×1080 e 1600×900 é o Salvar — que agora está aceso, porque o rascunho sobreviveu (antes ele sumia). Grava o que a pessoa já tinha feito; não perde nada.
 
 `activateBuild(id)` só grava o rascunho quando a troca é para OUTRA build (`build.id !== id`). Quando é a mesma, ele recarrega as caixas da biblioteca por cima do rascunho e grava a versão velha. Passo a passo reproduzido com clique de verdade: colocar um item numa caixa nova pelo "Em qual caixa?" (rascunho sujo, 1 item), ir à lista de builds, dar duplo clique na própria build ("na forja") → a forja volta vazia, `rascunho.sujo` vira falso e nenhum diálogo aparece. Achado ao montar o screenshot final da T23 no navegador embutido; já existia antes dela (a mesma sonda no código da T22 perde o item igual).
+
+### 38. Ações da lista de builds e o Importar gravam o rascunho sem perguntar
+
+`index.html` (`initBuildIndex`, `createNewBuild`, `duplicateBuild`, `deleteBuild`, `#import-btn`, `gravarNaBuild`) · **média** (a versão salva antes se perde, mas nada some da tela) · achado na F13-T24 · **REPRODUZIDO** (abrir outra build pela lista, Importar)
+
+Na forja, trocar de build, "Nova build" e "Duplicar" passam por `confirmarSaida` e perguntam Salvar/Descartar. Na lista, não: abrir OUTRA build (duplo clique, Enter, Editar), "+ Nova build", "Copiar e editar", excluir outra build (lista, lote, fechar visualização), abrir ou copiar uma pública e "Copiar para minhas builds" chamam `gravarBuild()` direto, e o rascunho da ativa vira a versão salva sem o diálogo. O "Importar como nova build" da própria forja faz o mesmo (`createNewBuild` começa com `gravarBuild()`), e a janela "Falta pouco para publicar" grava a build ativa inteira (com o rascunho) na primeira tecla digitada no nome ou na descrição, ou ao escolher um marcador — mesmo quando a janela é de OUTRA build; o "Abrir na forja" depois mostra tudo como salvo. Reproduzido com clique de verdade: "Build 2" com rascunho de 9 caixas (salva com 8) → duplo clique em outra build → "Build 2" gravada com 9, sem diálogo; o mesmo pelo Enter e pelo Editar. Conserto provável: passar esses gestos por `confirmarSaida`, como na forja.
+
+### 39. Fora da forja nada avisa que há alterações não salvas — e "criar uma caixa nova" no Catálogo liga o Editar calado
+
+`index.html` (`refletirSalvar`, faixa "Forjando em", `buildResumo`, `#escolher-caixa`) · **média** · achado na F13-T24 · **REPRODUZIDO**
+
+O único aviso é o "alterações não salvas" de dentro da forja. No Catálogo, "Em qual caixa?" → "criar uma e colocar aqui" liga o Editar (de propósito, F12-T2a), e dali em diante todo item clicado vira rascunho — inclusive escolher uma caixa existente, que antes gravava na hora. Nada no Catálogo, nas Runas ou na lista diz isso: a lista mostra o item novo no resumo, com "salvas neste navegador" no rodapé e a "Última atualização" antiga. Reproduzido: 3 itens pelo Catálogo, `#save-status` com o texto mas invisível, a lista sem marca de não salvo, e recarregar (aceitando o aviso genérico do navegador) apaga a build inteira num perfil novo. Precisa de decisão visual do Leo: onde e como mostrar o rascunho fora da forja.
+
+### 40. A visualização de uma build pública abre editável quando o Editar já estava ligado
+
+`index.html` (`abrirPublicaTemporaria`, `activateBuild`, `#edit-toggle`) · **média** · achado na F13-T24 · passou pela varredura, não reproduzido
+
+`activateBuild` nunca mexe em `build.editing`, e a trava da visualização (`if (editToggle.checked && build.temp)`) só age ao LIGAR o interruptor. Com o Editar ligado numa build sua, abrir uma pública deixa a visualização editável, enquanto a faixa diz que ela "não pode ser editada". É o que permite rascunho numa visualização.
+
+### 41. A "Última atualização" muda ao só abrir uma build, e a publicada passa a dizer que tem alterações
+
+`index.html` (`gravarBuild`, `snapshotActive`, `loadBuild`) · **média** · achado na F13-T24 · passou pela varredura, não reproduzido
+
+`gravarBuild` compara a cópia da biblioteca com o snapshot por `JSON.stringify`, mas as duas têm as chaves em ordem diferente (a da `loadBuild` e a da `snapshotActive`), então a primeira gravação de cada build depois de recarregar a página nunca bate e grava `updatedAt = agora`. Abrir uma build pela lista grava duas (a que sai e a que entra): a publicada passa a mostrar "Há alterações depois da última publicação" sem ter mudado.
+
+### 42. Publicar ou despublicar guarda a build de antes da espera
+
+`index.html` (`publicarBuild`, `despublicarBuild`) · **baixa** · achado na F13-T24 · passou pela varredura, não reproduzido
+
+As duas guardam o objeto `b` antes do `await` do servidor. Se a build ativa troca durante a espera, o `pubId` vai para um objeto que não está mais na biblioteca.
+
+### 43. Enter no coração da lista abre a build em vez de favoritar
+
+`index.html` (`initBuildIndex`, `keydown` de `#bi-rows`) · **baixa** (teclado) · achado na revisão da F13-T24 · **REPRODUZIDO**
+
+O `keydown` da lista pega o Enter de qualquer coisa dentro da linha, faz `preventDefault` e abre a build. Com o foco no coração (Tab a partir da linha), o Enter abre a build — e, se for outra, grava o rascunho da ativa sem perguntar (nº 38) — em vez de favoritar. O Espaço e o clique favoritam certo. Conserto provável: o Enter só abre quando o alvo é a própria linha, não um botão dentro dela.
+
+### 44. O coração da visualização de uma pública acende, mas não favorita nada
+
+`index.html` (coração de `tmp:` na lista Minhas, `toggleFavorito`) · **baixa** · achado na revisão da F13-T24 · **REPRODUZIDO**
+
+A visualização aberta de uma pública aparece em Minhas com o coração. Clicar acende o coração da cópia temporária, que some ao recarregar; a pública não vira favorita (`favoritosIds()` continua vazio) e a aba Públicas mostra o coração apagado para a mesma build. Já era assim antes da F13-T24. Conserto provável: na linha `tmp:`, o coração favorita a pública de origem (`pub:`), ou não aparece.

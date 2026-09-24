@@ -829,6 +829,66 @@ def checar_exclusao(s, p):
     s.js("window.fetch = window.__fetchOrig; window.confirm = window.__confirmOrig; 'ok'")
 
 
+def checar_rascunho(s, p):
+    """F13-T24 (bug nº 37): abrir de novo a build que já está na forja recarregava
+    a cópia salva por cima do rascunho, calado. Chega-se à lista com o rascunho
+    sujo pela aba Builds (a troca de aba não pergunta, de propósito: F10-T2); aqui
+    esse caminho é montado por JS e o gesto testado é o de verdade — duplo clique
+    na linha, o botão Editar do detalhe, o coração. Não basta ver o item na forja:
+    se o rascunho fosse gravado calado ele também estaria lá, então a checagem
+    olha o `rascunho.sujo` e o localStorage."""
+    print("\n%sRASCUNHO%s" % (AMARELO, FIM))
+    s.nova_build()
+    id_b = s.js("build.id")
+    s.nova_build()
+    id_a = s.js("build.id")
+    if not s.js("build.editing"):
+        s.clicar("#edit-switch", 0.8)
+    s.js("""(() => { build.cats[3].items.push({ itemId: 'long-sword', note: 'rascunho' }); saveBuild(); renderBuildAll();
+      showBuildScreen('lista'); return 'ok'; })()""")
+    time.sleep(0.6)
+    estado = lambda: s.js("""(() => { const disco = JSON.parse(localStorage.getItem('lol-builds-v3') || '{"builds":[]}').builds;
+      const d = (id) => disco.find(b => b.id === id) || {};
+      return { na_forja: build.cats.some(c => c.items.some(e => e.note === 'rascunho')), sujo: rascunho.sujo,
+        no_disco: (d(%s).cats || []).some(c => c.items.some(e => e.note === 'rascunho')),
+        forja: !document.getElementById('build-editor').hidden, ativa: build.id,
+        fav_a: !!d(%s).fav, fav_b: !!d(%s).fav, dialogo: !document.getElementById('save-dialog').hidden }; })()"""
+                          % (json.dumps(id_a), json.dumps(id_a), json.dumps(id_b)))
+    intacto = lambda e: e["na_forja"] and e["sujo"] and not e["no_disco"] and e["ativa"] == id_a
+    antes = estado()
+    linha = '.bi-row[data-id="%s"]' % id_a
+    c = s.caixa(linha)
+    for n in (1, 2):
+        for tipo in ("mousePressed", "mouseReleased"):
+            s.envia("Input.dispatchMouseEvent", {"type": tipo, "x": c[0], "y": c[1], "button": "left", "clickCount": n})
+    time.sleep(1.0)
+    e = estado()
+    p.conta("rascunho", "duplo clique na build aberta não apaga o rascunho", intacto(antes) and intacto(e) and e["forja"],
+            "na forja %s, sujo %s, no disco %s" % (e["na_forja"], e["sujo"], e["no_disco"]))
+    s.js("showBuildScreen('lista'); 'ok'"); time.sleep(0.5)
+    s.clicar(linha, 0.5)
+    s.clicar('#bi-detail [data-act="edit"]', 1.0)
+    e = estado()
+    p.conta("rascunho", "o Editar do detalhe também não", intacto(e) and e["forja"],
+            "na forja %s, sujo %s, no disco %s" % (e["na_forja"], e["sujo"], e["no_disco"]))
+    # o coração é gesto da lista: grava na hora, com o Editar ligado, sem o rascunho
+    s.js("showBuildScreen('lista'); 'ok'"); time.sleep(0.5)
+    s.clicar('.bi-fav[data-fav="%s"]' % id_b, 0.5)
+    s.clicar('.bi-fav[data-fav="%s"]' % id_a, 0.5)
+    e = estado()
+    p.conta("rascunho", "o coração grava na hora, sem gravar o rascunho", e["fav_a"] and e["fav_b"] and intacto(e),
+            "fav A %s, fav B %s, sujo %s, rascunho no disco %s" % (e["fav_a"], e["fav_b"], e["sujo"], e["no_disco"]))
+    # caminho antigo: o Descartar continua voltando à cópia salva, e o favorito fica
+    s.clicar(linha, 0.3)
+    s.clicar('#bi-detail [data-act="edit"]', 1.0)
+    s.clicar("#discard-btn", 0.5)
+    s.clicar('#save-dialog [data-sd="descartar"]', 1.0)
+    e = estado()
+    p.conta("rascunho", "Descartar ainda volta ao salvo (e o favorito fica)",
+            not e["na_forja"] and not e["sujo"] and e["fav_a"] and s.js("build.fav") is True,
+            "na forja %s, sujo %s, fav %s" % (e["na_forja"], e["sujo"], e["fav_a"]))
+
+
 def checar_acessibilidade(s, p):
     print("\n%sACESSIBILIDADE%s" % (AMARELO, FIM))
     s.js("switchTab('catalog')")
@@ -1040,6 +1100,7 @@ GRUPOS = [
     ("texto", checar_texto),
     ("fragmento", checar_fragmento),
     ("exclusão", checar_exclusao),
+    ("rascunho", checar_rascunho),
     ("acessibilidade", checar_acessibilidade),
     ("resoluções", checar_resolucoes),
     # Por último de propósito: com as 38 builds publicadas na tela, o navegador

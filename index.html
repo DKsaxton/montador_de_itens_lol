@@ -5906,6 +5906,13 @@ function gravarBuild() {
       build.updatedAt = snap.updatedAt;
       library.builds[i] = snap;
     } else { snap.updatedAt = build.updatedAt = Date.now(); library.builds.push(snap); library.activeId = build.id; }
+  } catch (e) { /* sem persistência: segue funcionando, só não lembra */ }
+  gravarBiblioteca();
+}
+// Grava a biblioteca como está, sem pôr o rascunho da build ativa por cima
+// (F13-T24): é o que o coração da lista usa, com o Editar ligado ou não.
+function gravarBiblioteca() {
+  try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify({
       builds: library.builds.filter(b => !b.temp),   // visualizações de builds públicas morrem com a página
       activeId: build.id,
@@ -6060,6 +6067,12 @@ function loadBuild() {
 function activateBuild(id, skipSave) {
   const b = library.builds.find(x => x.id === id);
   if (!b) return;
+  // F13-T24 (bug nº 37): abrir de novo a build que já está na forja (duplo
+  // clique, Enter ou "Editar" na lista, "Abrir na forja" do "Falta pouco para
+  // publicar", a mesma pública) recarregava a cópia salva por cima do rascunho,
+  // que sumia calado. Ela já está aberta: só mostra. Recarregar de propósito é
+  // o Descartar, que passa skipSave.
+  if (!skipSave && id === build.id) { renderBuildAll(); return; }
   if (!skipSave && build.id && build.id !== id) gravarBuild();
   build.id = b.id;
   build.name = b.name;
@@ -9533,7 +9546,10 @@ function initBuildIndex() {
     if (fav && fav.dataset.fav.startsWith("pub:")) { const id = fav.dataset.fav.slice(4); if (toggleFavorito(id)) registrarEvento(id, "engajamento"); renderBuildIndex(); return; }
     if (fav) {
       const b = library.builds.find(x => x.id === fav.dataset.fav);
-      if (b) { if (b.id === build.id) { build.fav = !build.fav; saveBuild(); } else { b.fav = !b.fav; saveBuild(); } renderBuildIndex(); }
+      // F13-T24: favoritar é gesto da lista, não edição. Com o Editar ligado ele
+      // ia para o rascunho da build ativa (mesmo sendo de outra build) e sumia
+      // no Descartar ou ao reabrir; agora grava na hora, sem tocar no rascunho.
+      if (b) { b.fav = !b.fav; if (b.id === build.id) build.fav = b.fav; gravarBiblioteca(); renderBuildIndex(); }
       return;
     }
     const row = e.target.closest(".bi-row");
