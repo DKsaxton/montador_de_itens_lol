@@ -312,3 +312,9 @@ A linha `RUNAS:` só sai quando alguma runa da primária está escolhida. Com Pr
 `index.html` (`body.ac-leitura .chip`) · média · achado na F13-T17 · **CONSERTADO na F13-T17 (23/09/2026)**
 
 A regra geral da Leitura calma subia toda etiqueta para 15px, e a etiqueta da runa parte de 9px: quase o dobro. "VELOCIDADE DE MOVIMENTO", da Agilidade nos Pés, ficava mais larga que o card em 1280, empurrava o texto dos cards da fileira para fora e a página rolava de lado. O roteiro de QA não via porque media as runas no modo Ícones, onde as etiquetas não aparecem; a checagem nova da T17 deixou o Completo ligado e o estouro apareceu. Conserto: a etiqueta da runa vai a 10,5px na Leitura calma (os ~15% da F13-T10), e o texto do card encolhe com o card (`min-width: 0`, a etiqueta quebra). A checagem de resoluções passou a medir as runas no Completo, nas cinco trilhas, com a Leitura calma ligada por ela mesma — vista falhando com o conserto revertido.
+
+### 37. Abrir de novo a build que já está na forja joga fora o que não foi salvo, calado
+
+`index.html` (`activateBuild`, chamado por `abrirOuCopiar` — duplo clique na lista ou "Abrir na forja") · **alta** (perde dado) · achado na F13-T23 · **REPRODUZIDO**
+
+`activateBuild(id)` só grava o rascunho quando a troca é para OUTRA build (`build.id !== id`). Quando é a mesma, ele recarrega as caixas da biblioteca por cima do rascunho e grava a versão velha. Passo a passo reproduzido com clique de verdade: colocar um item numa caixa nova pelo "Em qual caixa?" (rascunho sujo, 1 item), ir à lista de builds, dar duplo clique na própria build ("na forja") → a forja volta vazia, `rascunho.sujo` vira falso e nenhum diálogo aparece. Achado ao montar o screenshot final da T23 no navegador embutido; já existia antes dela (a mesma sonda no código da T22 perde o item igual).
