@@ -50,6 +50,8 @@ entrar na loja sem exceção.
 
 **Catálogo** — 225 cards desenhados; a busca filtra; a aba de núcleo vira
 oficina com o estandarte de 46 px; a aba Todos volta a ser uma grade só.
+No modo Ícones, o mouse não aciona o golpe do AD nem apaga o ícone (F13-T29,
+bug nº 46); nos Cards, o golpe continua.
 
 **Forja** — a build nova nasce com as 8 caixas; item entra na caixa; o modo
 leitura esconde os atributos.

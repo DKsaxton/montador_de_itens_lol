@@ -249,18 +249,19 @@ Ordem definida pelo Leo em 18/09/2026: primeiro tudo que já estava na fila; as 
 - **T26** ✔ aprovado 27/09/2026 — **O número de cada runa para o cliente.** `runas.js` ganha `riotId` em trilhas (8000–8400), runas e fragmentos (5001–5013), pelo mesmo casamento de nome que já dava o ícone: Data Dragon para runas e trilhas, o cliente do jogo (Community Dragon 16.18) para os fragmentos. Nada digitado. Conferências novas no gerador: toda runa tem número, a runa é da trilha em que o arquivo a pôs, e o fragmento de cada linha é um dos que o cliente aceita nela — vistas falhando com dado estragado em memória (Eletrocutar posta na Precisão, Velocidade de Movimento na linha 1), sem tocar no MD. Conferido por fora por outro caminho (pelo ícone, na lista em inglês): 76 números, nenhuma divergência; 62 de 62 runas com número único. Fora o `riotId`, o `runas.js` é igual ao de antes. Esquema em `docs/esquema_runas.md`. Nada muda na tela (o número é para o envio), então não há captura; roteiro das runas: 15 checagens, nenhuma falha.
 - **T27** ✖ cancelada 27/09/2026 (Leo: esquecer o envio de runas ao cliente) — **O ajudante local.** Script Python só com a biblioteca padrão, aberto por um .bat: lê a senha do cliente na pasta do jogo, escuta só em 127.0.0.1, aceita pedido só do site e do arquivo local, e monta a página de runas e o conjunto de itens. Testado contra um cliente simulado; o teste de verdade, com o cliente do Leo aberto e logado por ele, fica para quando ele liberar o uso da máquina. O navegador do Leo é o **Opera GX** (Chromium).
 - **Fila dos bugs** (Leo, 27/09/2026: "vamos para os bugs"). Triagem dos 29 abertos da caçada contra o código de hoje, com clique de verdade numa cópia separada e céticos no que foi dado como resolvido: **27 continuam**, o nº 21 já estava consertado (T25) e o nº 41 é o nº 13. Ordem: primeiro o que perde dado ou mexe no site, depois o que engana, depois o cosmético. Uma tarefa por bug ou por grupo de mesma causa (a T28 não é usada: era o botão cancelado).
-  - **T29** `[hidden]` que não esconde: o "Fechar" durante "Publicando…" deixa publicar duas vezes (nº 12), o ⟳ em Minhas (nº 11), o Descartar sempre à vista (nº 26) — uma regra de CSS e uma trava no publicar.
-  - **T30** Salvar diz "salvo" quando o navegador recusou a gravação (nº 14).
-  - **T31** Excluir a última build com uma pública aberta grava a biblioteca vazia e ressuscita a build do formato antigo (nº 15).
-  - **T32** "Última atualização" só muda quando a build muda (nºs 13 e 41).
-  - **T33** Publicação órfã quando a build é excluída durante a espera (nº 42).
-  - **T34** Duas abas abertas: a segunda a gravar apaga a build da primeira (nº 27).
-  - **T35** Texto: observação com quebra de linha e "/" na descrição (nºs 17 e 28).
-  - **T36** "Copiar como texto" de várias builds volta como uma só e sem runas (nº 19) · **T37** o texto perde as trilhas sem runa (nº 35).
-  - **T38** Visualização de pública editável: o Editar herdado e as runas pela aba Runas (nºs 40 e 29).
-  - **T39** Esc num diálogo larga a caixa escolhida (nº 22) · **T40** o coração: Enter abre a build, e o da visualização não favorita (nºs 43 e 44).
-  - **T41** Calculadora, "Puxar da build ativa" (nºs 23 e 31) · **T42** números do Catálogo: eficiência arredondada, ordenar por atributo, contagem, Reembolso (nºs 24, 25, 32 e 33).
-  - **T43** Redesenhos atrasados: arte das habilidades e o que o texto importa (nºs 18 e 30) · **T44** "Falta pouco para publicar" com a build suja (nº 45).
+  - **T29** (feito, aguardando aprovado) — **Bug nº 46, achado pelo Leo: no modo Ícones o mouse fazia os ícones do AD sumirem.** A F11-T5 tirou a reação do núcleo dos Ícones e Nomes escondendo o palco dos efeitos, mas o JS seguia sorteando o golpe; o AD anima o próprio card, e a variante 5 apaga a superfície por 235 ms esperando as metades — escondidas. `fxAcionar` agora não aciona nesses modos (o card aberto com Shift continua); a inclinação do hover, aprovada, não mudou. Duas checagens no Catálogo (Ícones: nenhum golpe e superfície inteira, vista falhando no código de antes com a variante 5 em opacidade 0; Cards: o golpe continua). **89 checagens, nenhuma falha.** O navegador embutido estava desenhando a página em escala e o mouse não chegava aos cards; a prova de mouse é a do roteiro. Captura: `fase13-t29-icones-nao-somem.png`.
+  - **T30** `[hidden]` que não esconde: o "Fechar" durante "Publicando…" deixa publicar duas vezes (nº 12), o ⟳ em Minhas (nº 11), o Descartar sempre à vista (nº 26) — uma regra de CSS e uma trava no publicar.
+  - **T31** Salvar diz "salvo" quando o navegador recusou a gravação (nº 14).
+  - **T32** Excluir a última build com uma pública aberta grava a biblioteca vazia e ressuscita a build do formato antigo (nº 15).
+  - **T33** "Última atualização" só muda quando a build muda (nºs 13 e 41).
+  - **T34** Publicação órfã quando a build é excluída durante a espera (nº 42).
+  - **T35** Duas abas abertas: a segunda a gravar apaga a build da primeira (nº 27).
+  - **T36** Texto: observação com quebra de linha e "/" na descrição (nºs 17 e 28).
+  - **T37** "Copiar como texto" de várias builds volta como uma só e sem runas (nº 19) · **T38** o texto perde as trilhas sem runa (nº 35).
+  - **T39** Visualização de pública editável: o Editar herdado e as runas pela aba Runas (nºs 40 e 29).
+  - **T40** Esc num diálogo larga a caixa escolhida (nº 22) · **T41** o coração: Enter abre a build, e o da visualização não favorita (nºs 43 e 44).
+  - **T42** Calculadora, "Puxar da build ativa" (nºs 23 e 31) · **T43** números do Catálogo: eficiência arredondada, ordenar por atributo, contagem, Reembolso (nºs 24, 25, 32 e 33).
+  - **T44** Redesenhos atrasados: arte das habilidades e o que o texto importa (nºs 18 e 30) · **T45** "Falta pouco para publicar" com a build suja (nº 45).
   - **nº 39** (nada avisa do rascunho fora da forja) pede uma escolha visual: duas amostras renderizadas antes de mexer.
 
 O resto continua em aberto, à escolha do Leo:

@@ -388,3 +388,11 @@ A visualização aberta de uma pública aparece em Minhas com o coração. Clica
 `index.html` (`donoDoPopup`, marcador "Itens no guia") · **baixa** · achado na revisão da F13-T25 · passou pela revisão, não reproduzido com gestos
 
 Para a build aberta, a janela lê os marcadores e os itens do rascunho (`build`), e o marcador escolhido grava a lista inteira na cópia salva: um marcador que só existia no rascunho, ou um "item no guia" que a versão salva não tem, vira versão salva sem o Salvar. A revisão só chegou lá montando o estado por JS — com gestos, sair da forja com rascunho pergunta, e o Catálogo muda itens mas não marcadores —, então o caso é o de um item do Catálogo escolhido como marcador na janela antes de salvar.
+
+### 46. No modo Ícones, passar o mouse faz os ícones do AD sumirem
+
+**CONSERTADO na F13-T29 (27/09/2026).** `fxAcionar` não aciona a reação do núcleo nos modos Ícones e Nomes (a não ser no card aberto com Shift), como a F11-T5 decidiu. A inclinação do hover, aprovada, não mudou. Duas checagens novas no Catálogo: nos Ícones nenhum golpe é acionado e a superfície fica inteira (vista falhando no código de antes: variante 5, opacidade 0); nos Cards o golpe do AD continua.
+
+`index.html` (`fxAcionar`, `.card.fx-ad.a1`–`a5`) · **média** (visível no uso de todo dia) · achado pelo Leo em 27/09/2026 · **REPRODUZIDO**
+
+A F11-T5 tirou a reação do núcleo dos modos Ícones e Nomes escondendo o palco (`.card-fx`), mas o JS continuava sorteando a variante a cada mouse. AP e Vitalidade só animam dentro do palco, então nada aparecia; o AD anima o próprio card — as variantes 1 a 4 dão um tranco no ícone, e a 5 ("o corte abre o card") apaga a superfície por 235 ms enquanto as duas metades se abrem. Com as metades escondidas, o ícone simplesmente sumia (uma vez em cada cinco, no sorteio). Reproduzido com mouse de verdade: Lâmina de Doran com a classe `a5` e a superfície em opacidade 0.

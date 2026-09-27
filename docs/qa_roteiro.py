@@ -449,6 +449,36 @@ def checar_catalogo(s, p):
             "%s: %sg + %sg = %sg" % (mx["alvo"], mx["base"], mx["bonus"], mx["ouro"]))
     p.conta("catálogo", "caixa de um item só = ficha, também no Ápice", not mx["dif"],
             ("diferem: " + ", ".join(mx["dif"][:4])) if mx["dif"] else "os 225")
+    # F13-T29 (bug nº 46, achado pelo Leo): no modo Ícones o mouse fazia os
+    # ícones do AD sumirem. A reação do núcleo não entra ali (F11-T5), mas o AD
+    # anima o próprio card, e a variante 5 apagava a superfície por 235 ms. O
+    # sorteio escolhe a 5 uma vez em cinco: a checagem olha se QUALQUER variante
+    # foi acionada, e mede a opacidade da superfície logo depois do mouse entrar.
+    def passar_mouse_nos_ad(modo, n=6):
+        s.clicar('.view-btn[data-view="%s"]' % modo, 0.8)
+        s.js("document.querySelector('#grid').scrollIntoView({block: 'start'}); window.scrollBy(0, -40); 'ok'")
+        time.sleep(0.4)
+        idx = s.js("""[...document.querySelectorAll('#grid .card')].map((c, i) => [c, i])
+          .filter(([c]) => c.classList.contains('fx-ad') && c.getBoundingClientRect().top > 0
+                           && c.getBoundingClientRect().bottom < innerHeight).slice(0, %d).map(([, i]) => i)""" % n)
+        vistos = []
+        for i in idx:
+            c = s.js("(() => { const r = document.querySelectorAll('#grid .card')[%d].getBoundingClientRect(); return [r.left + r.width/2, r.top + r.height/2]; })()" % i)
+            s.envia("Input.dispatchMouseEvent", {"type": "mouseMoved", "x": c[0], "y": c[1]})
+            time.sleep(0.06)
+            vistos.append(s.js("""(() => { const c = document.querySelectorAll('#grid .card')[%d];
+              return { variante: [1,2,3,4,5].filter(v => c.classList.contains('a' + v))[0] || 0,
+                       op: Number(getComputedStyle(c.querySelector('.card-surface')).opacity) }; })()""" % i))
+            s.envia("Input.dispatchMouseEvent", {"type": "mouseMoved", "x": 3, "y": 3})
+            time.sleep(0.3)
+        return vistos
+    ic = passar_mouse_nos_ad("icons")
+    p.conta("catálogo", "Ícones: o mouse não aciona o golpe do AD (nem apaga o ícone)",
+            len(ic) >= 4 and all(v["variante"] == 0 and v["op"] > 0.99 for v in ic),
+            "%d ícones AD; variantes %s; menor opacidade %.2f" % (len(ic), [v["variante"] for v in ic], min([v["op"] for v in ic] or [0])))
+    cd = passar_mouse_nos_ad("cards", 4)
+    p.conta("catálogo", "Cards: o golpe do AD continua (caminho antigo)", len(cd) >= 3 and all(v["variante"] > 0 for v in cd),
+            "%d cards AD; variantes %s" % (len(cd), [v["variante"] for v in cd]))
 
 
 def checar_forja(s, p):

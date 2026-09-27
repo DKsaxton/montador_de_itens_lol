@@ -11269,6 +11269,12 @@ function fxPartirCard(card, palco) {
 
 function fxAcionar(card, nucleo) {
   if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  // F13-T29 (bug nº 46, achado pelo Leo): nos modos Ícones e Nomes a reação do
+  // núcleo não entra (F11-T5). O CSS só escondia o palco (.card-fx), mas o AD
+  // anima o próprio card: as variantes 1–4 sacudiam o ícone, e a 5 apagava a
+  // superfície por 235 ms esperando as metades — escondidas. O ícone sumia.
+  const vista = document.body.classList;
+  if (!card.classList.contains("full") && (vista.contains("icons-only") || vista.contains("names-only"))) return;
   let palco = card.querySelector(".card-fx");
   if (!palco) {
     palco = document.createElement("div");
