@@ -4,6 +4,8 @@ Oito leitores varreram o `index.html` em paralelo, um por subsistema: estado da 
 
 **Resultado: 40 achados, 33 bugs distintos** depois de juntar os repetidos (o mesmo bug achado por duas ou três frentes). Os céticos derrubaram só um voto em 120, o que é aprovação demais para se confiar sem conferir. Por isso reproduzi os quatro mais graves no app, com clique de verdade, e os quatro se confirmaram.
 
+**Triagem de 27/09/2026:** os 29 abertos foram conferidos contra o código de então (commit `14f7d29`), cada um reproduzido com clique de verdade numa cópia separada, e o que foi dado como resolvido passou por céticos. **27 continuam** (todos reproduzidos agora); o nº 21 já tinha sido consertado pela F13-T25 e o nº 41 é o mesmo bug do nº 13. A ordem dos consertos está no CHECKPOINT.
+
 Status de cada um:
 - **REPRODUZIDO** — rodei no app e o erro aconteceu.
 - **passou pelos céticos** — três leituras independentes do código concordaram, mas eu ainda não reproduzi.
@@ -172,6 +174,8 @@ Status de cada um:
 **Como quebra:** Entrar na loja → "A" → marcar "Menos movimento" (o rótulo diz: "desliga as animações e as transições — golpes, molduras, chuva e brasas") → ir para a aba Builds. `showBuildScreen("lista")` chama `chuvaDeEntrada(index)` (linha 8606), e essa função só consulta o matchMedia do sistema — nunca olha `body.ac-movimento`. Como a chuva é escrita quadro a quadro em `el.style.maskImage` por requestAnimationFrame (linhas 9078-9083), o `body.ac-movimento * { animation: none !important; transition: none !important; }` da linha 2935 não a alcança: não é animation nem transition, é estilo inline recalculado 60x por segundo. A tela de Builds passa 900 ms sendo revelada por 34 pingos que se abrem. Quem ligou o interruptor justamente por não ter o sistema configurado (o comentário da linha 2934 diz que é para esse caso) continua vendo a maior animação da tela. As outras três animações de JS estão cobertas (fxAcionar por `display:none` no .card-fx, playTierAnimation e o tilt pelas regras de animation/transform) — só a chuva escapa.
 
 ### 21. Importar uma build com rascunho aberto grava o rascunho na build antiga sem perguntar
+
+**CONSERTADO na F13-T25** (junto com o nº 38; conferido na triagem de 27/09/2026): o Importar, por texto e por Arsenal.json, passa por `confirmarSaida`, e o roteiro tem a checagem "Importar pergunta (e Descartar não grava)".
 
 `index.html:9421` · media · achado por: Estado da build · **passou pelos céticos**
 
@@ -351,11 +355,15 @@ Da revisão da F13-T25: na lista, "Continuar editando" deixa a pessoa na lista �
 
 ### 41. A "Última atualização" muda ao só abrir uma build, e a publicada passa a dizer que tem alterações
 
+**DUPLICADO do nº 13** (triagem de 27/09/2026): a mesma comparação de `gravarBuild` com as chaves em ordens diferentes; o conserto do nº 13 fecha este (conferido com a comparação trocada dentro da página).
+
 `index.html` (`gravarBuild`, `snapshotActive`, `loadBuild`) · **média** · achado na F13-T24 · passou pela varredura, não reproduzido
 
 `gravarBuild` compara a cópia da biblioteca com o snapshot por `JSON.stringify`, mas as duas têm as chaves em ordem diferente (a da `loadBuild` e a da `snapshotActive`), então a primeira gravação de cada build depois de recarregar a página nunca bate e grava `updatedAt = agora`. Abrir uma build pela lista grava duas (a que sai e a que entra): a publicada passa a mostrar "Há alterações depois da última publicação" sem ter mudado.
 
 ### 42. Publicar ou despublicar guarda a build de antes da espera
+
+**Triagem de 27/09/2026 — REPRODUZIDO, por outro caminho.** A F13-T25 cobriu a troca de build durante a espera (a gravação procura a cópia viva por id). Sobra o `|| b`: se a build é **excluída** durante a espera (Publicar → Fechar, que aparece por causa do nº 12 → Excluir a mesma build), a resposta grava o ID num objeto que saiu da biblioteca. A placa diz "publicada com sucesso · ID qa0042", a build não existe mais aqui, e a publicação fica no site sem nenhum lugar que guarde o ID dela.
 
 `index.html` (`publicarBuild`, `despublicarBuild`) · **baixa** · achado na F13-T24 · passou pela varredura, não reproduzido
 
