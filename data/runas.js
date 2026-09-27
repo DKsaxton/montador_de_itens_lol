@@ -1,7 +1,7 @@
 window.RUNAS = {
  "meta": {
   "fonte": "data/Runas_League_of_Legends.md",
-  "gerado": "2026-09-23",
+  "gerado": "2026-09-27",
   "patch": "16.18.1",
   "trilhas": 5,
   "runas": 62,
@@ -35,7 +35,8 @@ window.RUNAS = {
         "Efeitos que aplicam mais de um efeito on-hit por ataque (Disparo Iluminado do Lucian, Predador Desumano do Renekton, Lâmina da Fúria de Guinsoo) também aplicam acúmulos extras de Pressione o Ataque.",
         "O próprio ataque que dispara o 3º acúmulo (e ativa o bônus de dano) não se beneficia do dano amplificado — mas dano contínuo/efeitos seguintes que vêm junto com esse ataque (ex: Hemorragia, Tiro Tóxico) são amplificados."
        ],
-       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Precision/PressTheAttack/PressTheAttack.png"
+       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Precision/PressTheAttack/PressTheAttack.png",
+       "riotId": 8005
       },
       {
        "id": "conquistador",
@@ -56,7 +57,8 @@ window.RUNAS = {
         "Só acumula uma vez por instância de conjuração — ex: as ondas de fogo da passiva da Kayle (Ascensão Divina, nível 11) compartilham a instância com o ataque básico que as originou, não empilham separadamente.",
         "Efeitos de dano ao longo do tempo ou fontes contínuas de dano só concedem acúmulo uma vez a cada 4 segundos."
        ],
-       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Precision/Conqueror/Conqueror.png"
+       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Precision/Conqueror/Conqueror.png",
+       "riotId": 8010
       },
       {
        "id": "ritmo-fatal",
@@ -75,7 +77,8 @@ window.RUNAS = {
         "Os valores de ataque à distância vêm dos de corpo a corpo: a Velocidade de Ataque por acúmulo é multiplicada por 0,8 e o dano do disparo por 0,667 (é o ataque à distância que leva o corte de 1/3). A escala de 1% a cada 1% de Velocidade de Ataque adicional não muda.",
         "O texto oficial da Riot ainda mostra 4% e 6-24 para ataque à distância; o jogo usa 4,8% por acúmulo (6% × 0,8) e cerca de 6-20 de dano (× 0,667)."
        ],
-       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Precision/LethalTempo/LethalTempoTemp.png"
+       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Precision/LethalTempo/LethalTempoTemp.png",
+       "riotId": 8008
       },
       {
        "id": "agilidade-nos-pes",
@@ -97,7 +100,8 @@ window.RUNAS = {
         "Habilidades que aplicam efeitos on-hit também geram 6 pontos de acúmulo.",
         "Não é consumido contra sentinelas ou plantas da selva."
        ],
-       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Precision/FleetFootwork/FleetFootwork.png"
+       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Precision/FleetFootwork/FleetFootwork.png",
+       "riotId": 8021
       }
      ]
     },
@@ -119,7 +123,8 @@ window.RUNAS = {
        ],
        "adaptativa": "",
        "notas": [],
-       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Precision/AbsorbLife/AbsorbLife.png"
+       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Precision/AbsorbLife/AbsorbLife.png",
+       "riotId": 9101
       },
       {
        "id": "triunfo",
@@ -142,7 +147,8 @@ window.RUNAS = {
        "notas": [
         "A cura é calculada com base na vida que falta no momento exato do abate — se outro abate acontecer durante o pequeno atraso do efeito (~1s), a cura pendente é recalculada pelo valor do abate mais recente, não somada."
        ],
-       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Precision/Triumph.png"
+       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Precision/Triumph.png",
+       "riotId": 9111
       },
       {
        "id": "presenca-de-espirito",
@@ -160,7 +166,8 @@ window.RUNAS = {
        "notas": [
         "Em abate, campeões que usam energia restauram 30 de energia (60 pra Shen, 42 pra Akali durante a Proteção do Crepúsculo)."
        ],
-       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Precision/PresenceOfMind/PresenceOfMind.png"
+       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Precision/PresenceOfMind/PresenceOfMind.png",
+       "riotId": 8009
       }
      ]
     },
@@ -182,7 +189,8 @@ window.RUNAS = {
        "notas": [
         "As 3 runas de Lenda (Espontaneidade, Aceleração, Linhagem) compartilham o mesmo sistema de acúmulo: 100 pontos por abate de campeão, 100 por abate de monstro épico, 25 por monstro grande, 4 por minion — até 10 acúmulos (15 na Linhagem)."
        ],
-       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Precision/LegendAlacrity/LegendAlacrity.png"
+       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Precision/LegendAlacrity/LegendAlacrity.png",
+       "riotId": 9104
       },
       {
        "id": "lenda-aceleracao",
@@ -197,7 +205,8 @@ window.RUNAS = {
        ],
        "adaptativa": "",
        "notas": [],
-       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Precision/LegendHaste/LegendHaste.png"
+       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Precision/LegendHaste/LegendHaste.png",
+       "riotId": 9105
       },
       {
        "id": "lenda-linhagem",
@@ -213,7 +222,8 @@ window.RUNAS = {
        ],
        "adaptativa": "",
        "notas": [],
-       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Precision/LegendBloodline/LegendBloodline.png"
+       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Precision/LegendBloodline/LegendBloodline.png",
+       "riotId": 9103
       }
      ]
     },
@@ -235,7 +245,8 @@ window.RUNAS = {
         "Só ativa em dano causado DEPOIS que o alvo já estiver abaixo de 40% de vida — o próprio golpe que derruba o alvo abaixo desse limite não recebe o bônus.",
         "Atualmente também se aplica a Dano Verdadeiro (exceto o de Golpear)."
        ],
-       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Precision/CoupDeGrace/CoupDeGrace.png"
+       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Precision/CoupDeGrace/CoupDeGrace.png",
+       "riotId": 8014
       },
       {
        "id": "dilacerar",
@@ -251,7 +262,8 @@ window.RUNAS = {
        "notas": [
         "Atualmente também se aplica a Dano Verdadeiro (exceto o de Golpear)."
        ],
-       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Precision/CutDown/CutDown.png"
+       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Precision/CutDown/CutDown.png",
+       "riotId": 8017
       },
       {
        "id": "ate-a-morte",
@@ -267,12 +279,14 @@ window.RUNAS = {
        "notas": [
         "Atualmente também se aplica a Dano Verdadeiro (exceto o de Golpear)."
        ],
-       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Sorcery/LastStand/LastStand.png"
+       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Sorcery/LastStand/LastStand.png",
+       "riotId": 8299
       }
      ]
     }
    ],
    "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/7201_Precision.png",
+   "riotId": 8000,
    "cor": "#c0a878"
   },
   {
@@ -304,7 +318,8 @@ window.RUNAS = {
         "A janela de 3s não reinicia a cada acúmulo — o terceiro precisa acontecer dentro de 3s do primeiro, não do segundo.",
         "Dano do tipo \"proc\" — não aciona efeitos de feitiço."
        ],
-       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Domination/Electrocute/Electrocute.png"
+       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Domination/Electrocute/Electrocute.png",
+       "riotId": 8112
       },
       {
        "id": "colheita-sombria",
@@ -325,7 +340,8 @@ window.RUNAS = {
         "Ativa em clones, mas não em zumbis.",
         "Não colhe uma Alma adicional durante o pequeno atraso entre causar a condição e efetivamente ganhar a Alma."
        ],
-       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Domination/DarkHarvest/DarkHarvest.png"
+       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Domination/DarkHarvest/DarkHarvest.png",
+       "riotId": 8128
       },
       {
        "id": "chuva-de-laminas",
@@ -345,7 +361,8 @@ window.RUNAS = {
         "Dano do tipo \"proc\" — não aciona efeitos de feitiço.",
         "Só gera acúmulo extra a partir de reset de ataque se o efeito que resetou tiver uma marcação específica de \"reset de ataque\" — feitiços como Escolha uma Carta (Twisted Fate), Uivo Primitivo reconjurado (Warwick) e o Explocinturão Hextec resetam o temporizador de ataque mas NÃO têm essa marcação, então não geram acúmulo extra."
        ],
-       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Domination/HailOfBlades/HailOfBlades.png"
+       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Domination/HailOfBlades/HailOfBlades.png",
+       "riotId": 9923
       }
      ]
     },
@@ -394,7 +411,8 @@ window.RUNAS = {
         "naoInclui": "Debilitação de Velocidade de Ataque (Cripple).",
         "obs": ""
        },
-       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Domination/CheapShot/CheapShot.png"
+       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Domination/CheapShot/CheapShot.png",
+       "riotId": 8126
       },
       {
        "id": "gosto-de-sangue",
@@ -412,7 +430,8 @@ window.RUNAS = {
        ],
        "adaptativa": "",
        "notas": [],
-       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Domination/TasteOfBlood/GreenTerror_TasteOfBlood.png"
+       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Domination/TasteOfBlood/GreenTerror_TasteOfBlood.png",
+       "riotId": 8139
       },
       {
        "id": "impacto-repentino",
@@ -424,7 +443,8 @@ window.RUNAS = {
        ],
        "adaptativa": "",
        "notas": [],
-       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Domination/SuddenImpact/SuddenImpact.png"
+       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Domination/SuddenImpact/SuddenImpact.png",
+       "riotId": 8143
       }
      ]
     },
@@ -445,7 +465,8 @@ window.RUNAS = {
        ],
        "adaptativa": "",
        "notas": [],
-       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Domination/SixthSense/SixthSense.png"
+       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Domination/SixthSense/SixthSense.png",
+       "riotId": 8137
       },
       {
        "id": "lembrancas-aterrorizantes",
@@ -461,7 +482,8 @@ window.RUNAS = {
        ],
        "adaptativa": "",
        "notas": [],
-       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Domination/GrislyMementos/GrislyMementos.png"
+       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Domination/GrislyMementos/GrislyMementos.png",
+       "riotId": 8140
       },
       {
        "id": "sentinela-profunda",
@@ -477,7 +499,8 @@ window.RUNAS = {
        ],
        "adaptativa": "",
        "notas": [],
-       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Domination/DeepWard/DeepWard.png"
+       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Domination/DeepWard/DeepWard.png",
+       "riotId": 8141
       }
      ]
     },
@@ -498,7 +521,8 @@ window.RUNAS = {
        ],
        "adaptativa": "",
        "notas": [],
-       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Domination/TreasureHunter/TreasureHunter.png"
+       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Domination/TreasureHunter/TreasureHunter.png",
+       "riotId": 8135
       },
       {
        "id": "caca-incansavel",
@@ -513,7 +537,8 @@ window.RUNAS = {
        ],
        "adaptativa": "",
        "notas": [],
-       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Domination/RelentlessHunter/RelentlessHunter.png"
+       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Domination/RelentlessHunter/RelentlessHunter.png",
+       "riotId": 8105
       },
       {
        "id": "caca-suprema",
@@ -528,12 +553,14 @@ window.RUNAS = {
        ],
        "adaptativa": "",
        "notas": [],
-       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Domination/UltimateHunter/UltimateHunter.png"
+       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Domination/UltimateHunter/UltimateHunter.png",
+       "riotId": 8106
       }
      ]
     }
    ],
    "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/7200_Domination.png",
+   "riotId": 8100,
    "cor": "#c03030"
   },
   {
@@ -564,7 +591,8 @@ window.RUNAS = {
         "O efeito de aliado dispara em qualquer habilidade que afete aliados (mirada ou não) — inclui o Estandarte Demaciano do Jarvan IV (o escudo vai para o aliado mais perto da bandeira), o Refúgio da Ovelha (Kindred) e os Caprichos (Lulu). NÃO dispara com a Maré Oscilante da Nami (não dá pra escudar um aliado acertando-o com a Prisão Aquática).",
         "Ótima em habilidades de dano ao longo do tempo, já que pode ativar várias vezes durante a duração (ex: Visões Maléficas do Malzahar, Rastro de Veneno do Singed)."
        ],
-       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Sorcery/SummonAery/SummonAery.png"
+       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Sorcery/SummonAery/SummonAery.png",
+       "riotId": 8214
       },
       {
        "id": "cometa-arcano",
@@ -584,7 +612,8 @@ window.RUNAS = {
         "Não ativa causando 0 de dano.",
         "Fica visível mesmo sem visão do campeão que a usou — pode entregar a posição dele."
        ],
-       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Sorcery/ArcaneComet/ArcaneComet.png"
+       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Sorcery/ArcaneComet/ArcaneComet.png",
+       "riotId": 8229
       },
       {
        "id": "avanco-da-tempestade",
@@ -601,7 +630,8 @@ window.RUNAS = {
        "notas": [
         "Essa runa (Stormraider's Surge) voltou ao jogo em abril de 2026 (Patch 26.09) substituindo a antiga Ímpeto Gradual (Phase Rush) — ela mesma é o retorno de uma mastery da Season 6 removida em novembro de 2017 (Patch 7.22)."
        ],
-       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Sorcery/PhaseRush/StormraidersSurgeRuneIcon2.png"
+       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Sorcery/PhaseRush/StormraidersSurgeRuneIcon2.png",
+       "riotId": 8230
       },
       {
        "id": "toque-igneo",
@@ -617,7 +647,8 @@ window.RUNAS = {
        ],
        "adaptativa": "",
        "notas": [],
-       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Sorcery/DeathfireTouch/DEATHFIRE_TOUCH_KEYSTONE.png"
+       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Sorcery/DeathfireTouch/DEATHFIRE_TOUCH_KEYSTONE.png",
+       "riotId": 8992
       }
      ]
     },
@@ -643,7 +674,8 @@ window.RUNAS = {
         "Também amplifica dano/cura/escudo de pets invocados pela ultimate (exceto o Salto de Fé da Illaoi).",
         "Afeta dano da ultimate contra não-campeões e cura/escudo pra não-campeões aliados."
        ],
-       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Sorcery/NullifyingOrb/Axiom_Arcanist.png"
+       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Sorcery/NullifyingOrb/Axiom_Arcanist.png",
+       "riotId": 8224
       },
       {
        "id": "faixa-de-fluxo-de-mana",
@@ -662,7 +694,8 @@ window.RUNAS = {
         "Leva no mínimo 150 segundos pra carregar completamente.",
         "Tecnicamente reduz a mana atual primeiro e só depois aumenta a mana máxima (pra não quebrar a regra de que aumentar o máximo também aumenta o atual) — isso conta como gasto de mana pra efeitos que dependem disso."
        ],
-       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Sorcery/ManaflowBand/ManaflowBand.png"
+       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Sorcery/ManaflowBand/ManaflowBand.png",
+       "riotId": 8226
       },
       {
        "id": "manto-de-nimbus",
@@ -683,7 +716,8 @@ window.RUNAS = {
         "Usar múltiplos feitiços só considera o de maior bônus; cada faixa de recarga tem sua própria ativação independente.",
         "Pra Teleporte/Flash Hextec, ativa quando a canalização termina OU é interrompida (o Flash Hextec precisa ter canalizado até o teleporte ficar disponível pra contar como interrompido)."
        ],
-       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Sorcery/NimbusCloak/6361.png"
+       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Sorcery/NimbusCloak/6361.png",
+       "riotId": 8275
       }
      ]
     },
@@ -706,7 +740,8 @@ window.RUNAS = {
        "notas": [
         "Só concede o bônus exatamente nos níveis 5, 8 e 11 — não é um ganho contínuo, então só é efetiva a partir do meio de jogo."
        ],
-       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Sorcery/Transcendence/Transcendence.png"
+       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Sorcery/Transcendence/Transcendence.png",
+       "riotId": 8210
       },
       {
        "id": "celeridade",
@@ -723,7 +758,8 @@ window.RUNAS = {
        "notas": [
         "Amplia em 7% os seus OUTROS bônus de Velocidade de Movimento: os fixos sempre — inclusive os negativos (ex: Caprichos da Lulu contra inimigos, Expurgar do Urgot) —, os percentuais aditivos só quando a soma deles passa de 5%, e os multiplicativos sempre."
        ],
-       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Sorcery/Celerity/CelerityTemp.png"
+       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Sorcery/Celerity/CelerityTemp.png",
+       "riotId": 8234
       },
       {
        "id": "foco-absoluto",
@@ -739,7 +775,8 @@ window.RUNAS = {
        ],
        "adaptativa": "",
        "notas": [],
-       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Sorcery/AbsoluteFocus/AbsoluteFocus.png"
+       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Sorcery/AbsoluteFocus/AbsoluteFocus.png",
+       "riotId": 8233
       }
      ]
     },
@@ -760,7 +797,8 @@ window.RUNAS = {
         "Dano do tipo \"proc\", marcado como indireto e periódico — não aciona efeitos de feitiço.",
         "Só afeta UM campeão mesmo se disparado por uma habilidade em área — atinge o primeiro campeão a receber o efeito da habilidade."
        ],
-       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Sorcery/Scorch/Scorch.png"
+       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Sorcery/Scorch/Scorch.png",
+       "riotId": 8237
       },
       {
        "id": "caminhar-sobre-as-aguas",
@@ -782,7 +820,8 @@ window.RUNAS = {
         "Poças d'água criadas no território selvagem por efeitos de transformação em oceano também contam como \"rio\" pra ativar essa runa.",
         "A zona de \"rio\" inclui as partes fora das brenhas no meio do mapa também, não só o rio central."
        ],
-       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Sorcery/Waterwalking/Waterwalking.png"
+       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Sorcery/Waterwalking/Waterwalking.png",
+       "riotId": 8232
       },
       {
        "id": "tempestade-crescente",
@@ -800,12 +839,14 @@ window.RUNAS = {
        "notas": [
         "O intervalo de 10 minutos muda por modo de jogo: ARAM e URF a cada 6min, Jogo Dinâmico a cada 7min, Blitz do Nexus a cada 4.5min."
        ],
-       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Sorcery/GatheringStorm/GatheringStorm.png"
+       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Sorcery/GatheringStorm/GatheringStorm.png",
+       "riotId": 8236
       }
      ]
     }
    ],
    "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/7202_Sorcery.png",
+   "riotId": 8200,
    "cor": "#9090f0"
   },
   {
@@ -834,7 +875,8 @@ window.RUNAS = {
         "Dano do tipo \"proc\" — não aciona efeitos de feitiço, e não é afetado por modificadores de dano on-hit.",
         "Pra campeões de ataque à distância, o dano, a cura e o ganho de Vida permanente têm 40% de eficácia (1.4% de dano, 0.52% de cura e 2 de Vida por ativação)."
        ],
-       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Resolve/GraspOfTheUndying/GraspOfTheUndying.png"
+       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Resolve/GraspOfTheUndying/GraspOfTheUndying.png",
+       "riotId": 8437
       },
       {
        "id": "pos-choque",
@@ -871,7 +913,8 @@ window.RUNAS = {
         "naoInclui": "Lentidão — diferente de Fonte da Vida, que inclui.",
         "obs": ""
        },
-       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Resolve/VeteranAftershock/VeteranAftershock.png"
+       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Resolve/VeteranAftershock/VeteranAftershock.png",
+       "riotId": 8439
       },
       {
        "id": "guardiao",
@@ -893,7 +936,8 @@ window.RUNAS = {
         "O \"Você e Eu!\" da Yuumi não aplica o Guardião por si só, mas o Guardião ainda ativa se ela estiver no alcance do aliado alvo.",
         "Não ativa se o usuário estiver morto."
        ],
-       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Resolve/Guardian/Guardian.png"
+       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Resolve/Guardian/Guardian.png",
+       "riotId": 8465
       }
      ]
     },
@@ -918,7 +962,8 @@ window.RUNAS = {
         "Os acúmulos numa torre NÃO expiram sozinhos — ficam indefinidamente até serem consumidos.",
         "Dá pra acumular em várias torres ao mesmo tempo, contanto que a runa não esteja em recarga. Mas ao ativar numa torre, os acúmulos pendentes nas OUTRAS torres são perdidos."
        ],
-       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Resolve/Demolish/Demolish.png"
+       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Resolve/Demolish/Demolish.png",
+       "riotId": 8446
       },
       {
        "id": "fonte-da-vida",
@@ -955,7 +1000,8 @@ window.RUNAS = {
         "naoInclui": "",
         "obs": ""
        },
-       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Resolve/FontOfLife/FontOfLife.png"
+       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Resolve/FontOfLife/FontOfLife.png",
+       "riotId": 8463
       },
       {
        "id": "golpe-de-escudo",
@@ -975,7 +1021,8 @@ window.RUNAS = {
         "A escala é calculada pelo maior valor de escudo ativo OU que expirou nos últimos 2 segundos.",
         "Ganhar um escudo novo maior substitui o bônus anterior; só ativa uma vez por escudo ganho; funciona com escudo mágico ou físico."
        ],
-       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Resolve/MirrorShell/MirrorShell.png"
+       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Resolve/MirrorShell/MirrorShell.png",
+       "riotId": 8401
       }
      ]
     },
@@ -999,7 +1046,8 @@ window.RUNAS = {
        "notas": [
         "O aumento de 3% na armadura e resistência mágica BASE não conta como armadura/RM \"bônus\" pra efeitos que escalam especificamente com resistência bônus."
        ],
-       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Resolve/Conditioning/Conditioning.png"
+       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Resolve/Conditioning/Conditioning.png",
+       "riotId": 8429
       },
       {
        "id": "ventos-revigorantes",
@@ -1016,7 +1064,8 @@ window.RUNAS = {
        "notas": [
         "Não ativa com dano reduzido a 0, dano em escudos, ou dano absorvido por invulnerabilidade."
        ],
-       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Resolve/SecondWind/SecondWind.png"
+       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Resolve/SecondWind/SecondWind.png",
+       "riotId": 8444
       },
       {
        "id": "osso-revestido",
@@ -1033,7 +1082,8 @@ window.RUNAS = {
         "A redução se aplica DEPOIS das resistências (no dano já mitigado).",
         "Não ativa com dano reduzido a 0, dano em escudos, ou dano absorvido por invulnerabilidade."
        ],
-       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Resolve/BonePlating/BonePlating.png"
+       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Resolve/BonePlating/BonePlating.png",
+       "riotId": 8473
       }
      ]
     },
@@ -1057,7 +1107,8 @@ window.RUNAS = {
         "Só conta mortes de unidades que o campeão tem visão DIRETA — terreno ou efeitos de visão reduzida diminuem o raio de detecção. Visão compartilhada de aliados não conta.",
         "Continua acumulando mesmo estando morto."
        ],
-       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Resolve/Overgrowth/Overgrowth.png"
+       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Resolve/Overgrowth/Overgrowth.png",
+       "riotId": 8451
       },
       {
        "id": "revitalizar",
@@ -1075,7 +1126,8 @@ window.RUNAS = {
        "notas": [
         "Combina os efeitos de dois talentos antigos removidos (Armadura Rúnica e Bênção da Voz do Vento) — inclusive o fato de ambos os efeitos empilharem multiplicativamente entre si."
        ],
-       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Resolve/Revitalize/Revitalize.png"
+       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Resolve/Revitalize/Revitalize.png",
+       "riotId": 8453
       },
       {
        "id": "inabalavel",
@@ -1094,12 +1146,14 @@ window.RUNAS = {
         "Ativa com todas as formas de Controle de Grupo, EXCETO Kinemáticos e Interrupção (Disruption).",
         "Pra efeitos que causam dano e CG ao mesmo tempo, a runa só ativa depois de já ter recebido o dano — não ajuda a mitigar esse dano específico."
        ],
-       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Sorcery/Unflinching/Unflinching.png"
+       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Sorcery/Unflinching/Unflinching.png",
+       "riotId": 8242
       }
      ]
     }
    ],
    "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/7204_Resolve.png",
+   "riotId": 8400,
    "cor": "#78a860"
   },
   {
@@ -1144,7 +1198,8 @@ window.RUNAS = {
         "naoInclui": "",
         "obs": "Yorick é tratado como exceção e conta como se não tivesse imobilização, mesmo tendo uma no W (Procissão Sombria) (vale também para o Pós-choque)."
        },
-       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Inspiration/GlacialAugment/GlacialAugment.png"
+       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Inspiration/GlacialAugment/GlacialAugment.png",
+       "riotId": 8351
       },
       {
        "id": "livro-de-feiticos-deslacrado",
@@ -1161,7 +1216,8 @@ window.RUNAS = {
         "Não existe prazo pros feitiços trocados — eles ficam disponíveis indefinidamente até serem usados.",
         "Selecionar o Golpear numa troca não concede acesso aos itens exclusivos de selva; trocar o Golpear por outro feitiço também não bloqueia o acesso a esses itens."
        ],
-       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Inspiration/UnsealedSpellbook/UnsealedSpellbook.png"
+       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Inspiration/UnsealedSpellbook/UnsealedSpellbook.png",
+       "riotId": 8360
       },
       {
        "id": "primeiro-ataque",
@@ -1182,7 +1238,8 @@ window.RUNAS = {
         "Ao contrário do Golpe Desleal, o próprio golpe que inicia o combate TAMBÉM recebe o bônus de dano.",
         "Dispara um projétil pra cada instância de dano causada por instância de conjuração enquanto ativo — esse projétil leva 0.4s fixos pra chegar."
        ],
-       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Inspiration/FirstStrike/FirstStrike.png"
+       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Inspiration/FirstStrike/FirstStrike.png",
+       "riotId": 8369
       }
      ]
     },
@@ -1205,7 +1262,8 @@ window.RUNAS = {
         "Se o Flash sair da recarga enquanto o Flash Hextec está sendo canalizado, ainda dá pra completar a conjuração (perdendo o Flash Hextec), e ela ainda entra em recarga.",
         "Não considera o arremesso do Pinstouro (planta da selva) como \"entrar em combate\"."
        ],
-       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Inspiration/HextechFlashtraption/HextechFlashtraption.png"
+       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Inspiration/HextechFlashtraption/HextechFlashtraption.png",
+       "riotId": 8306
       },
       {
        "id": "calcados-magicos",
@@ -1222,7 +1280,8 @@ window.RUNAS = {
        "notas": [
         "Se as botas forem vendidas, dá pra recomprar normalmente na loja."
        ],
-       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Inspiration/MagicalFootwear/MagicalFootwear.png"
+       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Inspiration/MagicalFootwear/MagicalFootwear.png",
+       "riotId": 8304
       },
       {
        "id": "reembolso",
@@ -1239,7 +1298,8 @@ window.RUNAS = {
        "notas": [
         "Itens do Guardião (Lâmina, Martelo, Berrante e Orbe do Guardião) não contam como itens Lendários pra esse reembolso."
        ],
-       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Inspiration/CashBack/CashBack2.png"
+       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Inspiration/CashBack/CashBack2.png",
+       "riotId": 8321
       }
      ]
     },
@@ -1262,7 +1322,8 @@ window.RUNAS = {
        ],
        "adaptativa": "",
        "notas": [],
-       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Inspiration/PerfectTiming/AlchemistCabinet.png"
+       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Inspiration/PerfectTiming/AlchemistCabinet.png",
+       "riotId": 8313
       },
       {
        "id": "tonico-de-distorcao-no-tempo",
@@ -1280,7 +1341,8 @@ window.RUNAS = {
         "A cura imediata é um adicional: a poção continua curando o total normal ao longo da duração. Só vale para poções (Poção de Vida: 48; Poção com Refil: 40) — biscoito não conta.",
         "Se consumíveis estiverem empilhados, a restauração instantânea do próximo só se aplica depois que a duração do atual terminar."
        ],
-       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Inspiration/TimeWarpTonic/TimeWarpTonic.png"
+       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Inspiration/TimeWarpTonic/TimeWarpTonic.png",
+       "riotId": 8352
       },
       {
        "id": "entrega-de-biscoitos",
@@ -1300,7 +1362,8 @@ window.RUNAS = {
         "Desfazer a venda de um biscoito remove essa vida bônus de novo.",
         "Não aumenta a vida ATUAL, só a máxima."
        ],
-       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Inspiration/BiscuitDelivery/BiscuitDelivery.png"
+       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Inspiration/BiscuitDelivery/BiscuitDelivery.png",
+       "riotId": 8345
       }
      ]
     },
@@ -1322,7 +1385,8 @@ window.RUNAS = {
        ],
        "adaptativa": "",
        "notas": [],
-       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Inspiration/CosmicInsight/CosmicInsight.png"
+       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Inspiration/CosmicInsight/CosmicInsight.png",
+       "riotId": 8347
       },
       {
        "id": "velocidade-de-aproximacao",
@@ -1359,7 +1423,8 @@ window.RUNAS = {
         "naoInclui": "",
         "obs": ""
        },
-       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Resolve/ApproachVelocity/ApproachVelocity.png"
+       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Resolve/ApproachVelocity/ApproachVelocity.png",
+       "riotId": 8410
       },
       {
        "id": "quebra-galho",
@@ -1380,12 +1445,14 @@ window.RUNAS = {
         "Nem todo efeito que concede um atributo conta como \"diferente\" pra gerar acúmulo — efeitos de itens como o Sinal de Sterak ou a Flechatroz de Yun Tal contam; já efeitos como a Fome da Fome Eterna NÃO contam.",
         "Atributos elegíveis incluem: Dano de Ataque, Alcance de Ataque, Velocidade de Ataque, Aceleração de Habilidade, Poder de Habilidade, Armadura, Penetração de Armadura percentual, Chance de Crítico, Dano Crítico, Geração de Ouro, Poder de Cura/Escudo, Vida, Regeneração de Vida base, Roubo de Vida, Letalidade, Penetração Mágica fixa e percentual, Resistência Mágica, Mana e Regeneração de Mana base (lista não exaustiva)."
        ],
-       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Inspiration/JackOfAllTrades/JackofAllTrades2.png"
+       "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Inspiration/JackOfAllTrades/JackofAllTrades2.png",
+       "riotId": 8316
       }
      ]
     }
    ],
    "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/7203_Whimsy.png",
+   "riotId": 8300,
    "cor": "#30a8a8"
   }
  ],
@@ -1411,6 +1478,7 @@ window.RUNAS = {
      ],
      "adaptativa": "5.4 de Dano de Ataque ou 9 de Poder de Habilidade — nunca as duas coisas juntas.",
      "notas": [],
+     "riotId": 5008,
      "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/StatMods/StatModsAdaptiveForceIcon.png"
     },
     {
@@ -1425,6 +1493,7 @@ window.RUNAS = {
      ],
      "adaptativa": "",
      "notas": [],
+     "riotId": 5005,
      "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/StatMods/StatModsAttackSpeedIcon.png"
     },
     {
@@ -1440,6 +1509,7 @@ window.RUNAS = {
      ],
      "adaptativa": "",
      "notas": [],
+     "riotId": 5007,
      "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/StatMods/StatModsCDRScalingIcon.png"
     }
    ]
@@ -1465,6 +1535,7 @@ window.RUNAS = {
      ],
      "adaptativa": "5.4 de Dano de Ataque ou 9 de Poder de Habilidade — nunca as duas coisas juntas.",
      "notas": [],
+     "riotId": 5008,
      "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/StatMods/StatModsAdaptiveForceIcon.png"
     },
     {
@@ -1481,6 +1552,7 @@ window.RUNAS = {
      ],
      "adaptativa": "",
      "notas": [],
+     "riotId": 5010,
      "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/StatMods/StatModsMovementSpeedIcon.png"
     },
     {
@@ -1496,6 +1568,7 @@ window.RUNAS = {
      ],
      "adaptativa": "",
      "notas": [],
+     "riotId": 5001,
      "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/StatMods/StatModsHealthPlusIcon.png"
     }
    ]
@@ -1517,6 +1590,7 @@ window.RUNAS = {
      ],
      "adaptativa": "",
      "notas": [],
+     "riotId": 5011,
      "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/StatMods/StatModsHealthScalingIcon.png"
     },
     {
@@ -1534,6 +1608,7 @@ window.RUNAS = {
      ],
      "adaptativa": "",
      "notas": [],
+     "riotId": 5013,
      "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/StatMods/StatModsTenacityIcon.png"
     },
     {
@@ -1549,6 +1624,7 @@ window.RUNAS = {
      ],
      "adaptativa": "",
      "notas": [],
+     "riotId": 5001,
      "iconUrl": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/StatMods/StatModsHealthPlusIcon.png"
     }
    ]

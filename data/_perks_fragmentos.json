@@ -1,1 +1,132 @@
-{"resistenciamagica": "StatModsMagicResIcon.png", "escalamentoderesistencia": "StatModsAdaptiveForceScalingIcon.png", "armadura": "StatModsArmorIcon.png", "vida": "StatModsHealthScalingIcon.png", "tenacidadeeresistenciaalentidao": "StatModsTenacityIcon.png", "forcaadaptativa": "StatModsAdaptiveForceIcon.png", "escalamentodevida": "StatModsHealthPlusIcon.png", "aceleracaodehabilidade": "StatModsCDRScalingIcon.png", "velocidadedeataque": "StatModsAttackSpeedIcon.png", "velocidadedemovimento": "StatModsMovementSpeedIcon.png"}
+{
+ "patch": "16.18",
+ "fragmentos": {
+  "resistenciamagica": {
+   "arquivo": "StatModsMagicResIcon.png",
+   "id": 5003
+  },
+  "escalamentoderesistencia": {
+   "arquivo": "StatModsAdaptiveForceScalingIcon.png",
+   "id": 5012
+  },
+  "armadura": {
+   "arquivo": "StatModsArmorIcon.png",
+   "id": 5002
+  },
+  "vida": {
+   "arquivo": "StatModsHealthScalingIcon.png",
+   "id": 5011
+  },
+  "tenacidadeeresistenciaalentidao": {
+   "arquivo": "StatModsTenacityIcon.png",
+   "id": 5013
+  },
+  "forcaadaptativa": {
+   "arquivo": "StatModsAdaptiveForceIcon.png",
+   "id": 5008
+  },
+  "escalamentodevida": {
+   "arquivo": "StatModsHealthPlusIcon.png",
+   "id": 5001
+  },
+  "aceleracaodehabilidade": {
+   "arquivo": "StatModsCDRScalingIcon.png",
+   "id": 5007
+  },
+  "velocidadedeataque": {
+   "arquivo": "StatModsAttackSpeedIcon.png",
+   "id": 5005
+  },
+  "velocidadedemovimento": {
+   "arquivo": "StatModsMovementSpeedIcon.png",
+   "id": 5010
+  }
+ },
+ "linhas": {
+  "8400": [
+   [
+    5008,
+    5005,
+    5007
+   ],
+   [
+    5008,
+    5010,
+    5001
+   ],
+   [
+    5011,
+    5013,
+    5001
+   ]
+  ],
+  "8100": [
+   [
+    5008,
+    5005,
+    5007
+   ],
+   [
+    5008,
+    5010,
+    5001
+   ],
+   [
+    5011,
+    5013,
+    5001
+   ]
+  ],
+  "8000": [
+   [
+    5008,
+    5005,
+    5007
+   ],
+   [
+    5008,
+    5010,
+    5001
+   ],
+   [
+    5011,
+    5013,
+    5001
+   ]
+  ],
+  "8200": [
+   [
+    5008,
+    5005,
+    5007
+   ],
+   [
+    5008,
+    5010,
+    5001
+   ],
+   [
+    5011,
+    5013,
+    5001
+   ]
+  ],
+  "8300": [
+   [
+    5008,
+    5005,
+    5007
+   ],
+   [
+    5008,
+    5010,
+    5001
+   ],
+   [
+    5011,
+    5013,
+    5001
+   ]
+  ]
+ }
+}

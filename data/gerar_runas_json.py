@@ -10,6 +10,11 @@ O icone de cada runa vem do Data Dragon da Riot (runesReforged.json em pt_BR),
 casado pelo NOME oficial. Runa que nao casar fica sem icone e aparece no
 relatorio — nunca chuto o id da Riot.
 
+F13-T26: o NUMERO de cada trilha, runa e fragmento (riotId: 8000, 8112, 5008),
+que o cliente do jogo pede para montar uma pagina de runas, vem das mesmas duas
+listas, pelo mesmo casamento de nome. Os fragmentos e as linhas em que cada um
+cabe vem do cliente do jogo (perks.json e perkstyles.json do Community Dragon).
+
 Uso:
     python data/gerar_runas_json.py            # usa o cache, se houver
     python data/gerar_runas_json.py --baixar   # rebaixa o runesReforged.json
@@ -40,7 +45,7 @@ STATMODS = DD_IMG + "perk-images/StatMods/"
 # "Vida" usa StatModsHealthScalingIcon e "Escalamento de Vida" usa
 # StatModsHealthPlusIcon, o contrario do que os nomes sugerem. Eu tinha digitado
 # essa tabela a mao e troquei os dois (Leo achou em 20/09/2026).
-CDRAGON = "https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/pt_br/v1/perks.json"
+CDRAGON = "https://raw.communitydragon.org/{v}/plugins/rcp-be-lol-game-data/global/pt_br/v1/{arq}"
 CACHE_FRAG = os.path.join(AQUI, "_perks_fragmentos.json")
 
 
@@ -267,33 +272,59 @@ def baixa_runes(patch, forcar):
     return dados
 
 
-def arte_dos_fragmentos(forcar):
-    """chave do nome -> arquivo do icone, direto do cliente do jogo."""
+def baixa_cdragon(patch, arq):
+    """O arquivo do cliente do jogo no patch do catálogo (16.18.1 -> 16.18);
+    se o Community Dragon não tiver a pasta desse patch, o mais recente."""
+    pastas = [".".join(patch.split(".")[:2])] if patch else []
+    for v in pastas + ["latest"]:
+        url = CDRAGON.format(v=v, arq=arq)
+        try:
+            print("  baixando %s" % url)
+            req = urllib.request.Request(url, headers={"User-Agent": "montador-de-itens-lol (uso pessoal)"})
+            with urllib.request.urlopen(req, timeout=40) as r:
+                return json.loads(r.read().decode("utf-8")), v
+        except Exception as e:
+            ultimo = e
+    raise ultimo
+
+
+def dados_dos_fragmentos(patch, forcar):
+    """Do cliente do jogo: chave do nome -> {arquivo do ícone, número}, e as
+    três linhas de fragmento (os números que cabem em cada uma)."""
     if os.path.exists(CACHE_FRAG) and not forcar:
-        return json.load(io.open(CACHE_FRAG, encoding="utf-8"))
-    print("  baixando %s" % CDRAGON)
-    req = urllib.request.Request(CDRAGON, headers={"User-Agent": "montador-de-itens-lol (uso pessoal)"})
-    with urllib.request.urlopen(req, timeout=40) as r:
-        dados = json.loads(r.read().decode("utf-8"))
-    mapa = {}
-    for p in dados:
+        cache = json.load(io.open(CACHE_FRAG, encoding="utf-8"))
+        # o cache antigo (até a F13-T25) só tinha o arquivo do ícone: rebaixa
+        if isinstance(cache, dict) and "fragmentos" in cache:
+            return cache
+    perks, v1 = baixa_cdragon(patch, "perks.json")
+    estilos, v2 = baixa_cdragon(patch, "perkstyles.json")
+    frag = {}
+    for p in perks:
         if 5000 <= p.get("id", 0) <= 5020 and p.get("iconPath"):
-            mapa[chave(p.get("name", ""))] = p["iconPath"].split("/")[-1]
-    io.open(CACHE_FRAG, "w", encoding="utf-8").write(json.dumps(mapa, ensure_ascii=False))
-    return mapa
+            frag[chave(p.get("name", ""))] = {"arquivo": p["iconPath"].split("/")[-1], "id": p["id"]}
+    # as linhas são as mesmas em toda trilha; guarda as de cada uma para conferir
+    linhas = {str(e["id"]): [s["perks"] for s in e["slots"] if s.get("type") == "kStatMod"]
+              for e in estilos.get("styles", [])}
+    cache = {"patch": v1 if v1 == v2 else "%s/%s" % (v1, v2), "fragmentos": frag, "linhas": linhas}
+    io.open(CACHE_FRAG, "w", encoding="utf-8").write(json.dumps(cache, ensure_ascii=False, indent=1))
+    return cache
 
 
 def mapa_de_icones(runes):
-    """chave normalizada -> (caminho do ícone, nome como a Riot escreve)."""
-    mapa, oficiais = {}, {}
+    """chave normalizada -> caminho do ícone; -> nome como a Riot escreve;
+    -> número da Riot; e, para cada runa, o número da trilha dela."""
+    mapa, oficiais, numeros, trilha_de = {}, {}, {}, {}
     for trilha in runes:
         mapa[chave(trilha["name"])] = trilha["icon"]
         oficiais[chave(trilha["name"])] = trilha["name"]
+        numeros[chave(trilha["name"])] = trilha["id"]
         for slot in trilha["slots"]:
             for r in slot["runes"]:
                 mapa[chave(r["name"])] = r["icon"]
                 oficiais[chave(r["name"])] = r["name"]
-    return mapa, oficiais
+                numeros[chave(r["name"])] = r["id"]
+                trilha_de[r["id"]] = trilha["id"]
+    return mapa, oficiais, numeros, trilha_de
 
 
 # --------------------------------------------------------------- cor da trilha
@@ -328,10 +359,10 @@ def main():
     substituicoes = le_substituicoes(recorta(linhas, "Substituicoes Automaticas{"))
 
     patch = patch_do_catalogo()
-    icones, nomes_riot, sem_icone = {}, {}, []
+    icones, nomes_riot, numeros, trilha_de, sem_icone = {}, {}, {}, {}, []
     if patch:
         try:
-            icones, nomes_riot = mapa_de_icones(baixa_runes(patch, forcar))
+            icones, nomes_riot, numeros, trilha_de = mapa_de_icones(baixa_runes(patch, forcar))
         except Exception as e:
             pendencias.append("ícones do Data Dragon não vieram (%s); as runas ficam sem ícone" % e)
     else:
@@ -341,6 +372,7 @@ def main():
         cam = icones.get(chave(r["nome"]))
         if cam:
             r["iconUrl"] = DD_IMG + cam
+            r["riotId"] = numeros[chave(r["nome"])]
         else:
             sem_icone.append(r["nome"])
         return r
@@ -349,6 +381,7 @@ def main():
         cam = icones.get(chave(t["nome"]))
         if cam:
             t["iconUrl"] = DD_IMG + cam
+            t["riotId"] = numeros[chave(t["nome"])]
             try:
                 cor = cor_da_trilha(t["iconUrl"], t["nome"])
                 if cor:
@@ -362,17 +395,20 @@ def main():
     # fragmentos: o arquivo de cada um vem do cliente do jogo, e ainda assim
     # cada URL e pedida de verdade antes de entrar
     try:
-        arte = arte_dos_fragmentos(forcar)
+        cliente = dados_dos_fragmentos(patch, forcar)
     except Exception as e:
-        arte = {}
-        pendencias.append("lista de arte dos fragmentos nao veio (%s); eles ficam sem icone" % e)
+        cliente = {"fragmentos": {}, "linhas": {}}
+        pendencias.append("a lista de fragmentos do cliente do jogo nao veio (%s); eles ficam sem icone e sem numero" % e)
+    arte = cliente["fragmentos"]
     conferidas = {}
     for f in fragmentos:
         for r in f["runas"]:
-            arquivo = arte.get(chave(r["nome"]))
-            if not arquivo:
-                pendencias.append("o fragmento %r nao tem arte na lista do cliente do jogo" % r["nome"])
+            do_cliente = arte.get(chave(r["nome"]))
+            if not do_cliente:
+                pendencias.append("o fragmento %r nao esta na lista do cliente do jogo" % r["nome"])
                 continue
+            r["riotId"] = do_cliente["id"]
+            arquivo = do_cliente["arquivo"]
             if arquivo not in conferidas:
                 url = STATMODS + arquivo
                 try:
@@ -452,6 +488,34 @@ def main():
             if perto:
                 pendencias.append("%r não existe no Data Dragon; lá está escrito %r"
                                   % (nome, nomes_riot[perto[0]]))
+
+    # --- integridade 4 (F13-T26): o número que o cliente vai receber ---
+    # Toda trilha, runa e fragmento tem número; a runa é da trilha em que o
+    # arquivo a pôs (o cliente recusa runa de outra trilha); e o fragmento de
+    # cada linha é um dos que o cliente aceita naquela linha.
+    for t in trilhas:
+        if "riotId" not in t:
+            pendencias.append("a trilha %r ficou sem número da Riot" % t["nome"])
+        for s in t["slots"]:
+            for r in s["runas"]:
+                if "riotId" not in r:
+                    pendencias.append("a runa %r ficou sem número da Riot" % r["nome"])
+                elif "riotId" in t and trilha_de.get(r["riotId"]) != t["riotId"]:
+                    pendencias.append("a runa %r está em %s no arquivo, e a Riot a põe em outra trilha (%s)"
+                                      % (r["nome"], t["nome"], trilha_de.get(r["riotId"])))
+    linhas_cliente = list(cliente.get("linhas", {}).values())
+    if linhas_cliente and any(l != linhas_cliente[0] for l in linhas_cliente):
+        pendencias.append("as linhas de fragmento mudam de trilha para trilha no cliente; confira à mão")
+    for i, f in enumerate(fragmentos):
+        aceitos = linhas_cliente[0][i] if linhas_cliente and i < len(linhas_cliente[0]) else None
+        for r in f["runas"]:
+            if "riotId" not in r:
+                pendencias.append("o fragmento %r (%s) ficou sem número" % (r["nome"], f["nome"]))
+            elif aceitos is not None and r["riotId"] not in aceitos:
+                pendencias.append("o fragmento %r está em %s no arquivo, e o cliente não o aceita nessa linha (aceita %s)"
+                                  % (r["nome"], f["nome"], aceitos))
+        if aceitos is not None and len(aceitos) != len(f["runas"]):
+            pendencias.append("%s: o arquivo tem %d fragmentos, o cliente aceita %d" % (f["nome"], len(f["runas"]), len(aceitos)))
 
     total = sum(len(s["runas"]) for t in trilhas for s in t["slots"])
     dados = {
