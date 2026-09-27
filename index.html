@@ -43,6 +43,13 @@
 }
 
 * { box-sizing: border-box; }
+/* F13-T30 (bugs nºs 11, 12 e 26): o atributo hidden só dá display:none na folha
+   do navegador, e qualquer regra com display (o .btn é inline-flex, o rodapé do
+   diálogo é flex) passava por cima — o ⟳ aparecia em Minhas, o Descartar ficava
+   sempre à vista e o "Fechar" surgia durante "Publicando…". Já eram 16 remendos
+   [hidden] um por um; esta regra vale para todos. */
+[hidden] { display: none !important; }
+.btn.guardado { visibility: hidden; transition: none; }
 
 html, body {
   margin: 0;
@@ -4609,7 +4616,8 @@ body:not(.editando) .build-desc:placeholder-shown { display: none; }
 body.editando .save-wrap { display: inline-flex; }
 .save-btn:disabled { opacity: .5; }
 .save-btn.sujo { box-shadow: 0 0 0 1px var(--forja-brasa), 0 0 14px var(--forja-brasa-glow); animation: chamar-editar 1.2s ease-out 1; }
-.save-status { font-family: var(--loja-texto); font-style: italic; font-size: 12px; color: var(--forja-texto-suave); white-space: nowrap; }
+.save-status { font-family: var(--loja-texto); font-style: italic; font-size: 12px; color: var(--forja-texto-suave); white-space: nowrap;
+  min-width: 9.7em; }   /* F13-T30: o lugar de "alterações não salvas" fica guardado — o texto aparecendo empurrava o "+ Nova categoria" 90 px */
 .save-status.sujo { color: #ff9b6a; }
 .save-status.ok { color: var(--forja-brasa-clara); }
 .md-panel-small { width: min(520px, 100%); }
@@ -4618,6 +4626,9 @@ body.editando .save-wrap { display: inline-flex; }
 
 /* ---- Fase 8, T2/T3: publicação ---- */
 #pub-dialog .md-panel-small { text-align: center; }
+#pub-dialog { z-index: 96; }
+#pub-dialog .md-panel:focus { outline: none; }
+#pub-dialog .pub-demora { display: block; margin-top: 10px; font-size: .92em; opacity: .85; }
 #pub-dialog.aguardando .md-title::after { content: "…"; animation: pub-pontos 1.2s steps(4) infinite; display: inline-block; width: 1.2em; text-align: left; }
 @keyframes pub-pontos { 0% { clip-path: inset(0 100% 0 0); } 100% { clip-path: inset(0 0 0 0); } }
 #pub-dialog.sucesso .md-panel { border-top-color: #4d8b3a; box-shadow: 0 20px 50px rgba(0,0,0,.8), 0 0 24px rgba(77,139,58,.45); }
@@ -5030,7 +5041,7 @@ body.forja .build-cat.drop-after  { transform: translateX(-5px); box-shadow: ins
       </label>
       <span class="save-wrap">
         <button id="save-btn" class="btn primary save-btn" type="button" disabled title="Grava as alterações desta build (Ctrl+S)">Salvar</button>
-        <button id="discard-btn" class="btn ghost" type="button" hidden title="Volta ao último estado salvo">Descartar</button>
+        <button id="discard-btn" class="btn ghost guardado" type="button" disabled tabindex="-1" aria-hidden="true" title="Volta ao último estado salvo">Descartar</button>
         <span id="save-status" class="save-status" aria-live="polite"></span>
       </span>
       <div class="span-general" title="Largura padrão das categorias — aplica em todas">
@@ -5178,7 +5189,7 @@ body.forja .build-cat.drop-after  { transform: translateX(-5px); box-shadow: ins
 
 <div id="item-tooltip" class="item-tooltip"></div>
 <div id="pub-dialog" class="marker-dialog" role="dialog" aria-label="Publicação" hidden>
-  <div class="md-panel md-panel-small">
+  <div class="md-panel md-panel-small" tabindex="-1">
     <h3 class="md-title" id="pub-title">Publicando a build</h3>
     <p class="md-text" id="pub-text">Aguarde</p>
     <div class="md-foot md-foot-3" id="pub-foot" hidden><button type="button" class="btn primary" id="pub-close">Fechar</button></div>
@@ -5940,7 +5951,12 @@ function refletirSalvar(msg) {
   if (!btn) return;
   btn.disabled = !rascunho.sujo;
   btn.classList.toggle("sujo", rascunho.sujo);
-  dis.hidden = !rascunho.sujo;
+  // F13-T30: sem rascunho o Descartar some, mas guarda o lugar — com hidden, o
+  // "+ Nova categoria" andava 90 px e o segundo clique nele caía no Descartar.
+  dis.classList.toggle("guardado", !rascunho.sujo);
+  dis.disabled = !rascunho.sujo;
+  dis.tabIndex = rascunho.sujo ? 0 : -1;
+  dis.setAttribute("aria-hidden", String(!rascunho.sujo));
   st.className = "save-status" + (rascunho.sujo ? " sujo" : (msg ? " ok" : ""));
   st.textContent = rascunho.sujo ? "alterações não salvas" : (msg || "");
 }
@@ -6224,9 +6240,9 @@ async function excluirBuild(id) {
   if (!b) return false;
   const pubId = buildResumo(b).pubId;
   if (pubId) {
-    mostrarPub("Tirando do site", `Apagando a publicação <b class="pub-id">${esc(pubId)}</b>…`);
+    const vez = mostrarPub("Tirando do site", `Apagando a publicação <b class="pub-id">${esc(pubId)}</b>…`);
     const r = await tirarDoSite(pubId);
-    fecharPub();
+    fecharPub(vez);
     if (!r.ok) {
       const depois = r.motivo === "rede" ? ` Para tirá-la do site depois, procure ${pubId} na aba Públicas quando a conexão voltar.` : "";
       if (!window.confirm(`${porqueNaoSaiu(r, pubId)}
@@ -6646,21 +6662,56 @@ const Servidor = (() => {
 
 // Placa de publicação (Leo, 14/09/2026, com print do Deadlock): "Publicando a build — Aguarde"
 // e, no fim, "Build publicada com sucesso". Sem menu.
-function mostrarPub(titulo, texto, estado) {
-  const dlg = document.getElementById("pub-dialog");
+// F13-T30: durante a espera a placa não tem Fechar (ele deixava publicar duas
+// vezes). Se o servidor demorar, o Fechar aparece em 30 s e o pedido continua:
+// quando a resposta chegar, a placa volta com o resultado. E a placa pega o
+// foco — com ele no botão Publicar, atrás dela, um Enter publicava de novo.
+const PUB_DEMORA_MS = 30000;
+let pubVez = 0, pubFocoAntes = null;
+function mostrarPub(titulo, texto, estado, demora) {
+  const dlg = document.getElementById("pub-dialog"), foot = document.getElementById("pub-foot");
+  const esperando = !estado || estado === "aguardando";
+  if (dlg.hidden) pubFocoAntes = document.activeElement;
   dlg.className = "marker-dialog " + (estado || "aguardando");
   document.getElementById("pub-title").textContent = titulo;
   document.getElementById("pub-text").innerHTML = texto;
-  document.getElementById("pub-foot").hidden = !estado || estado === "aguardando";
+  foot.hidden = esperando;
   dlg.hidden = false;
+  (esperando ? dlg.querySelector(".md-panel") : document.getElementById("pub-close")).focus();
+  const vez = ++pubVez;
+  if (esperando) setTimeout(() => {
+    if (vez !== pubVez || dlg.hidden) return;
+    document.getElementById("pub-text").insertAdjacentHTML("beforeend",
+      `<span class="pub-demora">${demora || "O servidor está demorando. Pode fechar esta placa: o pedido continua."}</span>`);
+    foot.hidden = false;
+    document.getElementById("pub-close").focus();
+  }, PUB_DEMORA_MS);
+  return vez;
 }
-function fecharPub() { document.getElementById("pub-dialog").hidden = true; }
+// `vez` (opcional): só fecha se a placa ainda é a daquela operação — senão a
+// resposta de um Excluir fechava a placa de outra publicação no ar.
+function fecharPub(vez) {
+  if (vez !== undefined && vez !== pubVez) return;
+  document.getElementById("pub-dialog").hidden = true;
+  pubVez++;
+  if (pubFocoAntes && document.contains(pubFocoAntes)) pubFocoAntes.focus();
+  pubFocoAntes = null;
+}
 
 function caixasParaServidor(cats) {
   return cats.map(c => ({ name: c.name, desc: c.desc || "", marco: c.marco || "", kind: c.kind, span: c.span, cols: catCols(c), rows: catRows(c), items: c.items.map(e => ({ itemId: e.itemId, nome: byId[e.itemId] ? byId[e.itemId].namePt : (e.nome || e.itemId), note: e.note || "", ...(e.mf ? { mf: true } : {}), ...(e.frag ? { frag: e.frag } : {}) })) }));
 }
 
+// F13-T30 (bug nº 12): a mesma build não é publicada duas vezes ao mesmo tempo.
+// Sem o Fechar a placa segura o mouse, mas o botão Publicar fica com o foco, e
+// um Enter mandava um segundo publicar_build — duas publicações, e o site
+// ficava com a primeira sem a biblioteca saber dela.
+const publicando = new Set();
 async function publicarBuild(id) {
+  if (publicando.has(id)) {
+    if (document.getElementById("pub-dialog").hidden) mostrarPub("Ainda publicando", "Esta build ainda está sendo publicada: espere a resposta do servidor.", "aviso");
+    return;
+  }
   const b = library.builds.find(x => x.id === id);
   if (!b) return;
   const d = buildResumo(b);
@@ -6671,16 +6722,18 @@ async function publicarBuild(id) {
   // rascunho e o gravava calado. Pergunta antes, como sair da forja.
   if (id === build.id && rascunho.sujo) { confirmarSaida(() => publicarBuild(id)); return; }
   if (!Servidor.ativo()) { mostrarPub("Sem servidor", "A página não tem a URL e a chave do servidor (data/servidor.js).", "erro"); return; }
-  mostrarPub("Publicando a build", "Aguarde");
-  const params = {
-    p_nome: d.name, p_descricao: d.desc, p_campeao: d.champ, p_modo: d.mode, p_marcadores: d.markers,
-    p_caixas: caixasParaServidor(d.cats), p_patch: CATALOG.meta.patch, p_autor: "", p_segredo: Servidor.segredo(), p_id: d.pubId || null, p_layout: layoutValido(d.layout),
-    // F12 (Leo, 20/09/2026): a build publicada leva também a página de runas e a
-    // ordem de habilidades. Servidor ainda sem as colunas? O catch abaixo
-    // republica sem elas, como já era feito com o layout.
-    p_runas: normRunas(d.runas), p_habilidades: normHabilidades(d.habilidades),
-  };
+  publicando.add(id);
   try {
+    mostrarPub("Publicando a build", "Aguarde", null,
+      "O servidor está demorando. Pode fechar esta placa: o pedido continua e, quando a resposta chegar, ela volta com o resultado.");
+    const params = {
+      p_nome: d.name, p_descricao: d.desc, p_campeao: d.champ, p_modo: d.mode, p_marcadores: d.markers,
+      p_caixas: caixasParaServidor(d.cats), p_patch: CATALOG.meta.patch, p_autor: "", p_segredo: Servidor.segredo(), p_id: d.pubId || null, p_layout: layoutValido(d.layout),
+      // F12 (Leo, 20/09/2026): a build publicada leva também a página de runas e a
+      // ordem de habilidades. Servidor ainda sem as colunas? O catch abaixo
+      // republica sem elas, como já era feito com o layout.
+      p_runas: normRunas(d.runas), p_habilidades: normHabilidades(d.habilidades),
+    };
     let r;
     const publicar = async (ps) => {
       try { return await Servidor.rpc("publicar_build", ps); }
@@ -6711,6 +6764,8 @@ async function publicarBuild(id) {
     if (buildScreen === "lista") renderBuildIndex(); else renderBuildAll();
   } catch (e) {
     mostrarPub("Não deu para publicar", esc(e.message || "erro desconhecido"), "erro");
+  } finally {
+    publicando.delete(id);
   }
 }
 
@@ -9991,8 +10046,16 @@ function initBuildBuilder() {
   });
   initSalvar();
   document.getElementById("temp-warning").addEventListener("click", (e) => { if (e.target.id === "temp-copiar") confirmarSaida(() => duplicateBuild(build.id)); });
-  document.getElementById("pub-close").addEventListener("click", fecharPub);
+  document.getElementById("pub-close").addEventListener("click", () => fecharPub());
   document.getElementById("pub-dialog").addEventListener("click", (e) => { if (e.target.id === "pub-dialog" && !document.getElementById("pub-foot").hidden) fecharPub(); });
+  // F13-T30: Esc fecha a placa quando ela tem Fechar (na espera, não). Ouve na
+  // captura da janela e segura a tecla: a placa fica por cima dos outros
+  // diálogos, e o Esc não pode fechar também o que está por baixo.
+  window.addEventListener("keydown", (e) => {
+    if (e.key !== "Escape" || document.getElementById("pub-dialog").hidden) return;
+    e.preventDefault(); e.stopPropagation();
+    if (!document.getElementById("pub-foot").hidden) fecharPub();
+  }, true);
   applyEditing(false);
   // F12-T2: a pergunta "em qual caixa" precisa poder ligar a edição para criar
   // uma caixa nova; sem isto ela chamaria addCategory() com o Editar desligado,

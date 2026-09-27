@@ -84,6 +84,14 @@ que se digita depois ainda grava); e o Enter da lista abre o diálogo com o
 foco nele. Cada checagem monta o próprio estado e só responde o diálogo se ele
 apareceu, para falhar sozinha no código de antes.
 
+**Publicar** (F13-T30, bugs nºs 11, 12 e 26; servidor simulado) — o hidden
+esconde sempre (Descartar sem rascunho, ⟳ em Minhas); o "+ Nova categoria" não
+anda quando o rascunho aparece; durante "Publicando…" não há Fechar e o Enter
+não manda outro pedido; depois de um erro o Enter fecha a placa; servidor lento:
+o Fechar aparece (os 30 s encurtados trocando o relógio da página), a trava
+segura e a resposta atrasada vale; a placa atrasada fica por cima do
+"Alterações não salvas" e o Esc fecha só ela; ao salvar, o Descartar some na hora.
+
 **Acessibilidade** — os quatro interruptores ligam, o "menos movimento" zera as
 transições de verdade, e tudo sobrevive ao recarregar.
 

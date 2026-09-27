@@ -829,6 +829,133 @@ def checar_texto(s, p):
             "rascunho sujo=%s, MF gravado=%s, campeão gravado=%s" % (r["sujo"], r["mfSalvo"], r["campeaoSalvo"]))
 
 
+def checar_publicar(s, p):
+    """F13-T30 (bugs nºs 11, 12 e 26): o atributo hidden perdia para qualquer
+    display do CSS. O pior caso: o "Fechar" aparecia durante "Publicando…", e
+    dava para publicar a mesma build duas vezes. O servidor é SIMULADO: nenhum
+    publicar_build sai deste navegador."""
+    print(chr(10) + "%sPUBLICAR%s" % (AMARELO, FIM))
+    visiveis = """[...document.querySelectorAll('[hidden]')].filter(e => { const b = e.getBoundingClientRect();
+        return getComputedStyle(e).display !== 'none' && b.width > 0 && b.height > 0; })
+      .map(e => e.id ? '#' + e.id : e.className)"""
+    s.nova_build()
+    if not s.js("build.editing"):
+        s.clicar("#edit-switch", 0.8)
+    fe = s.js(visiveis)
+    # o Descartar some sem tirar o lugar: com hidden, o "+ Nova categoria" andava
+    # 90 px e, no primeiro clique, o Descartar reaparecia embaixo do cursor
+    n0 = s.js("build.cats.length")
+    c = s.caixa("#add-cat")
+    x0 = s.js("Math.round(document.getElementById('add-cat').getBoundingClientRect().left + scrollX)")
+    xs = []
+    for _ in range(2):
+        for tipo in ("mousePressed", "mouseReleased"):
+            s.envia("Input.dispatchMouseEvent", {"type": tipo, "x": c[0], "y": c[1], "button": "left", "clickCount": 1})
+        time.sleep(0.5)
+        xs.append(s.js("Math.round(document.getElementById('add-cat').getBoundingClientRect().left + scrollX)"))
+    ac = s.js("({ n: build.cats.length, dlg: !document.getElementById('save-dialog').hidden })")
+    if ac["dlg"]:
+        s.clicar('#save-dialog [data-sd="voltar"]', 0.3)   # Continuar editando
+    # uma resposta atrasada que chega com o "Alterações não salvas" aberto: a
+    # placa abria POR BAIXO dele (mesmo z-index) e o Enter fechava o que não se via
+    s.clicar("#build-back", 0.6)
+    s.js("mostrarPub('Build publicada com sucesso', 'resposta atrasada de teste', 'sucesso'); 'ok'"); time.sleep(0.3)
+    cima = s.js("""(() => { const pn = document.querySelector('#pub-dialog .md-panel').getBoundingClientRect();
+      const e = document.elementFromPoint(pn.left + pn.width / 2, pn.top + pn.height / 2);
+      return { pub: !!(e && e.closest('#pub-dialog')), salvar: !document.getElementById('save-dialog').hidden }; })()""")
+    for tipo in ("rawKeyDown", "keyUp"):
+        s.envia("Input.dispatchKeyEvent", {"type": tipo, "key": "Escape", "code": "Escape", "windowsVirtualKeyCode": 27, "nativeVirtualKeyCode": 27})
+    time.sleep(0.3)
+    esc = s.js("({ placa: document.getElementById('pub-dialog').hidden, salvar: !document.getElementById('save-dialog').hidden })")
+    if not esc["placa"]:
+        s.js("fecharPub(); 'ok'")
+    if esc["salvar"]:
+        s.clicar('#save-dialog [data-sd="voltar"]', 0.3)
+    p.conta("publicar", "a placa atrasada fica por cima do \"Alterações não salvas\", e o Esc fecha só ela",
+            cima["pub"] and cima["salvar"] and esc["placa"] and esc["salvar"],
+            "no meio do painel: %s; Esc: placa %s, diálogo de baixo %s" % ("a placa" if cima["pub"] else "OUTRO diálogo",
+            "fechou" if esc["placa"] else "ficou", "ficou" if esc["salvar"] else "FECHOU junto"))
+    c2 = s.caixa("#save-btn")
+    for tipo in ("mousePressed", "mouseReleased"):
+        s.envia("Input.dispatchMouseEvent", {"type": tipo, "x": c2[0], "y": c2[1], "button": "left", "clickCount": 1})
+    time.sleep(0.03)
+    vis = s.js("getComputedStyle(document.getElementById('discard-btn')).visibility")
+    time.sleep(0.5)
+    # a reserva do "alterações não salvas" cobre também a fonte de reserva (Georgia), sem a Alegreya da web
+    res = s.js("""(() => { const st = document.getElementById('save-status'), sp = document.createElement('span');
+      sp.textContent = 'alterações não salvas'; sp.style.cssText = 'position:absolute;visibility:hidden;white-space:nowrap;font-style:italic;font-size:' + getComputedStyle(st).fontSize + ';font-family:Georgia';
+      document.body.appendChild(sp); const w = sp.getBoundingClientRect().width; sp.remove();
+      return { min: parseFloat(getComputedStyle(st).minWidth), georgia: w }; })()""")
+    p.conta("publicar", "ao salvar, o Descartar some na hora; a reserva cabe sem a fonte da web",
+            vis == "hidden" and res["min"] >= res["georgia"],
+            "30 ms depois: %s · reserva %.0f px, Georgia %.0f px" % (vis, res["min"], res["georgia"]))
+    s.js("showBuildScreen('lista'); 'ok'"); time.sleep(0.5)
+    mi = s.js(visiveis)
+    p.conta("publicar", "o hidden esconde (Descartar sem rascunho, ⟳ em Minhas)", not fe and not mi,
+            "forja: %s · Minhas: %s" % (fe or "nada", mi or "nada"))
+    p.conta("publicar", "o \"+ Nova categoria\" não anda quando o Descartar aparece", ac["n"] > n0 and not ac["dlg"] and all(x == x0 for x in xs),
+            "x %d → %s; %d → %d caixas; diálogo de descartar %s" % (x0, xs, n0, ac["n"], "ABRIU" if ac["dlg"] else "não abriu"))
+    # publicar_build: preso até o roteiro soltar, ou erro 500 com __falhar; conta quantos saíram
+    s.js("""(() => { window.__fetchOrig = window.fetch; window.__pubs = []; window.__soltar = null; window.__falhar = false;
+      window.__resposta = { id: 'qa0030', versao: 1 };
+      window.fetch = function (u, opts, ...a) { const t = String(u);
+        if (t.includes('publicar_build')) { window.__pubs.push(Date.now());
+          if (window.__falhar) return Promise.resolve(new Response(JSON.stringify({ message: 'falha simulada' }), { status: 500, headers: { 'Content-Type': 'application/json' } }));
+          return new Promise((res) => {
+            window.__soltar = () => res(new Response(JSON.stringify(window.__resposta), { status: 200, headers: { 'Content-Type': 'application/json' } })); }); }
+        if (t.includes('/rpc/') || t.includes('/rest/')) return Promise.resolve(new Response('[]', { status: 200, headers: { 'Content-Type': 'application/json' } }));
+        return window.__fetchOrig.call(this, u, opts, ...a); };
+      build.name = 'Publicar de teste'; build.desc = 'descrição de teste';
+      build.markers = normMarkers(MARCADORES.slice(0, 3).map(m => ({ t: 'tag', id: m.id })));
+      build.cats[3].items = [{ itemId: 'long-sword', note: '' }]; gravarBuild();
+      biSelected = build.id; renderBuildIndex(); return 'ok'; })()""")
+    time.sleep(0.5)
+    enter = lambda: [s.envia("Input.dispatchKeyEvent", {"type": "keyDown", "key": "Enter", "code": "Enter", "text": chr(13), "unmodifiedText": chr(13), "windowsVirtualKeyCode": 13, "nativeVirtualKeyCode": 13}),
+                     s.envia("Input.dispatchKeyEvent", {"type": "keyUp", "key": "Enter", "code": "Enter", "windowsVirtualKeyCode": 13, "nativeVirtualKeyCode": 13})]
+    # (sem o "text" o Chrome não gera o keypress e o botão não é acionado)
+    s.clicar('#bi-detail [data-act="publish"]', 0.8)
+    durante = s.js("""({ aguardando: document.getElementById('pub-dialog').classList.contains('aguardando'),
+      fechar: getComputedStyle(document.getElementById('pub-foot')).display })""")
+    enter(); time.sleep(0.6)
+    n = s.js("window.__pubs.length")
+    p.conta("publicar", "durante \"Publicando…\" não há Fechar", durante["aguardando"] and durante["fechar"] == "none",
+            "rodapé: %s" % durante["fechar"])
+    p.conta("publicar", "Enter durante a espera não manda outro pedido", n == 1, "%d pedido(s) de publicar_build" % n)
+    s.js("window.__soltar && window.__soltar(); 'ok'"); time.sleep(0.8)
+    ok = s.js("({ sucesso: document.getElementById('pub-dialog').classList.contains('sucesso'), pub: build.pubId })")
+    s.clicar("#pub-close", 0.4)
+    # erro: o Enter fecha a placa — com o foco no Publicar, atrás dela, publicava de novo
+    s.js("window.__falhar = true; 'ok'")
+    s.clicar('#bi-detail [data-act="publish"]', 0.8)
+    antes_enter = s.js("({ n: window.__pubs.length, erro: document.getElementById('pub-dialog').classList.contains('erro') })")
+    enter(); time.sleep(0.6)
+    depois_enter = s.js("({ n: window.__pubs.length, fechada: document.getElementById('pub-dialog').hidden })")
+    if not depois_enter["fechada"]:
+        s.clicar("#pub-close", 0.3)
+    p.conta("publicar", "depois de um erro, o Enter fecha a placa (não publica de novo)",
+            antes_enter["erro"] and depois_enter["n"] == antes_enter["n"] and depois_enter["fechada"],
+            "pedidos %d → %d; placa %s" % (antes_enter["n"], depois_enter["n"], "fechada" if depois_enter["fechada"] else "aberta"))
+    # servidor lento: a espera de 30 s encurtada só aqui, trocando o relógio da página
+    s.js("""(() => { window.__falhar = false; window.__resposta = { id: 'qa0030', versao: 2 }; window.__stOrig = window.setTimeout;
+      window.setTimeout = (f, ms, ...a) => window.__stOrig(f, ms === 30000 ? 400 : ms, ...a); return 'ok'; })()""")
+    s.clicar('#bi-detail [data-act="publish"]', 1.4)
+    lento = s.js("""({ fechar: getComputedStyle(document.getElementById('pub-foot')).display,
+      texto: document.getElementById('pub-text').textContent, n: window.__pubs.length })""")
+    s.clicar("#pub-close", 0.4)
+    s.clicar('#bi-detail [data-act="publish"]', 0.6)      # de novo, com a placa fechada e o pedido no ar
+    denovo = s.js("({ n: window.__pubs.length, titulo: document.getElementById('pub-title').textContent })")
+    s.clicar("#pub-close", 0.3)
+    s.js("window.__soltar && window.__soltar(); 'ok'"); time.sleep(0.8)
+    tarde = s.js("({ sucesso: document.getElementById('pub-dialog').classList.contains('sucesso') && !document.getElementById('pub-dialog').hidden, versao: build.pubVersao })")
+    if tarde["sucesso"]:
+        s.clicar("#pub-close", 0.3)
+    s.js("window.setTimeout = window.__stOrig; window.fetch = window.__fetchOrig; 'ok'")
+    p.conta("publicar", "servidor lento: o Fechar aparece, a trava segura e a resposta atrasada vale",
+            ok["sucesso"] and ok["pub"] == "qa0030" and lento["fechar"] != "none" and "demorando" in lento["texto"]
+            and denovo["n"] == lento["n"] and "Ainda publicando" in denovo["titulo"] and tarde["sucesso"] and tarde["versao"] == 2,
+            "Fechar %s; de novo: %s; resposta atrasada: versão %s" % (lento["fechar"], denovo["titulo"], tarde["versao"]))
+
+
 def checar_exclusao(s, p):
     """F13-T14: excluir uma build publicada prometia "ela também sai do site" e,
     se o servidor falhasse, apagava daqui calada — a publicação ficava no ar e o
@@ -1263,6 +1390,7 @@ GRUPOS = [
     ("habilidades", checar_habilidades),
     ("texto", checar_texto),
     ("fragmento", checar_fragmento),
+    ("publicar", checar_publicar),
     ("exclusão", checar_exclusao),
     ("rascunho", checar_rascunho),
     ("troca", checar_troca),

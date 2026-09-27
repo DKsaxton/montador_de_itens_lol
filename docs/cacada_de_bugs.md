@@ -111,11 +111,15 @@ Status de cada um:
 
 ### 11. O botão "Buscar de novo no servidor" fica visível na aba Minhas: o hidden perde para o display do .btn
 
+**CONSERTADO na F13-T30 (27/09/2026)**, junto com os nºs 11, 12 e 26: uma regra geral `[hidden] { display: none !important }` no lugar dos 16 remendos um por um. Varredura em 51 estados das telas: só estes três apareciam com hidden.
+
 `index.html:4836` · media · achado por: CSS e acessibilidade · **passou pelos céticos**
 
 **Como quebra:** Entrar na loja → aba Builds. A tela abre em "Minhas", e o botão de recarregar (ícone de refresh) aparece ao lado do campo de busca, apesar do atributo `hidden` no HTML. Motivo: `.btn { display: inline-flex; }` (linha 793) é regra de autor e ganha do `[hidden]` da folha do navegador. O `<select id="bi-qtd">` logo ao lado, que também tem `hidden`, some corretamente porque `.build-select` (linha 909) não declara display — então a dupla aparece quebrada, com o botão sozinho. A correção que já existe para esse mesmo problema, `.bi-lote-bar [hidden] { display: none; }` na linha 4288 (com o comentário "o hidden dos botões tem de ganhar do display do .btn"), só vale dentro de `.bi-lote-bar`, e o #bi-refresh está em `.bi-actions` (linha 4812). Clicando nele em "Minhas", `carregarPublicas(true)` (linha 9245) dispara um GET em builds_publicas no Supabase e `renderBuildIndex` retorna na linha 8927 sem usar nada disso — requisição ao servidor e zero retorno na tela. A linha 9239 (`qtd.hidden = refresh.hidden = biView !== "publicas"`) nunca surte efeito nenhum sobre o botão.
 
 ### 12. O "Fechar" aparece durante "Publicando a build — Aguarde", e discorda do clique no fundo do diálogo
+
+**CONSERTADO na F13-T30 (27/09/2026)**, junto com os nºs 11, 12 e 26: uma regra geral `[hidden] { display: none !important }` no lugar dos 16 remendos um por um. Varredura em 51 estados das telas: só estes três apareciam com hidden. Reproduzido na triagem: Fechar durante a espera → Publicar de novo → duas publicações, a primeira no site sem a biblioteca saber. E mesmo sem o Fechar, o botão Publicar ficava com o foco atrás da placa: um Enter mandava um segundo `publicar_build` (visto na checagem: 2 pedidos). Consertos: a mesma build não publica de novo com o pedido no ar (`publicando`; com a placa já fechada, avisa "Ainda publicando"); a placa pega o foco e o devolve ao fechar; o Esc fecha a placa quando ela tem Fechar (e só ela). Sem o Fechar, um servidor que nunca responde prenderia a tela: passados 30 s o Fechar aparece com o aviso de demora, **sem cortar o pedido** — a primeira versão cortava (AbortController), e a revisão mostrou que isso criava publicação órfã quando o servidor gravava devagar, fazia o Excluir dizer "continua no site" de uma publicação que saiu e marcava como inexistente o ID buscado.
 
 `index.html:5046` · media · achado por: CSS e acessibilidade · **passou pelos céticos**
 
@@ -209,6 +213,8 @@ Status de cada um:
 ## Gravidade baixa
 
 ### 26. O botão "Descartar" fica permanente ao lado do "Salvar", mesmo sem nada para descartar
+
+**CONSERTADO na F13-T30 (27/09/2026)**, junto com os nºs 11, 12 e 26: uma regra geral `[hidden] { display: none !important }` no lugar dos 16 remendos um por um. Varredura em 51 estados das telas: só estes três apareciam com hidden. O Descartar não usa mais hidden: sem rascunho fica invisível, desligado e fora do Tab e do leitor de tela, **mas no lugar** — escondido de verdade, o "+ Nova categoria" andava 90 px e o segundo clique nele caía no Descartar que reaparecia embaixo do cursor (em 1440×900 o terceiro descartava a caixa nova). O texto "alterações não salvas" também empurrava o botão 90 px, desde antes: o lugar dele fica guardado (9,7 em, que cobre também a Georgia, a fonte de reserva sem a Alegreya da web).
 
 `index.html:4895` · baixa · achado por: CSS e acessibilidade · **passou pelos céticos**
 
@@ -396,3 +402,21 @@ Para a build aberta, a janela lê os marcadores e os itens do rascunho (`build`)
 `index.html` (`fxAcionar`, `.card.fx-ad.a1`–`a5`) · **média** (visível no uso de todo dia) · achado pelo Leo em 27/09/2026 · **REPRODUZIDO**
 
 A F11-T5 tirou a reação do núcleo dos modos Ícones e Nomes escondendo o palco (`.card-fx`), mas o JS continuava sorteando a variante a cada mouse. AP e Vitalidade só animam dentro do palco, então nada aparecia; o AD anima o próprio card — as variantes 1 a 4 dão um tranco no ícone, e a 5 ("o corte abre o card") apaga a superfície por 235 ms enquanto as duas metades se abrem. Com as metades escondidas, o ícone simplesmente sumia (uma vez em cada cinco, no sorteio). Reproduzido com mouse de verdade: Lâmina de Doran com a classe `a5` e a superfície em opacidade 0.
+
+### 47. Fechar o diálogo "Alterações não salvas" pelo teclado deixa o foco no nada
+
+`index.html` (`initSalvar`) · **baixa** (teclado) · achado na revisão da F13-T30 · passou pela revisão, não reproduzido à parte
+
+Esc, "Continuar editando" ou "Descartar" pelo teclado fecham o diálogo e o foco vai para o `body`: o próximo Tab recomeça do topo da página, longe do Salvar.
+
+### 48. Os interruptores da forja (Reembolso, Ápice, Mestre Forjador, Editar) não recebem Tab nem aparecem para o leitor de tela
+
+`index.html` (os `.toggle-row` da linha de ações) · **baixa** (acessibilidade) · achado na revisão da F13-T30 · passou pela revisão, não reproduzido à parte
+
+O controle de verdade é um checkbox escondido atrás do desenho (o roteiro já tropeçou nele: `#edit-toggle` de tamanho zero); pelo teclado não se chega a nenhum dos quatro.
+
+### 49. Tirar do site duas vezes seguidas: o segundo pedido cobre o sucesso com um erro falso
+
+`index.html` (`despublicarBuild`) · **baixa** · achado na revisão da F13-T30 · passou pela revisão, não reproduzido à parte
+
+Despublicar não tem a trava que o publicar ganhou na F13-T30. Com a placa fechada depois do aviso de demora, clicar de novo em "Tirar do site" manda outro `apagar_build`; o primeiro apaga, o segundo não acha e a placa diz para apagar pelo painel do Supabase.
