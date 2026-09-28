@@ -1060,6 +1060,63 @@ def checar_publicar(s, p):
             "Fechar %s; de novo: %s; resposta atrasada: versão %s" % (lento["fechar"], denovo["titulo"], tarde["versao"]))
 
 
+def checar_ultima(s, p):
+    """F13-T32 (bug nº 15): com uma pública aberta, a visualização contava como
+    build. Excluir a última build própria gravava a biblioteca vazia (a
+    visualização não vai ao disco) e, na recarga, voltava a build única do HTML
+    anterior (lol-build-v2). A pública aqui é montada por JS, sem servidor."""
+    print(chr(10) + "%sÚLTIMA BUILD%s" % (AMARELO, FIM))
+    s.limpar_memoria(); s.entrar()
+    s.js("""(() => { localStorage.setItem('lol-build-v2', JSON.stringify({ name: 'Build velha do HTML anterior', cats: [{ name: 'Caixa antiga', items: [] }] }));
+      switchTab('build'); showBuildScreen('lista');
+      abrirPublicaTemporaria(publicaResumo({ id: 'qa0015', nome: 'Pública de teste', caixas: [], marcadores: [] }));
+      showBuildScreen('lista'); biSelected = library.builds.find(b => !b.temp).id; renderBuildIndex(); return 'ok'; })()""")
+    time.sleep(0.6)
+    r = s.js("""(() => { const b = document.querySelector('#bi-detail [data-act="del"]');
+      return { proprias: library.builds.filter(x => !x.temp).length, temp: library.builds.filter(x => x.temp).length, desligado: !b || b.disabled }; })()""")
+    s.clicar('#bi-detail [data-act="del"]', 0.8)
+    depois = s.js("""(() => { const d = JSON.parse(localStorage.getItem('lol-builds-v3') || '{"builds":[]}'); return { disco: d.builds.length, proprias: library.builds.filter(x => !x.temp).length }; })()""")
+    p.conta("última build", "com uma pública aberta, a última build própria não se exclui",
+            r["temp"] == 1 and r["proprias"] == 1 and r["desligado"] and depois["proprias"] == 1,
+            "1 própria + %d visualização; Excluir %s; próprias depois: %d" % (r["temp"], "desligado" if r["desligado"] else "LIGADO", depois["proprias"]))
+    # caminho antigo: com uma build própria só, "Fechar visualização" continua fechando a pública
+    s.js("biSelected = library.builds.find(b => b.temp) ? library.builds.find(b => b.temp).id : null; renderBuildIndex(); 'ok'"); time.sleep(0.4)
+    s.clicar('#bi-detail [data-act="del"]', 0.6)
+    fechou = s.js("library.builds.filter(b => b.temp).length === 0 && library.builds.filter(b => !b.temp).length === 1")
+    p.conta("última build", "com uma build só, \"Fechar visualização\" ainda fecha a pública", fechou, "")
+    # a corrida (excluir uma enquanto outra espera o servidor) chega ao ramo "sem build própria":
+    # a build excluída não pode voltar como cópia sem id — voltava na recarga, com o pubId já apagado
+    g = s.js("""(() => { createNewBuild('P2'); const p2 = build.id; const p1 = library.builds.find(b => !b.temp && b.id !== p2).id;
+      library.builds.find(b => b.id === p1).name = 'P1'; library.builds.find(b => b.id === p1).pubId = 'qa9P1'; gravarBiblioteca();
+      abrirPublicaTemporaria(publicaResumo({ id: 'qa0016', nome: 'Outra pública', caixas: [], marcadores: [] }));
+      deleteBuild(p1); deleteBuild(p2);
+      const disco = JSON.parse(localStorage.getItem('lol-builds-v3')).builds;
+      return { nulos: library.builds.filter(b => !b.id).length, disco: disco.map(b => b.name), pub: disco.some(b => b.pubId === 'qa9P1') }; })()""")
+    p.conta("última build", "excluir a última própria não deixa cópia fantasma", g["nulos"] == 0 and g["disco"] == ["Build sem nome"] and not g["pub"],
+            "sem id na memória: %d; no disco: %s" % (g["nulos"], g["disco"]))
+    # com uma visualização ativa, o disco guarda a última build própria como a ativa
+    a_ = s.js("""(() => { const propria = build.id; abrirPublicaTemporaria(publicaResumo({ id: 'qa0017', nome: 'Mais uma', caixas: [], marcadores: [] }));
+      gravarBiblioteca(); return { propria, disco: JSON.parse(localStorage.getItem('lol-builds-v3')).activeId }; })()""")
+    p.conta("última build", "com uma visualização aberta, a ativa gravada é a sua", a_["disco"] == a_["propria"],
+            "activeId no disco: %s" % a_["disco"])
+    # o Excluir da forja numa visualização fecha, sem a pergunta de excluir
+    s.js("switchTab('build'); showBuildScreen('forja'); 'ok'"); time.sleep(0.5)
+    nd = len(s.dialogos)
+    alvo = s.js("build.temp ? build.id : null")
+    s.clicar("#del-build", 0.6)
+    fx = s.js("({ ficou: library.builds.some(b => b.id === %s), ativa_temp: !!build.temp })" % json.dumps(alvo))
+    p.conta("última build", "o Excluir da forja numa visualização fecha, sem perguntar", alvo and not fx["ficou"] and not fx["ativa_temp"] and len(s.dialogos) == nd,
+            "%s %s; perguntas: %d" % (alvo, "ficou" if fx["ficou"] else "fechou", len(s.dialogos) - nd))
+    # a recarga com a biblioteca gravada vazia não ressuscita o formato antigo
+    s.js("localStorage.setItem('lol-builds-v3', JSON.stringify({ builds: [], activeId: null })); 'ok'")
+    s.abrir(); time.sleep(0.8)
+    velha = s.js("library.builds.map(b => b.name)")
+    p.conta("última build", "biblioteca vazia na recarga não traz a build do formato antigo", "Build velha do HTML anterior" not in velha and len(velha) == 1,
+            "builds: %s" % velha)
+    s.js("localStorage.removeItem('lol-build-v2'); 'ok'")
+    s.entrar()
+
+
 def checar_exclusao(s, p):
     """F13-T14: excluir uma build publicada prometia "ela também sai do site" e,
     se o servidor falhasse, apagava daqui calada — a publicação ficava no ar e o
@@ -1497,6 +1554,7 @@ GRUPOS = [
     ("salvar", checar_salvar),
     ("publicar", checar_publicar),
     ("exclusão", checar_exclusao),
+    ("última build", checar_ultima),
     ("rascunho", checar_rascunho),
     ("troca", checar_troca),
     ("acessibilidade", checar_acessibilidade),

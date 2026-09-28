@@ -5906,6 +5906,11 @@ function saveBuild() {
 function gravarBuild() {
   rascunho.sujo = false;
   refletirSalvar();
+  // F13-T32: sem id, a build ativa acabou de ser excluída (deleteBuild zera o id
+  // antes de criar a nova) — não há o que espelhar. Antes o snapshot dela entrava
+  // de novo na biblioteca com id null e voltava na recarga, com o pubId de uma
+  // publicação que já tinha saído do site.
+  if (!build.id) return gravarBiblioteca();
   try {
     // Espelha o estado atual dentro da biblioteca antes de gravar.
     const i = library.builds.findIndex(b => b.id === build.id);
@@ -5948,7 +5953,7 @@ function gravarBiblioteca() {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify({
       builds: library.builds.filter(b => !b.temp),   // visualizações de builds públicas morrem com a página
-      activeId: build.id,
+      activeId: build.temp ? (library.ultimaPropria || null) : build.id,   // F13-T32: a visualização não vai ao disco
       defaultSpan: build.defaultSpan,
     }));
     bibliotecaNaoGravada = false;
@@ -6101,6 +6106,10 @@ function loadBuild() {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) {
       const d = JSON.parse(raw);
+      // F13-T32 (bug nº 15): a biblioteca nova existe, mesmo vazia — a migração do
+      // formato antigo NÃO roda. Antes, uma biblioteca gravada vazia fazia voltar,
+      // na recarga, a build única do HTML anterior (lol-build-v2), de anos atrás.
+      if (d && Array.isArray(d.builds) && !d.builds.length) { if (SPANS.includes(d.defaultSpan)) build.defaultSpan = d.defaultSpan; return; }
       if (d && Array.isArray(d.builds) && d.builds.length) {
         if (SPANS.includes(d.defaultSpan)) build.defaultSpan = d.defaultSpan;
         library.builds = d.builds.map(b => {
@@ -6191,6 +6200,7 @@ function activateBuild(id, skipSave) {
   build.layout = layoutValido(b.layout);
   build.selectedCatId = null;
   library.activeId = b.id;
+  if (!b.temp) library.ultimaPropria = b.id;
   if (!skipSave) { gravarBuild(); renderBuildAll(); }
 }
 
@@ -6218,7 +6228,7 @@ function createNewBuild(name, cats, mode, champion, markers) {
   gravarBuild();
   const b = {
     id: newBuildId(),
-    name: name || `Build ${library.builds.length + 1}`,
+    name: name || `Build ${buildsProprias().length + 1}`,
     seq: (cats ? cats.length : 0) + 1,
     mode: mode || "",
     champion: champion || null,
@@ -6242,20 +6252,27 @@ function createNewBuild(name, cats, mode, champion, markers) {
   return b;
 }
 
+// As builds da pessoa: sem as visualizações de públicas (temp), que não vão ao
+// disco e morrem com a página. É isso que conta para "a última build" (F13-T32).
+function buildsProprias() { return library.builds.filter(b => !b.temp); }
+
 // Só a biblioteca deste navegador. Tirar do site é com excluirBuild, que pede
 // ao servidor ANTES e só apaga aqui quando ele confirma (ou a pessoa decide).
 function deleteBuild(id) {
   const eraAtiva = id === build.id;
   if (eraAtiva) rascunho.sujo = false;
   library.builds = library.builds.filter(b => b.id !== id);
-  if (!library.builds.length) {
+  // F13-T32 (bug nº 15): com uma pública aberta, a visualização contava como
+  // build — excluir a última própria gravava a biblioteca vazia (a visualização
+  // não vai ao disco). Sem build própria, nasce uma nova, como sem nenhuma.
+  if (!buildsProprias().length) {
     build.id = null;
     createNewBuild("Build sem nome");
     return;
   }
   // F13-T25: excluir OUTRA build (lista, lote, fechar visualização) gravava
   // junto o rascunho da que está aberta.
-  if (eraAtiva) { activateBuild(library.builds[0].id, true); gravarBuild(); } else gravarBiblioteca();
+  if (eraAtiva) { activateBuild((buildsProprias()[0] || library.builds[0]).id, true); gravarBuild(); } else gravarBiblioteca();
   renderBuildAll();
 }
 
@@ -9584,7 +9601,7 @@ function renderBuildDetail() {
            para completar. Desabilitado só quando não há servidor para publicar. -->
       <button type="button" class="btn" data-act="publish"${!Servidor.ativo() ? " disabled" : ""} title="${!Servidor.ativo() ? "Sem servidor configurado (data/servidor.js)" : falta.length ? "Falta: " + esc(falta.join(", ")) + " — clique para completar aqui mesmo" : (d.pubId ? "Envia esta versão para o site (versão " + (d.pubVersao + 1) + ")" : "Publica esta build no site")}"><i class="ico ico-send" aria-hidden="true"></i>${falta.length ? "Completar e publicar" : d.pubId ? "Atualizar publicação" : "Publicar"}</button>
       ${d.pubId ? `<button type="button" class="btn ghost" data-act="unpub" title="Tira do site e mantém a build aqui">Despublicar</button>` : ""}
-      <button type="button" class="btn ghost" data-act="del"${library.builds.length <= 1 ? " disabled" : ""} title="${d.pubId ? "Apaga a build daqui e do site" : "Apaga a build da biblioteca"}">Excluir</button>`,
+      <button type="button" class="btn ghost" data-act="del"${buildsProprias().length <= 1 ? " disabled" : ""} title="${d.pubId ? "Apaga a build daqui e do site" : "Apaga a build da biblioteca"}">Excluir</button>`,
     nota: `
       <p class="bd-pub-note">${falta.length ? `Para publicar ainda falta: <b>${esc(falta.join(", "))}</b>.` : !Servidor.ativo() ? "Pronta para publicar — falta configurar o servidor." : d.pubId ? (d.updatedAt > d.pubEm ? `Há alterações depois da última publicação (versão ${d.pubVersao}).` : `Publicada na versão ${d.pubVersao}.`) : "Pronta para publicar."}</p>
       <p id="bd-link-msg" class="bd-pub-note" hidden></p>
@@ -9662,7 +9679,7 @@ function renderLibrary() {
       `<div class="champ-row${d.isActive ? " ativo" : ""}" data-id="${d.id}" role="option" aria-selected="${d.isActive}">${champIconHtml(d.champ, "")}<span>${esc(d.name)}</span><span class="bs-meta">${d.n} ${d.n === 1 ? "item" : "itens"}${d.mode ? " · " + esc(d.mode) : ""}</span></div>`).join("");
   }
   const del = document.getElementById("del-build");
-  if (del) del.disabled = library.builds.length <= 1;
+  if (del) del.disabled = !build.temp && buildsProprias().length <= 1;
   if (buildScreen === "lista") renderBuildIndex();
 }
 
@@ -9751,8 +9768,8 @@ function initBuildIndex() {
       });
     }
     if (act.dataset.act === "del") {
-      if (library.builds.length <= 1) return;
-      if (b.temp) { deleteBuild(b.id); biSelected = null; renderBuildIndex(); return; }
+      if (b.temp) { deleteBuild(b.id); biSelected = null; renderBuildIndex(); return; }   // fechar visualização: sempre
+      if (buildsProprias().length <= 1) return;
       if (window.confirm(`Excluir a build "${buildResumo(b).name}"?${buildResumo(b).pubId ? " Ela também sai do site." : ""} Isso não dá pra desfazer.`)) {
         excluirBuild(b.id).then(saiu => { if (saiu) { biSelected = null; } renderBuildIndex(); });
       }
@@ -9791,7 +9808,7 @@ function initBuildIndex() {
   document.getElementById("bl-excluir").addEventListener("click", () => {
     const ids = idsDaListaVisivel().filter(id => biLote.has(id) && !String(id).startsWith("pub:"));
     if (!ids.length) { loteMsg("Só dá para excluir builds suas."); return; }
-    const restantes = library.builds.length - ids.length;
+    const restantes = buildsProprias().filter(b => !ids.includes(b.id)).length;
     if (restantes < 1) { loteMsg("Guarde pelo menos uma build."); return; }
     const nomes = ids.map(id => (resumoPorId(id) || {}).name).filter(Boolean);
     if (!window.confirm(`Excluir ${ids.length} build(s)?\n\n${nomes.join("\n")}\n\nAs publicadas também saem do site. Isso não dá pra desfazer.`)) return;
@@ -9809,7 +9826,7 @@ function initBuildIndex() {
         }
         deleteBuild(id); saiu++;
       }
-      biLote.clear();
+      if (biLote) biLote.clear();   // F13-T32: sair do Selecionar durante a espera deixava biLote null e o fim do lote quebrava
       biSelected = null;
       renderBuildIndex();
       loteMsg(`${saiu} build(s) excluída(s).` + (ficaram.length ? ` ${ficaram.length} ${ficaram.length === 1 ? "ficou" : "ficaram"} na biblioteca porque não ${ficaram.length === 1 ? "saiu" : "saíram"} do site.` : ""));
@@ -9933,7 +9950,8 @@ function initLibrary() {
   document.getElementById("dup-build").addEventListener("click", () => confirmarSaida(() => duplicateBuild(build.id)));
 
   document.getElementById("del-build").addEventListener("click", () => {
-    if (library.builds.length <= 1) return;
+    if (build.temp) { deleteBuild(build.id); return; }   // visualização: fecha, como na lista
+    if (buildsProprias().length <= 1) return;
     if (window.confirm(`Excluir a build "${build.name}"?${build.pubId ? " Ela também sai do site." : ""} Isso não dá pra desfazer.`)) {
       excluirBuild(build.id);
     }

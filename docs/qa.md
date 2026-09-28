@@ -92,6 +92,13 @@ descarta de verdade; o coração recusado avisa; a publicação que passou sem
 gravar aqui pede para anotar o ID; com a gravação de volta, o aviso some
 sozinho e o Salvar salva.
 
+**Última build** (F13-T32, bug nº 15) — com uma pública aberta, a última build
+própria não se exclui (o Excluir desligado) e o "Fechar visualização" ainda
+fecha; a exclusão da última própria não deixa cópia fantasma; com uma
+visualização aberta, a ativa gravada é a sua; o Excluir da forja numa
+visualização fecha sem perguntar; a biblioteca gravada vazia não traz de volta a
+build do formato antigo.
+
 **Publicar** (F13-T30, bugs nºs 11, 12 e 26; servidor simulado) — o hidden
 esconde sempre (Descartar sem rascunho, ⟳ em Minhas); o "+ Nova categoria" não
 anda quando o rascunho aparece; durante "Publicando…" não há Fechar e o Enter
