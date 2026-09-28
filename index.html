@@ -5808,7 +5808,7 @@ function newBuildId() {
 }
 
 function snapshotActive() {
-  return { id: build.id, name: build.name, cats: comNomes(build.cats), patch: build.patch || CATALOG.meta.patch, revisao: build.revisao || null, temp: !!build.temp, pubOrigem: build.pubOrigem || null, layout: layoutValido(build.layout), seq: build.seq, mode: build.mode, masterwork: !!build.masterwork, champion: build.champion || null, markers: normMarkers(build.markers), desc: build.desc || "", runas: normRunas(build.runas), habilidades: normHabilidades(build.habilidades), fav: !!build.fav, updatedAt: build.updatedAt || 0, pubId: build.pubId || null, pubVersao: build.pubVersao || 0, pubEm: build.pubEm || 0, pubPatch: build.pubPatch || "" };
+  return { id: build.id, name: build.name, cats: comNomes(build.cats), patch: build.patch || CATALOG.meta.patch, revisao: build.revisao || null, temp: !!build.temp, pubOrigem: build.pubOrigem || null, layout: layoutValido(build.layout), seq: build.seq, mode: build.mode, masterwork: !!build.masterwork, champion: build.champion || null, markers: normMarkers(build.markers), desc: build.desc || "", runas: normRunas(build.runas), habilidades: normHabilidades(build.habilidades), fav: !!build.fav, updatedAt: build.updatedAt || 0, pubId: build.pubId || null, pubVersao: build.pubVersao || 0, pubEm: build.pubEm || 0, pubPatch: build.pubPatch || "", pubAssinatura: build.pubAssinatura || "" };
 }
 
 // Em modo Editar as alterações ficam em rascunho (Leo, 14/09/2026): saveBuild() só
@@ -5903,6 +5903,43 @@ function saveBuild() {
   if (build.editing) { rascunho.sujo = true; refletirSalvar(); return; }
   gravarBuild();
 }
+// F13-T33 (bugs nºs 13 e 41): o que é a build, para a "Última atualização". A
+// comparação era JSON.stringify da cópia da biblioteca contra o snapshot, com as
+// chaves em ordens diferentes (a da loadBuild e a da snapshotActive) e as runas
+// normalizadas só de um lado — a primeira gravação depois de recarregar nunca
+// batia, e só abrir outra build carimbava "agora" nas duas; a publicada passava
+// a dizer "Há alterações depois da última publicação". Aqui: só o conteúdo (sem
+// os campos da publicação, o favorito, a revisão do catálogo e o contador de
+// caixas), os dois lados normalizados e as chaves em ordem.
+function assinaturaDaBuild(b) {
+  const ordena = (v) => Array.isArray(v) ? v.map(ordena)
+    : (v && typeof v === "object") ? Object.keys(v).sort().reduce((o, k) => { o[k] = ordena(v[k]); return o; }, {}) : v;
+  return JSON.stringify(ordena({
+    name: b.name || "", desc: b.desc || "", mode: b.mode || "", masterwork: !!b.masterwork,
+    champion: b.champion && b.champion.key ? String(b.champion.key) : null,
+    markers: normMarkers(b.markers), runas: normRunas(b.runas), habilidades: normHabilidades(b.habilidades),
+    layout: layoutValido(b.layout), cats: comNomes(b.cats || []),
+  }));
+}
+// F13-T33: a nota "Há alterações depois da última publicação" comparava a
+// "Última atualização" com a hora da publicação — e o Mestre Forjador (que nem
+// vai ao site), um clique no canto da caixa ou um Salvar durante uma publicação
+// lenta a enganavam. Agora compara o que seria publicado hoje com a assinatura
+// do que foi enviado (os mesmos campos que o publicarBuild manda). Publicações
+// de antes, sem assinatura guardada, continuam pelas datas.
+function assinaturaPublicada(d) {
+  const ordena = (v) => Array.isArray(v) ? v.map(ordena)
+    : (v && typeof v === "object") ? Object.keys(v).sort().reduce((o, k) => { o[k] = ordena(v[k]); return o; }, {}) : v;
+  return JSON.stringify(ordena({
+    nome: d.name || "", descricao: d.desc || "", modo: d.mode || "",
+    campeao: d.champ && d.champ.key ? String(d.champ.key) : null, marcadores: normMarkers(d.markers),
+    caixas: caixasParaServidor(d.cats || []), layout: layoutValido(d.layout),
+    runas: normRunas(d.runas), habilidades: normHabilidades(d.habilidades),
+  }));
+}
+function temAlteracaoPublicada(d) {
+  return d.pubAssinatura ? assinaturaPublicada(d) !== d.pubAssinatura : d.updatedAt > d.pubEm;
+}
 function gravarBuild() {
   rascunho.sujo = false;
   refletirSalvar();
@@ -5916,9 +5953,8 @@ function gravarBuild() {
     const i = library.builds.findIndex(b => b.id === build.id);
     const snap = snapshotActive();
     // "Última atualização" só muda quando a build mudou de verdade (não ao só trocar de build).
-    const semData = (b) => JSON.stringify({ ...b, updatedAt: 0 });
     if (i >= 0) {
-      if (semData(library.builds[i]) !== semData(snap)) snap.updatedAt = Date.now();
+      if (assinaturaDaBuild(library.builds[i]) !== assinaturaDaBuild(snap)) snap.updatedAt = Date.now();
       else snap.updatedAt = library.builds[i].updatedAt || snap.updatedAt;
       build.updatedAt = snap.updatedAt;
       library.builds[i] = snap;
@@ -6135,7 +6171,7 @@ function loadBuild() {
           habilidades: b.habilidades || null,
           fav: !!b.fav,
           updatedAt: Number(b.updatedAt) || 0,
-          pubId: b.pubId || null, pubVersao: Number(b.pubVersao) || 0, pubEm: Number(b.pubEm) || 0, pubPatch: b.pubPatch || "",
+          pubId: b.pubId || null, pubVersao: Number(b.pubVersao) || 0, pubEm: Number(b.pubEm) || 0, pubPatch: b.pubPatch || "", pubAssinatura: b.pubAssinatura || "",
           patch: revisao ? CATALOG.meta.patch : patchGravado,   // a partir daqui a build vive no catálogo atual; a revisão fica registrada
           revisao,
           layout: layoutValido(b.layout),
@@ -6158,6 +6194,7 @@ function loadBuild() {
           name: d.name || "Build sem nome",
           seq: d.seq || d.cats.length + 1,
           cats: normalizeCats(d.cats),
+          updatedAt: Date.now(),   // F13-T33: a migração é quando ela entra na biblioteca
         }];
         library.activeId = library.builds[0].id;
         activateBuild(library.activeId, true);
@@ -6192,7 +6229,7 @@ function activateBuild(id, skipSave) {
   build.habilidades = normHabilidades(b.habilidades);
   build.fav = !!b.fav;
   build.updatedAt = Number(b.updatedAt) || 0;
-  build.pubId = b.pubId || null; build.pubVersao = Number(b.pubVersao) || 0; build.pubEm = Number(b.pubEm) || 0; build.pubPatch = b.pubPatch || "";
+  build.pubId = b.pubId || null; build.pubVersao = Number(b.pubVersao) || 0; build.pubEm = Number(b.pubEm) || 0; build.pubPatch = b.pubPatch || ""; build.pubAssinatura = b.pubAssinatura || "";
   build.patch = b.patch || CATALOG.meta.patch;
   build.revisao = b.revisao || null;
   build.temp = !!b.temp;
@@ -6799,6 +6836,7 @@ async function publicarBuild(id) {
   if (!Servidor.ativo()) { mostrarPub("Sem servidor", "A página não tem a URL e a chave do servidor (data/servidor.js).", "erro"); return; }
   publicando.add(id);
   try {
+    const enviada = assinaturaPublicada(d);   // do que sai agora — um Salvar durante a espera fica de fora
     mostrarPub("Publicando a build", "Aguarde", null,
       "O servidor está demorando. Pode fechar esta placa: o pedido continua e, quando a resposta chegar, ela volta com o resultado.");
     const params = {
@@ -6833,7 +6871,7 @@ async function publicarBuild(id) {
     // F13-T25: só os campos da publicação, sem o rascunho da build aberta. A
     // cópia é procurada de novo: durante a espera ela pode ter sido regravada.
     const guardou = gravarMetadados(library.builds.find(x => x.id === id) || b,
-      { pubId: r.id, pubVersao: r.versao, pubEm: Date.now(), pubPatch: CATALOG.meta.patch, patch: CATALOG.meta.patch, revisao: null });
+      { pubId: r.id, pubVersao: r.versao, pubEm: Date.now(), pubPatch: CATALOG.meta.patch, patch: CATALOG.meta.patch, revisao: null, pubAssinatura: enviada });
     Som.play("build:save");
     mostrarPub("Build publicada com sucesso", `ID da build: <b class="pub-id">${esc(r.id)}</b> · versão <b>${r.versao}</b>`
       + (guardou ? "" : `<span class="pub-demora">Mas o navegador recusou a gravação aqui: o ID não ficou guardado nesta biblioteca — anote <b class="pub-id">${esc(r.id)}</b>.</span>`), "sucesso");
@@ -6857,7 +6895,7 @@ async function despublicarBuild(id) {
   try {
     const ok = await Servidor.rpc("apagar_build", { p_id: pubId, p_segredo: Servidor.segredo() });
     if (!ok) throw new Error("O servidor não encontrou a publicação, ou ela foi feita em outro navegador (o segredo não confere). Nesse caso, apague pelo painel do Supabase.");
-    gravarMetadados(library.builds.find(x => x.id === id) || b, { pubId: null, pubVersao: 0, pubEm: 0, pubPatch: "" });
+    gravarMetadados(library.builds.find(x => x.id === id) || b, { pubId: null, pubVersao: 0, pubEm: 0, pubPatch: "", pubAssinatura: "" });
     publicas.lista = publicas.lista.filter(x => x.id !== pubId); publicas.favs = publicas.favs.filter(x => x.id !== pubId);
     esquecerFavoritos([pubId]); publicas.naoExistem.add(pubId);
     mostrarPub("Build retirada do site", `A publicação <b class="pub-id">${esc(pubId)}</b> foi apagada. A build continua aqui, na sua biblioteca.`, "sucesso");
@@ -9126,6 +9164,7 @@ function buildResumo(b) {
     pubVersao: (isActive ? build.pubVersao : b.pubVersao) || 0,
     pubEm: (isActive ? build.pubEm : b.pubEm) || 0,
     pubPatch: (isActive ? build.pubPatch : b.pubPatch) || "",
+    pubAssinatura: (isActive ? build.pubAssinatura : b.pubAssinatura) || "",
     revisao: (isActive ? build.revisao : b.revisao) || null,
     temp: !!(isActive ? build.temp : b.temp),
     pubOrigem: (isActive ? build.pubOrigem : b.pubOrigem) || null,
@@ -9603,7 +9642,7 @@ function renderBuildDetail() {
       ${d.pubId ? `<button type="button" class="btn ghost" data-act="unpub" title="Tira do site e mantém a build aqui">Despublicar</button>` : ""}
       <button type="button" class="btn ghost" data-act="del"${buildsProprias().length <= 1 ? " disabled" : ""} title="${d.pubId ? "Apaga a build daqui e do site" : "Apaga a build da biblioteca"}">Excluir</button>`,
     nota: `
-      <p class="bd-pub-note">${falta.length ? `Para publicar ainda falta: <b>${esc(falta.join(", "))}</b>.` : !Servidor.ativo() ? "Pronta para publicar — falta configurar o servidor." : d.pubId ? (d.updatedAt > d.pubEm ? `Há alterações depois da última publicação (versão ${d.pubVersao}).` : `Publicada na versão ${d.pubVersao}.`) : "Pronta para publicar."}</p>
+      <p class="bd-pub-note">${falta.length ? `Para publicar ainda falta: <b>${esc(falta.join(", "))}</b>.` : !Servidor.ativo() ? "Pronta para publicar — falta configurar o servidor." : d.pubId ? (temAlteracaoPublicada(d) ? `Há alterações depois da última publicação (versão ${d.pubVersao}).` : `Publicada na versão ${d.pubVersao}.`) : "Pronta para publicar."}</p>
       <p id="bd-link-msg" class="bd-pub-note" hidden></p>
       <input id="bd-link" class="bd-link" type="text" readonly hidden aria-label="Link da build">`,
   });
@@ -10082,6 +10121,7 @@ function initBuildBuilder() {
   // Sempre existe uma build ativa para editar, mesmo no primeiro acesso.
   if (!build.id) {
     build.id = newBuildId();
+    build.updatedAt = Date.now();   // F13-T33: nasce agora (a comparação nova não a carimba mais ao só abrir)
     library.builds.push(snapshotActive());
     library.activeId = build.id;
   }

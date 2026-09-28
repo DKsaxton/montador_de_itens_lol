@@ -92,6 +92,12 @@ descarta de verdade; o coração recusado avisa; a publicação que passou sem
 gravar aqui pede para anotar o ID; com a gravação de volta, o aviso some
 sozinho e o Salvar salva.
 
+**Atualização** (F13-T33, bugs nºs 13 e 41) — abrir outra build depois de
+recarregar não muda a "Última atualização" (e a publicada continua "Publicada");
+uma mudança de verdade ainda carimba; o Mestre Forjador não acende a nota da
+publicação; um Salvar durante uma publicação lenta acende; a build migrada do
+formato antigo tem data.
+
 **Última build** (F13-T32, bug nº 15) — com uma pública aberta, a última build
 própria não se exclui (o Excluir desligado) e o "Fechar visualização" ainda
 fecha; a exclusão da última própria não deixa cópia fantasma; com uma

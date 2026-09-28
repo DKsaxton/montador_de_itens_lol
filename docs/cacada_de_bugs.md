@@ -127,6 +127,8 @@ Status de cada um:
 
 ### 13. "Última atualização" pula para agora só de trocar de build depois de recarregar a página
 
+**CONSERTADO na F13-T33 (27/09/2026)**, junto com o nº 41. A comparação de "a build mudou?" do `gravarBuild` virou uma assinatura só do conteúdo (`assinaturaDaBuild`: nome, descrição, modo, Mestre Forjador, campeão, marcadores, runas, habilidades, layout e as caixas, com as chaves em ordem e os dois lados normalizados; fora os campos da publicação, o favorito e a revisão do catálogo). Abrir outra build, antes ou depois de recarregar, não carimba mais a data. A revisão adversarial passou por mais de 60 gestos: toda mudança de conteúdo carimba, nada que não seja conteúdo carimba, e disco com formato antigo também não. E achou a outra metade do nº 41: a nota "Há alterações depois da última publicação" comparava datas, e o Mestre Forjador (que nem vai ao site), um clique no canto da caixa ou um Salvar durante uma publicação lenta a enganavam. Agora a publicação guarda a assinatura do que foi enviado (`pubAssinatura`) e a nota compara o que seria publicado hoje; publicações de antes, sem assinatura, seguem pelas datas. A build migrada do formato antigo e a do primeiro acesso nascem com data (antes só ganhavam uma pelo próprio bug). Grupo "atualização" no roteiro (5 checagens), cada uma vista falhando numa versão de antes.
+
 `index.html:5748` · media · achado por: Estado da build, Persistencia no navegador · **passou pelos céticos**
 
 **Como quebra:** 1) Publique a build A — o resumo dela na lista diz "Publicada na versão 1"; 2) recarregue a página (F5); 3) na forja, abra o seletor de nome no topo e escolha a build B, sem mexer em nada; 4) volte para a lista e selecione a A. "Última atualização" agora é a hora de agora e a nota virou "Há alterações depois da última publicação (versão 1)", convidando a republicar uma build que ninguém tocou. O que acontece: trocar de build chama gravarBuild() para a A, e a comparação é feita com JSON.stringify de dois objetos montados em ordens de chave diferentes — o de loadBuild (linhas 5857-5874: id, name, seq, mode, ..., patch, revisao, layout, cats) contra o de snapshotActive (linha 5647: id, name, cats, patch, revisao, temp, pubOrigem, layout, seq, ...), que ainda tem `temp` e `pubOrigem` a mais e normaliza `runas`, gravado cru na linha 5867. As strings nunca batem, o `if` sempre dá "mudou" e carimba Date.now(). Da segunda gravação em diante as duas pontas já são snapshots e a comparação volta a funcionar — o código só acerta por acidente, e o comentário logo acima promete justamente o contrário ("não ao só trocar de build").
@@ -365,7 +367,7 @@ Da revisão da F13-T25: na lista, "Continuar editando" deixa a pessoa na lista �
 
 ### 41. A "Última atualização" muda ao só abrir uma build, e a publicada passa a dizer que tem alterações
 
-**DUPLICADO do nº 13** (triagem de 27/09/2026): a mesma comparação de `gravarBuild` com as chaves em ordens diferentes; o conserto do nº 13 fecha este (conferido com a comparação trocada dentro da página).
+**CONSERTADO na F13-T33 (27/09/2026)**, com o nº 13 — e a nota da publicação passou a comparar o conteúdo publicado, não datas. **DUPLICADO do nº 13** (triagem de 27/09/2026): a mesma comparação de `gravarBuild` com as chaves em ordens diferentes; o conserto do nº 13 fecha este (conferido com a comparação trocada dentro da página).
 
 `index.html` (`gravarBuild`, `snapshotActive`, `loadBuild`) · **média** · achado na F13-T24 · passou pela varredura, não reproduzido
 
@@ -436,3 +438,15 @@ A janela mostra só o que falta, e redesenha a cada tecla: o nome deixa de "falt
 `index.html` (`#bl-excluir`) · **baixa** (texto) · achado na revisão da F13-T32 · passou pela revisão, não reproduzido à parte
 
 Marcar a visualização de uma pública no Selecionar e Excluir pergunta "Excluir 1 build(s)? … As publicadas também saem do site. Isso não dá pra desfazer." e depois diz "1 build(s) excluída(s)" — a visualização só fecha, e a pública de outra pessoa não sai de lugar nenhum.
+
+### 52. Clicar no canto da caixa sem arrastar grava colunas e linhas diferentes
+
+`index.html` (`initCategoryResize`, mouseup) · **baixa** · achado na revisão da F13-T33 · passou pela revisão, não reproduzido à parte
+
+O mouseup compara a grade vista com o `cols`/`rows` guardados, e não com a grade de quando o mouse desceu: numa caixa "Escolha 1" ou com mais itens do que a linha guardada, um clique parado no canto grava a grade vista, suja o rascunho e o Salvar carimba a data — sem nada mudar na tela. (A nota da publicação não se engana mais: ela compara o que seria publicado, e a publicação manda a grade efetiva.)
+
+### 53. Na janela "Falta pouco para publicar", escolher de novo o mesmo marcador carimba a data
+
+`index.html` (`donoDoPopup`, `gravarNaBuild` → `gravarMetadados(…, true)`) · **baixa** · achado na revisão da F13-T33 · passou pela revisão, não reproduzido à parte
+
+A janela grava com "conteúdo mudou" a cada escolha (e a cada tecla no nome e na descrição) sem comparar — a forja, depois da F13-T33, só carimba quando a build muda de fato.

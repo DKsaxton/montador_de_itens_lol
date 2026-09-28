@@ -1060,6 +1060,79 @@ def checar_publicar(s, p):
             "Fechar %s; de novo: %s; resposta atrasada: versão %s" % (lento["fechar"], denovo["titulo"], tarde["versao"]))
 
 
+def checar_atualizacao(s, p):
+    """F13-T33 (bugs nºs 13 e 41): depois de recarregar a página, só abrir outra
+    build carimbava "agora" na "Última atualização" das duas, e a publicada
+    passava a dizer "Há alterações depois da última publicação". A publicação
+    aqui é montada por JS (os campos dela), sem servidor."""
+    print(chr(10) + "%sATUALIZAÇÃO%s" % (AMARELO, FIM))
+    s.limpar_memoria(); s.entrar()
+    ids = s.js("""(() => { switchTab('build'); showBuildScreen('lista');
+      createNewBuild('Publicada A'); build.cats[3].items = [{ itemId: 'long-sword', note: '' }]; build.desc = 'descrição';
+      build.markers = normMarkers(MARCADORES.slice(0, 3).map(m => ({ t: 'tag', id: m.id }))); gravarBuild();
+      const a = build.id;
+      gravarMetadados(library.builds.find(b => b.id === a), { pubId: 'qa0033', pubVersao: 1, pubEm: Date.now() + 5, pubPatch: CATALOG.meta.patch });
+      createNewBuild('B'); return { a, b: build.id }; })()""")
+    time.sleep(0.3)
+    s.abrir(); time.sleep(0.8); s.entrar()
+    disco = lambda: s.js("""(() => { const d = JSON.parse(localStorage.getItem('lol-builds-v3')).builds; const f = (id) => (d.find(x => x.id === id) || {}).updatedAt;
+      return { a: f(%s), b: f(%s) }; })()""" % (json.dumps(ids["a"]), json.dumps(ids["b"])))
+    antes = disco()
+    s.js("switchTab('build'); showBuildScreen('lista'); 'ok'"); time.sleep(3.0)
+    alvo = ids["b"] if s.js("build.id") == ids["a"] else ids["a"]
+    c = s.caixa('.bi-row[data-id="%s"]' % alvo)
+    for n in (1, 2):
+        for tipo in ("mousePressed", "mouseReleased"):
+            s.envia("Input.dispatchMouseEvent", {"type": tipo, "x": c[0], "y": c[1], "button": "left", "clickCount": n})
+    time.sleep(1.0)
+    depois = disco()
+    s.js("showBuildScreen('lista'); biSelected = %s; renderBuildIndex(); 'ok'" % json.dumps(ids["a"])); time.sleep(0.5)
+    nota = s.js("(document.querySelector('#bi-detail .bd-pub-note') || {}).textContent || ''")
+    p.conta("atualização", "abrir outra build não muda a \"Última atualização\"", antes == depois and "Publicada na versão 1" in nota,
+            "A %s → %s, B %s → %s; nota: %s" % (antes["a"], depois["a"], antes["b"], depois["b"], nota[:45]))
+    # caminho antigo: uma mudança de verdade ainda carimba a data e acende a nota
+    s.js("""(() => { activateBuild(%s, true); build.cats[3].items.push({ itemId: 'long-sword', note: 'nova' }); gravarBuild();
+      showBuildScreen('lista'); biSelected = build.id; renderBuildIndex(); return 'ok'; })()""" % json.dumps(ids["a"]))
+    time.sleep(0.5)
+    mudou = disco()
+    nota2 = s.js("(document.querySelector('#bi-detail .bd-pub-note') || {}).textContent || ''")
+    p.conta("atualização", "uma mudança de verdade ainda carimba a data", mudou["a"] > depois["a"] and "Há alterações" in nota2,
+            "A %s → %s; nota: %s" % (depois["a"], mudou["a"], nota2[:50]))
+    # a nota compara o que foi publicado (servidor SIMULADO): o Mestre Forjador, que não vai ao site, não a acende;
+    # um Salvar durante uma publicação lenta, sim (a assinatura é do que foi ENVIADO)
+    s.js("""(() => { window.__fetchOrig = window.fetch; window.__soltar = null; window.__lento = false;
+      window.fetch = function (u, ...a) { const t = String(u);
+        if (t.includes('publicar_build')) { const resp = () => new Response(JSON.stringify({ id: 'qa0033', versao: 2 }), { status: 200, headers: { 'Content-Type': 'application/json' } });
+          return window.__lento ? new Promise(res => { window.__soltar = () => res(resp()); }) : Promise.resolve(resp()); }
+        if (t.includes('/rpc/') || t.includes('/rest/')) return Promise.resolve(new Response('[]', { status: 200, headers: { 'Content-Type': 'application/json' } }));
+        return window.__fetchOrig.call(this, u, ...a); };
+      if (build.editing) document.getElementById('edit-switch').click();
+      showBuildScreen('lista'); biSelected = build.id; renderBuildIndex(); return 'ok'; })()""")
+    time.sleep(0.5)
+    nota_do = lambda: s.js("(() => { showBuildScreen('lista'); biSelected = %s; renderBuildIndex(); return (document.querySelector('#bi-detail .bd-pub-note') || {}).textContent || ''; })()" % json.dumps(ids["a"]))
+    s.clicar('#bi-detail [data-act="publish"]', 0.8); s.js("fecharPub(); 'ok'")
+    publicada = nota_do()
+    s.js("showBuildScreen('forja'); 'ok'"); time.sleep(0.5)
+    s.clicar("#mf-switch", 0.5)
+    mf = s.js("build.masterwork")
+    depois_mf = nota_do()
+    p.conta("atualização", "o Mestre Forjador não acende a nota da publicação", "Publicada na versão 2" in publicada and mf and "Publicada na versão 2" in depois_mf,
+            "logo depois: %s · Mestre Forjador %s: %s" % (publicada[:26], "ligado" if mf else "?", depois_mf[:40]))
+    s.js("""(() => { window.__lento = true; window.__stOrig = window.setTimeout;
+      window.setTimeout = (f, ms, ...a) => window.__stOrig(f, ms === 30000 ? 300 : ms, ...a); return 'ok'; })()""")
+    s.clicar('#bi-detail [data-act="publish"]', 1.0); s.js("fecharPub(); 'ok'")
+    s.js("""(() => { build.cats[3].items.push({ itemId: 'long-sword', note: 'durante a espera' }); gravarBuild(); window.__soltar && window.__soltar(); return 'ok'; })()""")
+    time.sleep(0.8); s.js("fecharPub(); window.setTimeout = window.__stOrig; window.fetch = window.__fetchOrig; 'ok'")
+    lenta = nota_do()
+    p.conta("atualização", "um Salvar durante a publicação lenta acende a nota", "Há alterações" in lenta, lenta[:60])
+    # a build migrada do formato antigo nasce com data
+    s.js("localStorage.clear(); localStorage.setItem('lol-build-v2', JSON.stringify({ name: 'Antiga', cats: [{ name: 'Caixa antiga', items: [] }] })); 'ok'")
+    s.abrir(); time.sleep(0.8)
+    mig = s.js("({ n: library.builds.length, u: (library.builds[0] || {}).updatedAt || 0 })")
+    s.js("localStorage.removeItem('lol-build-v2'); 'ok'"); s.entrar()
+    p.conta("atualização", "a build migrada do formato antigo tem data", mig["n"] == 1 and mig["u"] > 0, "updatedAt %s" % mig["u"])
+
+
 def checar_ultima(s, p):
     """F13-T32 (bug nº 15): com uma pública aberta, a visualização contava como
     build. Excluir a última build própria gravava a biblioteca vazia (a
@@ -1555,6 +1628,7 @@ GRUPOS = [
     ("publicar", checar_publicar),
     ("exclusão", checar_exclusao),
     ("última build", checar_ultima),
+    ("atualização", checar_atualizacao),
     ("rascunho", checar_rascunho),
     ("troca", checar_troca),
     ("acessibilidade", checar_acessibilidade),
