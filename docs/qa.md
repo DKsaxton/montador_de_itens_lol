@@ -84,6 +84,14 @@ que se digita depois ainda grava); e o Enter da lista abre o diálogo com o
 foco nele. Cada checagem monta o próprio estado e só responde o diálogo se ele
 apareceu, para falhar sozinha no código de antes.
 
+**Salvar** (F13-T31, bug nº 14; o `setItem` da biblioteca recusado) — o Salvar
+não diz "salvo" (o botão fica aceso, o aviso de saída armado, sem o som); a placa
+explica, com o foco nela; o "Salvar e sair" não sai; o Ctrl+S numa build limpa
+não a suja; a cópia na memória não fica com o que não gravou, e o Descartar
+descarta de verdade; o coração recusado avisa; a publicação que passou sem
+gravar aqui pede para anotar o ID; com a gravação de volta, o aviso some
+sozinho e o Salvar salva.
+
 **Publicar** (F13-T30, bugs nºs 11, 12 e 26; servidor simulado) — o hidden
 esconde sempre (Descartar sem rascunho, ⟳ em Minhas); o "+ Nova categoria" não
 anda quando o rascunho aparece; durante "Publicando…" não há Fechar e o Enter

@@ -829,6 +829,110 @@ def checar_texto(s, p):
             "rascunho sujo=%s, MF gravado=%s, campeão gravado=%s" % (r["sujo"], r["mfSalvo"], r["campeaoSalvo"]))
 
 
+def checar_salvar(s, p):
+    """F13-T31 (bug nº 14): com o navegador recusando a gravação (espaço cheio,
+    armazenamento bloqueado), o Salvar dizia "salvo", apagava o botão, tocava o
+    som e desarmava o aviso de saída — e a build sumia ao recarregar. Aqui o
+    setItem da biblioteca é que falha; o resto do localStorage segue normal."""
+    print(chr(10) + "%sSALVAR%s" % (AMARELO, FIM))
+    s.nova_build()
+    if not s.js("build.editing"):
+        s.clicar("#edit-switch", 0.8)
+    x0 = s.js("Math.round(document.getElementById('add-cat').getBoundingClientRect().left + scrollX)")
+    s.js("""(() => { window.__setOrig = Storage.prototype.setItem; window.__sons = []; window.__recusar = false;
+      Storage.prototype.setItem = function (k, v) { if (window.__recusar && k === 'lol-builds-v3') throw new DOMException('cheio', 'QuotaExceededError'); return window.__setOrig.call(this, k, v); };
+      window.__somOrig = Som.play; Som.play = function (ev, ...a) { window.__sons.push(ev); return window.__somOrig.call(this, ev, ...a); };
+      return 'ok'; })()""")
+    estado = """(() => { const ev = new Event('beforeunload', { cancelable: true }); window.dispatchEvent(ev);
+      const disco = JSON.parse(localStorage.getItem('lol-builds-v3') || '{"builds":[]}').builds.find(b => b.id === build.id) || {};
+      const mem = library.builds.find(b => b.id === build.id) || {};
+      const tem = (b) => (b.cats || []).some(c => c.items.some(e => e.itemId === 'long-sword'));
+      return { sujo: rascunho.sujo, salvar: !document.getElementById('save-btn').disabled, status: document.getElementById('save-status').textContent,
+        aviso: ev.defaultPrevented, som: window.__sons.includes('build:save'), tela: buildScreen, na_forja: tem(build), na_memoria: tem(mem), no_disco: tem(disco),
+        placa: document.getElementById('pub-dialog').hidden ? '' : document.getElementById('pub-title').textContent,
+        foco_na_placa: !!(document.activeElement && document.activeElement.closest('#pub-dialog')),
+        x: Math.round(document.getElementById('add-cat').getBoundingClientRect().left + scrollX) }; })()"""
+    fecha_placa = lambda: s.js("document.getElementById('pub-dialog').hidden ? 'ok' : (fecharPub(), 'ok')")
+    # Ctrl+S numa build limpa, com a gravação recusada: avisa, mas não a deixa "com alterações"
+    s.js("window.__recusar = true; 'ok'")
+    for tipo in ("rawKeyDown", "keyUp"):
+        s.envia("Input.dispatchKeyEvent", {"type": tipo, "key": "s", "code": "KeyS", "modifiers": 2, "windowsVirtualKeyCode": 83})
+    time.sleep(0.4)
+    limpa = s.js(estado); fecha_placa()
+    p.conta("salvar", "Ctrl+S recusado numa build limpa não a deixa \"com alterações\"",
+            not limpa["sujo"] and not limpa["salvar"] and limpa["placa"] == "Não deu para salvar" and limpa["status"] == "gravação recusada",
+            "sujo %s, placa \"%s\", status \"%s\"" % (limpa["sujo"], limpa["placa"], limpa["status"]))
+    # a gravação volta (uma gravação passa): o aviso some sozinho — antes ficava preso, com Salvar e Descartar apagados
+    s.js("window.__recusar = false; gravarBiblioteca(); 'ok'"); time.sleep(0.2)
+    volta = s.js(estado)
+    s.js("window.__recusar = true; 'ok'")
+    p.conta("salvar", "com a gravação de volta, o aviso some sozinho", volta["status"] == "" and not volta["aviso"],
+            "status \"%s\", aviso de saída %s" % (volta["status"], "armado" if volta["aviso"] else "desarmado"))
+    # o rascunho de verdade
+    s.js("build.cats[3].items.push({ itemId: 'long-sword', note: '' }); saveBuild(); renderBuildAll(); window.__sons = []; 'ok'")
+    s.clicar("#save-btn", 0.6)
+    a = s.js(estado)
+    p.conta("salvar", "gravação recusada: o Salvar não diz \"salvo\"",
+            a["status"] == "não deu para salvar" and a["salvar"] and a["sujo"] and a["aviso"] and not a["som"] and not a["no_disco"],
+            "status \"%s\", Salvar %s, aviso de saída %s, som %s" % (a["status"], "aceso" if a["salvar"] else "APAGADO", "armado" if a["aviso"] else "DESARMADO", "tocou" if a["som"] else "não tocou"))
+    p.conta("salvar", "a placa explica, com o foco nela", a["placa"] == "Não deu para salvar" and a["foco_na_placa"],
+            "placa \"%s\", foco %s" % (a["placa"], "nela" if a["foco_na_placa"] else "FORA"))
+    fecha_placa()
+    # e cabe no lugar guardado também na Georgia, a fonte de reserva sem a Alegreya da web
+    g = s.js("""(() => { const st = document.getElementById('save-status'), cs = getComputedStyle(st), sp = document.createElement('span');
+      sp.textContent = st.textContent; sp.style.cssText = 'position:absolute;visibility:hidden;white-space:nowrap;font-family:Georgia;font-style:' + cs.fontStyle
+        + ';font-weight:' + cs.fontWeight + ';font-size:' + cs.fontSize + ';letter-spacing:' + cs.letterSpacing;
+      document.body.appendChild(sp); const w = sp.getBoundingClientRect().width; sp.remove(); return { w, min: parseFloat(cs.minWidth) }; })()""")
+    p.conta("salvar", "o aviso não empurra o \"+ Nova categoria\"", a["x"] == x0 and g["min"] >= g["w"],
+            "x %d → %d · na Georgia o aviso tem %.0f px, o lugar %.0f px" % (x0, a["x"], g["w"], g["min"]))
+    p.conta("salvar", "a cópia na memória não fica com o que não gravou", not a["na_memoria"] and a["na_forja"],
+            "item na forja %s, na biblioteca da memória %s" % (a["na_forja"], a["na_memoria"]))
+    # "Salvar e sair" pelo diálogo: não sai, fica na build com o aviso
+    s.clicar("#build-back", 0.6)
+    s.clicar('#save-dialog [data-sd="salvar"]', 0.6)
+    b = s.js(estado); fecha_placa()
+    p.conta("salvar", "\"Salvar e sair\" recusado: fica na build, com o aviso",
+            b["tela"] == "forja" and b["sujo"] and b["status"] == "não deu para salvar" and not b["som"],
+            "tela %s, status \"%s\"" % (b["tela"], b["status"]))
+    # Descartar depois da recusa descarta de verdade (antes recarregava o rascunho)
+    s.clicar("#discard-btn", 0.5)
+    s.clicar('#save-dialog [data-sd="descartar"]', 0.6)
+    d = s.js(estado)
+    p.conta("salvar", "Descartar depois da recusa descarta de verdade", not d["na_forja"] and not d["na_memoria"] and not d["sujo"],
+            "item na forja %s, na memória %s" % (d["na_forja"], d["na_memoria"]))
+    # o coração (gravação direta) com a recusa: avisa e arma o aviso de saída
+    # (a placa das gravações diretas vem na primeira recusa de uma série: uma gravação que passa começa outra)
+    s.js("window.__recusar = false; gravarBiblioteca(); window.__recusar = true; showBuildScreen('lista'); 'ok'"); time.sleep(0.5)
+    s.clicar('.bi-fav[data-fav="%s"]' % s.js("build.id"), 0.5)
+    h = s.js(estado); fecha_placa()
+    p.conta("salvar", "coração recusado: a placa avisa e o aviso de saída arma", h["placa"] == "Não deu para gravar" and h["aviso"],
+            "placa \"%s\", aviso de saída %s" % (h["placa"], "armado" if h["aviso"] else "DESARMADO"))
+    # caminho antigo: com a gravação de volta, o Salvar salva e diz "salvo"
+    s.js("window.__recusar = false; showBuildScreen('forja'); build.cats[3].items.push({ itemId: 'long-sword', note: '' }); saveBuild(); renderBuildAll(); window.__sons = []; 'ok'")
+    time.sleep(0.4)
+    s.clicar("#save-btn", 0.4)
+    c = s.js(estado)
+    # publicação que passou no site mas não ficou guardada aqui: a placa pede para anotar o ID (servidor SIMULADO)
+    s.js("""(() => { window.__fetchOrig = window.fetch;
+      window.fetch = function (u, ...a) { const t = String(u);
+        if (t.includes('publicar_build')) return Promise.resolve(new Response(JSON.stringify({ id: 'qa0031', versao: 1 }), { status: 200, headers: { 'Content-Type': 'application/json' } }));
+        if (t.includes('/rpc/') || t.includes('/rest/')) return Promise.resolve(new Response('[]', { status: 200, headers: { 'Content-Type': 'application/json' } }));
+        return window.__fetchOrig.call(this, u, ...a); };
+      build.name = 'Salvar de teste'; build.desc = 'descrição'; build.markers = normMarkers(MARCADORES.slice(0, 3).map(m => ({ t: 'tag', id: m.id })));
+      gravarBuild(); window.__recusar = true; showBuildScreen('lista'); biSelected = build.id; renderBuildIndex(); return 'ok'; })()""")
+    time.sleep(0.5)
+    s.clicar('#bi-detail [data-act="publish"]', 1.0)
+    pub = s.js("({ titulo: document.getElementById('pub-title').textContent, texto: document.getElementById('pub-text').textContent })")
+    fecha_placa()
+    s.js("window.fetch = window.__fetchOrig; window.__recusar = false; showBuildScreen('forja'); 'ok'"); time.sleep(0.4)
+    p.conta("salvar", "publicada, mas sem gravar aqui: a placa pede para anotar o ID (e avisa da recusa)",
+            pub["titulo"] == "Build publicada com sucesso" and "anote" in pub["texto"] and "qa0031" in pub["texto"] and "recusando gravar" in pub["texto"],
+            pub["texto"][:60] + " … " + ("com" if "recusando gravar" in pub["texto"] else "SEM") + " o aviso da recusa")
+    s.js("Storage.prototype.setItem = window.__setOrig; Som.play = window.__somOrig; 'ok'")
+    p.conta("salvar", "com a gravação de volta, o Salvar salva", c["status"] == "salvo" and not c["sujo"] and c["no_disco"] and c["som"] and not c["aviso"],
+            "status \"%s\", no disco %s, aviso de saída %s" % (c["status"], c["no_disco"], "armado" if c["aviso"] else "desarmado"))
+
+
 def checar_publicar(s, p):
     """F13-T30 (bugs nºs 11, 12 e 26): o atributo hidden perdia para qualquer
     display do CSS. O pior caso: o "Fechar" aparecia durante "Publicando…", e
@@ -1390,6 +1494,7 @@ GRUPOS = [
     ("habilidades", checar_habilidades),
     ("texto", checar_texto),
     ("fragmento", checar_fragmento),
+    ("salvar", checar_salvar),
     ("publicar", checar_publicar),
     ("exclusão", checar_exclusao),
     ("rascunho", checar_rascunho),

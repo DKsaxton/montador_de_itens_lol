@@ -4620,6 +4620,7 @@ body.editando .save-wrap { display: inline-flex; }
   min-width: 9.7em; }   /* F13-T30: o lugar de "alterações não salvas" fica guardado — o texto aparecendo empurrava o "+ Nova categoria" 90 px */
 .save-status.sujo { color: #ff9b6a; }
 .save-status.ok { color: var(--forja-brasa-clara); }
+.save-status.erro { color: #ff5a4a; cursor: help; text-decoration: underline dotted; text-underline-offset: 3px; }
 .md-panel-small { width: min(520px, 100%); }
 .md-text { font-family: var(--loja-texto); font-size: 14.5px; line-height: 1.5; color: var(--forja-texto); margin: 0; text-align: center; }
 .md-foot-3 { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
@@ -5918,7 +5919,7 @@ function gravarBuild() {
       library.builds[i] = snap;
     } else { snap.updatedAt = build.updatedAt = Date.now(); library.builds.push(snap); library.activeId = build.id; }
   } catch (e) { /* sem persistência: segue funcionando, só não lembra */ }
-  gravarBiblioteca();
+  return gravarBiblioteca();
 }
 // Campos que não são rascunho — os da publicação, e o nome, a descrição e os
 // marcadores da janela "Falta pouco para publicar" — vão direto para a cópia da
@@ -5932,10 +5933,17 @@ function gravarMetadados(b, campos, conteudo) {
   if (conteudo) campos = { ...campos, updatedAt: Date.now() };
   Object.assign(b, campos);
   if (b.id === build.id) Object.assign(build, campos);
-  gravarBiblioteca();
+  return gravarBiblioteca();
 }
 // Grava a biblioteca como está, sem pôr o rascunho da build ativa por cima
 // (F13-T24): é o que o coração da lista usa, com o Editar ligado ou não.
+// Devolve se gravou (F13-T31): o navegador pode recusar — espaço cheio, janela
+// anônima, armazenamento bloqueado. Quem anuncia "salvo" tem de perguntar.
+// Quando recusa, a biblioteca na memória fica à frente do disco: a primeira
+// recusa de uma série abre a placa (qualquer tela, com o foco nela) e o aviso
+// de saída fica armado até uma gravação passar — antes, o coração, a janela
+// "Falta pouco" e o ID de uma publicação sumiam calados ao recarregar.
+let bibliotecaNaoGravada = false;
 function gravarBiblioteca() {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify({
@@ -5943,10 +5951,28 @@ function gravarBiblioteca() {
       activeId: build.id,
       defaultSpan: build.defaultSpan,
     }));
-  } catch (e) { /* sem persistência: segue funcionando, só não lembra */ }
+    bibliotecaNaoGravada = false;
+    // o disco alcançou a memória: sem rascunho, o aviso do Salvar recusado já não vale
+    if (erroGravacao && !rascunho.sujo) erroGravacao = false;
+    refletirSalvar();
+    return true;
+  } catch (e) {
+    // sem persistência: segue funcionando, só não lembra — e avisa
+    if (!bibliotecaNaoGravada) { bibliotecaNaoGravada = true; mostrarPub("Não deu para gravar", NAO_GRAVOU, "erro"); }
+    return false;
+  }
 }
 
+const NAO_SALVOU = "O navegador recusou a gravação (espaço cheio ou armazenamento bloqueado). A build continua aberta aqui: não feche a página — copie o texto em Exportar/importar para não perder.";
+const NAO_GRAVOU = "O navegador recusou gravar a biblioteca (espaço cheio ou armazenamento bloqueado). O que mudou desde então está só nesta página: não feche nem recarregue — copie o texto em Exportar/importar para não perder.";
+let erroGravacao = false;   // o último Salvar foi recusado; some com um Salvar que passe, o Descartar ou outra build
 function refletirSalvar(msg) {
+  // "não deu para salvar": há rascunho que um Salvar tentou gravar e não
+  // conseguiu. "gravação recusada": o navegador está recusando gravar (a
+  // memória pode estar à frente do disco), mesmo sem rascunho. Uma gravação
+  // que passa limpa os dois (gravarBiblioteca).
+  const erro = erroGravacao || bibliotecaNaoGravada;
+  if (erro) msg = erroGravacao ? "não deu para salvar" : "gravação recusada";
   const btn = document.getElementById("save-btn"), dis = document.getElementById("discard-btn"), st = document.getElementById("save-status");
   if (!btn) return;
   btn.disabled = !rascunho.sujo;
@@ -5957,13 +5983,34 @@ function refletirSalvar(msg) {
   dis.disabled = !rascunho.sujo;
   dis.tabIndex = rascunho.sujo ? 0 : -1;
   dis.setAttribute("aria-hidden", String(!rascunho.sujo));
-  st.className = "save-status" + (rascunho.sujo ? " sujo" : (msg ? " ok" : ""));
-  st.textContent = rascunho.sujo ? "alterações não salvas" : (msg || "");
+  st.className = "save-status" + (erro ? " erro" : rascunho.sujo ? " sujo" : (msg ? " ok" : ""));
+  st.textContent = erro ? msg : rascunho.sujo ? "alterações não salvas" : (msg || "");
+  st.title = erro ? (erroGravacao ? NAO_SALVOU : NAO_GRAVOU) : "";
+}
+// F13-T31 (bug nº 14): o Salvar de verdade — o botão, o Ctrl+S e o "Salvar e
+// sair". Recusado: não diz "salvo" nem toca o som, o rascunho continua como
+// estava (sujo continua sujo; limpo não fica sujo), a placa explica, e a cópia
+// da biblioteca na memória volta a ser a de antes — senão o Descartar
+// recarregava o rascunho, e a próxima gravação que passasse o levava ao disco.
+function salvarDeVerdade() {
+  const estavaSujo = rascunho.sujo, rev = build.revisao, patch = build.patch, data = build.updatedAt;
+  const i = library.builds.findIndex(b => b.id === build.id);
+  const antes = i >= 0 ? library.builds[i] : null;
+  if (build.revisao) { build.revisao = null; build.patch = CATALOG.meta.patch; }
+  if (gravarBuild()) { erroGravacao = false; return true; }
+  const j = library.builds.findIndex(b => b.id === build.id);
+  if (antes && j >= 0) library.builds[j] = antes;
+  build.revisao = rev; build.patch = patch; build.updatedAt = data;   // o aviso de revisão fica
+  rascunho.sujo = estavaSujo;
+  erroGravacao = estavaSujo;   // numa build limpa não há o que perder: fica a placa e o "gravação recusada"
+  clearTimeout(salvarAgora._t);
+  refletirSalvar();
+  mostrarPub("Não deu para salvar", NAO_SALVOU, "erro");
+  return false;
 }
 function salvarAgora() {
   if (!build.editing) return;
-  if (build.revisao) { build.revisao = null; build.patch = CATALOG.meta.patch; }
-  gravarBuild();
+  if (!salvarDeVerdade()) return;
   Som.play("build:save");
   refletirSalvar("salvo");
   renderRevisaoWarning();
@@ -5972,6 +6019,7 @@ function salvarAgora() {
 }
 function descartarAlteracoes() {
   rascunho.sujo = false;
+  erroGravacao = false;
   activateBuild(build.id, true);   // recarrega a cópia salva da biblioteca
   refletirSalvar();
   renderBuildAll();
@@ -6001,7 +6049,10 @@ function initSalvar() {
     if (!b) return;
     const depois = saidaPendente; saidaPendente = null;
     dlg.hidden = true;
-    if (b.dataset.sd === "salvar") { if (build.revisao) { build.revisao = null; build.patch = CATALOG.meta.patch; } gravarBuild(); Som.play("build:save"); if (depois) depois(); }
+    if (b.dataset.sd === "salvar") {
+      if (!salvarDeVerdade()) return;   // não sai: fica na build, com a placa e o aviso
+      Som.play("build:save"); if (depois) depois();
+    }
     else if (b.dataset.sd === "descartar") { descartarAlteracoes(); if (depois) depois(); }
   });
   document.addEventListener("keydown", (e) => {
@@ -6014,7 +6065,7 @@ function initSalvar() {
       bs[(Math.max(i, 0) + (e.shiftKey ? bs.length - 1 : 1)) % bs.length].focus();
     }
   });
-  window.addEventListener("beforeunload", (e) => { if (rascunho.sujo) { e.preventDefault(); e.returnValue = ""; } });
+  window.addEventListener("beforeunload", (e) => { if (rascunho.sujo || bibliotecaNaoGravada) { e.preventDefault(); e.returnValue = ""; } });
 }
 
 // `removidos` (opcional): recebe {itemId, nome, caixa} de cada item que não existe
@@ -6118,6 +6169,7 @@ function activateBuild(id, skipSave) {
   // o Descartar, que passa skipSave.
   if (!skipSave && id === build.id) { renderBuildAll(); return; }
   if (!skipSave && build.id && build.id !== id) gravarBuild();
+  if (build.id !== b.id) erroGravacao = false;
   build.id = b.id;
   build.name = b.name;
   build.cats = JSON.parse(JSON.stringify(b.cats || []));   // cópia própria: a da biblioteca só muda ao gravar
@@ -6673,7 +6725,13 @@ function mostrarPub(titulo, texto, estado, demora) {
   const esperando = !estado || estado === "aguardando";
   if (dlg.hidden) pubFocoAntes = document.activeElement;
   dlg.className = "marker-dialog " + (estado || "aguardando");
+  dlg.setAttribute("aria-label", titulo);
   document.getElementById("pub-title").textContent = titulo;
+  // F13-T31: com o navegador recusando gravar, a placa "Não deu para gravar" é
+  // trocada no mesmo instante pela do resultado (tirar do site, excluir em lote,
+  // copiar uma pública) — o aviso vai junto, senão ninguém o vê.
+  if (bibliotecaNaoGravada && !esperando && !/^Não deu para (gravar|salvar)$/.test(titulo))
+    texto += `<span class="pub-demora">Atenção: o navegador está recusando gravar a biblioteca — o que mudou vale só até fechar a página.</span>`;
   document.getElementById("pub-text").innerHTML = texto;
   foot.hidden = esperando;
   dlg.hidden = false;
@@ -6757,10 +6815,11 @@ async function publicarBuild(id) {
     }
     // F13-T25: só os campos da publicação, sem o rascunho da build aberta. A
     // cópia é procurada de novo: durante a espera ela pode ter sido regravada.
-    gravarMetadados(library.builds.find(x => x.id === id) || b,
+    const guardou = gravarMetadados(library.builds.find(x => x.id === id) || b,
       { pubId: r.id, pubVersao: r.versao, pubEm: Date.now(), pubPatch: CATALOG.meta.patch, patch: CATALOG.meta.patch, revisao: null });
     Som.play("build:save");
-    mostrarPub("Build publicada com sucesso", `ID da build: <b class="pub-id">${esc(r.id)}</b> · versão <b>${r.versao}</b>`, "sucesso");
+    mostrarPub("Build publicada com sucesso", `ID da build: <b class="pub-id">${esc(r.id)}</b> · versão <b>${r.versao}</b>`
+      + (guardou ? "" : `<span class="pub-demora">Mas o navegador recusou a gravação aqui: o ID não ficou guardado nesta biblioteca — anote <b class="pub-id">${esc(r.id)}</b>.</span>`), "sucesso");
     if (buildScreen === "lista") renderBuildIndex(); else renderBuildAll();
   } catch (e) {
     mostrarPub("Não deu para publicar", esc(e.message || "erro desconhecido"), "erro");
