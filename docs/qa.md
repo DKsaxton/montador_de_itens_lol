@@ -92,6 +92,11 @@ descarta de verdade; o coração recusado avisa; a publicação que passou sem
 gravar aqui pede para anotar o ID; com a gravação de volta, o aviso some
 sozinho e o Salvar salva.
 
+**Publicação órfã** (F13-T34, bug nº 42; servidor simulado, espera encurtada) —
+com a publicação no ar, a build não se exclui (lista, forja, lote); despublicar
+durante o "Atualizar publicação" espera; publicar durante uma exclusão no ar
+espera; se a build some mesmo assim, a publicação recém-criada sai do site.
+
 **Atualização** (F13-T33, bugs nºs 13 e 41) — abrir outra build depois de
 recarregar não muda a "Última atualização" (e a publicada continua "Publicada");
 uma mudança de verdade ainda carimba; o Mestre Forjador não acende a nota da

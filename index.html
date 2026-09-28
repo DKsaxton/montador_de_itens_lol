@@ -6339,15 +6339,37 @@ function porqueNaoSaiu(r, pubId) {
   if (r.motivo === "sem-servidor") return `Não há servidor configurado, então a publicação ${pubId} não pôde ser tirada do site.`;
   return `Não deu para falar com o servidor${r.erro ? " (" + r.erro + ")" : ""}: a publicação ${pubId} continua no site.`;
 }
+// F13-T34 (bug nº 42): com a publicação no ar, a build não se exclui. A resposta
+// gravava o ID num objeto que já tinha saído da biblioteca: a placa dizia
+// "publicada com sucesso · ID qa0042", e a publicação ficava no site sem lugar
+// nenhum que guardasse o ID dela (nem o "Excluir do site" das Públicas a via
+// como sua). O aviso vem antes da pergunta de excluir.
+//
+// A revisão achou a corrida nos outros sentidos (despublicar durante o
+// "Atualizar publicação", publicar durante uma exclusão, o lote e o Excluir
+// depois da espera do site): a trava é uma só por build, para tudo o que mexe
+// no site — publicar, tirar do site, excluir. Enquanto uma está no ar, as
+// outras avisam e esperam.
+const noServidor = new Map();   // id da build → "publicando" | "tirando do site"
+function avisaSeNoServidor(id) {
+  const o = noServidor.get(id);
+  if (!o) return false;
+  mostrarPub(o === "publicando" ? "Ainda publicando" : "Ainda tirando do site",
+    `Esta build está ${o === "publicando" ? "sendo publicada" : "saindo do site"}: espere a resposta do servidor.`, "aviso");
+  return true;
+}
 // true = a build saiu da biblioteca. Publicada: primeiro o site; se ele não
 // confirmar, a pessoa decide se apaga só daqui (e fica sabendo do ID).
 async function excluirBuild(id) {
+  if (avisaSeNoServidor(id)) return false;
   const b = library.builds.find(x => x.id === id);
   if (!b) return false;
   const pubId = buildResumo(b).pubId;
   if (pubId) {
     const vez = mostrarPub("Tirando do site", `Apagando a publicação <b class="pub-id">${esc(pubId)}</b>…`);
-    const r = await tirarDoSite(pubId);
+    let r;
+    noServidor.set(id, "tirando do site");
+    try { r = await tirarDoSite(pubId); } finally { noServidor.delete(id); }
     fecharPub(vez);
     if (!r.ok) {
       const depois = r.motivo === "rede" ? ` Para tirá-la do site depois, procure ${pubId} na aba Públicas quando a conexão voltar.` : "";
@@ -6818,10 +6840,10 @@ function caixasParaServidor(cats) {
 // Sem o Fechar a placa segura o mouse, mas o botão Publicar fica com o foco, e
 // um Enter mandava um segundo publicar_build — duas publicações, e o site
 // ficava com a primeira sem a biblioteca saber dela.
-const publicando = new Set();
 async function publicarBuild(id) {
-  if (publicando.has(id)) {
-    if (document.getElementById("pub-dialog").hidden) mostrarPub("Ainda publicando", "Esta build ainda está sendo publicada: espere a resposta do servidor.", "aviso");
+  if (noServidor.has(id)) {
+    // a placa desta mesma publicação aberta: o clique é o mesmo, fica calado
+    if (noServidor.get(id) !== "publicando" || document.getElementById("pub-dialog").hidden) avisaSeNoServidor(id);
     return;
   }
   const b = library.builds.find(x => x.id === id);
@@ -6834,7 +6856,7 @@ async function publicarBuild(id) {
   // rascunho e o gravava calado. Pergunta antes, como sair da forja.
   if (id === build.id && rascunho.sujo) { confirmarSaida(() => publicarBuild(id)); return; }
   if (!Servidor.ativo()) { mostrarPub("Sem servidor", "A página não tem a URL e a chave do servidor (data/servidor.js).", "erro"); return; }
-  publicando.add(id);
+  noServidor.set(id, "publicando");
   try {
     const enviada = assinaturaPublicada(d);   // do que sai agora — um Salvar durante a espera fica de fora
     mostrarPub("Publicando a build", "Aguarde", null,
@@ -6870,7 +6892,16 @@ async function publicarBuild(id) {
     }
     // F13-T25: só os campos da publicação, sem o rascunho da build aberta. A
     // cópia é procurada de novo: durante a espera ela pode ter sido regravada.
-    const guardou = gravarMetadados(library.builds.find(x => x.id === id) || b,
+    // F13-T34: a build saiu da biblioteca durante a espera (a trava acima impede;
+    // isto é a defesa). Quem excluiu queria a build fora — a publicação que
+    // acabou de nascer sai do site; se não sair, a placa mostra o ID.
+    if (!library.builds.some(x => x.id === id)) {
+      const t = await tirarDoSite(r.id);
+      if (t.ok) mostrarPub("Publicação desfeita", `A build foi excluída enquanto era publicada — a publicação <b class="pub-id">${esc(r.id)}</b> foi tirada do site.`, "sucesso");
+      else mostrarPub("A publicação pode ter ficado no site", `A build foi excluída enquanto era publicada, e o servidor não confirmou a retirada da publicação <b class="pub-id">${esc(r.id)}</b> (${esc(t.motivo === "segredo" ? "ele não a achou para apagar — confira na aba Públicas" : motivoCurto(t))}). Anote o ID.`, "erro");
+      return;
+    }
+    const guardou = gravarMetadados(library.builds.find(x => x.id === id),
       { pubId: r.id, pubVersao: r.versao, pubEm: Date.now(), pubPatch: CATALOG.meta.patch, patch: CATALOG.meta.patch, revisao: null, pubAssinatura: enviada });
     Som.play("build:save");
     mostrarPub("Build publicada com sucesso", `ID da build: <b class="pub-id">${esc(r.id)}</b> · versão <b>${r.versao}</b>`
@@ -6879,7 +6910,7 @@ async function publicarBuild(id) {
   } catch (e) {
     mostrarPub("Não deu para publicar", esc(e.message || "erro desconhecido"), "erro");
   } finally {
-    publicando.delete(id);
+    noServidor.delete(id);
   }
 }
 
@@ -6890,8 +6921,10 @@ async function despublicarBuild(id) {
   const b = library.builds.find(x => x.id === id);
   const pubId = b ? b.pubId : null;
   if (!pubId) return;
+  if (avisaSeNoServidor(id)) return;   // F13-T34: não com uma publicação (ou outra retirada) no ar
   if (!window.confirm(`Tirar "${buildResumo(b).name}" do site? A build continua na sua biblioteca.`)) return;
   mostrarPub("Tirando do site", "Aguarde");
+  noServidor.set(id, "tirando do site");
   try {
     const ok = await Servidor.rpc("apagar_build", { p_id: pubId, p_segredo: Servidor.segredo() });
     if (!ok) throw new Error("O servidor não encontrou a publicação, ou ela foi feita em outro navegador (o segredo não confere). Nesse caso, apague pelo painel do Supabase.");
@@ -6901,6 +6934,7 @@ async function despublicarBuild(id) {
     mostrarPub("Build retirada do site", `A publicação <b class="pub-id">${esc(pubId)}</b> foi apagada. A build continua aqui, na sua biblioteca.`, "sucesso");
     if (buildScreen === "lista") renderBuildIndex(); else renderBuildAll();
   } catch (e) { mostrarPub("Não deu para tirar do site", esc(e.message || "erro desconhecido"), "erro"); }
+  finally { noServidor.delete(id); }
 }
 // Excluir uma publicação vista na aba Públicas (só as suas: o servidor confere o segredo).
 async function excluirPublicacao(pubId) {
@@ -9809,6 +9843,7 @@ function initBuildIndex() {
     if (act.dataset.act === "del") {
       if (b.temp) { deleteBuild(b.id); biSelected = null; renderBuildIndex(); return; }   // fechar visualização: sempre
       if (buildsProprias().length <= 1) return;
+      if (avisaSeNoServidor(b.id)) return;
       if (window.confirm(`Excluir a build "${buildResumo(b).name}"?${buildResumo(b).pubId ? " Ela também sai do site." : ""} Isso não dá pra desfazer.`)) {
         excluirBuild(b.id).then(saiu => { if (saiu) { biSelected = null; } renderBuildIndex(); });
       }
@@ -9849,6 +9884,8 @@ function initBuildIndex() {
     if (!ids.length) { loteMsg("Só dá para excluir builds suas."); return; }
     const restantes = buildsProprias().filter(b => !ids.includes(b.id)).length;
     if (restantes < 1) { loteMsg("Guarde pelo menos uma build."); return; }
+    const noAr = ids.filter(id => noServidor.has(id)).map(id => (resumoPorId(id) || {}).name);
+    if (noAr.length) { loteMsg(`Espere terminar a publicação de ${noAr.join(", ")} antes de excluir.`); return; }   // F13-T34
     const nomes = ids.map(id => (resumoPorId(id) || {}).name).filter(Boolean);
     if (!window.confirm(`Excluir ${ids.length} build(s)?\n\n${nomes.join("\n")}\n\nAs publicadas também saem do site. Isso não dá pra desfazer.`)) return;
     (async () => {
@@ -9858,11 +9895,17 @@ function initBuildIndex() {
       let saiu = 0;
       for (const id of ids) {
         const d = resumoPorId(id);
+        // F13-T34: a trava vale a cada build, não só na partida — uma pode ter
+        // começado a publicar enquanto o lote esperava o site pela anterior
+        if (noServidor.has(id)) { ficaram.push({ nome: d ? d.name : id, pubId: (d && d.pubId) || "", motivo: "estava sendo publicada — espere a resposta e exclua de novo" }); continue; }
         if (d && d.pubId) {
           loteMsg(`Tirando ${d.pubId} do site…`);
-          const r = await tirarDoSite(d.pubId);
+          let r;
+          noServidor.set(id, "tirando do site");
+          try { r = await tirarDoSite(d.pubId); } finally { noServidor.delete(id); }
           if (!r.ok) { ficaram.push({ nome: d.name, pubId: d.pubId, motivo: motivoCurto(r) }); continue; }
         }
+        if (!library.builds.some(b => b.id === id)) continue;   // já saiu por outro caminho durante a espera
         deleteBuild(id); saiu++;
       }
       if (biLote) biLote.clear();   // F13-T32: sair do Selecionar durante a espera deixava biLote null e o fim do lote quebrava
@@ -9991,6 +10034,7 @@ function initLibrary() {
   document.getElementById("del-build").addEventListener("click", () => {
     if (build.temp) { deleteBuild(build.id); return; }   // visualização: fecha, como na lista
     if (buildsProprias().length <= 1) return;
+    if (avisaSeNoServidor(build.id)) return;
     if (window.confirm(`Excluir a build "${build.name}"?${build.pubId ? " Ela também sai do site." : ""} Isso não dá pra desfazer.`)) {
       excluirBuild(build.id);
     }

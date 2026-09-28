@@ -1190,6 +1190,81 @@ def checar_ultima(s, p):
     s.entrar()
 
 
+def checar_orfa(s, p):
+    """F13-T34 (bug nº 42): excluir a build enquanto ela é publicada deixava a
+    publicação no site sem lugar nenhum que guardasse o ID. Servidor SIMULADO:
+    publicar_build fica preso até o roteiro soltar; apagar_build só é contado."""
+    print(chr(10) + "%sPUBLICAÇÃO ÓRFÃ%s" % (AMARELO, FIM))
+    s.nova_build()
+    s.js("""(() => { window.__fetchOrig = window.fetch; window.__soltar = null; window.__apagados = []; window.__proxId = 'qa0042';
+      window.__pubs = 0; window.__apagarPreso = false; window.__soltarApagar = null;
+      window.fetch = function (u, opts, ...a) { const t = String(u);
+        if (t.includes('publicar_build')) { window.__pubs++; return new Promise(res => { window.__soltar = () => res(new Response(JSON.stringify({ id: window.__proxId, versao: 1 }), { status: 200, headers: { 'Content-Type': 'application/json' } })); }); }
+        if (t.includes('apagar_build')) { window.__apagados.push(JSON.parse(opts.body).p_id); const ok = () => new Response('true', { status: 200, headers: { 'Content-Type': 'application/json' } });
+          return window.__apagarPreso ? new Promise(res => { window.__soltarApagar = () => res(ok()); }) : Promise.resolve(ok()); }
+        if (t.includes('/rpc/') || t.includes('/rest/')) return Promise.resolve(new Response('[]', { status: 200, headers: { 'Content-Type': 'application/json' } }));
+        return window.__fetchOrig.call(this, u, opts, ...a); };
+      window.__stOrig = window.setTimeout; window.setTimeout = (f, ms, ...a) => window.__stOrig(f, ms === 30000 ? 300 : ms, ...a);
+      if (build.editing) document.getElementById('edit-switch').click();
+      build.name = 'Órfã de teste'; build.desc = 'descrição'; build.markers = normMarkers(MARCADORES.slice(0, 3).map(m => ({ t: 'tag', id: m.id })));
+      build.cats[3].items = [{ itemId: 'long-sword', note: '' }]; gravarBuild();
+      showBuildScreen('lista'); biSelected = build.id; renderBuildIndex(); return 'ok'; })()""")
+    time.sleep(0.5)
+    bid = s.js("build.id")
+    s.clicar('#bi-detail [data-act="publish"]', 0.9)
+    s.clicar("#pub-close", 0.3)                                    # o Fechar aparece depois da espera (encurtada)
+    nd = len(s.dialogos)
+    s.clicar('#bi-detail [data-act="del"]', 0.5)
+    lista = s.js("({ placa: document.getElementById('pub-dialog').hidden ? '' : document.getElementById('pub-title').textContent })")
+    s.js("fecharPub(); showBuildScreen('forja'); 'ok'"); time.sleep(0.5)
+    s.clicar("#del-build", 0.5)
+    forja = s.js("({ placa: document.getElementById('pub-dialog').hidden ? '' : document.getElementById('pub-title').textContent })")
+    s.js("fecharPub(); showBuildScreen('lista'); 'ok'"); time.sleep(0.5)
+    s.clicar("#bi-lote", 0.4)
+    if isinstance(s.caixa('.bi-row[data-id="%s"]' % bid), list):
+        s.clicar('.bi-row[data-id="%s"]' % bid, 0.3); s.clicar("#bl-excluir", 0.5)
+        lote = s.js("(document.getElementById('bl-msg') || {}).textContent || ''")
+    else:
+        lote = "(a build já tinha sido excluída)"
+    s.clicar("#bl-sair", 0.3)
+    ficou = s.js("library.builds.some(b => b.id === %s)" % json.dumps(bid))
+    s.js("window.__soltar && window.__soltar(); 'ok'"); time.sleep(0.8)
+    pub = s.js("(library.builds.find(b => b.id === %s) || {}).pubId || null" % json.dumps(bid))
+    s.js("fecharPub(); 'ok'")
+    p.conta("publicação órfã", "com a publicação no ar, a build não se exclui (lista, forja, lote)",
+            ficou and pub == "qa0042" and lista["placa"] == "Ainda publicando" and forja["placa"] == "Ainda publicando" and "Espere terminar" in lote and len(s.dialogos) == nd,
+            "lista: %s · forja: %s · lote: %s · perguntas: %d · ID gravado: %s" % (lista["placa"] or "—", forja["placa"] or "—", lote[:30] or "—", len(s.dialogos) - nd, pub))
+    # despublicar durante o "Atualizar publicação": a mesma trava
+    s.clicar('#bi-detail [data-act="publish"]', 0.9); s.clicar("#pub-close", 0.3)
+    nd = len(s.dialogos); ap = len(s.js("window.__apagados"))
+    s.clicar('#bi-detail [data-act="unpub"]', 0.5)
+    unpub = s.js("({ placa: document.getElementById('pub-dialog').hidden ? '' : document.getElementById('pub-title').textContent, apagados: window.__apagados.length })")
+    s.js("fecharPub(); window.__soltar && window.__soltar(); 'ok'"); time.sleep(0.8); s.js("fecharPub(); 'ok'")
+    p.conta("publicação órfã", "despublicar durante o \"Atualizar publicação\" espera", unpub["placa"] == "Ainda publicando" and unpub["apagados"] == ap and len(s.dialogos) == nd,
+            "placa: %s · apagar_build: %d · perguntas: %d" % (unpub["placa"] or "—", unpub["apagados"] - ap, len(s.dialogos) - nd))
+    # a defesa: se a build some mesmo assim, a publicação que acabou de nascer sai do site
+    s.js("window.__proxId = 'qa0042b'; 'ok'")
+    s.clicar('#bi-detail [data-act="publish"]', 0.9)
+    s.js("(() => { deleteBuild(%s); window.__soltar && window.__soltar(); return 'ok'; })()" % json.dumps(bid)); time.sleep(0.9)
+    fim = s.js("({ placa: document.getElementById('pub-dialog').hidden ? '' : document.getElementById('pub-title').textContent, apagados: window.__apagados })")
+    # publicar durante uma exclusão no ar: a trava vale nos dois sentidos
+    s.js("""(() => { fecharPub(); createNewBuild('Excluindo'); build.desc = 'descrição'; build.markers = normMarkers(MARCADORES.slice(0, 3).map(m => ({ t: 'tag', id: m.id })));
+      build.cats[3].items = [{ itemId: 'long-sword', note: '' }]; gravarBuild();
+      gravarMetadados(library.builds.find(b => b.id === build.id), { pubId: 'qa0043', pubVersao: 1, pubEm: Date.now(), pubPatch: CATALOG.meta.patch });
+      window.__apagarPreso = true; showBuildScreen('lista'); biSelected = build.id; renderBuildIndex(); return 'ok'; })()""")
+    time.sleep(0.5)
+    s.clicar('#bi-detail [data-act="del"]', 0.9); s.clicar("#pub-close", 0.3)      # o "Tirando do site" ganha o Fechar
+    pubs = s.js("window.__pubs")
+    s.clicar('#bi-detail [data-act="publish"]', 0.5)
+    exc = s.js("({ placa: document.getElementById('pub-dialog').hidden ? '' : document.getElementById('pub-title').textContent, pubs: window.__pubs })")
+    s.js("fecharPub(); window.__soltarApagar && window.__soltarApagar(); 'ok'"); time.sleep(0.6)
+    p.conta("publicação órfã", "publicar durante uma exclusão no ar espera", exc["placa"] == "Ainda tirando do site" and exc["pubs"] == pubs,
+            "placa: %s · publicar_build: %d" % (exc["placa"] or "—", exc["pubs"] - pubs))
+    s.js("fecharPub(); window.setTimeout = window.__stOrig; window.fetch = window.__fetchOrig; 'ok'")
+    p.conta("publicação órfã", "se a build some mesmo assim, a publicação sai do site", fim["placa"] == "Publicação desfeita" and "qa0042b" in fim["apagados"],
+            "placa: %s · apagar_build: %s" % (fim["placa"] or "—", fim["apagados"]))
+
+
 def checar_exclusao(s, p):
     """F13-T14: excluir uma build publicada prometia "ela também sai do site" e,
     se o servidor falhasse, apagava daqui calada — a publicação ficava no ar e o
@@ -1627,6 +1702,7 @@ GRUPOS = [
     ("salvar", checar_salvar),
     ("publicar", checar_publicar),
     ("exclusão", checar_exclusao),
+    ("publicação órfã", checar_orfa),
     ("última build", checar_ultima),
     ("atualização", checar_atualizacao),
     ("rascunho", checar_rascunho),

@@ -375,6 +375,8 @@ Da revisão da F13-T25: na lista, "Continuar editando" deixa a pessoa na lista �
 
 ### 42. Publicar ou despublicar guarda a build de antes da espera
 
+**CONSERTADO na F13-T34 (28/09/2026).** Uma trava só por build (`noServidor`) para tudo o que mexe no site — publicar, tirar do site (Despublicar, "Excluir do site"), excluir: enquanto uma está no ar, as outras mostram "Ainda publicando" / "Ainda tirando do site" antes de qualquer pergunta, e o lote confere a cada build. A primeira versão só travava o excluir durante o publicar; a revisão adversarial achou a corrida nos outros sentidos (despublicar durante o "Atualizar publicação", publicar durante uma exclusão, o lote e o Excluir depois da espera do site), todas terminando na mesma publicação órfã. Defesa: se a resposta chega e a build não existe mais, a publicação recém-criada sai do site ("Publicação desfeita"), ou a placa mostra o ID. Grupo "publicação órfã" no roteiro (4 checagens), cada uma vista falhando numa versão de antes.
+
 **Triagem de 27/09/2026 — REPRODUZIDO, por outro caminho.** A F13-T25 cobriu a troca de build durante a espera (a gravação procura a cópia viva por id). Sobra o `|| b`: se a build é **excluída** durante a espera (Publicar → Fechar, que aparece por causa do nº 12 → Excluir a mesma build), a resposta grava o ID num objeto que saiu da biblioteca. A placa diz "publicada com sucesso · ID qa0042", a build não existe mais aqui, e a publicação fica no site sem nenhum lugar que guarde o ID dela.
 
 `index.html` (`publicarBuild`, `despublicarBuild`) · **baixa** · achado na F13-T24 · passou pela varredura, não reproduzido
