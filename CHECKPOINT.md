@@ -263,6 +263,7 @@ Ordem definida pelo Leo em 18/09/2026: primeiro tudo que já estava na fila; as 
   - **T42** Calculadora, "Puxar da build ativa" (nºs 23 e 31) · **T43** números do Catálogo: eficiência arredondada, ordenar por atributo, contagem, Reembolso (nºs 24, 25, 32 e 33).
   - **T44** Redesenhos atrasados: arte das habilidades e o que o texto importa (nºs 18 e 30) · **T45** "Falta pouco para publicar" com a build suja (nº 45).
   - **nº 39** (nada avisa do rascunho fora da forja) pede uma escolha visual: duas amostras renderizadas antes de mexer.
+  - **Depois de tudo: o tour guiado** (Leo, 29/09/2026: "fazer como os tours de jogos modernos, com um balão + a tela toda escurecida com apenas o conteúdo do balão destacado, com o botão de prosseguir, pular e o X em cima para ignorar todo o tour"; e em seguida: "deixa o tour depois de tudo"). Ideia a amostrar quando chegar a vez: o recorte aceso em volta do elemento do passo, o balão com "Prosseguir", "Pular" (o resto da seção) e o X (encerra o tour, lembrado no navegador); duas opções renderizadas — o balão que veste a tela (pergaminho na loja, ferro na forja) e um balão só. O roteiro começou a ser levantado e parou a pedido.
 
 O resto continua em aberto, à escolha do Leo:
 - **Quatro variações de textura por região** (plano do Leo, 20/09/2026: "Bilgewater com uma pistola sob a mesa, cartas do Twisted Fate"). O sistema já sorteia variante por hash do slug do item, então é só gerar e rodar `docs/gerar_cards_regiao.ps1`. Conta: 13 regiões × 4 ≈ 52 cards, ~1,4 MB depois da compressão.
