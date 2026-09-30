@@ -92,6 +92,25 @@ descarta de verdade; o coração recusado avisa; a publicação que passou sem
 gravar aqui pede para anotar o ID; com a gravação de volta, o aviso some
 sozinho e o Salvar salva.
 
+**Duas abas** (F13-T35, bug nº 27; várias abas de verdade no mesmo Chrome, a
+mesma trava do navegador) — a aba nova já nasce parada enquanto confere a
+trava; a segunda fica sob o véu, com a página por baixo sem resposta, e não
+grava por cima; "Usar esta aba" recarrega do disco e assume, e a outra para;
+parada, a aba não obedece a atalhos (Esc, Ctrl+S); a troca é recusada com
+rascunho, com gravação recusada, com publicação, exclusão ou importação
+esperando a internet — e o véu diz qual; a marca de uma aba que já perdeu a
+vez não recusa; F5 mantém a dona; a dona que vai a outra página e volta pelo
+Voltar volta inteira; a outra fechou: a parada avisa e assume; um link #b=
+numa aba parada avisa e arma o aviso de saída; a dona presa num diálogo não
+grava por cima da que assumiu; o "Limpar build" numa aba que perdeu a vez não
+mexe em nada; a aba nova que esperou a vez relê o disco; "Usar esta aba" numa
+aba de link assume sem o aviso falso de saída; a dona que quebra sem avisar é
+percebida pela parada; a página de captura da observação fica com o foco no
+editor; F5 da dona com outra aba na fila continua dona; outra aba que toma a
+trava enquanto esta confere não deixa duas donas; o "saiu" que a dona regrava
+logo depois não faz a aba nova tomar a vez; a trava negada pelo navegador não
+prende a aba.
+
 **Publicação órfã** (F13-T34, bug nº 42; servidor simulado, espera encurtada) —
 com a publicação no ar, a build não se exclui (lista, forja, lote); despublicar
 durante o "Atualizar publicação" espera; publicar durante uma exclusão no ar

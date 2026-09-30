@@ -4628,6 +4628,8 @@ body.editando .save-wrap { display: inline-flex; }
 /* ---- Fase 8, T2/T3: publicação ---- */
 #pub-dialog .md-panel-small { text-align: center; }
 #pub-dialog { z-index: 96; }
+#aba-dona { z-index: 250; }   /* F13-T35: a aba parada — por cima de tudo, inclusive da entrada da loja (200) */
+#aba-dona.conferindo:not(.demorou) { opacity: 0; }   /* a trava responde em milissegundos: sem piscar (o JS mostra se demorar) */
 #pub-dialog .md-panel:focus { outline: none; }
 #pub-dialog .pub-demora { display: block; margin-top: 10px; font-size: .92em; opacity: .85; }
 #pub-dialog.aguardando .md-title::after { content: "…"; animation: pub-pontos 1.2s steps(4) infinite; display: inline-block; width: 1.2em; text-align: left; }
@@ -5986,6 +5988,10 @@ function gravarMetadados(b, campos, conteudo) {
 // "Falta pouco" e o ID de uma publicação sumiam calados ao recarregar.
 let bibliotecaNaoGravada = false;
 function gravarBiblioteca() {
+  if (!souDona) {   // F13-T35: só a aba dona grava (a outra está parada, sob o véu)
+    if (decidido) return false;
+    gravarAoDecidir = true; return true;   // a trava responde em milissegundos; grava quando vier
+  }
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify({
       builds: library.builds.filter(b => !b.temp),   // visualizações de builds públicas morrem com a página
@@ -5999,7 +6005,7 @@ function gravarBiblioteca() {
     return true;
   } catch (e) {
     // sem persistência: segue funcionando, só não lembra — e avisa
-    if (!bibliotecaNaoGravada) { bibliotecaNaoGravada = true; mostrarPub("Não deu para gravar", NAO_GRAVOU, "erro"); }
+    if (!bibliotecaNaoGravada) { bibliotecaNaoGravada = true; marcarDona(); mostrarPub("Não deu para gravar", NAO_GRAVOU, "erro"); }
     return false;
   }
 }
@@ -6007,6 +6013,199 @@ function gravarBiblioteca() {
 const NAO_SALVOU = "O navegador recusou a gravação (espaço cheio ou armazenamento bloqueado). A build continua aberta aqui: não feche a página — copie o texto em Exportar/importar para não perder.";
 const NAO_GRAVOU = "O navegador recusou gravar a biblioteca (espaço cheio ou armazenamento bloqueado). O que mudou desde então está só nesta página: não feche nem recarregue — copie o texto em Exportar/importar para não perder.";
 let erroGravacao = false;   // o último Salvar foi recusado; some com um Salvar que passe, o Descartar ou outra build
+// ---------------- F13-T35 (bug nº 27): uma aba por vez ----------------
+// Com duas abas abertas, cada uma gravava a biblioteca que tinha na memória
+// desde que abriu — a segunda a gravar apagava a build criada na primeira. Leo
+// escolheu (29/09/2026) "uma aba por vez": a aba que chega primeiro é a dona; a
+// que abre depois fica parada sob um véu, com "Usar esta aba" — que recarrega
+// do disco e assume. A troca é recusada enquanto a dona tem alterações não
+// gravadas ou espera resposta da internet. Recarregar (F5) mantém a dona.
+// A dona segura a trava do próprio navegador (Web Locks), que ele solta sozinho
+// quando a aba fecha, recarrega ou quebra — e avisa na hora a que perdeu a vez.
+// (A primeira versão era uma marca renovada a cada 5 s: com prazo de validade,
+// confundia aba travada ou congelada com aba morta, e vice-versa.)
+const DONA_TRAVA = "montador.dona";       // o nome da trava
+const DONA_KEY = "montador.dona";         // localStorage: o estado da dona, para a outra aba ler
+const ASSUMIR_KEY = "montador.assumir";   // sessionStorage: o "Usar esta aba" pediu, e a recarga toma a trava
+let souDona = false;        // a trava decide (decidirDona)
+let decidido = false;       // até decidir (milissegundos), a gravação fica para depois
+let gravarAoDecidir = false;
+let veuMotivo = "";
+let esperandoInternet = 0;  // esperas fora do noServidor: o campeão de uma importação, a exclusão de uma publicação
+let meuCliente = null;      // o id que o navegador dá a esta aba na trava
+let discoLido = null;       // a biblioteca como a carga a leu
+let linkPendente = null;    // build recebida por link (#b=) numa aba parada: só na memória
+const veuInertes = new Set();
+function lerDona() { try { return JSON.parse(localStorage.getItem(DONA_KEY) || "null"); } catch (e) { return null; } }
+// A marca: de qual aba (cliente), se há o que perder (sujo: 1 rascunho, 2
+// gravação recusada), se espera a internet, e se saiu. Números de um dígito:
+// com o espaço cheio, trocar um valor pelo outro do mesmo tamanho ainda passa.
+function marcarDona(saindo) {
+  if (!souDona) return;
+  const m = { cliente: meuCliente, sujo: bibliotecaNaoGravada ? 2 : rascunho.sujo ? 1 : 0, ocupada: noServidor.size > 0 || esperandoInternet > 0 ? 1 : 0 };
+  if (saindo) m.fora = 1;
+  try { localStorage.setItem(DONA_KEY, JSON.stringify(m)); } catch (e) { /* sem persistência: a outra aba não fica sabendo */ }
+}
+// Uma espera da internet que não passa pelo noServidor conta como ocupada: a
+// troca espera a resposta chegar (senão ela chegava na aba parada, calada).
+function esperarInternet(p) {
+  esperandoInternet++; marcarDona();
+  return p.finally(() => { esperandoInternet--; marcarDona(); });
+}
+// Um confirm() nativo trava a aba inteira: a outra pode ter tomado a vez nesse
+// meio-tempo, e o aviso só chega depois (visto no roteiro: 40 ms depois da volta
+// seguinte — esperar uma volta não bastava). Quem grava depois de um confirm
+// pergunta ao navegador quem segura a trava agora.
+async function aindaSouDona() {
+  if (!souDona) return false;
+  if (!navigator.locks || !meuCliente) return true;
+  const q = await navigator.locks.query().catch(() => null);
+  if (!q || !souDona) return souDona;
+  if (q.held.some(l => l.name === DONA_TRAVA && l.clientId === meuCliente)) return true;
+  souDona = false; virarEspectadora("perdeu");
+  return false;
+}
+async function donaOcupada() {
+  const d = lerDona();
+  if (!d || d.fora) return false;   // a dona saiu (fechou, recarregou ou foi para outra página)
+  const q = await navigator.locks.query().catch(() => null);
+  const h = q && q.held.find(l => l.name === DONA_TRAVA);
+  if (!h) return false;                                     // ninguém segura a trava (a dona quebrou)
+  if (d.cliente && d.cliente !== h.clientId) return false;  // a marca é de uma aba que já perdeu a vez
+  return !!(d.sujo || d.ocupada);
+}
+// O id que o navegador dá a esta aba: uma trava de nome único, só para se ver na consulta.
+function idDestaAba(locks) {
+  const nome = "montador.eu." + Math.random().toString(36).slice(2);
+  return locks.request(nome, () => locks.query().then(q => { const h = q.held.find(l => l.name === nome); return h ? h.clientId : null; }))
+    .catch(() => null);
+}
+async function decidirDona(tomar) {
+  const locks = navigator.locks;
+  if (!locks) { assumirVez(); return; }   // navegador sem Web Locks: cada aba por si, como antes
+  virarEspectadora("conferindo");        // até a trava responder, a aba nasce parada (o véu só aparece se demorar)
+  if (tomar === undefined) {
+    let pediu = 0;
+    try { pediu = Number(sessionStorage.getItem(ASSUMIR_KEY)) || 0; sessionStorage.removeItem(ASSUMIR_KEY); } catch (e) { /* sem sessionStorage: não toma */ }
+    tomar = Date.now() - pediu < 15000;
+  }
+  if (tomar && await donaOcupada()) { decidido = true; virarEspectadora("recusado"); return; }
+  // Sem a trava: a outra é a dona — a não ser que a marca diga que ela saiu. A
+  // página que sai para outro endereço fica guardada para o Voltar ainda com a
+  // trava (visto no roteiro): aí esta toma, e a guardada sai do cache. Confere
+  // de novo depois de 1 s: no F5 da dona a página nova regrava a marca em
+  // milissegundos, e esta não pode tomar a vez dela por ter lido o "saiu" do F5.
+  const outraEDona = () => {
+    const parar = () => { decidido = true; virarEspectadora(""); };
+    if (tomar || !(lerDona() || {}).fora) { parar(); return; }
+    setTimeout(() => { if ((lerDona() || {}).fora) decidirDona(true); else parar(); }, 1000);
+  };
+  // Sem pedido, espera a trava um pouco: no F5 a página velha a solta um instante depois
+  const opcoes = tomar ? { steal: true } : AbortSignal.timeout ? { signal: AbortSignal.timeout(2000) } : { ifAvailable: true };
+  let roubada = false;   // o pedido já rejeitou: outra aba tomou a trava
+  locks.request(DONA_TRAVA, opcoes, async (trava) => {
+    if (!trava) { outraEDona(); return; }
+    // a biblioteca mudou entre a carga e a trava (a outra gravou e saiu nesse
+    // meio-tempo): esta memória está velha — recarrega do disco antes de gravar
+    let agora = null; try { agora = localStorage.getItem(STORAGE_KEY); } catch (e) { /* idem */ }
+    if (agora !== discoLido) { linkPendente = null; location.reload(); return new Promise(() => {}); }
+    // outra aba pode ter tomado a trava entre a concessão e a consulta: só
+    // assume se quem a segura agora é esta aba (senão o aviso de roubo decide)
+    meuCliente = await idDestaAba(locks);
+    const q = await locks.query().catch(() => null);
+    const h = q && q.held.find(l => l.name === DONA_TRAVA);
+    if (roubada || !h || (meuCliente && h.clientId !== meuCliente)) return new Promise(() => {});
+    assumirVez();
+    return new Promise(() => {});   // segura enquanto a página viver
+  }).catch((e) => {
+    roubada = true;
+    // dados do site bloqueados: o navegador nega a trava também. O localStorage
+    // também não grava, então nenhuma aba apaga a outra: cada uma por si, como antes
+    if (e && e.name === "SecurityError") { if (!souDona) assumirVez(); return; }
+    if (souDona) { souDona = false; virarEspectadora("perdeu"); }   // outra aba tomou ("Usar esta aba" lá)
+    else outraEDona();
+  });
+}
+function assumirVez() {
+  souDona = true; decidido = true; linkPendente = null; veuMotivo = "";
+  const v = document.getElementById("aba-dona");
+  if (v) {   // o véu do "conferindo" sai, e a página volta a responder
+    v.remove();
+    veuInertes.forEach(e => { e.inert = false; }); veuInertes.clear();
+    const semFoco = !document.activeElement || document.activeElement === document.body;
+    const en = document.getElementById("entrar"), entrada = document.getElementById("entrada");
+    const ne = document.getElementById("note-editor"), ta = document.getElementById("note-text");
+    if (semFoco && ne && ta && ne.classList.contains("show")) { ta.focus(); ta.setSelectionRange(ta.value.length, ta.value.length); }   // #build-observacao
+    else if (semFoco && en && entrada && !entrada.classList.contains("fechada")) en.focus();
+  }
+  marcarDona();
+  if (gravarAoDecidir) { gravarAoDecidir = false; gravarBiblioteca(); }
+}
+async function usarEstaAba() {
+  if (navigator.locks && await donaOcupada()) { atualizarVeu("recusado"); return; }
+  try { sessionStorage.setItem(ASSUMIR_KEY, String(Date.now())); } catch (e) { /* idem */ }
+  linkPendente = null;   // o #b= fica na URL: a recarga recebe a build de novo (sem isso, o aviso de saída perguntava à toa)
+  location.reload();   // do disco, com tudo o que a outra gravou; a carga toma a trava
+}
+// Parada, a aba não obedece ao teclado: os atalhos escutam a página inteira
+// (Esc, Ctrl+S…) e o inert não os segura. Só o botão do véu. O Ctrl+S também não
+// abre o "Salvar como" do navegador; F5 e os outros atalhos do navegador seguem.
+["keydown", "keyup"].forEach(tipo => window.addEventListener(tipo, (e) => {
+  const v = document.getElementById("aba-dona");
+  if (souDona || !v) return;
+  if (v.contains(e.target) && ["Enter", " ", "Tab"].includes(e.key)) return;
+  if (e.type === "keydown" && (e.ctrlKey || e.metaKey) && (e.key || "").toLowerCase() === "s") e.preventDefault();
+  e.stopImmediatePropagation();
+}, true));
+function virarEspectadora(motivo) {
+  let v = document.getElementById("aba-dona");
+  if (!v) {
+    v = document.createElement("div");
+    v.id = "aba-dona"; v.className = "marker-dialog"; v.setAttribute("role", "dialog"); v.setAttribute("aria-modal", "true");
+    v.setAttribute("aria-labelledby", "aba-dona-titulo"); v.setAttribute("aria-describedby", "aba-dona-texto");
+    v.innerHTML = `<div class="md-panel md-panel-small" tabindex="-1"><h3 class="md-title" id="aba-dona-titulo"></h3>
+      <p class="md-text" id="aba-dona-texto" aria-live="polite"></p>
+      <div class="md-foot md-foot-3"><button type="button" class="btn primary" id="aba-dona-usar">Usar esta aba</button></div></div>`;
+    document.body.appendChild(v);
+    v.querySelector("#aba-dona-usar").addEventListener("click", usarEstaAba);
+  }
+  // o resto da página fica visível mas parado: nem mouse nem foco chegam nele
+  [...document.body.children].forEach(e => { if (e !== v && !e.inert) { e.inert = true; veuInertes.add(e); } });
+  v.classList.toggle("conferindo", motivo === "conferindo");
+  // sem depender de animação (o "Menos movimento" as desliga); conta do primeiro quadro depois do init
+  if (motivo === "conferindo") requestAnimationFrame(() => setTimeout(() => { if (veuMotivo === "conferindo" && v.isConnected) v.classList.add("demorou"); }, 500));
+  atualizarVeu(motivo || "");
+  v.hidden = false;
+  const usar = v.querySelector("#aba-dona-usar");
+  (usar.disabled ? v.querySelector(".md-panel") : usar).focus();
+}
+function atualizarVeu(motivo) {
+  if (motivo !== undefined) veuMotivo = motivo;
+  const t = document.getElementById("aba-dona-texto"), tit = document.getElementById("aba-dona-titulo");
+  if (!t) return;
+  // sem consultar a trava: a consulta tirava a dona do cache do Voltar. Quem avisa
+  // que saiu é a própria dona, na marca (e o clique em "Usar esta aba" confere).
+  const d = lerDona() || {};
+  const viva = !d.fora, conferindo = veuMotivo === "conferindo";
+  tit.textContent = conferindo ? "Conferindo as abas" : viva ? "Aberto em outra aba" : "A outra aba saiu";
+  let texto = conferindo ? "Conferindo se o Montador já está aberto em outra aba deste navegador…"
+    : !viva ? "A outra aba saiu do Montador. Esta pode assumir: ela recarrega com tudo o que foi gravado."
+    : veuMotivo === "recusado" && d.ocupada ? "A outra aba está esperando uma resposta da internet (publicação, exclusão ou o campeão de uma importação). Espere terminar lá."
+    : veuMotivo === "recusado" && d.sujo === 2 ? "A outra aba está com a gravação recusada pelo navegador (espaço cheio ou armazenamento bloqueado): o que mudou lá está só na memória dela. Lá, copie o que quiser guardar em Exportar/importar e feche aquela aba — ou libere espaço e grave de novo."
+    : veuMotivo === "recusado" && d.sujo ? "A outra aba tem alterações não salvas. Salve ou descarte lá antes de usar esta."
+    : veuMotivo === "perdeu" ? "Outra aba passou a usar o Montador. Esta ficou parada para não gravar por cima dela."
+    : "O Montador já está aberto em outra aba deste navegador. Só uma edita por vez — assim uma não apaga o que a outra gravou.";
+  if (linkPendente && !conferindo && veuMotivo !== "perdeu") texto += ` A build “${linkPendente}”, deste link, ainda não foi guardada: ela só entra na biblioteca se você usar esta aba.`;
+  t.textContent = texto;
+  document.getElementById("aba-dona-usar").disabled = conferindo;
+  if (viva && !conferindo && motivo === undefined && navigator.locks) {
+    navigator.locks.query().then(q => {
+      if (souDona || veuMotivo === "conferindo" || q.held.some(l => l.name === DONA_TRAVA) || (lerDona() || {}).fora) return;
+      tit.textContent = "A outra aba saiu";
+      t.textContent = "A outra aba não responde mais (fechou sem avisar). Esta pode assumir: ela recarrega com tudo o que foi gravado.";
+    }, () => {});
+  }
+}
 function refletirSalvar(msg) {
   // "não deu para salvar": há rascunho que um Salvar tentou gravar e não
   // conseguiu. "gravação recusada": o navegador está recusando gravar (a
@@ -6024,6 +6223,7 @@ function refletirSalvar(msg) {
   dis.disabled = !rascunho.sujo;
   dis.tabIndex = rascunho.sujo ? 0 : -1;
   dis.setAttribute("aria-hidden", String(!rascunho.sujo));
+  marcarDona();   // F13-T35: a outra aba precisa saber se há rascunho aqui antes de assumir
   st.className = "save-status" + (erro ? " erro" : rascunho.sujo ? " sujo" : (msg ? " ok" : ""));
   st.textContent = erro ? msg : rascunho.sujo ? "alterações não salvas" : (msg || "");
   st.title = erro ? (erroGravacao ? NAO_SALVOU : NAO_GRAVOU) : "";
@@ -6106,7 +6306,7 @@ function initSalvar() {
       bs[(Math.max(i, 0) + (e.shiftKey ? bs.length - 1 : 1)) % bs.length].focus();
     }
   });
-  window.addEventListener("beforeunload", (e) => { if (rascunho.sujo || bibliotecaNaoGravada) { e.preventDefault(); e.returnValue = ""; } });
+  window.addEventListener("beforeunload", (e) => { if (rascunho.sujo || bibliotecaNaoGravada || (!souDona && linkPendente)) { e.preventDefault(); e.returnValue = ""; } });
 }
 
 // `removidos` (opcional): recebe {itemId, nome, caixa} de cada item que não existe
@@ -6140,6 +6340,7 @@ function comNomes(cats) {
 function loadBuild() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
+    discoLido = raw;   // F13-T35: conferido na hora de pegar a trava
     if (raw) {
       const d = JSON.parse(raw);
       // F13-T32 (bug nº 15): a biblioteca nova existe, mesmo vazia — a migração do
@@ -6350,7 +6551,11 @@ function porqueNaoSaiu(r, pubId) {
 // depois da espera do site): a trava é uma só por build, para tudo o que mexe
 // no site — publicar, tirar do site, excluir. Enquanto uma está no ar, as
 // outras avisam e esperam.
-const noServidor = new Map();   // id da build → "publicando" | "tirando do site"
+// F13-T35: a marca de dona acompanha na hora — publicação no ar recusa a troca de aba
+const noServidor = new (class extends Map {
+  set(k, v) { super.set(k, v); marcarDona(); return this; }
+  delete(k) { const r = super.delete(k); marcarDona(); return r; }
+})();   // id da build → "publicando" | "tirando do site"
 function avisaSeNoServidor(id) {
   const o = noServidor.get(id);
   if (!o) return false;
@@ -6361,6 +6566,7 @@ function avisaSeNoServidor(id) {
 // true = a build saiu da biblioteca. Publicada: primeiro o site; se ele não
 // confirmar, a pessoa decide se apaga só daqui (e fica sabendo do ID).
 async function excluirBuild(id) {
+  if (!(await aindaSouDona())) return false;   // F13-T35: quem chama acabou de passar por um confirm()
   if (avisaSeNoServidor(id)) return false;
   const b = library.builds.find(x => x.id === id);
   if (!b) return false;
@@ -6376,6 +6582,7 @@ async function excluirBuild(id) {
       if (!window.confirm(`${porqueNaoSaiu(r, pubId)}
 
 Apagar só da sua biblioteca mesmo assim?${depois}`)) return false;
+      if (!(await aindaSouDona())) return false;
     }
   }
   deleteBuild(id);
@@ -6747,6 +6954,7 @@ function receberBuildDoLink(hash) {
     gravarBuild();
     library.builds.push({ id: r.id, name: r.name, seq: r.cats.length + 1, mode: r.mode, masterwork: r.masterwork, champion: r.champion, markers: r.markers, desc: r.desc,
       runas: r.runas, habilidades: r.habilidades, layout: r.layout, fav: false, updatedAt: Date.now(), cats: r.cats });
+    if (!souDona) linkPendente = r.name;   // F13-T35: se esta ficar parada, a build do link não chega ao disco
   }
   activateBuild(r.id, true);
   gravarBuild();
@@ -6923,6 +7131,7 @@ async function despublicarBuild(id) {
   if (!pubId) return;
   if (avisaSeNoServidor(id)) return;   // F13-T34: não com uma publicação (ou outra retirada) no ar
   if (!window.confirm(`Tirar "${buildResumo(b).name}" do site? A build continua na sua biblioteca.`)) return;
+  if (!(await aindaSouDona()) || avisaSeNoServidor(id)) return;   // F13-T35
   mostrarPub("Tirando do site", "Aguarde");
   noServidor.set(id, "tirando do site");
   try {
@@ -6941,9 +7150,10 @@ async function excluirPublicacao(pubId) {
   const local = library.builds.find(x => x.pubId === pubId);
   if (local) { await despublicarBuild(local.id); return; }
   if (!window.confirm(`Excluir a publicação ${pubId} do site? Isso não dá pra desfazer.`)) return;
+  if (!(await aindaSouDona())) return;   // F13-T35
   mostrarPub("Excluindo do site", "Aguarde");
   try {
-    const ok = await Servidor.rpc("apagar_build", { p_id: pubId, p_segredo: Servidor.segredo() });
+    const ok = await esperarInternet(Servidor.rpc("apagar_build", { p_id: pubId, p_segredo: Servidor.segredo() }));
     if (!ok) throw new Error("Essa publicação não é deste navegador (o segredo não confere). Só quem publicou pode excluir; se foi você em outro navegador, apague pelo painel do Supabase.");
     publicas.lista = publicas.lista.filter(x => x.id !== pubId); publicas.favs = publicas.favs.filter(x => x.id !== pubId);
     esquecerFavoritos([pubId]); publicas.naoExistem.add(pubId);
@@ -9461,7 +9671,7 @@ function jaContouHoje(pubId, tipo) {
   return false;
 }
 function registrarEvento(pubId, tipo) {
-  if (!pubId || !Servidor.ativo()) return;
+  if (!pubId || !souDona || !Servidor.ativo()) return;   // F13-T35: a aba parada não conta
   if (jaContouHoje(pubId, tipo)) return;
   Servidor.rpc("registrar_evento", { p_id: pubId, p_tipo: tipo }).catch(() => { /* sem internet: a build continua */ });
 }
@@ -9889,6 +10099,7 @@ function initBuildIndex() {
     const nomes = ids.map(id => (resumoPorId(id) || {}).name).filter(Boolean);
     if (!window.confirm(`Excluir ${ids.length} build(s)?\n\n${nomes.join("\n")}\n\nAs publicadas também saem do site. Isso não dá pra desfazer.`)) return;
     (async () => {
+      if (!(await aindaSouDona())) return;   // F13-T35: depois do confirm, ainda é a dona?
       // uma de cada vez: a publicada só sai daqui depois que o site confirmar;
       // a que não sair fica na biblioteca, e o aviso diz qual e por quê
       const ficaram = [];
@@ -9947,11 +10158,11 @@ function initBuildIndex() {
   // a lista se atualiza sozinha — só com a aba aberta e a janela à vista, para
   // não bater no servidor em segundo plano.
   setInterval(() => {
-    if (buildScreen !== "lista" || biView !== "publicas" || document.hidden) return;
+    if (!souDona || buildScreen !== "lista" || biView !== "publicas" || document.hidden) return;
     carregarPublicas(true);
   }, 5 * 60 * 1000);
   document.addEventListener("visibilitychange", () => {
-    if (document.hidden || buildScreen !== "lista" || biView !== "publicas") return;
+    if (!souDona || document.hidden || buildScreen !== "lista" || biView !== "publicas") return;
     if (Date.now() - publicas.carregadoEm > 5 * 60 * 1000) carregarPublicas(true);
   });
 
@@ -10111,10 +10322,10 @@ function initLibrary() {
         showIoMsg(msg, r.unknown.length > 0);
         if (r.championKey) {
           const idNova = build.id;
-          Campeoes.carregar().then(() => {
+          esperarInternet(Campeoes.carregar().then(() => {
             const c = Campeoes.porChave(r.championKey);
             if (c && build.id === idNova) { build.champion = c; gravarImportado(); renderBuildAll(); }
-          }).catch(() => { /* sem internet: fica em Todos os campeões */ });
+          }).catch(() => { /* sem internet: fica em Todos os campeões */ }));
         }
       });
       return;
@@ -10133,11 +10344,11 @@ function initLibrary() {
     if (r.desc || r.layout || r.runas || r.habilidades) gravarBuild();
     if (r.championName) {
       const idNova = build.id;
-      Campeoes.carregar().then(() => {
+      esperarInternet(Campeoes.carregar().then(() => {
         const c = Campeoes.porNome(r.championName);
         if (c && build.id === idNova) { build.champion = c; gravarImportado(); renderBuildAll(); }
         else if (!c) showIoMsg(`Campeão "${r.championName}" não está na lista do Data Dragon; a build ficou em Todos os campeões.`, true);
-      }).catch(() => showIoMsg(`Sem internet para conferir o campeão "${r.championName}"; a build ficou em Todos os campeões.`, true));
+      }).catch(() => showIoMsg(`Sem internet para conferir o campeão "${r.championName}"; a build ficou em Todos os campeões.`, true)));
     }
     if (r.masterwork) {
       build.masterwork = true;
@@ -10161,6 +10372,22 @@ function initLibrary() {
 // ---------------- init ----------------
 
 function initBuildBuilder() {
+  decidirDona();   // F13-T35: quem é a dona (a gravação da carga espera a resposta)
+  // a parada acompanha a dona: o texto do véu diz se ela saiu ou está ocupada
+  const acompanhar = () => { if (!souDona && veuMotivo !== "conferindo" && document.getElementById("aba-dona")) atualizarVeu(); };
+  setInterval(acompanhar, 2000);
+  document.addEventListener("visibilitychange", acompanhar);
+  window.addEventListener("storage", (e) => { if (e.key === DONA_KEY || e.key === null) acompanhar(); });
+  // a dona que sai (fecha, recarrega, vai para outra página) avisa na marca; se
+  // volta pelo Voltar e ninguém assumiu, retoma (se alguém assumiu, a trava diz)
+  window.addEventListener("pagehide", (e) => {
+    if (!souDona) return;
+    marcarDona(true);
+    // F5 da dona: a recarga toma a vez de volta (com a conferência do rascunho),
+    // mesmo com outra aba já na fila da trava. O bilhete morre com a aba.
+    if (!e.persisted) { try { sessionStorage.setItem(ASSUMIR_KEY, String(Date.now())); } catch (er) { /* sem sessionStorage: a fila decide */ } }
+  });
+  window.addEventListener("pageshow", (e) => { if (e.persisted && souDona && (lerDona() || {}).fora) marcarDona(); });
   loadBuild();
   // Sempre existe uma build ativa para editar, mesmo no primeiro acesso.
   if (!build.id) {
@@ -10248,9 +10475,10 @@ function initBuildBuilder() {
   document.querySelectorAll(".span-opt").forEach(btn => {
     btn.addEventListener("click", () => setGeneralSpan(Number(btn.dataset.span)));
   });
-  document.getElementById("clear-build").addEventListener("click", () => {
+  document.getElementById("clear-build").addEventListener("click", async () => {
     if (!build.cats.length) return;
     if (window.confirm("Apagar todas as categorias desta build?")) {
+      if (!(await aindaSouDona())) return;   // F13-T35
       build.cats = [];
       build.selectedCatId = null;
       renderBuild();

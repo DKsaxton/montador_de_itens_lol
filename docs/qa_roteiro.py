@@ -119,6 +119,7 @@ class Sessao:
         if not chrome:
             sys.exit("Não achei o Chrome. Ajuste CHROMES no topo do arquivo.")
         s = socket.socket(); s.bind(("127.0.0.1", 0)); porta = s.getsockname()[1]; s.close()
+        self.porta = porta
         import tempfile
         # perfil próprio: dois Chromes no mesmo user-data-dir e o segundo não sobe
         perfil = tempfile.mkdtemp(prefix="qa-montador-")
@@ -148,6 +149,30 @@ class Sessao:
 
     def fechar(self):
         try: self.proc.kill()
+        except Exception: pass
+
+    def nova_aba(self):
+        """Uma segunda aba no MESMO Chrome — mesmo perfil, mesmo localStorage, e o
+        evento "storage" chega de uma para a outra (F13-T35, duas abas abertas)."""
+        req = urllib.request.Request("http://127.0.0.1:%d/json/new?about:blank" % self.porta, method="PUT")
+        alvo = json.load(urllib.request.urlopen(req))
+        outra = object.__new__(Sessao)
+        outra.proc = None
+        outra.porta = self.porta
+        outra.ws = websocket.create_connection(alvo["webSocketDebuggerUrl"], suppress_origin=True)
+        outra.ws.settimeout(90)
+        outra._id = 0; outra.erros = []; outra.rede = []; outra.dialogos = []
+        outra.envia("Page.enable"); outra.envia("Runtime.enable"); outra.envia("Log.enable")
+        outra.url = self.url
+        outra.alvo_id = alvo["id"]
+        return outra
+
+    def fechar_aba(self):
+        """Fecha a aba de verdade (não só a conexão): aberta, ela continua ouvindo o
+        localStorage e reage aos grupos seguintes do roteiro."""
+        try: self.ws.close()
+        except Exception: pass
+        try: urllib.request.urlopen("http://127.0.0.1:%d/json/close/%s" % (self.porta, self.alvo_id)).read()
         except Exception: pass
 
     def envia(self, metodo, params=None):
@@ -1190,6 +1215,303 @@ def checar_ultima(s, p):
     s.entrar()
 
 
+def checar_abas(s, p):
+    """F13-T35 (bug nº 27): com duas abas abertas, cada uma gravava a biblioteca
+    que tinha desde que abriu — a segunda a gravar apagava a build criada na
+    primeira. Decisão do Leo: uma aba por vez. A que abre depois fica parada sob
+    um véu; "Usar esta aba" recarrega do disco e assume, e é recusado enquanto a
+    dona tem alteração não gravada ou espera resposta da internet. Várias abas
+    de verdade no mesmo Chrome — mesmo localStorage, mesma trava (Web Locks);
+    cliques e teclas de verdade."""
+    print(chr(10) + "%sDUAS ABAS%s" % (AMARELO, FIM))
+    s.limpar_memoria(); s.entrar()
+    s.js("switchTab('build'); showBuildScreen('lista'); 'ok'"); time.sleep(0.6)
+    no_disco = lambda: s.js("(JSON.parse(localStorage.getItem('lol-builds-v3') || 'null') || { builds: [] }).builds.map(x => x.name)")
+    marca = lambda q: q.js("JSON.parse(localStorage.getItem('montador.dona') || 'null')")
+    veu = lambda q: q.js("""(() => { const v = document.getElementById('aba-dona'); if (!v || v.hidden) return null;
+      const e = document.elementFromPoint(innerWidth / 2, 30);
+      return { titulo: document.getElementById('aba-dona-titulo').textContent, texto: document.getElementById('aba-dona-texto').textContent,
+        emCima: !!(e && e.closest('#aba-dona')), parado: [...document.body.children].filter(x => x !== v).every(x => x.inert),
+        leitor: v.getAttribute('aria-describedby') === 'aba-dona-texto' && document.getElementById('aba-dona-texto').getAttribute('aria-live') === 'polite' }; })()""")
+    texto_veu = lambda q: q.js("(document.getElementById('aba-dona-texto') || {}).textContent || ''")
+
+    def espera(q, expr, limite=8.0):
+        fim = time.time() + limite
+        while time.time() < fim:
+            try:
+                if q.js(expr):
+                    return True
+            except (RuntimeError, KeyError):   # no meio de uma recarga a resposta pode vir sem "result"
+                pass
+            time.sleep(0.25)
+        return False
+
+    decidiu = lambda q: espera(q, "typeof decidido !== 'undefined' && decidido === true")
+
+    def recarregou(q, clique=None, expr=None):
+        """Clica de verdade (ou roda o JS) e espera a página nova decidir quem é a dona."""
+        q.js("window.__velha = 1; 'ok'")
+        if clique:
+            q.clicar(clique, 0.3)
+        else:
+            q.js(expr)
+        return espera(q, "typeof window.__velha === 'undefined' && document.readyState === 'complete'", 15) and decidiu(q)
+
+    def tentar_usar(q):
+        """A aba parada clica "Usar esta aba": recusado, ela nem recarrega."""
+        q.js("window.__fica = 1; 'ok'")
+        q.clicar("#aba-dona-usar", 0.8)
+        return q.js("({ fica: window.__fica === 1, dona: souDona, texto: document.getElementById('aba-dona-texto').textContent })")
+
+    b = s.nova_aba(); c = d = e = f = g = h = v = w = None
+    try:
+        # enquanto a trava não responde, a aba nova já nasce parada: um clique em
+        # "Entrar na loja" não abre nada (antes, por 2 s, a loja abria e o que se
+        # fazia parecia gravado e depois sumia)
+        b.abrir()
+        b.clicar("#entrar", 0.2)
+        cf = b.js("({ conferindo: !!document.querySelector('#aba-dona.conferindo'), entrou: document.getElementById('entrada').classList.contains('saindo') || document.getElementById('entrada').classList.contains('fechada'), decidido: typeof decidido === 'undefined' ? null : decidido })")
+        p.conta("duas abas", "enquanto confere a trava, a aba nova já nasce parada", cf["conferindo"] and not cf["entrou"] and not cf["decidido"],
+                "enquanto confere: %s" % cf)
+        decidiu(b)
+        vb = veu(b)
+        p.conta("duas abas", "a segunda aba abre parada, sob o véu, com a página por baixo sem resposta",
+                bool(vb) and vb["emCima"] and vb["parado"] and vb["leitor"] and vb["titulo"] == "Aberto em outra aba" and "já está aberto em outra aba" in vb["texto"], "véu: %s" % vb)
+        # a aba 1 cria uma build DEPOIS que a 2 abriu; a 2 grava o que tem na memória
+        s.clicar("#bi-new", 1.0); s.js("build.name = 'Da aba 1'; gravarBuild(); showBuildScreen('lista'); 'ok'"); time.sleep(0.4)
+        gravou = b.js("gravarBiblioteca()")
+        disco = no_disco()
+        p.conta("duas abas", "a aba parada não grava por cima da build criada na outra", "Da aba 1" in disco and gravou is False,
+                "gravarBiblioteca na aba 2: %s · no disco: %s" % (gravou, disco))
+        if not vb:
+            return
+        # a aba 1 na forja com uma caixa escolhida (o Esc solta a caixa — atalho da página inteira)
+        s.js("(() => { showBuildScreen('forja'); build.selectedCatId = build.cats[0] && build.cats[0].id; renderBuild(); return 'ok'; })()")
+        # a aba 2 assume: recarrega do disco, com a build da aba 1
+        ok = recarregou(b, "#aba-dona-usar")
+        if ok:
+            b.entrar()
+        espera(s, "!souDona", 3)
+        va, vb2 = veu(s), veu(b)
+        tem = b.js("library.builds.map(x => x.name)") if ok else []
+        p.conta("duas abas", "\"Usar esta aba\" recarrega do disco e assume; a outra fica parada",
+                ok and not vb2 and "Da aba 1" in tem and bool(va) and va["parado"] and "passou a usar" in va["texto"],
+                "recarregou %s · aba 2: %s · véu na aba 2 %s · véu na aba 1: %s" % (ok, tem, vb2, va))
+        caixa = s.js("build.selectedCatId")
+        for tipo in ("rawKeyDown", "keyUp"):
+            s.envia("Input.dispatchKeyEvent", {"type": tipo, "key": "Escape", "code": "Escape", "windowsVirtualKeyCode": 27, "nativeVirtualKeyCode": 27})
+        time.sleep(0.3)
+        depois = s.js("build.selectedCatId")
+        # o Ctrl+S não abre o "Salvar como" do navegador (o evento sai anulado)
+        salvar = s.js("!document.body.dispatchEvent(new KeyboardEvent('keydown', { key: 's', ctrlKey: true, bubbles: true, cancelable: true }))")
+        p.conta("duas abas", "parada, a aba não obedece aos atalhos (o Esc não mexe na forja; o Ctrl+S não abre o \"Salvar como\")",
+                bool(caixa) and depois == caixa and salvar is True,
+                "caixa escolhida antes %s · depois do Esc %s · Ctrl+S anulado %s" % (caixa, depois, salvar))
+        # a aba 2 cria outra; a aba 1 (que perdeu a vez) tenta gravar
+        b.js("switchTab('build'); showBuildScreen('lista'); 'ok'"); time.sleep(0.6)
+        b.clicar("#bi-new", 1.0); b.js("build.name = 'Da aba 2'; gravarBuild(); showBuildScreen('lista'); 'ok'"); time.sleep(0.4)
+        gravou = s.js("gravarBiblioteca()")
+        disco = no_disco()
+        p.conta("duas abas", "a aba que perdeu a vez não grava por cima", "Da aba 1" in disco and "Da aba 2" in disco and gravou is False,
+                "gravarBiblioteca na aba 1: %s · no disco: %s" % (gravou, disco))
+        # a marca escrita por uma aba que já perdeu a vez (um confirm atrasado) não recusa a troca
+        velha = s.js("""(async () => { const antes = localStorage.getItem('montador.dona');
+          localStorage.setItem('montador.dona', JSON.stringify({ cliente: 'aba-que-perdeu', sujo: 1, ocupada: 0 }));
+          const r = await donaOcupada(); localStorage.setItem('montador.dona', antes); return r; })()""")
+        p.conta("duas abas", "a marca de uma aba que já perdeu a vez não recusa a troca", velha is False, "donaOcupada com a marca velha: %s" % velha)
+        # com rascunho na dona, a troca é recusada (a aba parada nem recarrega)
+        b.js("(() => { showBuildScreen('forja'); if (!build.editing) document.getElementById('edit-switch').click(); build.cats[0].items.push({ itemId: 'long-sword', note: '' }); saveBuild(); return 'ok'; })()")
+        time.sleep(0.4)
+        r = tentar_usar(s)
+        p.conta("duas abas", "com alteração não salva na outra, \"Usar esta aba\" é recusado", r["fica"] and not r["dona"] and "alterações não salvas" in r["texto"],
+                "ficou %s · virou dona %s · texto: %s" % (r["fica"], r["dona"], r["texto"]))
+        b.js("descartarAlteracoes(); if (build.editing) document.getElementById('edit-switch').click(); 'ok'"); time.sleep(0.4)
+        # com a gravação recusada na dona (T31), também: o que só está na memória dela não pode se perder
+        b.js("""(() => { window.__setOrig = Storage.prototype.setItem;
+          Storage.prototype.setItem = function (k, v) { if (k === 'lol-builds-v3') throw new DOMException('cheio', 'QuotaExceededError'); return window.__setOrig.call(this, k, v); };
+          gravarBiblioteca(); fecharPub(); return 'ok'; })()""")
+        recusada = (marca(b) or {}).get("sujo")
+        r = tentar_usar(s)
+        b.js("Storage.prototype.setItem = window.__setOrig; gravarBiblioteca(); 'ok'"); time.sleep(0.3)
+        p.conta("duas abas", "com a gravação recusada na outra, \"Usar esta aba\" é recusado (e diz o que fazer lá)",
+                recusada == 2 and r["fica"] and not r["dona"] and "gravação recusada" in r["texto"] and "Exportar/importar" in r["texto"],
+                "marca na hora %s · ficou %s · virou dona %s · texto: %s" % (recusada, r["fica"], r["dona"], r["texto"]))
+        # com uma publicação no ar na outra, também; a marca acompanha na hora (não na próxima volta)
+        marcou = b.js("noServidor.set('qa-t35', 'publicando'); JSON.parse(localStorage.getItem('montador.dona')).ocupada === 1")
+        r = tentar_usar(s)
+        solto = b.js("noServidor.delete('qa-t35'); JSON.parse(localStorage.getItem('montador.dona')).ocupada === 0")
+        p.conta("duas abas", "com publicação no ar na outra, \"Usar esta aba\" é recusado", marcou and solto and r["fica"] and not r["dona"] and "resposta da internet" in r["texto"],
+                "marca na hora %s · solta na hora %s · ficou %s · virou dona %s · texto: %s" % (marcou, solto, r["fica"], r["dona"], r["texto"]))
+        # excluir do site uma publicação que não está na biblioteca também é esperar a internet
+        ex = b.js("""(async () => { window.__rpcOrig = Servidor.rpc; window.__confOrig = window.confirm; window.confirm = () => true;
+          Servidor.rpc = (nome, a) => nome === 'apagar_build' ? new Promise(r => { window.__soltaRpc = r; }) : window.__rpcOrig(nome, a);
+          excluirPublicacao('qa35xx'); await new Promise(r => setTimeout(r, 300));
+          const esperando = JSON.parse(localStorage.getItem('montador.dona')).ocupada;
+          window.__soltaRpc(true); await new Promise(r => setTimeout(r, 300));
+          const depois = JSON.parse(localStorage.getItem('montador.dona')).ocupada;
+          Servidor.rpc = window.__rpcOrig; window.confirm = window.__confOrig; fecharPub(); return { esperando, depois }; })()""")
+        p.conta("duas abas", "excluir do site uma publicação fora da biblioteca conta como esperar a internet", ex["esperando"] == 1 and ex["depois"] == 0,
+                "marca esperando %s · depois %s" % (ex["esperando"], ex["depois"]))
+        # importação com campeão, esperando a lista da internet: também
+        b.js("""(() => { window.__carregarOrig = Campeoes.carregar; Campeoes.carregar = () => new Promise(r => { window.__soltaCampeao = r; });
+          switchTab('build'); showBuildScreen('forja');
+          if (!document.getElementById('io-panel').classList.contains('show')) document.getElementById('toggle-io').click();
+          const c = build.cats[0]; c.items.push({ itemId: 'long-sword', note: '' }); const t = buildToText(); c.items.pop();
+          document.getElementById('import-text').value = t + String.fromCharCode(10) + 'Campeão: Ahri'; return 'ok'; })()""")
+        time.sleep(0.4)
+        b.clicar("#import-btn", 0.6)
+        esperando = (marca(b) or {}).get("ocupada")
+        r = tentar_usar(s)
+        b.js("window.__soltaCampeao && window.__soltaCampeao(); Campeoes.carregar = window.__carregarOrig; 'ok'"); time.sleep(0.4)
+        solto = (marca(b) or {}).get("ocupada")
+        p.conta("duas abas", "com a importação esperando o campeão na outra, \"Usar esta aba\" é recusado",
+                esperando == 1 and solto == 0 and r["fica"] and not r["dona"] and "resposta da internet" in r["texto"],
+                "marca esperando %s · depois %s · ficou %s · texto: %s" % (esperando, solto, r["fica"], r["texto"]))
+        # a dona recarrega (F5): continua dona
+        b.abrir(); decidiu(b)
+        f5 = b.js("({ dona: souDona, veu: !!document.getElementById('aba-dona') })")
+        p.conta("duas abas", "a dona recarrega (F5) e continua dona", f5["dona"] and not f5["veu"] and s.js("!souDona"), "aba 2 depois do F5: %s" % f5)
+        # a dona vai a outra página e volta (Voltar): volta inteira, do cache do navegador —
+        # a parada não a tira de lá (a consulta da trava a despejava) — e retoma a marca
+        b.envia("Page.bringToFront"); b.js("window.__fica = 1; 'ok'")
+        b.envia("Page.navigate", {"url": b.url + "docs/qa.md"}); time.sleep(4.5)
+        fora = texto_veu(s)
+        hist = b.envia("Page.getNavigationHistory")
+        b.envia("Page.navigateToHistoryEntry", {"entryId": hist["entries"][hist["currentIndex"] - 1]["id"]}); time.sleep(2)
+        vt = b.js("({ fica: window.__fica === 1, dona: souDona })")
+        espera(s, "(document.getElementById('aba-dona-texto') || {}).textContent.includes('já está aberto')", 4)
+        volta = texto_veu(s)
+        p.conta("duas abas", "a dona vai a outra página e volta inteira (Voltar); a parada acompanha",
+                "saiu do Montador" in fora and vt["fica"] and vt["dona"] and "já está aberto" in volta,
+                "véu com a dona fora: %s · a dona voltou: %s · véu depois: %s" % (fora[:45], vt, volta[:45]))
+        # a dona fecha: a parada avisa (pela marca) e assume com um clique; a entrada da loja volta a ter o foco
+        b.fechar_aba()
+        espera(s, "(document.getElementById('aba-dona-texto') || {}).textContent.includes('saiu do Montador')", 5)
+        vs = veu(s) or {}
+        ok = "saiu do Montador" in vs.get("texto", "") and recarregou(s, "#aba-dona-usar")
+        fim = s.js("({ dona: souDona, veu: !!document.getElementById('aba-dona'), foco: document.activeElement && document.activeElement.id, nomes: library.builds.map(x => x.name) })") if ok else {}
+        if ok:
+            s.entrar()
+        p.conta("duas abas", "a outra fechou: a parada avisa e assume, com as duas builds",
+                ok and vs.get("titulo") == "A outra aba saiu" and fim["dona"] and not fim["veu"] and fim["foco"] == "entrar" and "Da aba 1" in fim["nomes"] and "Da aba 2" in fim["nomes"],
+                "véu: %s · depois: %s" % (vs, fim))
+        # um link de build (#b=) aberto enquanto a loja está em outra aba: o véu avisa
+        # que a build só é guardada usando esta aba, e fechar pergunta antes
+        s.js("switchTab('build'); showBuildScreen('lista'); 'ok'"); time.sleep(0.4)
+        hash_ = s.js("(() => { const x = library.builds.find(y => y.name === 'Da aba 2'); const l = buildParaLink({ ...x, id: 'qa-link-35', name: 'Do link' }); return l.slice(l.indexOf('#')); })()")
+        e = s.nova_aba(); e.abrir(hash_); decidiu(e)
+        lk = e.js("({ texto: (document.getElementById('aba-dona-texto') || {}).textContent || '', sair: !window.dispatchEvent(new Event('beforeunload', { cancelable: true })) })")
+        p.conta("duas abas", "um link de build aberto numa aba parada: o véu avisa, e fechar pergunta",
+                "ainda não foi guardada" in lk["texto"] and lk["sair"] is True, "véu: %s · aviso de saída %s" % (lk["texto"], lk["sair"]))
+        e.fechar_aba(); e = None
+        # a dona presa num confirm() (o Excluir) enquanto outra aba assume e cria uma build:
+        # o OK de lá não pode gravar a biblioteca velha por cima. O confirm é trocado por
+        # uma espera que trava a aba do mesmo jeito (o roteiro aceita os de verdade na hora).
+        c = s.nova_aba(); c.abrir(); decidiu(c)
+        s.js("""(() => { showBuildScreen('forja');
+          window.confirm = () => { const fim = Date.now() + 9000; while (Date.now() < fim) {} return true; };
+          setTimeout(() => document.getElementById('del-build').click(), 50); return 'ok'; })()""")
+        time.sleep(0.5)
+        assumiu = recarregou(c, expr="usarEstaAba(); 'ok'")
+        if assumiu:
+            c.entrar()
+            c.js("switchTab('build'); showBuildScreen('lista'); 'ok'"); time.sleep(0.5)
+            c.clicar("#bi-new", 1.0); c.js("build.name = 'Da aba 3'; gravarBuild(); 'ok'")
+        s.js("'acordou'"); time.sleep(0.6)          # espera o "confirm" da aba 1 terminar
+        disco = no_disco()
+        r = s.js("({ dona: souDona, texto: (document.getElementById('aba-dona-texto') || {}).textContent || '' })")
+        p.conta("duas abas", "a dona presa num diálogo não grava por cima da aba que assumiu",
+                assumiu and "Da aba 3" in disco and not r["dona"] and "passou a usar" in r["texto"],
+                "a outra assumiu %s · no disco: %s · aba presa: %s" % (assumiu, disco, r))
+        # o "Limpar build" depois do confirm, numa aba que perdeu a vez e ainda não
+        # sabe (o aviso da trava atrasado): pergunta ao navegador antes de mexer
+        antes = marca(s)
+        lb = s.js("""(async () => { const n = build.cats.length; souDona = true; window.confirm = () => true;
+          document.getElementById('clear-build').click(); await new Promise(r => setTimeout(r, 400));
+          return { antes: n, depois: build.cats.length, dona: souDona }; })()""")
+        depois = marca(s)
+        p.conta("duas abas", "o \"Limpar build\" numa aba que perdeu a vez sem saber não mexe em nada",
+                lb["antes"] > 0 and lb["depois"] == lb["antes"] and not lb["dona"] and depois == antes,
+                "caixas %s → %s · dona %s · marca antes %s · depois %s" % (lb["antes"], lb["depois"], lb["dona"], antes, depois))
+        # uma aba nova espera a vez (a trava tem uma pequena espera, para o F5) enquanto
+        # a dona grava e sai: a nova tem de reler o disco, não assumir com a memória velha
+        d = s.nova_aba(); d.abrir()
+        c.js("build.name = 'Antes de sair'; gravarBuild(); 'ok'")
+        c.envia("Page.navigate", {"url": "about:blank"})
+        decidiu(d); time.sleep(0.5)
+        decidiu(d)
+        d.js("gravarBiblioteca(); 'ok'")
+        rd = d.js("({ dona: souDona, nomes: library.builds.map(x => x.name) })")
+        disco = no_disco()
+        p.conta("duas abas", "a biblioteca que mudou enquanto a aba nova esperava a vez é relida",
+                rd["dona"] and "Antes de sair" in rd["nomes"] and "Antes de sair" in disco,
+                "aba nova: %s · no disco: %s" % (rd, disco))
+        # "Usar esta aba" numa aba de link: assume sem o aviso falso de saída ("Recarregar
+        # site?") — o #b= fica na URL e a build do link entra na carga nova
+        hash2 = d.js("(() => { const x = library.builds.find(y => !y.temp); const l = buildParaLink({ ...x, id: 'qa-link-35b', name: 'Do link 2' }); return l.slice(l.indexOf('#')); })()")
+        f = s.nova_aba(); f.abrir(hash2); decidiu(f)
+        f.dialogos.clear()
+        assumiu = recarregou(f, "#aba-dona-usar")
+        rf = f.js("({ dona: souDona, link: library.builds.some(x => x.name === 'Do link 2') })") if assumiu else {}
+        avisos = [x for x in f.dialogos if x.startswith("beforeunload")]
+        p.conta("duas abas", "\"Usar esta aba\" numa aba de link assume sem o aviso falso de saída, com a build do link",
+                assumiu and rf["dona"] and rf["link"] and not avisos, "assumiu %s · %s · avisos: %s" % (assumiu, rf, avisos or "nenhum"))
+        # a dona que quebra sem avisar (sem pagehide, a marca não diz "saiu"): a parada percebe pela trava
+        f.ws.send(json.dumps({"id": 99999, "method": "Page.crash"}))
+        espera(s, "(document.getElementById('aba-dona-texto') || {}).textContent.includes('não responde mais')", 6)
+        tq = texto_veu(s)
+        p.conta("duas abas", "a dona que quebra sem avisar: a parada percebe", "não responde mais" in tq, "véu: %s" % tq[:90])
+        # a página de captura da observação (#build-observacao): o foco volta ao editor depois do "conferindo"
+        s.js("""(() => { const d = JSON.parse(localStorage.getItem('lol-builds-v3')); const b = d.builds.find(x => x.id === d.activeId) || d.builds[0];
+          d.activeId = b.id; if (!b.cats.length) b.cats.push({ id: 'cat-qa', name: 'QA', desc: '', kind: 'comum', span: 2, items: [] });
+          if (!b.cats[0].items.length) b.cats[0].items.push({ itemId: 'long-sword', note: '' });
+          localStorage.setItem('lol-builds-v3', JSON.stringify(d)); return 'ok'; })()""")
+        g = s.nova_aba(); g.abrir("#build-observacao"); decidiu(g); time.sleep(0.4)
+        fo = g.js("({ dona: souDona, foco: document.activeElement && document.activeElement.id, editor: document.getElementById('note-editor').classList.contains('show') })")
+        p.conta("duas abas", "a página de captura da observação fica com o foco no editor", fo["dona"] and fo["editor"] and fo["foco"] == "note-text", "%s" % fo)
+        # F5 da dona com outra aba ainda conferindo (na fila da trava): a dona continua dona
+        h = s.nova_aba(); h.abrir()
+        g.abrir(); decidiu(g); decidiu(h); time.sleep(1.5)
+        f5 = {"dona": g.js("souDona"), "outra": h.js("({ dona: souDona, veu: !!document.getElementById('aba-dona') })")}
+        p.conta("duas abas", "F5 da dona com outra aba na fila da trava: a dona continua dona",
+                f5["dona"] and not f5["outra"]["dona"] and f5["outra"]["veu"], "%s" % f5)
+        # outra aba toma a trava bem na hora em que esta confere se ela é sua (entre a
+        # concessão e a consulta): esta não assume — senão ficavam duas donas.
+        # A conferência desta aba é atrasada de propósito, para a corrida ser certa.
+        g.fechar_aba(); g = None; time.sleep(0.5)
+        s.js("localStorage.setItem('montador.dona', JSON.stringify({ cliente: 'qa', sujo: 0, ocupada: 0 })); 'ok'")
+        v = s.nova_aba()
+        v.envia("Page.addScriptToEvaluateOnNewDocument", {"source": "(() => { if (!navigator.locks) return; const req = navigator.locks.request.bind(navigator.locks); navigator.locks.request = (nome, ...r) => String(nome).startsWith('montador.eu.') ? new Promise(ok => setTimeout(ok, 1500)).then(() => req(nome, ...r)) : req(nome, ...r); })()"})
+        v.abrir()
+        h.js("navigator.locks.request('montador.dona', { steal: true }, () => new Promise(() => {})); 'ok'")
+        time.sleep(3.5)
+        rv = v.js("({ dona: souDona, veu: !!document.getElementById('aba-dona') })")
+        p.conta("duas abas", "outra aba toma a trava enquanto esta confere: esta não assume", not rv["dona"] and rv["veu"], "aba: %s" % rv)
+        v.fechar_aba(); v = None
+        # a aba nova que desiste da espera (2 s) justo quando a marca diz "saiu" — a
+        # dona recarregando, que regrava a marca logo depois — não toma a vez: confere
+        # de novo em 1 s. A trava continua com a aba de antes; o roteiro faz o papel da
+        # dona que volta, regravando a marca a tempo.
+        s.js("localStorage.setItem('montador.dona', JSON.stringify({ cliente: 'qa', sujo: 0, ocupada: 0, fora: 1 })); 'ok'")
+        w = s.nova_aba(); w.abrir(); time.sleep(2.3)
+        s.js("localStorage.setItem('montador.dona', JSON.stringify({ cliente: 'qa', sujo: 0, ocupada: 0 })); 'ok'")
+        time.sleep(2.0)
+        rw = w.js("({ dona: souDona, veu: !!document.getElementById('aba-dona') })")
+        p.conta("duas abas", "o \"saiu\" que a dona regrava logo depois (F5) não faz a aba nova tomar a vez", not rw["dona"] and rw["veu"], "aba: %s" % rw)
+        w.fechar_aba(); w = None
+        # a trava negada pelo navegador (dados do site bloqueados): a aba sozinha
+        # funciona, como antes — não fica presa no véu
+        e = s.nova_aba()
+        e.envia("Page.addScriptToEvaluateOnNewDocument", {"source": "(() => { const nega = () => Promise.reject(new DOMException('The request was denied.', 'SecurityError')); if (navigator.locks) { navigator.locks.request = nega; navigator.locks.query = nega; } })()"})
+        e.abrir(); decidiu(e)
+        ng = e.js("({ dona: souDona, veu: !!document.getElementById('aba-dona') })")
+        p.conta("duas abas", "com a trava negada pelo navegador, a aba não fica presa no véu", ng["dona"] and not ng["veu"], "aba: %s" % ng)
+    finally:
+        for q in (b, c, d, e, f, g, h, v, w):
+            if q:
+                q.fechar_aba()
+
+
 def checar_orfa(s, p):
     """F13-T34 (bug nº 42): excluir a build enquanto ela é publicada deixava a
     publicação no site sem lugar nenhum que guardasse o ID. Servidor SIMULADO:
@@ -1703,6 +2025,7 @@ GRUPOS = [
     ("publicar", checar_publicar),
     ("exclusão", checar_exclusao),
     ("publicação órfã", checar_orfa),
+    ("duas abas", checar_abas),
     ("última build", checar_ultima),
     ("atualização", checar_atualizacao),
     ("rascunho", checar_rascunho),
