@@ -335,7 +335,7 @@ Fase 3 — Build (forja). Além do CLAUDE.md:
 Fase 4 — Som e lojista · Fase 5 — Calculadora e biblioteca · Fase 6 — Publicação e QA
 
 ## 5. Decisões tomadas
-- Plataforma: Claude Code na pasta do repositório DKsaxton/montador_de_itens_lol; deploy por GitHub Pages (main, raiz, .nojekyll). Pages ATIVO desde 13/09/2026 (Deploy from a branch, main, / root): https://dksaxton.github.io/montador_de_itens_lol/
+- Plataforma: Claude Code na pasta do repositório Brelgo/montador_de_itens_lol (era DKsaxton até 30/09/2026, quando o Leo trocou o nick da conta para brelgo; o site antigo, dksaxton.github.io, dá 404 e o GitHub não redireciona). Cada endereço tem a própria memória no navegador: em 01/10/2026 o Leo passou as builds, as preferências e o segredo das publicações do endereço antigo para o novo pelo Console do Opera GX (63 chaves).; deploy por GitHub Pages (main, raiz, .nojekyll). Pages ATIVO desde 13/09/2026 (Deploy from a branch, main, / root): https://dksaxton.github.io/montador_de_itens_lol/
 - Dados: data/catalog.js gerado, nunca editado à mão; ícones por URL do Data Dragon pelo ID.
 - Escopo: só os 225 itens do Capítulo 1. Sem itens removidos, novos ou campeões.
 - Animações de clique por tier; áudio por núcleo (hover/clique), por tier (Lendário no Build) e por item (falas raras).

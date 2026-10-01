@@ -40,7 +40,7 @@ except Exception:
     pass
 
 RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SITE = "https://dksaxton.github.io/montador_de_itens_lol/"
+SITE = "https://brelgo.github.io/montador_de_itens_lol/"   # a conta do GitHub virou Brelgo em 30/09/2026 (o endereço antigo dá 404)
 CHROMES = [
     r"C:\Program Files\Google\Chrome\Application\chrome.exe",
     r"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe",
