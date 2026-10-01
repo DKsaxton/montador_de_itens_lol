@@ -43,7 +43,7 @@ Vêm antes da primeira caixa, uma por linha, em qualquer ordem. Só `BUILD:` é 
 | `MODO:` | modo de jogo, usado no aviso de item indisponível | `Summoner's Rift`, `ARAM`, `ARAM: Mayhem` |
 | `CAMPEÃO:` | campeão em pt-BR, como no cliente | nome do Data Dragon, ex.: `Jinx`, `K'Sante`, `Lee Sin` |
 | `MARCADORES:` | até 3, separados por ` \| ` | ver [marcadores.md](marcadores.md) |
-| `DESCRIÇÃO:` | texto da build numa linha só | ` / ` separa parágrafos |
+| `DESCRIÇÃO:` | texto da build numa linha só | ` / ` (barra com espaço dos dois lados) separa parágrafos; ver a regra dos separadores |
 | `LAYOUT:` | como a build é exibida | `Tabuleiro` (padrão), `Núcleo + bandeja`, `Trilha por fases`, `Árvore de decisão` |
 | `MESTRE FORJADOR:` | liga o interruptor e escolhe o item forjado | nome de um item da build, ou `sim` |
 | `RUNAS:` | trilha primária: a de assinatura primeiro, depois os três slots | `Precisão > Pressione o Ataque \| Triunfo \| Lenda: Espontaneidade \| Golpe de Misericórdia` |
@@ -74,7 +74,7 @@ Dentro da caixa:
 |---|---|
 | `# texto` | descrição da caixa |
 | `= texto` | marco ou teto, ex.: `= ~14min · 6.500g` |
-| `- Item` | um item; `- Item * observação` grava a nota que aparece ao passar o mouse |
+| `- Item` | um item; `- Item * observação` grava a nota que aparece ao passar o mouse. A observação pode ter várias linhas, separadas por ` ¶ ` (sinal de parágrafo com espaço dos dois lados): `- Gume do Infinito * segurar até os 20 min ¶ vender por último`. Na observação a `/` é sempre barra |
 | `- Atributo adicional [Ouro · Vida]` | o fragmento escolhido do Atributo adicional (ARAM: Desordem): `[Nível · Fragmento]`, com o nível (Prata, Ouro ou Prismático) e o nome do fragmento como aparece em "Qual fragmento?" na forja (o composto pelo nome dele: `[Prata · Swiftness]`). Vem antes da observação: `- Atributo adicional [Ouro · Vida] * pegar cedo`. Fragmento que não existe vai para o aviso de "não encontrei", e o item entra sem ele. |
 
 ## Regras
@@ -82,6 +82,7 @@ Dentro da caixa:
 - Acentos e maiúsculas não importam nos nomes de item, marcador, modo e layout.
 - Item desconhecido é listado no aviso de importação e não entra; a build importa mesmo assim.
 - Linha que não é nenhuma das acima é ignorada silenciosamente, então comentários soltos não quebram nada.
+- **Os separadores de linha:** na `DESCRIÇÃO:` da build, ` / ` (barra com espaço dos dois lados) separa os parágrafos; na observação do item (`- Item * ...`), ` ¶ `. Colados, são texto (`AD/AP`, `3/0`, `poke/sustain`, links). Para o separador solto de verdade no meio da linha, escreva-o dobrado (` // ` na descrição, ` ¶¶ ` na observação) — é assim que o Montador exporta, e volta igual. Linha em branco e recuo não vão para o texto. As linhas `# ` (descrição da caixa) e `= ` (marco) são de uma linha só: nelas a barra é sempre texto.
 - A ordem dos itens dentro da caixa é a ordem de compra que aparece na forja e no arsenal do cliente.
 - A build importada entra como rascunho: precisa de **Salvar** para ficar na biblioteca.
 - **Runas ficam de fora**: o formato só trata itens do catálogo do Capítulo 1.

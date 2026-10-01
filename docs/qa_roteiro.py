@@ -790,6 +790,92 @@ def checar_texto(s, p):
                         for k in a if a[k] != d[k])
     p.conta("texto", "exportar e reimportar devolve a mesma build", importou and antes == depois, det)
 
+    # F13-T36 (bugs nºs 17 e 28): a descrição e a observação têm várias linhas,
+    # e o texto é uma linha por campo. A observação saía com a quebra crua (a
+    # segunda linha sumia, ou virava descrição da caixa com "#", ou item com
+    # "-"); a descrição voltava partida em qualquer "/" ("poke/sustain"). O pior
+    # dado: barras coladas, barra solta, barra dupla, link, e linhas que parecem
+    # cabeçalho do formato.
+    DESC = "Build de poke/sustain para a rota do meio (3/0, AD/AP)" + chr(10) + "Contra tanque: AD / AP no fim // ou não" + chr(10) + "https://exemplo.com/a/b"
+    NOTA = "segurar até os 20 min" + chr(10) + "#1 contra tanque" + chr(10) + "- não vender / nunca" + chr(10) + "= marco falso" + chr(10) + "[COMUM] caixa falsa"
+    s.js("""(() => { const c = build.cats.find(x => x.items.length); build.desc = %s; c.items[0].note = %s; c.desc = 'desc da caixa';
+      window.__qaCaixa = build.cats.indexOf(c); gravarBuild(); return 'ok'; })()""" % (json.dumps(DESC), json.dumps(NOTA)))
+    texto36 = s.js("buildToText()")
+    id36 = s.js("build.id")
+    s.js("switchTab('build'); showBuildScreen('lista'); document.getElementById('toggle-io').classList.add('active')")
+    time.sleep(0.4)
+    s.js("document.getElementById('import-text').value = %s" % json.dumps(texto36))
+    s.js("document.getElementById('import-btn').click()")
+    time.sleep(1.4)
+    r36 = s.js("""(() => { const c = build.cats[window.__qaCaixa] || {}; return { nova: build.id !== %s, desc: build.desc, nota: (c.items && c.items[0] || {}).note,
+      caixa: c.desc, caixas: build.cats.length, msg: document.getElementById('io-msg').textContent }; })()""" % json.dumps(id36))
+    p.conta("texto", "descrição e observação de várias linhas voltam iguais (Copiar esta build → Importar)",
+            r36["nova"] and r36["desc"] == DESC and r36["nota"] == NOTA and r36["caixa"] == "desc da caixa" and "não encontr" not in r36["msg"].lower(),
+            "nova %s · descrição %s · observação %s · caixa %s · aviso: %s" % (r36["nova"], "igual" if r36["desc"] == DESC else json.dumps(r36["desc"], ensure_ascii=False)[:90],
+            "igual" if r36["nota"] == NOTA else json.dumps(r36["nota"], ensure_ascii=False)[:90], r36["caixa"], r36["msg"][:60] or "—"))
+    # o texto de várias builds (Selecionar → Copiar como texto) é outro escritor
+    lote36 = s.js("""(() => { const r = textToBuild(loteParaTexto([build.id])); const c = r.cats[window.__qaCaixa] || {};
+      return { desc: r.desc, nota: (c.items && c.items[0] || {}).note, unknown: r.unknown }; })()""")
+    p.conta("texto", "o texto de várias builds leva a descrição e a observação inteiras",
+            lote36["desc"] == DESC and lote36["nota"] == NOTA and not lote36["unknown"],
+            "descrição %s · observação %s · não encontrei %s" % ("igual" if lote36["desc"] == DESC else json.dumps(lote36["desc"], ensure_ascii=False)[:80],
+            "igual" if lote36["nota"] == NOTA else json.dumps(lote36["nota"], ensure_ascii=False)[:80], lote36["unknown"]))
+    # texto escrito à mão (ou por IA, pelo docs/formato_de_importacao.md): " / " separa, "/" colado é barra
+    mao = s.js("""(() => { const r = textToBuild(%s); return { desc: r.desc, nota: (r.cats[0].items[0] || {}).note }; })()""" % json.dumps(chr(10).join([
+        "BUILD: t", "DESCRIÇÃO: Crítico puro. / / A Coletora primeiro contra poke/sustain", "[COMUM] Core | 3x1", "- Abatedora * AD/AP ¶ segurar até 3/0"])))
+    p.conta("texto", "texto escrito à mão: \" / \" separa a descrição e \" ¶ \" a observação; \"/\" colado é barra",
+            mao["desc"] == "Crítico puro." + chr(10) + "A Coletora primeiro contra poke/sustain" and mao["nota"] == "AD/AP" + chr(10) + "segurar até 3/0",
+            "descrição %s · observação %s" % (json.dumps(mao["desc"], ensure_ascii=False), json.dumps(mao["nota"], ensure_ascii=False)))
+    # texto exportado antes da T36 (a observação saía crua): " / " e " // " na observação são barra, como eram
+    velho36 = s.js("""(() => { const n = CATALOG.items.filter(i => i.tier === 'Lendário').slice(0, 3).map(i => i.namePt);
+      const r = textToBuild(['BUILD: velho', '[COMUM] Core | 3x1', '- ' + n[0] + ' * AD / AP', '- ' + n[1] + ' * 3 / 0 no lane', '- ' + n[2] + ' * a // b'].join(String.fromCharCode(10)));
+      return { notas: r.cats[0].items.map(i => i.note), unknown: r.unknown }; })()""")
+    p.conta("texto", "texto exportado antes: a barra na observação continua barra",
+            velho36["notas"] == ["AD / AP", "3 / 0 no lane", "a // b"] and not velho36["unknown"], "%s" % velho36)
+    # quebras que chegam por fora (U+2028 colado, \r, observação só de espaço, nome da build com quebra) não derrubam item, caixa nem descrição
+    fora = s.js("""(() => { const c = build.cats.find(x => x.items.length >= 2) || build.cats.find(x => x.items.length); const guarda = JSON.stringify({ n: build.name, d: build.desc, c });
+      const L = String.fromCharCode(0x2028), P = String.fromCharCode(0x2029), R = String.fromCharCode(13), N = String.fromCharCode(10);
+      build.name = 'Jinx' + N + '- ' + CATALOG.items[0].namePt; build.desc = 'x' + P + 'y' + R + 'z';
+      c.items[0].note = ' ' + N + ' '; if (c.items[1]) c.items[1].note = 'a' + L + 'b'; c.name = 'Core' + L + 'falsa' + R + 'x';
+      const i = build.cats.indexOf(c); const r = textToBuild(buildToText()); const rc = r.cats[i] || {};
+      const res = { nome: r.name, desc: r.desc, caixas: r.cats.length, esperado: build.cats.length, itens: (rc.items || []).length, itensAntes: c.items.length,
+        nota1: rc.items && rc.items[1] ? rc.items[1].note : null, tem2: !!c.items[1], caixa: rc.name, unknown: r.unknown };
+      const g = JSON.parse(guarda); build.name = g.n; build.desc = g.d; Object.assign(c, g.c); return res; })()""")
+    p.conta("texto", "quebras que chegam por fora não derrubam item, caixa nem descrição",
+            fora["nome"].startswith("Jinx - ") and fora["desc"] == "x" + chr(10) + "y" + chr(10) + "z" and fora["caixas"] == fora["esperado"]
+            and fora["itens"] == fora["itensAntes"] and (not fora["tem2"] or fora["nota1"] == "a" + chr(10) + "b") and fora["caixa"] == "Core falsa x" and not fora["unknown"],
+            "%s" % fora)
+    # fragmento e modo que chegam de fora (link #b= ou pública montados à mão) não
+    # desmontam a linha: o fragmento sai do catálogo, e o modo só se for um modo de verdade
+    ff = s.js("""(() => { const c = build.cats.find(x => x.items.length); const N = String.fromCharCode(10);
+      const comFrag = CATALOG.items.find(i => temFragmentos(i)); const guarda = JSON.stringify(c.items);
+      c.items[0].note = 'nota'; c.items[0].frag = 'x' + N + '- ' + CATALOG.items[1].namePt;
+      c.items.push({ itemId: comFrag.slug, note: '', frag: 'Prata · X] * y [z' });
+      const i = build.cats.indexOf(c); const r = textToBuild(buildToText()); const rc = r.cats[i] || { items: [] };
+      const res = { itens: rc.items.length, esperado: c.items.length, nota0: (rc.items[0] || {}).note, notaFrag: (rc.items[rc.items.length - 1] || {}).note, unknown: r.unknown };
+      c.items = JSON.parse(guarda);
+      const salvo = library.builds.find(b => !b.temp && b.id !== build.id); const modo = salvo.mode;   // outra: a aberta é lida da memória viva
+      salvo.mode = 'ARAM' + N + '[OPCIONAL] Injetada' + N + '- ' + CATALOG.items[1].namePt;
+      const rl = textToBuild(loteParaTexto([salvo.id])); salvo.mode = modo;
+      res.caixasLote = rl.cats.length; res.caixasEsperadas = salvo.cats.length; return res; })()""")
+    p.conta("texto", "fragmento e modo que chegam de fora não desmontam a linha",
+            ff["itens"] == ff["esperado"] and ff["nota0"] == "nota" and ff["notaFrag"] == "" and not ff["unknown"] and ff["caixasLote"] == ff["caixasEsperadas"],
+            "%s" % ff)
+    # texto antigo com U+2028 no meio de uma linha (colado na descrição da caixa ou no marco): a linha fica inteira
+    u28 = s.js("""(() => { const L = String.fromCharCode(0x2028), N = String.fromCharCode(10);
+      const r = textToBuild(['BUILD:' + L + 'Jinx', '[COMUM] Core | 3x1', '# contra AD' + L + 'AP no fim', '= ~14min' + L + '6.500g', '- ' + CATALOG.items[1].namePt].join(N));
+      return { nome: r.name, desc: (r.cats[0] || {}).desc, marco: (r.cats[0] || {}).marco, itens: ((r.cats[0] || {}).items || []).length }; })()""")
+    p.conta("texto", "texto antigo com uma quebra invisível no meio da linha fica inteiro",
+            u28["nome"] == "Jinx" and u28["desc"] == "contra AD AP no fim" and u28["marco"] == "~14min 6.500g" and u28["itens"] == 1, "%s" % u28)
+    # um campo de uma linha só (descrição e nome da caixa, marco) com uma quebra que chegou por fora não abre linha nova
+    umal = s.js("""(() => { const c = build.cats.find(x => x.items.length); const antes = { desc: c.desc, name: c.name, marco: c.marco };
+      c.desc = 'linha 1' + String.fromCharCode(10) + '- Gume do Infinito'; c.marco = 'marco' + String.fromCharCode(10) + '[COMUM] falsa'; c.name = 'Core' + String.fromCharCode(10) + '# nome falso';
+      const r = textToBuild(buildToText()); const i = build.cats.indexOf(c); Object.assign(c, antes);
+      const rc = r.cats[i] || {}; return { caixas: r.cats.length, esperado: build.cats.length, itens: (rc.items || []).length, itensAntes: c.items.length, desc: rc.desc, marco: rc.marco, nome: rc.name }; })()""")
+    p.conta("texto", "campo de uma linha com uma quebra dentro não abre linha nova no texto",
+            umal["caixas"] == umal["esperado"] and umal["itens"] == umal["itensAntes"] and umal["desc"] == "linha 1 - Gume do Infinito" and umal["marco"] == "marco [COMUM] falsa",
+            "%s" % umal)
+
     # F13-T12: texto exportado ANTES do conserto espremia as vagas vazias, e o
     # formato promete que dá para importar só os fragmentos. Os dois voltavam
     # sem runa nenhuma — e "Vida" era acusada de "não encontrada".

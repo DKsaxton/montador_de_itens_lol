@@ -6738,7 +6738,7 @@ function moveItem(fromCatId, fromIndex, toCatId, toIndex) {
 //   MODO: ARAM                    (opcional)
 //   CAMPEÃO: Jinx                 (opcional; nome do Data Dragon em pt-BR)
 //   MARCADORES: AD | Habilidade Q | Gume do Infinito   (opcional; até 3)
-//   DESCRIÇÃO: texto numa linha ("/" separa parágrafos)   (opcional)
+//   DESCRIÇÃO: texto numa linha (" / " separa parágrafos) (opcional)
 //   LAYOUT: Trilha por fases        (opcional; Tabuleiro é o padrão)
 //   = ~4min · 900g                  (opcional, dentro da caixa: marco / teto)
 //   [ESCOLHA 1] 4° item | 1/3       (caixa em pilha: o primeiro item é o padrão)
@@ -6783,11 +6783,41 @@ function linhasDeRunas(pagina) {
 const SPAN_TEXT = { 1: "1/1", 2: "1/2", 3: "1/3", 4: "1/4" };
 const TEXT_SPAN = { "1/1": 1, "1": 1, "1/2": 2, "½": 2, "1/3": 3, "⅓": 3, "1/4": 4, "¼": 4 };
 
+// F13-T36 (bugs nºs 17 e 28): a descrição e a observação têm várias linhas, e o
+// formato é uma linha por campo. Antes a observação saía com a quebra crua (a
+// segunda linha sumia na importação, ou virava a descrição da caixa com "#", ou
+// um item que não existe com "-") e a descrição voltava partida em qualquer "/"
+// ("poke/sustain"). Agora um separador entre espaços junta as linhas: " / " na
+// descrição (o que ela sempre usou) e " ¶ " na observação — o texto antigo
+// nunca teve "¶", então uma observação antiga com " / " continua barra, como
+// era. Colado, o separador é texto ("AD/AP", "3/0"); solto de verdade dentro da
+// linha, sai dobrado (" // ") e volta igual. Linha em branco e recuo não vão.
+const QUEBRA = /\r\n?|[\n\u2028\u2029]/;   // o que o navegador mostra como quebra
+function linhasParaTexto(s, sep = "/") {
+  const solto = new RegExp(`(^|\\s)(\\${sep}+)(?=\\s|$)`, "g");
+  return String(s || "").split(QUEBRA).map(l => l.trim()).filter(Boolean)
+    .map(l => l.replace(solto, `$1$2${sep}`)).join(` ${sep} `);
+}
+function textoParaLinhas(s, sep = "/") {
+  const separa = new RegExp(`(?:^|\\s)\\${sep}(?=\\s|$)`);   // um só, entre espaços (ou na borda); " / / " também separa
+  const solto = new RegExp(`(^|\\s)\\${sep}(\\${sep}+)(?=\\s|$)`, "g");
+  return String(s || "").split(separa).map(l => l.trim().replace(solto, "$1$2")).filter(Boolean).join("\n");
+}
+// Campo de uma linha só (nome da build, nome e descrição da caixa, marco): uma
+// quebra que chegue por fora não pode abrir outra linha no texto.
+function umaLinha(s) { return String(s || "").replace(/\s*(?:\r\n?|[\n\u2028\u2029])\s*/g, " ").trim(); }
+function linhaDoItem(e, it) {
+  const nota = linhasParaTexto(e.note, "¶");   // pelo texto já pronto: nota só de espaço não deixa um " * " pendurado
+  // o fragmento sai do catálogo, não do dado cru: um link ou uma pública montados
+  // à mão podiam trazer uma quebra ou um "] * " nele e desmontar a linha
+  const fr = fragmentoDe(it, e);
+  return `- ${it.namePt}${fr ? " [" + fragKey(fr) + "]" : ""}${nota ? " * " + nota : ""}`;
+}
 function buildToText() {
-  const lines = [`BUILD: ${build.name}`];
+  const lines = [`BUILD: ${umaLinha(build.name)}`];
   if (build.mode) lines.push(`MODO: ${build.mode}`);
-  if (build.champion) lines.push(`CAMPEÃO: ${build.champion.name}`);
-  if (build.desc) lines.push(`DESCRIÇÃO: ${build.desc.replace(/\s*\n\s*/g, " / ")}`);
+  if (build.champion) lines.push(`CAMPEÃO: ${umaLinha(build.champion.name)}`);
+  if (build.desc) lines.push(`DESCRIÇÃO: ${linhasParaTexto(build.desc)}`);
   if (build.layout && build.layout !== "tabuleiro") lines.push(`LAYOUT: ${LAYOUTS[build.layout]}`);
   const marks = normMarkers(build.markers);
   if (marks.length) lines.push(`MARCADORES: ${marks.map(m => m.t === "hab" ? `Habilidade ${m.letter}` : markerLabel(m, null)).join(" | ")}`);
@@ -6800,13 +6830,13 @@ function buildToText() {
   if (hab.some(Boolean)) lines.push(`HABILIDADES: ${hab.map(L => L || "-").join(" ")}`);
   build.cats.forEach(cat => {
     lines.push("");
-    lines.push(`[${KIND_LABEL[cat.kind].toUpperCase()}] ${cat.name} | ${catCols(cat)}×${catRows(cat)}`);
-    if (cat.desc) lines.push(`# ${cat.desc}`);
-    if (cat.marco) lines.push(`= ${cat.marco}`);
+    lines.push(`[${KIND_LABEL[cat.kind].toUpperCase()}] ${umaLinha(cat.name)} | ${catCols(cat)}×${catRows(cat)}`);
+    if (cat.desc) lines.push(`# ${umaLinha(cat.desc)}`);
+    if (cat.marco) lines.push(`= ${umaLinha(cat.marco)}`);
     cat.items.forEach(e => {
       const item = byId[e.itemId];
       if (!item) return;
-      lines.push(`- ${item.namePt}${e.frag ? " [" + e.frag + "]" : ""}${e.note ? " * " + e.note : ""}`);
+      lines.push(linhaDoItem(e, item));
     });
   });
   return lines.join("\n");
@@ -7216,7 +7246,9 @@ function textToBuild(text) {
   const result = { name: null, mode: "", masterwork: false, forgedId: null, championName: null, markers: [], desc: "", layout: "tabuleiro", cats: [], runas: null, habilidades: null, unknown: [], ignored: 0 };
   let current = null;
 
-  text.split("\n").forEach(rawLine => {
+  // F13-T36: U+2028/U+2029 no meio de uma linha de texto antigo viram espaço — partir
+  // nelas perdia o resto da linha (a escrita nova já os troca pelo separador)
+  text.replace(/[\u2028\u2029]/g, " ").split(/\r\n?|\n/).forEach(rawLine => {
     const line = rawLine.trim();
     if (!line) return;
 
@@ -7314,7 +7346,7 @@ function textToBuild(text) {
       return;
     }
     const mDesc = line.match(/^DESCRI[ÇC][ÃA]O\s*:\s*(.+)$/i);
-    if (mDesc) { result.desc = mDesc[1].trim().replace(/\s*\/\s*/g, "\n"); return; }
+    if (mDesc) { result.desc = textoParaLinhas(mDesc[1]); return; }
     const mMarks = line.match(/^MARCADORES\s*:\s*(.+)$/i);
     if (mMarks) {
       mMarks[1].split("|").map(t => t.trim()).filter(Boolean).forEach(tok => {
@@ -7374,7 +7406,7 @@ function textToBuild(text) {
       let body = mItem[1].trim();
       let note = "";
       const mNote = body.split(/\s\*\s/);
-      if (mNote.length > 1) { body = mNote[0].trim(); note = mNote.slice(1).join(" * ").trim(); }
+      if (mNote.length > 1) { body = mNote[0].trim(); note = textoParaLinhas(mNote.slice(1).join(" * "), "¶"); }
       // F13-T23: "- Atributo adicional [Ouro · Vida]" traz o fragmento escolhido.
       let frag = "";
       const mFrag = body.match(/^(.*?)\s*\[((?:Prata|Ouro|Prismático) · [^\]]+)\]$/);
@@ -9754,19 +9786,19 @@ function loteParaTexto(ids) {
   ids.forEach(id => {
     const d = resumoPorId(id);
     if (!d) return;
-    const linhas = [`BUILD: ${d.name}`];
-    if (d.mode) linhas.push(`MODO: ${d.mode}`);
-    if (d.champ) linhas.push(`CAMPE\u00c3O: ${d.champ.name}`);
-    if (d.desc) linhas.push(`DESCRI\u00c7\u00c3O: ${d.desc.split("\n").map(x => x.trim()).filter(Boolean).join(" / ")}`);
+    const linhas = [`BUILD: ${umaLinha(d.name)}`];
+    if (ALL_MODES.includes(d.mode)) linhas.push(`MODO: ${d.mode}`);   // F13-T36: o da pública vem cru do servidor
+    if (d.champ) linhas.push(`CAMPE\u00c3O: ${umaLinha(d.champ.name)}`);
+    if (d.desc) linhas.push(`DESCRI\u00c7\u00c3O: ${linhasParaTexto(d.desc)}`);
     if (d.layout && d.layout !== "tabuleiro") linhas.push(`LAYOUT: ${LAYOUTS[d.layout]}`);
     const marks = normMarkers(d.markers);
     if (marks.length) linhas.push(`MARCADORES: ${marks.map(m => m.t === "hab" ? `Habilidade ${m.letter}` : markerLabel(m, d.champ)).join(" | ")}`);
     d.cats.forEach(cat => {
       linhas.push("");
-      linhas.push(`[${KIND_LABEL[cat.kind].toUpperCase()}] ${cat.name} | ${catCols(cat)}\u00d7${catRows(cat)}`);
-      if (cat.desc) linhas.push(`# ${cat.desc}`);
-      if (cat.marco) linhas.push(`= ${cat.marco}`);
-      cat.items.forEach(e => { const it = byId[e.itemId]; if (it) linhas.push(`- ${it.namePt}${e.frag ? " [" + e.frag + "]" : ""}${e.note ? " * " + e.note : ""}`); });
+      linhas.push(`[${KIND_LABEL[cat.kind].toUpperCase()}] ${umaLinha(cat.name)} | ${catCols(cat)}\u00d7${catRows(cat)}`);
+      if (cat.desc) linhas.push(`# ${umaLinha(cat.desc)}`);
+      if (cat.marco) linhas.push(`= ${umaLinha(cat.marco)}`);
+      cat.items.forEach(e => { const it = byId[e.itemId]; if (it) linhas.push(linhaDoItem(e, it)); });
     });
     partes.push(linhas.join("\n"));
   });

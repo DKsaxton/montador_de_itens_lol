@@ -66,7 +66,17 @@ clique cai num retângulo de tamanho zero e acusa bug que não existe.
 supremo é recusado no nível 5 e aceito no 6.
 
 **Texto** — exportar e reimportar devolve a mesma build (itens, marcadores,
-habilidades e runas).
+habilidades e runas). F13-T36 (bugs nºs 17 e 28): a descrição e a observação
+de várias linhas voltam iguais, pela interface (Copiar esta build → Importar)
+e pelo texto de várias builds, com o pior dado — barras coladas, barra solta,
+barra dupla, link, e linhas que parecem cabeçalho do formato (#, -, =, [ ]);
+texto escrito à mão: " / " separa a descrição, " ¶ " a observação, "/"
+colado é barra; texto exportado antes: a barra na observação continua barra;
+quebras que chegam por fora (U+2028, \r, observação só de espaço, nome com
+quebra) não derrubam item, caixa nem descrição; fragmento e modo que chegam
+de fora não desmontam a linha; texto antigo com uma quebra invisível no meio
+da linha fica inteiro; um campo de uma linha com uma quebra dentro não abre
+linha nova.
 
 **Rascunho** (F13-T24, bug nº 37) — com o Editar ligado e um item não salvo,
 reabrir a build que já está na forja (duplo clique na linha, o Editar do
